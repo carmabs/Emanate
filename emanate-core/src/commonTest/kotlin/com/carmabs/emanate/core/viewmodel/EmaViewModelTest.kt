@@ -9,6 +9,7 @@ import com.carmabs.emanate.core.logging.EmaLogger
 import com.carmabs.emanate.core.model.EmaConfiguration
 import com.carmabs.emanate.core.source.middleware.middlewareDelayOf
 import com.carmabs.emanate.core.source.reducer.reducerOf
+import com.carmabs.emanate.core.source.sideeffect.sideEffectOf
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import kotlin.test.Test
@@ -129,6 +130,14 @@ private class TestViewModel(
      */
     private val decrementReducer = reducerOf(TestAction.Decrement::class) { state.copy(count = state.count - 1) }
 
+    /**
+     * Side effect declared as a property of the view model
+     */
+    private val loadSideEffect = sideEffectOf(TestAction.Load::class) {
+        dispatch(TestAction.Update(loadUseCase()))
+        postEvent(TestEvent.Loaded)
+    }
+
     override fun setup() = source {
         middlewares {
             add<EmaLifecycle> { action ->
@@ -152,10 +161,7 @@ private class TestViewModel(
             add<TestAction.Load> { state.copy(text = "loading") }
         }
         sideEffects {
-            add<TestAction.Load> {
-                dispatch(TestAction.Update(loadUseCase()))
-                postEvent(TestEvent.Loaded)
-            }
+            +loadSideEffect
         }
         broadcasts {
             listen<TextSent>()
