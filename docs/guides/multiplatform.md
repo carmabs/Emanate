@@ -1,7 +1,7 @@
 # Kotlin Multiplatform
 
 `emanate-core` is a Kotlin Multiplatform library. All of it lives in `commonMain`, so states, actions, events,
-ViewModels, use cases, `EmaResult`, `EmaText` and the rest of the core are available on every target:
+ViewModels, sources, plugins, use cases, `EmaResult` and `EmaText` are available on every target:
 
 | Platform        | Targets                                                                          |
 |-----------------|----------------------------------------------------------------------------------|
@@ -25,16 +25,14 @@ kotlin {
 }
 ```
 
-On Android they are drawn with [Compose](../compose/screens.md) or [Android Views](../android-view/index.md).
+On Android they are drawn with [Compose](../compose/screens.md).
 Any other platform only needs to collect `stateFlow` and `eventFlow` and send actions with `dispatch`.
 
 ## What is not available everywhere
 
 - **Configuration.** `EmaConfiguration.Android(debug)` is in `emanate-android`. On other platforms call `Emanate.init` with an
   `EmaConfiguration` built for them, or use the default one. See [Configuration](configuration.md).
-- **Function names in the logs.** Only the Android configuration resolves the name of the function that launched a
-  `sideEffect`. Elsewhere, pass `logName`.
 - **Main dispatcher.** The default ViewModel scope uses `Dispatchers.Main`. On platforms without one (Linux, Windows,
-  Android Native), configure another `main` in `EmaDispatchers` or pass the scope to the ViewModel.
+  Android Native), configure another `main` in `EmaDispatchers`, in the configuration of Emanate or of the ViewModel.
 - **IO dispatcher.** JS and Wasm don't have `Dispatchers.IO`, so use cases run on `Dispatchers.Default` there. See
   [Dispatchers](configuration.md#dispatchers).

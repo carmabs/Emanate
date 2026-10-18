@@ -4,6 +4,7 @@ In Emanate the **ViewModel never navigates**. It posts an [event](../concepts/ev
 and the `onEvent` lambda of the destination hands it to a **navigator**, which knows how to move around.
 
 ```mermaid
+%%{init: {"theme": "base", "themeVariables": {"actorBkg": "#4F86F7", "actorBorder": "#2447C9", "actorTextColor": "#ffffff", "noteBkgColor": "#EEF4FB", "noteBorderColor": "#B4CCE4", "signalColor": "#7a8aa0", "signalTextColor": "#232f3e", "fontFamily": "Inter, Roboto, sans-serif"}}}%%
 sequenceDiagram
     participant VM as ViewModel
     participant G as createComposableScreen
@@ -44,7 +45,7 @@ class ProfileOnBoardingNavigator(
                 )
             )
 
-            ProfileOnBoardingEvent.OnBoardingCancelled -> navigateBack()
+            is ProfileOnBoardingEvent.OnBoardingCancelled -> navigateBack()
         }
     }
 }
@@ -99,7 +100,7 @@ createComposableScreen(
 )
 ```
 
-The initializer reaches `onStateCreated` of the ViewModel.
+The initializer reaches the ViewModel as an action, the first time the screen is created. See [Initializers](../guides/initializers.md).
 
 ### The first screen of an activity
 

@@ -1,204 +1,153 @@
 # Source
 
-An `EmaSource` holds a state handled with actions, in the style of Redux. It is the engine of
-[`EmaViewModel`](viewmodel.md), and it can also be used on its own.
+An `EmaSource` is **the engine of Emanate**: it holds a state, receives actions and runs the middlewares, reducers and
+side effects that handle them. Every [`EmaViewModel`](viewmodel.md) has one inside.
 
-Every action that enters the source goes through the same path, one action after another:
+Most apps only need ViewModels. A source is for the cases where you want that same engine **without a screen**: a state
+that several screens share, or logic that has nothing to do with the UI. It can also be the base of a **custom
+ViewModel built from scratch**, when the behavior of a standard `EmaViewModel` doesn't fit what you need.
 
-```mermaid
-flowchart LR
-    A[dispatch action] --> M[Middlewares<br/>of its type]
-    M -->|next| R[Reducers<br/>of its type]
-    R -->|new state| S[stateFlow]
-    R --> E[Side effects<br/>of its type]
-    E -->|dispatch| A
-    E -->|postEvent| V[eventFlow]
-```
+## ViewModel or source?
 
-1. The **middlewares** decide the path of the action: let it continue, change it, delay it or stop it.
-2. The **reducers** return the next state. It is published as soon as they return.
-3. The **side effects** run the business logic asynchronously, with the new state, and react dispatching actions or
-   posting events.
+A source has the same pieces as a ViewModel. What changes is everything around them:
 
-Each piece is declared for a type of action and only receives the actions of that type, so a `sealed` hierarchy of
-actions lets you handle a whole screen in one `when`, or a single action with its own class.
+|                                                         | `EmaViewModel`                   | `EmaSource`                                  |
+|---------------------------------------------------------|----------------------------------|----------------------------------------------|
+| Middlewares, reducers, side effects, broadcasts, plugins | Yes                             | Yes                                          |
+| Who creates it                                          | Its screen, once                 | You                                          |
+| The initializer and the lifecycle, as actions           | Yes                              | No: it only receives the actions you send it |
+| Logs of every action                                    | Automatic                        | If you add them                              |
+| When it is closed                                       | When its screen is closed        | When you call `close()`                      |
+| Use it for                                              | A screen                         | A state that is not a screen, or a custom ViewModel built from scratch |
 
-## Setup
+Use a source when the state **doesn't belong to one screen**, for example:
 
-The source is configured once, in `setup` (the `setup` function of an `EmaViewModel`, which returns `source { }`, or
-the last parameter of `EmaSource(...)`). Nothing can be added after it. Each kind of piece has its own block, in the
-order an action goes through them:
+- A shopping cart that the product screens fill and the checkout screen shows.
+- A music player that keeps playing while the user moves between screens.
+- A queue of downloads that runs in the background.
+- A ViewModel of your own: wrap a source in your class and expose only what your screen needs, without the lifecycle
+  of an `EmaViewModel`.
+
+## Creating a source
+
+Create it with `EmaSource(...)`: the initial state, and the same blocks as the [setup of a ViewModel](viewmodel.md#the-setup).
 
 ```kotlin
-override fun setup() = source {
-    middlewares {
-        add<CounterAction.Reset> { /* ... */ }
-        +middlewareDelayOf(CounterAction.Increment::class, 300.milliseconds)
-    }
+data class CartState(val products: List<Product> = emptyList()) : EmaState {
+    val total get() = products.sumOf { it.price }
+}
+
+sealed interface CartAction : EmaAction {
+    data class ProductAdded(val product: Product) : CartAction
+    data class ProductRemoved(val product: Product) : CartAction
+}
+
+fun cartSource() = EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState()) {
     reducers {
-        add<CounterAction> { action -> /* ... */ }
-        // Declared as a property of the ViewModel
-        +doubleReducer
-    }
-    sideEffects {
-        add<CounterAction.Increment> { /* ... */ }
-    }
-    broadcasts {
-        listen<SettingsBroadcast.CounterReset>()
-    }
-}
-```
-
-| Block             | Adds                                                                                  |
-|-------------------|---------------------------------------------------------------------------------------|
-| `middlewares { }` | The [middlewares](#middlewares), which run first.                                    |
-| `reducers { }`    | The [reducers](#reducers).                                                           |
-| `sideEffects { }` | The [side effects](#side-effects).                                                   |
-| `broadcasts { }`  | The types of the actions broadcast by other sources that it receives, with `listen<Type>()`. See [Results between screens](../guides/results-between-screens.md). |
-
-Inside a block, `add<Type> { }` adds a piece for the actions of that type, and `+` adds one already created. Besides
-the lambdas, each piece can be written as a class (`EmaMiddleware`, `EmaReducer` and `SideEffect`) or created with
-`middlewareOf`, `middlewareDelayOf` and `reducerOf`, to reuse it or declare it as a property.
-
-The middlewares run in the order they are added, and so do the reducers: each one receives the state returned by the
-previous one. A block can be used more than once, for example to group the pieces of each feature: its pieces are
-added after the ones of the previous blocks of the same kind.
-
-Each piece only reaches what belongs to it: a reducer can't add other pieces nor dispatch, and a side effect can't
-add other side effects. The properties of the ViewModel, like its use cases, can be used everywhere.
-
-### Reusing pieces between screens
-
-To share a group of pieces between screens, write an extension function of `SourceSetupScope` with its blocks and
-call it inside `source { }`. As the blocks can be used more than once, its pieces are added in the place where it is
-called, together with the ones of the screen:
-
-```kotlin
-fun <S : EmaState, A : EmaAction, E : EmaEvent> SourceSetupScope<S, A, E>.analytics(tracker: Tracker, screen: String) {
-    middlewares {
-        add<EmaAction> { action ->
-            tracker.track(action::class.simpleName.orEmpty())
-            next()
-        }
-    }
-    sideEffects {
-        add<EmaAction.Lifecycle.Resumed> { tracker.screenShown(screen) }
-    }
-}
-
-override fun setup() = source {
-    analytics(tracker, screen = "Home")
-    reducers {
-        add<HomeAction> { action -> /* ... */ }
-    }
-}
-```
-
-A generic function like this one can be used by any screen. Its side effects can only dispatch actions of type `A`,
-the actions of the screen that calls it, so a function that dispatches its own actions is written for the types of
-one screen: it is useful to split a big ViewModel by feature. The function only reaches what it receives as
-parameters, so pass it the use cases it needs.
-
-## Reducers
-
-A reducer returns the next state for an action. It only reads `state`, so it is a pure function: it can't dispatch
-actions, post events nor launch work. Calling `dispatch` inside a reducer doesn't compile.
-
-```kotlin
-reducers {
-    add<CounterAction> { action ->
-        when (action) {
-            CounterAction.Increment -> state.copy(count = state.count + 1)
-            CounterAction.Reset -> state.copy(count = 0)
+        add<CartAction> { action ->
+            when (action) {
+                is CartAction.ProductAdded -> state.copy(products = state.products + action.product)
+                is CartAction.ProductRemoved -> state.copy(products = state.products - action.product)
+            }
         }
     }
 }
 ```
 
-## Middlewares
+## Using it
 
-A middleware receives the actions of its type before the reducers and decides their path calling `next` **once**:
+| To                       | Call                                                        |
+|--------------------------|-------------------------------------------------------------|
+| Send an action           | `cart.dispatch(CartAction.ProductAdded(product))`           |
+| Read the current state   | `cart.state`                                                |
+| Follow the state         | `cart.stateFlow.collect { state -> ... }`                   |
+| Follow the events        | `cart.eventFlow`, and `cart.consumeEvent(event)` once each one is handled |
+| Stop it                  | `cart.close()`                                              |
 
-| In a middleware        | Effect                                                                        |
-|------------------------|-------------------------------------------------------------------------------|
-| `next()`               | The action continues to the next middleware and to the reducers.              |
-| `next(action)`         | Other action continues instead of the received one.                           |
-| Not calling `next`     | The action stops here: it doesn't reach the reducers nor the side effects.    |
-| `nextAfter { }`        | The action continues when the block finishes. The source keeps working meanwhile. |
-| `dispatch(action)`     | Dispatches a new action.                                                      |
-| `state`                | The current state.                                                            |
+`close()` processes the actions still pending and then cancels the work of the source. A source has no screen that
+closes it, so **close it yourself** when it isn't needed anymore. A source created once for the whole app, like the cart,
+can live as long as the app.
 
-`nextAfter` waits without blocking the source. Inside its block, `stop()` finishes it without continuing the action.
+## Example: a cart shared by two screens
+
+The cart is created once, for example as a `single` of your dependency injection, and the ViewModels of two screens
+receive it in their constructor:
+
+![A source shared by two screens](../assets/shared-source.svg)
+
+The product screen sends actions to the cart from a side effect:
 
 ```kotlin
-middlewares {
-    add<SearchAction.QueryWritten> { action ->
-        // Debounce: a new query cancels the previous one, which doesn't continue
-        nextAfter(id = "search", timeout = 5.seconds) {
-            delay(300)
-            if (action.query.isBlank()) stop()
+class ProductViewModel(private val cart: EmaSource<CartState, CartAction, EmaEvent.EMPTY>) :
+    EmaViewModel<ProductState, ProductAction, ProductEvent>(ProductState()) {
+
+    override fun setup() = source {
+        sideEffects {
+            add<ProductAction.AddClicked> { cart.dispatch(CartAction.ProductAdded(state.product)) }
         }
     }
 }
 ```
 
-| `nextAfter` parameter | Effect                                                                         |
-|-----------------------|--------------------------------------------------------------------------------|
-| `id`                  | A `nextAfter` with the same id that is still waiting is cancelled.            |
-| `timeout`             | If the block doesn't finish in this time, it is cancelled and `onTimeout` is called. |
-
-`middlewareDelayOf(Type::class, delay)` creates a middleware that delays the actions of a type. Middlewares don't
-post events: they dispatch an action whose side effect posts it. For business logic, use a side effect.
-
-## Side effects
-
-A side effect is the business logic launched by the actions of its type: use cases, requests, timers... It runs
-asynchronously after the reducers of the action, so it reads the new state.
+The checkout screen follows the state of the cart, and turns every change into an action of its own:
 
 ```kotlin
-sideEffects {
-    add<LoginAction.Login>(concurrency = SideEffectConcurrency.Leading, timeout = 30.seconds) {
-        val user = loginUseCase(LoginUseCase.Input(state.userName, state.userPassword))
-        dispatch(LoginRequest.Succeeded(user))
-        postEvent(LoginEvent.LoginSuccess(user))
+class CheckoutViewModel(private val cart: EmaSource<CartState, CartAction, EmaEvent.EMPTY>) :
+    EmaViewModel<CheckoutState, CheckoutAction, CheckoutEvent>(CheckoutState()) {
+
+    override fun setup() = source {
+        reducers {
+            add<CheckoutAction.CartChanged> { action -> state.copy(total = action.total) }
+        }
+        sideEffects {
+            // Runs while the screen exists: it is cancelled when the ViewModel is closed
+            add<EmaInitializer> {
+                cart.stateFlow.collect { cart -> dispatch(CheckoutAction.CartChanged(cart.total)) }
+            }
+        }
     }
 }
 ```
 
-| In a side effect                 | Effect                                                                    |
-|----------------------------------|---------------------------------------------------------------------------|
-| `state`                          | The state at the moment it is read.                                       |
-| `dispatch(action)`               | Dispatches an action to the source.                                       |
-| `postEvent(event)`               | Posts an [event](events.md). It arrives after the actions dispatched before it. |
-| `broadcast(action)`              | Broadcasts an action to other sources. See [Results between screens](../guides/results-between-screens.md). |
+Each screen keeps its own state, and the cart is the only place where the products are.
 
-`concurrency` decides what happens when an action launches the side effect while it is still running:
+## Logs
 
-| `SideEffectConcurrency` | Behaviour                                                  | Example                      |
-|-------------------------|------------------------------------------------------------|------------------------------|
-| `Every` (default)       | Every action launches it, in parallel.                     | Independent requests.        |
-| `Latest`                | The running one is cancelled and the new one is launched.  | A search while typing.       |
-| `Leading`               | The new one is ignored while one is running.               | A button tapped twice.       |
-
-With `timeout`, a side effect that doesn't finish in time is cancelled and its `onTimeout` is called. The errors
-follow the [side effect configuration](../guides/async-and-errors.md) of Emanate, like the `sideEffect` of the
-classic ViewModels.
-
-## Using a source on its own
-
-A source doesn't depend on any ViewModel. Create it with `EmaSource(...)`, observe `stateFlow` and `eventFlow`, and
-call `close()` when it isn't needed anymore: it processes the pending actions and cancels its work.
+A ViewModel logs every action by itself, but a source doesn't. To see its actions with the state before and after
+them, add `loggerMiddleware` as its last middleware:
 
 ```kotlin
-val counter = EmaSource<CounterState, CounterAction, CounterEvent>(CounterState()) {
-    reducers {
-        add<CounterAction.Increment> { state.copy(count = state.count + 1) }
+fun cartSource() = EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState()) {
+    middlewares(MiddlewarePosition.Last) {
+        +loggerMiddleware(tag = "Cart", logger = EmaLogger.Println)
     }
+    // ...
 }
-
-counter.dispatch(CounterAction.Increment)
-counter.close()
 ```
 
-By default it uses the [configuration](../guides/configuration.md) of Emanate and runs on its `main` dispatcher; pass
-another one in the `configuration` or `dispatcher` parameters.
+## Configuration
+
+A source uses the [configuration of the application](../guides/configuration.md) (the one set with `Emanate.init`), like
+a ViewModel does. To give one source its own, pass it as the second parameter:
+
+```kotlin
+EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState(), configuration) { ... }
+```
+
+That configuration decides, among other things, the dispatcher where the source runs (`main` by default) and what
+happens when an exception is thrown.
+
+## Tests
+
+[emanate-test](../guides/testing.md) works with a source like with a ViewModel. Call `useTestDispatchers()` before
+creating the source, so it runs on the dispatcher of the test. Then call `record()` on the source before sending the
+first action, and the recorder keeps every action, state and event in order, so you can assert on them. For example,
+a test of the cart above could look like this:
+
+```kotlin
+val recorder = cart.record()
+
+cart.dispatch(CartAction.ProductAdded(product))
+
+recorder.assertState { it.products == listOf(product) }
+```

@@ -28,6 +28,7 @@ theme:
     - content.code.copy
 
 markdown_extensions:
+  - admonition
   - tables
   - toc:
       permalink: true
@@ -57,7 +58,8 @@ plugins:
           build: true
         - locale: es
           name: Español
-          build: true
+          # Not built until the Spanish pages are translated from the current English ones
+          build: false
           site_description: Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android
           nav_translations:
             Home: Inicio
@@ -94,39 +96,35 @@ plugins:
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Why Emanate: why-emanate.md
   - Concepts:
       - Architecture: concepts/architecture.md
       - State: concepts/state.md
       - Actions: concepts/actions.md
       - Events: concepts/events.md
+      - Reducers: concepts/reducers.md
+      - Side effects: concepts/side-effects.md
+      - Middlewares: concepts/middlewares.md
+      - Broadcasts: concepts/broadcasts.md
+      - Plugins: concepts/plugins.md
       - ViewModel: concepts/viewmodel.md
       - Source: concepts/source.md
   - Guides:
       - Configuration: guides/configuration.md
       - Initializers: guides/initializers.md
-      - Results between screens: guides/results-between-screens.md
-      - Async work and errors: guides/async-and-errors.md
-      - Dependency injection: guides/dependency-injection.md
-      - Permissions: guides/permissions.md
+      - Surviving process death: guides/process-death.md
+      - Dependency injection and environments: guides/dependency-injection.md
       - Testing: guides/testing.md
+      - Use cases and results: guides/use-cases.md
+      - Texts without Context: guides/texts.md
+      - Permissions: guides/permissions.md
       - Kotlin Multiplatform: guides/multiplatform.md
-      - Utilities: guides/utilities.md
   - Compose:
       - Screens: compose/screens.md
       - Navigation: compose/navigation.md
       - Back handling: compose/back-handling.md
       - Dialogs: compose/dialogs.md
-      - Saving state: compose/save-state.md
       - Permissions: compose/permissions.md
-      - Utilities: compose/utilities.md
-  - Android Views:
-      - Overview: android-view/index.md
-      - Fragments and Activities: android-view/screens.md
-      - Navigation and back handling: android-view/navigation.md
-      - Dialogs: android-view/dialogs.md
-      - Lists: android-view/lists.md
-      - Permissions: android-view/permissions.md
-      - Utilities: android-view/utilities.md
   - Recommendations: recommendations.md
   - Contributing: contributing.md
 
