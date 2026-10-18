@@ -32,19 +32,19 @@ order an action goes through them:
 ```kotlin
 override fun setup() = source {
     middlewares {
-        add<CounterAction.Reset> { /* ... */ }
-        +middlewareDelayOf(CounterAction.Increment::class, 300.milliseconds)
+        add<HomeAction.QueryWritten> { /* ... */ }
+        +middlewareDelayOf(HomeAction.RefreshRequested::class, 300.milliseconds)
     }
     reducers {
-        add<CounterAction> { action -> /* ... */ }
+        add<HomeAction> { action -> /* ... */ }
         // Declared as a property of the ViewModel
-        +doubleReducer
+        +userReducer
     }
     sideEffects {
-        add<CounterAction.Increment> { /* ... */ }
+        add<HomeAction.RefreshRequested> { /* ... */ }
     }
     broadcasts {
-        listen<SettingsBroadcast.CounterReset>()
+        listen<ProfileBroadcast.FriendAdded>()
     }
 }
 ```
@@ -55,10 +55,44 @@ override fun setup() = source {
 | `reducers { }`    | The [reducers](#reducers).                                                           |
 | `sideEffects { }` | The [side effects](#side-effects).                                                   |
 | `broadcasts { }`  | The types of the actions broadcast by other sources that it receives, with `listen<Type>()`. See [Results between screens](../guides/results-between-screens.md). |
+| `plugins { }`     | The [plugins](#plugins): groups of pieces that the screen doesn't need to know.      |
 
-Inside a block, `add<Type> { }` adds a piece for the actions of that type, and `+` adds one already created. Besides
-the lambdas, each piece can be written as a class (`EmaMiddleware`, `EmaReducer` and `SideEffect`) or created with
-`middlewareOf`, `middlewareDelayOf` and `reducerOf`, to reuse it or declare it as a property.
+Inside a block, `add<Type> { }` adds a piece for the actions of that type, and `+` adds one already created.
+
+## Pieces are values
+
+Every piece can be replaced. Besides the lambdas, each piece can be written as a class that implements `EmaMiddleware`, `EmaReducer` or
+`SideEffect`, or created with `middlewareOf`, `middlewareDelayOf`, `reducerOf` and `sideEffectOf`. Then it can be declared as a
+property, shared between screens or **received in the constructor** of the ViewModel:
+
+```kotlin
+class LiveFriends(private val getFriendsUseCase: GetFriendsUseCase) :
+    SideEffect<HomeState, HomeAction, HomeEvent, HomeAction.RefreshRequested> {
+
+    override val actionType = HomeAction.RefreshRequested::class
+    override val concurrency = SideEffectConcurrency.Leading
+
+    override suspend fun SideEffectScope<HomeState, HomeAction, HomeEvent>.invoke(action: HomeAction.RefreshRequested) {
+        dispatch(HomeAction.EffectQueryResult.Started)
+        getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+    }
+}
+
+class HomeViewModel(
+    private val loadFriends: SideEffect<HomeState, HomeAction, HomeEvent, HomeAction.RefreshRequested>
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+
+    override fun setup() = source {
+        sideEffects { +loadFriends }
+    }
+}
+```
+
+A ViewModel that receives its pieces doesn't know which ones it gets: the real API, a mock or a fake. That is how the
+same screen behaves differently in production, in a demo build and in the tests. See
+[Mocking and environments](../guides/environments.md).
 
 The middlewares run in the order they are added, and so do the reducers: each one receives the state returned by the
 previous one. A block can be used more than once, for example to group the pieces of each feature: its pieces are
@@ -82,7 +116,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> SourceSetupScope<S, A, E>.analyt
         }
     }
     sideEffects {
-        add<EmaAction.Lifecycle.Resumed> { tracker.screenShown(screen) }
+        add<EmaLifecycle.Resumed> { tracker.screenShown(screen) }
     }
 }
 
@@ -106,10 +140,11 @@ actions, post events nor launch work. Calling `dispatch` inside a reducer doesn'
 
 ```kotlin
 reducers {
-    add<CounterAction> { action ->
+    add<HomeAction> { action ->
         when (action) {
-            CounterAction.Increment -> state.copy(count = state.count + 1)
-            CounterAction.Reset -> state.copy(count = 0)
+            is HomeAction.QueryWritten -> state.copy(query = action.query)
+            is HomeAction.ErrorAccepted -> state.copy(dialog = null)
+            // ...
         }
     }
 }
@@ -132,7 +167,7 @@ A middleware receives the actions of its type before the reducers and decides th
 
 ```kotlin
 middlewares {
-    add<SearchAction.QueryWritten> { action ->
+    add<HomeAction.QueryWritten> { action ->
         // Debounce: a new query cancels the previous one, which doesn't continue
         nextAfter(id = "search", timeout = 5.seconds) {
             delay(300)
@@ -150,6 +185,23 @@ middlewares {
 `middlewareDelayOf(Type::class, delay)` creates a middleware that delays the actions of a type. Middlewares don't
 post events: they dispatch an action whose side effect posts it. For business logic, use a side effect.
 
+### Where a middleware runs
+
+By default the middlewares run where their block is written, in order with the rest of the setup. A block can place
+them elsewhere with its `position`, whatever the place where it is written:
+
+| `MiddlewarePosition` | Runs                                       | Use it for                                                        |
+|----------------------|--------------------------------------------|-------------------------------------------------------------------|
+| `First`              | Before the rest                            | Deciding the path of every action first: a session guard, a feature flag, a simulated latency. |
+| `InPlace` (default)  | Where the block is written                 | The middlewares of the screen.                                    |
+| `Last`               | After the rest, right before the reducers  | Observing the new state of every action: when `next()` returns, the reducers have run. |
+
+```kotlin
+middlewares(MiddlewarePosition.First) {
+    add<HomeAction.FriendClicked> { if (featureFlags.profilesEnabled) next() }
+}
+```
+
 ## Side effects
 
 A side effect is the business logic launched by the actions of its type: use cases, requests, timers... It runs
@@ -157,10 +209,10 @@ asynchronously after the reducers of the action, so it reads the new state.
 
 ```kotlin
 sideEffects {
-    add<LoginAction.Login>(concurrency = SideEffectConcurrency.Leading, timeout = 30.seconds) {
-        val user = loginUseCase(LoginUseCase.Input(state.userName, state.userPassword))
-        dispatch(LoginRequest.Succeeded(user))
-        postEvent(LoginEvent.LoginSuccess(user))
+    add<HomeAction.RefreshRequested>(concurrency = SideEffectConcurrency.Leading, timeout = 30.seconds) {
+        val friends = getFriendsUseCase(GetFriendsUseCase.Input(state.query)).getOrDefault(emptyList())
+        dispatch(HomeAction.EffectQueryResult.Loaded(friends))
+        postEvent(HomeEvent.FriendsUpdated(friends.size))
     }
 }
 ```
@@ -180,9 +232,80 @@ sideEffects {
 | `Latest`                | The running one is cancelled and the new one is launched.  | A search while typing.       |
 | `Leading`               | The new one is ignored while one is running.               | A button tapped twice.       |
 
-With `timeout`, a side effect that doesn't finish in time is cancelled and its `onTimeout` is called. The errors
-follow the [side effect configuration](../guides/async-and-errors.md) of Emanate, like the `sideEffect` of the
-classic ViewModels.
+With `timeout`, a side effect that doesn't finish in time is cancelled and its `onTimeout` is called. With
+`survivesClose = true` it can finish after the source is closed, up to the `closeTimeout` of the
+[configuration](../guides/configuration.md). The errors follow the [error policy](../guides/async-and-errors.md#errors)
+of the configuration.
+
+`onClose { }` adds work that runs when the source is closed, like sending a result to the previous screen. See
+[When the ViewModel is closed](viewmodel.md#when-the-viewmodel-is-closed).
+
+## Broadcasts
+
+A source can send actions to other sources, for example to give a result to the previous screen. A side effect
+broadcasts the action with `broadcast`, and every source that listens to its type in its `broadcasts` block receives
+it as one more action, which goes through its middlewares, reducers and side effects:
+
+```kotlin
+// Sender
+sideEffects {
+    add<ProfileAction.SaveClicked> { broadcast(ProfileBroadcast.FriendCreated(state.friend)) }
+}
+
+// Receiver
+reducers {
+    add<ProfileBroadcast.FriendCreated> { action -> state.copy(friends = state.friends + action.friend) }
+}
+broadcasts {
+    listen<ProfileBroadcast.FriendCreated>()
+}
+```
+
+The type of the action is the id of the broadcast, so it is typed end to end. Without `listen`, the pieces of that
+type never run: `assertSetup()` of `emanate-test` detects it. The delivery rules and `keepUntilReceived` are in
+[Results between screens](../guides/results-between-screens.md).
+
+## Plugins
+
+A plugin is a feature that the screen doesn't need to know, packaged as a group of pieces: it adds its middlewares,
+reducers, side effects and broadcast listeners to the setup where it is installed. Emanate ships the
+[backup of the state](../guides/saving-state.md), and you can write your own by implementing `EmaSourcePlugin`:
+
+```kotlin
+class ScreenAnalytics<S : EmaState>(private val tracker: Tracker, private val screen: String) :
+    EmaSourcePlugin<S, Nothing> {
+
+    override fun install(setup: SourceSetupScope<S, Nothing, Nothing>) {
+        setup.middlewares {
+            add<EmaAction> { action ->
+                tracker.track(screen, action::class.simpleName.orEmpty())
+                next()
+            }
+        }
+        setup.sideEffects {
+            add<EmaLifecycle.Resumed> { tracker.screenShown(screen) }
+        }
+    }
+}
+
+override fun setup() = source {
+    plugins {
+        +ScreenAnalytics<HomeState>(tracker, screen = "Home")
+    }
+    reducers { /* ... */ }
+}
+```
+
+- A plugin receives what it needs when it is created, so it can't be installed without it.
+- Its pieces stay where the `plugins` block is written, except the middlewares it places `First` or `Last`.
+- The second type is the type of the actions it can dispatch: `Nothing` if it dispatches none. The source accepts
+  them, and the screen can handle them like any other. A plugin can't post events: they belong to the screen, so it
+  dispatches an action and the screen decides the event.
+- The plugin is injected like any other dependency, so an environment can install it or not.
+
+Use a plugin for a self-contained feature that dispatches its own actions, and an
+[extension function](#reusing-pieces-between-screens) to split the pieces of a screen or share pieces that dispatch
+the actions of the screen.
 
 ## Using a source on its own
 
@@ -201,4 +324,4 @@ counter.close()
 ```
 
 By default it uses the [configuration](../guides/configuration.md) of Emanate and runs on its `main` dispatcher; pass
-another one in the `configuration` or `dispatcher` parameters.
+another one in the `configuration` parameter.

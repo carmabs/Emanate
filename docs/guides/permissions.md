@@ -13,10 +13,7 @@ Declare the permissions in the manifest as usual.
 
 ## The manager
 
-The view creates the manager:
-
-- Compose: `rememberEmaPermissionManager()`. See [Compose permissions](../compose/permissions.md).
-- Fragments: `EmaAndroidPermissionManager(fragment)`. See [Android Views permissions](../android-view/permissions.md).
+The view creates the manager with `rememberEmaPermissionManager()`. See [Compose permissions](../compose/permissions.md).
 
 ```kotlin
 permissionManager.isPermissionGranted(Manifest.permission.CAMERA)   // PermissionState
@@ -43,30 +40,49 @@ to show your own dialog.
 
 ## Asking for a permission from the ViewModel
 
-The ViewModel does not touch Android, so it **puts the request in the state**. The view executes it.
+The ViewModel does not touch Android, so it **puts the request in the state**, and the view executes it. The answer
+comes back as an action, which the reducers and side effects handle like any other:
 
 ```kotlin
 data class LocationState(
-    val permissionRequest: EmaPermissionRequest = EmaPermissionRequest.cancelRequest()
+    val permissionRequest: EmaPermissionRequest = EmaPermissionRequest.cancelRequest(),
+    val locationGranted: Boolean = false
 ) : EmaState
+
+sealed interface LocationAction : EmaAction {
+    data object AllowClicked : LocationAction
+    data class PermissionAnswered(val permissionState: PermissionState) : LocationAction
+}
 ```
 
 ```kotlin
-// ViewModel
-private fun onActionAllowClicked() {
-    updateState {
-        copy(permissionRequest = EmaPermissionRequest.createRequest { permissionState ->
-            onPermissionResponse(permissionState)
-        })
-    }
-}
+class LocationViewModel : EmaViewModel<LocationState, LocationAction, LocationEvent>(LocationState()) {
 
-private fun onPermissionResponse(permissionState: PermissionState) {
-    updateState { copy(permissionRequest = EmaPermissionRequest.cancelRequest()) }  // clear the request
-    when (permissionState) {
-        PermissionState.GRANTED -> { /* ... */ }
-        PermissionState.NOT_GRANTED -> { /* ... */ }
-        PermissionState.NOT_GRANTED_SHOULD_EXPLAIN -> { /* ... */ }
+    // Created once: the answer of the user is dispatched as an action
+    private val locationRequest = EmaPermissionRequest.createRequest { permissionState ->
+        dispatch(LocationAction.PermissionAnswered(permissionState))
+    }
+
+    override fun setup() = source {
+        reducers {
+            add<LocationAction> { action ->
+                when (action) {
+                    is LocationAction.AllowClicked -> state.copy(permissionRequest = locationRequest)
+                    is LocationAction.PermissionAnswered -> state.copy(
+                        // Clears the request, so it isn't executed again
+                        permissionRequest = EmaPermissionRequest.cancelRequest(),
+                        locationGranted = action.permissionState == PermissionState.GRANTED
+                    )
+                }
+            }
+        }
+        sideEffects {
+            add<LocationAction.PermissionAnswered> { action ->
+                if (action.permissionState == PermissionState.NOT_GRANTED_SHOULD_EXPLAIN) {
+                    postEvent(LocationEvent.PermissionRationaleNeeded)
+                }
+            }
+        }
     }
 }
 ```
@@ -75,5 +91,7 @@ The view calls `permissionManager.handleRequest(request, scope, permission)` eve
 `EmaPermissionRequest.cancelRequest()` is the "nothing to do" request, which `handleRequest` ignores.
 `EmaMultiplePermissionRequest` and `handleRequestMultiple` work the same way for several permissions.
 
-If the process is killed while the user is in the system settings, restore the screen with
-[a save state manager](../compose/save-state.md).
+As the answer is an action, a test can dispatch `PermissionAnswered` directly to check every outcome, without a device.
+
+If the process is killed while the user is in the system settings, keep what the user typed with a
+[backup](saving-state.md).

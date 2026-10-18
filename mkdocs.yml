@@ -57,7 +57,8 @@ plugins:
           build: true
         - locale: es
           name: Español
-          build: true
+          # Not built until the Spanish pages are translated from the current English ones
+          build: false
           site_description: Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android
           nav_translations:
             Home: Inicio
@@ -94,6 +95,7 @@ plugins:
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Why Emanate: why-emanate.md
   - Concepts:
       - Architecture: concepts/architecture.md
       - State: concepts/state.md
@@ -102,31 +104,23 @@ nav:
       - ViewModel: concepts/viewmodel.md
       - Source: concepts/source.md
   - Guides:
-      - Configuration: guides/configuration.md
-      - Initializers: guides/initializers.md
-      - Results between screens: guides/results-between-screens.md
-      - Async work and errors: guides/async-and-errors.md
-      - Dependency injection: guides/dependency-injection.md
-      - Permissions: guides/permissions.md
+      - Mocking and environments: guides/environments.md
       - Testing: guides/testing.md
+      - Saving state: guides/saving-state.md
+      - Async work and errors: guides/async-and-errors.md
+      - Results between screens: guides/results-between-screens.md
+      - Initializers: guides/initializers.md
+      - Dependency injection: guides/dependency-injection.md
+      - Configuration: guides/configuration.md
+      - Permissions: guides/permissions.md
+      - Use cases and results: guides/use-cases.md
       - Kotlin Multiplatform: guides/multiplatform.md
-      - Utilities: guides/utilities.md
   - Compose:
       - Screens: compose/screens.md
       - Navigation: compose/navigation.md
       - Back handling: compose/back-handling.md
       - Dialogs: compose/dialogs.md
-      - Saving state: compose/save-state.md
       - Permissions: compose/permissions.md
-      - Utilities: compose/utilities.md
-  - Android Views:
-      - Overview: android-view/index.md
-      - Fragments and Activities: android-view/screens.md
-      - Navigation and back handling: android-view/navigation.md
-      - Dialogs: android-view/dialogs.md
-      - Lists: android-view/lists.md
-      - Permissions: android-view/permissions.md
-      - Utilities: android-view/utilities.md
   - Recommendations: recommendations.md
   - Contributing: contributing.md
 

@@ -48,11 +48,10 @@ NavHost(
 | Parameter              | Purpose                                                                                        |
 |------------------------|------------------------------------------------------------------------------------------------|
 | `screenContent`        | The screen content.                                                                            |
-| `viewModel`            | A lambda that creates the ViewModel. It is called once, when the screen is opened. See [Dependency injection](../guides/dependency-injection.md). |
+| `viewModel`            | A lambda that creates the ViewModel. It is called once, when the screen is opened, and receives the `EmaStateStore` of the screen for a [backup](../guides/saving-state.md). See [Dependency injection](../guides/dependency-injection.md). |
 | `onEvent`              | Receives every event. Put **navigation** here, where the `NavController` is available.         |
 | `routeId`              | The route. By default `ScreenContent::class.routeId`, which is unique per class.               |
 | `initializerSupport`   | How to read the [initializer](../guides/initializers.md) from the route. See [Navigation](navigation.md#passing-an-initializer). |
-| `saveStateManager`     | See [Saving state across process death](save-state.md).                                        |
 | `transitionAnimation`  | `EmaComposableTransitions(enterTransition, exitTransition, popEnterTransition, popExitTransition)`. The pop transitions default to the enter and exit ones. |
 | `fullScreenDialogMode` | Registers the destination as a `dialog` instead of a `composable`.                             |
 | `decoration`           | Wraps the screen, for example in a `Scaffold`. Receives the content and the action dispatcher. |
@@ -72,14 +71,15 @@ Then the event is consumed. A simple rule: navigation in the graph, everything e
 
 The screen connects the ViewModel to the lifecycle of its destination:
 
-| Lifecycle event                | ViewModel                       |
-|--------------------------------|---------------------------------|
-| `ON_CREATE`                    | `onCreated(initializer)`        |
-| `ON_START`                     | `onStartView()`                 |
-| `ON_RESUME`                    | `onResumeView()`                |
-| `ON_PAUSE`                     | `onPauseView()`                 |
-| `ON_STOP`                      | `onStopView()`                  |
-| The screen leaves the composition | `onPauseView()` and `onStopView()` |
+| Lifecycle event                   | The ViewModel receives                          |
+|-----------------------------------|-------------------------------------------------|
+| `ON_CREATE`, the first time       | The `EmaInitializer` of the screen              |
+| `ON_START`                        | `EmaLifecycle.Started`                          |
+| `ON_RESUME`                       | `EmaLifecycle.Resumed`                          |
+| `ON_PAUSE`                        | `EmaLifecycle.Paused`                           |
+| `ON_STOP`                         | `EmaLifecycle.Stopped`                          |
+| The screen leaves the composition | `EmaLifecycle.Paused` and `EmaLifecycle.Stopped` |
+| The destination is removed        | `EmaLifecycle.Destroyed`, and it is closed      |
 
 The state is collected with `collectAsStateWithLifecycle` and the events while the lifecycle is `STARTED`.
 
@@ -101,8 +101,7 @@ private fun NormalPreview() {
 ```
 
 `previewRenderState` in `createComposableScreen` does the same for the whole screen: in a preview, the ViewModel is not
-created and the screen draws that state. `EmaUtils.Preview.Compose.isInPreview()` and `skipForPreview { }` help you skip
-code that cannot run in a preview. See [Utilities](utilities.md#previews).
+created and the screen draws that state.
 
 ## Using a screen without a navigation graph
 
@@ -116,8 +115,7 @@ EmaComposableScreen(
 )
 ```
 
-It accepts the `initializer`, a `saveStateSupport` (see [Saving state](save-state.md#without-a-navigation-graph)) and
-a `previewRenderState`. Another overload receives a ViewModel instance and its action dispatcher, for ViewModels
+It accepts the `initializer` and a `previewRenderState`. Another overload receives a ViewModel instance and its action dispatcher, for ViewModels
 created and kept by you.
 
 ## Theme

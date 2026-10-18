@@ -7,7 +7,7 @@ None of this is required by Emanate, but it is how the `sample/` app is organise
 | Module          | Contains                                                                                | Type            | Depends on                                                                 |
 |-----------------|-----------------------------------------------------------------------------------------|-----------------|----------------------------------------------------------------------------|
 | `app`           | The `Application`, the dependency injection setup and the manifest.                     | Android app     | Everything                                                                 |
-| `ui`            | Composables, fragments, activities, navigators, adapters, dialogs, theme and resources. | Android library | `presentation`, `android-utils`, `emanate-compose`, `emanate-android-view` |
+| `ui`            | Screen contents, navigators, dialogs, theme and resources.                              | Android library | `presentation`, `android-utils`, `emanate-compose`                         |
 | `presentation`  | State, actions, events, initializers and ViewModels.                                    | **Pure Kotlin** | `domain`                                                                   |
 | `domain`        | Models, use cases and repository interfaces.                                            | **Pure Kotlin** | `emanate-core`                                                             |
 | `data`          | Repository implementations, network and storage.                                        | Android library | `domain`, `android-utils`                                                  |
@@ -26,7 +26,7 @@ flowchart LR
 
 The diagram leaves out `android-utils`, which `ui` and `data` use.
 
-Keeping `presentation` free of Android has two benefits:
+Keeping `presentation` free of platform code has two benefits:
 
 - **The compiler enforces the architecture.** A ViewModel cannot use `Context`, resources or views by mistake, because the module
   does not have them.
@@ -38,13 +38,13 @@ Keeping `presentation` free of Android has two benefits:
 Each screen is a package in `presentation` and another one in `ui`, with the same name:
 
 ```
-presentation/…/presentation/login/        ui/…/ui/login/
-├── LoginState.kt                          ├── LoginScreenContent.kt (or LoginFragment.kt)
-├── LoginAction.kt                         └── LoginNavigator.kt
-├── LoginEvent.kt
-├── LoginOverlap.kt
-├── LoginViewModel.kt
-└── LoginInitializer.kt   (only if the screen receives data)
+presentation/…/presentation/home/         ui/…/ui/home/
+├── HomeState.kt                           ├── HomeScreenContent.kt
+├── HomeAction.kt                          └── HomeNavigator.kt
+├── HomeEvent.kt
+├── HomeDialog.kt
+├── HomeViewModel.kt
+└── HomeInitializer.kt   (only if the screen receives data)
 ```
 
 ## Naming
@@ -53,12 +53,12 @@ presentation/…/presentation/login/        ui/…/ui/login/
 |------------------|-----------------------------------------|----------------------------------|
 | State            | `<Screen>State`                         | `HomeState`                      |
 | Default state    | `companion object { val DEFAULT }`      | `HomeState.DEFAULT`              |
-| Action           | `<Screen>Action`, named after what the user did | `UserNameWritten`, `ProfileClicked` |
-| Event            | `<Screen>Event`, named after what happened | `LoginSuccess`, `OnBoardingCancelled` |
-| ViewModel        | `<Screen>ViewModel`                     | `LoginViewModel`                 |
-| Dialogs in state | `<Screen>Overlap`                       | `LoginOverlap.ErrorBadCredentials` |
-| Handlers in the ViewModel | `onAction<What>`               | `onActionLogin()`                |
-| Compose content  | `<Screen>ScreenContent`                 | `ProfileCreationScreenContent`   |
+| Action           | `<Screen>Action`, named after what the user did | `QueryWritten`, `FriendClicked` |
+| Event            | `<Screen>Event`, named after what happened | `FriendSelected`, `OnBoardingCancelled` |
+| ViewModel        | `<Screen>ViewModel`                     | `HomeViewModel`                  |
+| Dialogs in state | `<Screen>Dialog`                        | `HomeDialog.LoadError`           |
+| Results of side effects | `<Screen>Action.Effect<What>Result` | `HomeAction.EffectQueryResult.Loaded` |
+| Compose content  | `<Screen>ScreenContent`                 | `HomeScreenContent`             |
 | Initializer      | `<Screen>Initializer`                   | `HomeInitializer.HomeUser`       |
 
 ## Create base classes
@@ -86,25 +86,21 @@ abstract class BaseViewModel<S : EmaState, A : EmaAction, E : EmaEvent>(initialD
     EmaViewModel<S, A, E>(initialDataState)
 ```
 
-An (even empty) `BaseViewModel` gives you a single place to add something later. With Android Views, a `BaseFragment`
-plays the same role as `BaseScreenComposable`, with the dialog providers and the messages.
+An (even empty) `BaseViewModel` gives you a single place to add something later. For behaviour that only some screens
+need, prefer a [plugin](concepts/source.md#plugins) or an extension function of the setup to a deeper hierarchy.
 
 ## Keep the ViewModel clean
 
-- No `Context`, `View` or Android resources. Use [`EmaText`](guides/utilities.md#ematext-strings-the-viewmodel-can-hold) for strings.
+- No platform types, like a context, a view or resources. Use [`EmaText`](guides/use-cases.md#ematext-texts-in-the-state) for strings.
 - Repositories are only used from use cases, never from a ViewModel directly.
 - Use cases have one job and take a single `Input` data class.
 - Put derived values in the state (`val showCreateButton get() = ...`), not in the view.
 - The view does not call ViewModel functions other than `dispatch`.
-- In an `EmaViewModel`, the reducers only compute the state: the business logic goes in the side effects.
-
-## Share one palette
-
-While an app has screens in Compose and in Views, define the colours once in resources and read them from both themes.
-The sample's `EmaSampleTheme` builds its Compose `ColorScheme` from the same `palette_*` resources as the XML theme,
-including the dark variant in `values-night`.
+- The reducers only compute the state: the business logic goes in the side effects.
+- Receive in the constructor the pieces that change between environments, like the side effects that call the
+  backend, so they can be [mocked without touching the screen](guides/environments.md).
 
 ## Strings
 
 Provide the default language in `values/` and translations in `values-xx/`. Keep every screen's strings together
-and prefix them with the screen: `login_title`, `home_empty_message`.
+and prefix them with the screen: `home_title`, `home_empty_message`.

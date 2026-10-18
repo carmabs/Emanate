@@ -1,16 +1,17 @@
 # Results between screens
 
-Sometimes a screen needs to tell the previous one something: "I created this user". The result is broadcast as an
-action, with every [ViewModel](../concepts/viewmodel.md): `EmaViewModel` and the classic ones share the same broadcaster,
-so a classic ViewModel can receive what an `EmaViewModel` broadcasts, and the other way round.
+Sometimes a screen needs to tell the previous one something: "I created this user". In Emanate a result is just an
+**action** broadcast to the ViewModels that listen to its type. There are no fragment result APIs, no shared ViewModels
+and no casts: the result is a typed data class, and the receiver handles it with its own reducers and side effects.
 
-## With EmaViewModel: broadcast actions
+## Broadcast actions
 
 A result is an **action**, and its type is the id of the broadcast. The sender broadcasts it from a side effect, and
 every ViewModel listening to that type receives it as one more action of its source: it goes through its middlewares,
 reducers and side effects of that type.
 
 ```mermaid
+%%{init: {"theme": "base", "themeVariables": {"actorBkg": "#4F86F7", "actorBorder": "#2447C9", "actorTextColor": "#ffffff", "noteBkgColor": "#EEF4FB", "noteBorderColor": "#B4CCE4", "signalColor": "#7a8aa0", "signalTextColor": "#232f3e", "fontFamily": "Inter, Roboto, sans-serif"}}}%%
 sequenceDiagram
     participant P as ProfileCreationViewModel
     participant H as HomeViewModel
@@ -31,7 +32,7 @@ sealed interface ProfileCreationBroadcast : EmaAction {
 }
 ```
 
-### Send
+## Send
 
 Broadcast it with `broadcast`, available in every side effect. It accepts any action:
 
@@ -45,7 +46,7 @@ sideEffects {
 }
 ```
 
-### Receive
+## Receive
 
 Listen to its type in the `broadcasts` block of `setup` and handle it like any other action:
 
@@ -68,26 +69,26 @@ override fun setup() = source {
 }
 ```
 
-### Rules
+## Rules
 
 - **Delivery is immediate**, to every ViewModel listening to the type at that moment. The ViewModels of the previous
   screens are alive in the back stack, so they receive it. If nobody is listening, the action is lost, unless it is
   kept.
 - **Any number of receivers.** Every ViewModel that listens to the type receives the action.
-- **The listener is removed when the ViewModel is cleared**, together with the rest of its work.
+- **The listener is removed when the ViewModel is closed**, together with the rest of its work.
 - **It is typed.** The result is a data class, with no casts.
 - **It lives in memory.** It is not saved if the process is killed.
 - **It goes through the broadcaster of the configuration.** By default every ViewModel uses the same one. The ones
   whose configuration has its own broadcaster only send and receive actions between them, for example the ones of a
   [library](configuration.md#libraries-and-sdks).
 
-### Keep it until it is received
+## Keep it until it is received
 
 With `keepUntilReceived = true`, an action that nobody is listening to is kept and delivered to the **first** ViewModel
 that listens to its type. Only the last one of each class is kept. If someone is listening, it is delivered at the
 moment, as always.
 
-It covers the screen that is not created yet: after the process is killed, Android restores the current screen, but
+It covers the screen that is not created yet: after the process is killed, the system restores the current screen, but
 the ViewModel of the previous one is created only when the user goes back to it. Without keeping the result, it would
 be lost. It doesn't cover a process killed after the result is broadcast: it is kept in memory too.
 
@@ -96,39 +97,3 @@ received. Each `testConfiguration` has its own broadcaster, so its kept actions 
 
 > If the receiver shows something, post an event: it waits until the view consumes it, so it is shown when the
 > screen is visible again.
-
-## With the classic ViewModels
-
-The classic ViewModels broadcast and receive the same actions, with two functions.
-
-### Send
-
-Call `broadcast` with the action:
-
-```kotlin
-private fun onActionDialogConfirmClicked() {
-    hideOverlap()
-    val user = User(state.name, state.surname, state.role)
-    broadcast(ProfileCreationBroadcast.UserCreated(user), keepUntilReceived = true)
-    postEvent(ProfileCreationEvent.DialogConfirmationAccepted)
-}
-```
-
-### Receive
-
-Register a listener of its type in `onBroadcastListenerSetup`. It is removed when the ViewModel is cleared:
-
-```kotlin
-override fun onBroadcastListenerSetup() {
-    registerBroadcastListener<ProfileCreationBroadcast.UserCreated> { action ->
-        updateState { copy(userList = userList + action.user) }
-        // Passes it along to the login screen
-        broadcast(HomeBroadcast.UserAdded(action.user), keepUntilReceived = true)
-    }
-}
-```
-
-The rules are the [same](#rules). The listener runs in the scope of the ViewModel.
-
-> If the receiver reacts by showing something, store the result and post an event from `onViewResumed`, as
-> `LoginActionViewModel` does, instead of acting from the listener: the view may not be ready yet.

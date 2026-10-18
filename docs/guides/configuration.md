@@ -29,10 +29,10 @@ Each property configures one thing:
 | `dispatchers`        | `EmaDispatchers()`             | `main` is `Dispatchers.Main.immediate`        | Where ViewModels, use cases and CPU-intensive work run. See [Dispatchers](#dispatchers). |
 | `errorPolicy`        | `EmaErrorPolicy.Catch()`       | `Throw` in debug, `Catch()` in release        | What happens when a middleware, reducer or side effect throws an exception. See [Errors](async-and-errors.md#errors). |
 | `logger`             | `EmaLogger.Println`            | `EmaLogger.Logcat` in debug, `null` in release | Where the logs of Emanate go. See [Logs](#logs). |
-| `printer`            | `EmaDataClassPrinter.ToString` | Prints every field, indented                  | How objects are printed in the logs and by `toStringPretty()`. |
-| `destroyedTimeout`   | 5 seconds                      | 5 seconds                                     | How long the side effects of `Lifecycle.Destroyed` can run after the ViewModel is cleared, unless they have their own `timeout`. |
+| `printer`            | `EmaDataClassPrinter.ToString` | Prints every field, indented                  | How the states and actions are printed in the logs. |
+| `closeTimeout`       | 5 seconds                      | 5 seconds                                     | How long the `onClose` blocks and the side effects that survive close can run after the ViewModel is closed. |
 | `sideEffectListener` | `null`                         | `null`                                        | Receives the result of every side effect, to track or measure them. |
-| `methodNameResolver` | Generic names                  | Resolved from the lambdas                     | The name of the function that launched a side effect, reported in the errors. See [Naming the side effects](#naming-the-side-effects). |
+| `methodNameResolver` | Generic names                  | Resolved from the lambdas                     | The name reported in the errors and in the `sideEffectListener` for each side effect. |
 | `broadcaster`        | `EmaActionBroadcaster.Shared`  | `EmaActionBroadcaster.Shared`                 | Sends the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
 
 `EmaConfiguration.Android(debug)` is in `emanate-android` (`com.carmabs.emanate.android.configuration.Android`). Pass
@@ -56,7 +56,7 @@ Emanate.init(
 | Dispatcher | Default                                                   | Used by                                                               |
 |------------|-----------------------------------------------------------|-----------------------------------------------------------------------|
 | `main`     | `Dispatchers.Main`                                        | ViewModels and sources, by default.                                   |
-| `io`       | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | [Use cases](utilities.md#use-cases): network, disk and blocking work. |
+| `io`       | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | [Use cases](use-cases.md): network, disk and blocking work. |
 | `default`  | `Dispatchers.Default`                                     | CPU-intensive work, such as processing images in `emanate-android`.   |
 
 `EmaConfiguration.Android(debug)` uses `Dispatchers.Main.immediate` as `main`, as the `viewModelScope` of Android does: the
@@ -70,23 +70,9 @@ val android = EmaConfiguration.Android(debug = BuildConfig.DEBUG)
 Emanate.init(android.copy(dispatchers = android.dispatchers.copy(io = myIoDispatcher)))
 ```
 
-## Naming the side effects
+## Printing the state
 
-Every `sideEffect` reports the name of the function that launched it, which is useful for logging errors.
-
-- `EmaConfiguration.Android(debug)` reads it from the class the compiler generates for the lambda, so a `sideEffect` in
-  `doLogin()` is reported as `doLogin`.
-- On other platforms the name is generic. Pass `logName` to set it yourself, on any platform:
-
-```kotlin
-sideEffect(logName = "login") { loginUseCase(input) }
-```
-
-To decide the name differently, implement `EmaMethodNameResolver` and set it in `EmaConfiguration.methodNameResolver`.
-
-## Printing objects
-
-`toStringPretty()` prints any object with the `printer` of the configuration. `EmaConfiguration.Android(debug)` uses
+The logs print each state with the `printer` of the configuration. `EmaConfiguration.Android(debug)` uses
 `EmaAndroidDataClassPrinter`, which prints the fields, nested objects, collections and maps with indentation.
 Implement `EmaDataClassPrinter` to print them your own way.
 
@@ -116,27 +102,25 @@ Emanate.init(
 )
 ```
 
-A ViewModel can still pass its own `logger` in the constructor, or `null` to disable only its logs. A source used on
-its own doesn't log: add `loggerMiddleware(tag, logger)` as its last middleware.
+To disable the logs of a single ViewModel, pass it a configuration without logger:
+`Emanate.configuration.copy(logger = null)`. A source used on its own doesn't log: add `loggerMiddleware(tag, logger)` as its last middleware.
 
 ## Explicit configuration
 
-`Emanate.configuration` is shared by the whole process. `EmaViewModel`, `EmaViewModelClassic`, `EmaViewModelAction` and
-`EmaSource(...)` read it when they are created, as the default value of their `configuration` parameter, which goes
+`Emanate.configuration` is shared by the whole process. `EmaViewModel` and `EmaSource(...)` read it when they are created, as the default value of their `configuration` parameter, which goes
 right after the initial state. Pass one to use it instead:
 
 ```kotlin
-class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
     configuration: EmaConfiguration = Emanate.configuration
-) : EmaViewModel<LoginState, LoginAction, LoginEvent>(LoginState.DEFAULT, configuration) {
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState(), configuration) {
     // ...
 }
 ```
 
-The `dispatcher` and `logger` parameters take their default value from it, and can still be passed by name to change
-only them. The configuration is kept by the ViewModel and its source, so its error policy, side effect listener,
-`destroyedTimeout` and broadcaster are the ones of the configuration they received.
+The ViewModel runs on its `main` dispatcher and logs with its `logger`. The configuration is kept by the ViewModel and its source, so its error policy, side effect listener,
+`closeTimeout` and broadcaster are the ones of the configuration they received.
 
 **Use `Emanate.init`** in an application: it configures every ViewModel in one place, and they don't need any
 parameter. **Pass the configuration** when the one of the application isn't enough or can't be relied on:
@@ -150,9 +134,8 @@ parameter. **Pass the configuration** when the one of the application isn't enou
 - **Tests.** Each test passes its configuration, with the dispatchers of the test, without changing the one of Emanate,
   so the tests can run in parallel. See [Testing](testing.md#without-changing-the-configuration-of-emanate).
 
-The [use cases](utilities.md#use-cases) don't receive the whole configuration, only a dispatcher in the constructor:
-by default the `io` dispatcher of the configuration of Emanate, so pass the `io` dispatcher of yours. `toStringPretty()`
-prints with the `printer` of the configuration of Emanate unless it receives another one.
+The [use cases](use-cases.md) don't receive the whole configuration, only a dispatcher in the constructor:
+by default the `io` dispatcher of the configuration of Emanate, so pass the `io` dispatcher of yours.
 
 ## Libraries and SDKs
 
@@ -181,7 +164,6 @@ internal class PaymentViewModel(private val payUseCase: PayUseCase) :
 
 - **ViewModels and sources** receive the configuration of the library as their `configuration` parameter.
 - **Use cases** receive its `io` dispatcher.
-- **Printing objects:** `toStringPretty(MyLibraryEmanate.configuration.printer)`.
 - **Broadcast actions.** With its own `EmaActionBroadcaster`, the ViewModels of the library only receive the actions
   broadcast by each other, and the ones of the application don't receive theirs. Keep the shared one,
   `EmaActionBroadcaster.Shared`, if the library and the application send results to each other.

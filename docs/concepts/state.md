@@ -3,26 +3,14 @@
 The state is an immutable `data class` with **everything the screen needs to draw itself**.
 
 ```kotlin
-data class LoginState(
-    val userName: String,
-    val userPassword: String,
-    val isLoading: Boolean,
-    val userNameError: Boolean,
-    val passwordError: Boolean,
-    val overlap: LoginOverlap?
-) : EmaState {
-
-    companion object {
-        val DEFAULT = LoginState(
-            userName = STRING_EMPTY,
-            userPassword = STRING_EMPTY,
-            isLoading = false,
-            userNameError = false,
-            passwordError = false,
-            overlap = null
-        )
-    }
-}
+data class HomeState(
+    val user: User? = null,
+    val query: String = STRING_EMPTY,
+    val friends: List<User> = emptyList(),
+    val isLoading: Boolean = false,
+    val queryTooShort: Boolean = false,
+    val dialog: HomeDialog? = null
+) : EmaState
 ```
 
 ## Rules
@@ -30,76 +18,89 @@ data class LoginState(
 - **Make it a `data class`.** `copy` is how the next state is created, and its `equals` lets the view skip
   states that did not change. Use `EmaState.EMPTY` for screens with no state.
 - **Make it immutable.** Use `val` and read-only collections. Change it with `copy`.
-- **Give it a `DEFAULT`.** It becomes the initial state and is handy for previews and tests.
+- **Give it default values** (or a `DEFAULT` instance). They become the initial state and are handy for previews and
+  tests.
 - **Add derived properties instead of duplicating data.** They keep the view free of logic:
 
 ```kotlin
 data class HomeState(
-    val userData: UserData?,
-    val userList: List<User>
+    val user: User? = null,
+    val friends: List<User> = emptyList(),
+    // ...
 ) : EmaState {
 
-    val showCreateButton get() = userData?.role == Role.ADMIN
-    val showEmptyList get() = userData != null && userList.isEmpty()
+    val showCreateButton get() = user?.role == Role.ADMIN
+    val showEmptyList get() = user != null && friends.isEmpty()
 }
 ```
 
 ## Changing the state
 
-Inside a ViewModel use `updateState`, which receives the current state as `this`:
+The state only changes in the [reducers](source.md#reducers) of the ViewModel, which return the next state with `copy`:
 
 ```kotlin
-updateState { copy(isLoading = true) }
+reducers {
+    add<HomeAction> { action ->
+        when (action) {
+            is HomeAction.QueryWritten -> state.copy(query = action.query, queryTooShort = false)
+            // ...
+        }
+    }
+}
 ```
 
-Read the current value with the protected `state` property:
+The middlewares and side effects can read the current value with `state`, but never change it:
 
 ```kotlin
-if (state.isLoading) return
+sideEffects {
+    add<HomeAction.RefreshRequested> {
+        if (state.isLoading) return@add
+        // ...
+    }
+}
 ```
 
-The state is exposed as `stateFlow: StateFlow<S>`. Because it is a `StateFlow`,
-equal consecutive states are not delivered twice and slow collectors only see the latest value.
+The state is exposed as `stateFlow: StateFlow<S>`. Because it is a `StateFlow`, equal consecutive states are not
+delivered twice and slow collectors only see the latest value.
 
 ## Modelling dialogs, loading and errors
 
 Emanate does not have special "loading" or "error" states. They are ordinary fields of your state, so they survive
-a rotation and are easy to test.
+a configuration change and are easy to test.
 
 **A dialog**: a nullable sealed type. `null` means no dialog.
 
 ```kotlin
-sealed interface LoginOverlap {
-    data object ErrorBadCredentials : LoginOverlap
+sealed interface HomeDialog {
+    data object LoadError : HomeDialog
 }
 
-// ViewModel
-updateState { copy(overlap = LoginOverlap.ErrorBadCredentials) }  // show
-updateState { copy(overlap = null) }                              // hide
+// Reducers
+is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // show
+is HomeAction.ErrorAccepted -> state.copy(dialog = null)                                    // hide
 ```
 
-**Loading**: a boolean.
+**Loading**: a boolean, set by the action that starts the work and cleared by the one that reports its result.
 
 ```kotlin
-updateState { copy(isLoading = true) }
+is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
+is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
 ```
 
 **Field errors**: one boolean (or a message) per field. Clear it when the user edits the field:
 
 ```kotlin
-private fun onActionUserWrite(user: String) {
-    updateState { copy(userName = user, userNameError = false) }
-}
+is HomeAction.QueryWritten -> state.copy(query = action.query, queryTooShort = false)
 ```
 
 ## Rendering the state
 
-In Compose you simply draw the state: recomposition does the diffing. See [Compose screens](../compose/screens.md).
-With Android Views, `bindForUpdate` runs each piece of UI code only when its field changed: see
-[Android Views](../android-view/screens.md#rendering-with-bindforupdate).
+The view simply draws the state it receives. With Compose, recomposition does the diffing. See
+[Compose screens](../compose/screens.md).
 
 ## What does *not* belong in the state
 
-- One-shot things: snackbars, toasts, navigation. Use [events](events.md).
-- Android types (`Context`, `View`, `Bitmap`...). Use `EmaText` for strings with resources, see [Utilities](../guides/utilities.md).
+- One-shot things: messages, navigation. Use [events](events.md).
+- Platform types, like a context, a view or an image of the platform. Use `EmaText` for texts with resources, see
+  [Use cases and results](../guides/use-cases.md#ematext-texts-in-the-state).
 - Mutable collections or objects that change without you calling `copy`.

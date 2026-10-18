@@ -1,74 +1,68 @@
 # Async work and errors
 
-In an `EmaViewModel`, suspending work runs in the side effects declared in `setup`: they are launched by the actions
-of their type and report their result dispatching actions, as explained in [Source](../concepts/source.md). They
-follow the same configuration as the `sideEffect` of the classic ViewModels described here: the default actions, the
-exception policy and the use cases running on the background dispatcher.
-
-In a classic ViewModel, run suspending work with `sideEffect`:
+In an `EmaViewModel`, suspending work runs in the **side effects** declared in `setup`. They are launched by the actions
+of their type, after their reducers, and they report the result by dispatching actions or posting events:
 
 ```kotlin
-private fun doLogin() {
-    sideEffect {
-        updateState { copy(isLoading = true) }
-        val result = loginUseCase(LoginUseCase.Input(state.userName, state.userPassword))
-        updateState { copy(isLoading = false) }
-        result
-            .onSuccess { user ->
-                postEvent(LoginEvent.Message(user.name))
-                postEvent(LoginEvent.LoginSuccess(user))
-            }
-            .onFailure {
-                updateState { copy(overlap = LoginOverlap.ErrorBadCredentials) }
-            }
+sideEffects {
+    add<HomeAction.RefreshRequested>(concurrency = SideEffectConcurrency.Leading, timeout = 30.seconds) {
+        dispatch(HomeAction.EffectQueryResult.Started)
+        getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
     }
 }
 ```
 
-`sideEffect` launches a coroutine in the ViewModel `scope`, so it is cancelled automatically when the ViewModel is cleared.
-By default the block runs on the main dispatcher of the scope; **use cases switch to the background dispatcher of the
-[configuration](configuration.md) themselves** (`Dispatchers.IO` on Android), so you do not need to.
-Pass `dispatcher` to run the block somewhere else.
+- The side effect runs on the main dispatcher of the ViewModel, and the [use cases](use-cases.md) switch to the
+  background dispatcher themselves.
+- It is cancelled when the ViewModel is closed, unless it is added with `survivesClose = true`.
+- Cancellation is not an error: a side effect cancelled by its concurrency, its timeout or the closing of the
+  ViewModel is not reported.
 
-## Reacting to the outcome
+The whole API of the side effects is in [Source](../concepts/source.md#side-effects).
 
-`sideEffect` returns a handler where you can chain callbacks:
+## Concurrency, timeouts and debounce
 
-```kotlin
-sideEffect { repository.load() }
-    .onSuccess { data -> updateState { copy(data = data) } }
-    .onError { error -> postEvent(MyEvent.LoadFailed) }
-    .onFinish { updateState { copy(isLoading = false) } }
-```
-
-`onFinish` runs whether the work succeeded or failed. The handler also exposes the `job`.
-
-Cancellation is not an error: when the ViewModel is cleared, or `singleSideEffect` replaces the work, the coroutine is
-cancelled and `onError` is not called.
-
-## Cancelling the previous work
-
-`singleSideEffect(id)` cancels the previous work launched with the same id. Use it for searches or any action that is
-repeated quickly:
+| Need                                             | How                                                                  |
+|--------------------------------------------------|----------------------------------------------------------------------|
+| Ignore a second tap while the work is running    | `add<A>(concurrency = SideEffectConcurrency.Leading)`                |
+| Cancel the previous work when a new action comes | `add<A>(concurrency = SideEffectConcurrency.Latest)`                 |
+| Run every action in parallel                     | `SideEffectConcurrency.Every`, the default                           |
+| Give up after some time                          | `add<A>(timeout = 10.seconds, onTimeout = { dispatch(TimedOut) })`   |
+| Debounce a field                                 | A middleware with `nextAfter(id = "search") { delay(300) }`          |
 
 ```kotlin
-singleSideEffect("search") {
-    delay(300)
-    updateState { copy(results = searchUseCase(query)) }
+middlewares {
+    add<HomeAction.QueryWritten> { action ->
+        nextAfter(id = "search") {
+            delay(300)
+            if (action.query.isBlank()) stop()
+        }
+    }
+}
+sideEffects {
+    add<HomeAction.QueryWritten>(concurrency = SideEffectConcurrency.Latest) { action ->
+        dispatch(HomeAction.RefreshRequested)
+    }
 }
 ```
 
 ## Errors
 
-The `errorPolicy` of the [configuration](configuration.md) decides what happens when a side effect throws an
-exception, and also a middleware or a reducer of an `EmaViewModel` or an `EmaSource`. With `Catch`, the action of a
-middleware or a reducer that fails is discarded, without changing the state, and the next actions are processed as
-usual:
+For the errors you expect, **return a result instead of throwing**: an [`EmaResult`](use-cases.md#emaresult) makes
+the failure part of the contract, and the side effect turns it into an action that the reducers show.
+
+For the unexpected ones, the `errorPolicy` of the [configuration](configuration.md) decides what happens when a
+middleware, a reducer or a side effect throws an exception:
 
 | `EmaErrorPolicy`  | Effect |
 |-------------------|--------|
 | `Catch(onError)`  | **Default, and in release builds with `EmaConfiguration.Android(debug)`.** The exception is caught and written to the `logger`, and the ViewModel keeps working. `onError` also receives each one. |
 | `Throw`           | The exception is thrown again and the app fails at once. **In debug builds with `EmaConfiguration.Android(debug)`.** |
+
+With `Catch`, the action of a middleware or a reducer that fails is discarded, without changing the state, and the next
+actions are processed as usual. A bug in one action doesn't break the screen.
 
 ```kotlin
 Emanate.init(
@@ -78,11 +72,12 @@ Emanate.init(
 )
 ```
 
-`onError` receives an `EmaError` with the exception and its `reflection`: the name of the ViewModel and of the function
-that launched the work. See [Naming the side effects](configuration.md#naming-the-side-effects).
+`onError` receives an `EmaError` with the exception and its `reflection`, which tells the ViewModel where it happened.
 
-To track every side effect, for example to measure them, set a `sideEffectListener`. Its `onSuccess` and `onFinish`
-are called when each one ends:
+## Measuring the side effects
+
+To track every side effect, for example to measure how long the business logic takes, set a `sideEffectListener`. Its
+`onSuccess` and `onFinish` are called when each one ends:
 
 ```kotlin
 EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
@@ -91,14 +86,3 @@ EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
     }
 )
 ```
-
-In the classic ViewModels it also applies to `onAction`, to the lifecycle hooks, like `onStateCreated` or
-`onViewResumed`, and to the listeners of `registerBroadcastListener`, which keep receiving after an error. `onAction`
-changes the state imperatively, so with `Catch` the changes made before the exception are kept. The view calls the
-public functions of an `EmaViewModelClassic` directly, so Emanate can't catch their exceptions: launch the work that
-may fail with `sideEffect`.
-
-`sideEffect(throwException = true) { }` rethrows the exceptions of a single side effect, whatever the policy.
-
-For recoverable errors, **return a result instead of throwing**. `EmaResult<T, E>` is like `kotlin.Result` but the failure
-can be any type: see [Utilities](utilities.md).

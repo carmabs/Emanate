@@ -1,17 +1,20 @@
 # Testing
 
-Because a ViewModel has no Android dependencies, you test it as plain Kotlin: no emulator, no Robolectric.
-If your ViewModels live in a multiplatform module, the same tests run on every target from `commonTest`.
-The whole state/event contract is observable:
+An `EmaViewModel` has no platform dependencies, so you test it as plain Kotlin, with no device and no emulator. And because
+every change goes through its source, a test can see **everything** the screen did, in order: each action, each state
+and each event.
 
-- `dispatch(action)` is the input.
-- `stateFlow.value` is the state.
-- `eventFlow` holds the pending events.
+| You control                                        | You check                                         |
+|----------------------------------------------------|---------------------------------------------------|
+| The actions, with `dispatch` and `onCreated`       | The states returned by the reducers, in order     |
+| The pieces it receives: fakes, mocks, delays       | The events posted, in order                       |
+| The time, with the virtual clock of `runTest`      | The actions, including the ones a middleware stopped |
 
 ## Testing an EmaViewModel with emanate-test
 
 `emanate-test` has the utilities to test the ViewModels built with `EmaViewModel` and the
-[sources](../concepts/source.md). It is a JVM library, so add it to the tests of a JVM or Android module:
+[sources](../concepts/source.md). Add it to the unit tests of the module of your ViewModels (for now it is published for
+the JVM test source sets):
 
 ```kotlin
 dependencies {
@@ -34,7 +37,7 @@ It brings `kotlinx-coroutines-test` and requires the same version of `emanate-co
 | `viewModel.assertSetup()`       | Fails if a middleware, reducer or side effect never runs, like the ones of a broadcast action that isn't listened to. See [Checking the setup](#checking-the-setup). |
 
 ```kotlin
-class LoginViewModelTest {
+class HomeViewModelTest {
 
     @BeforeTest
     fun setUp() {
@@ -47,17 +50,16 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `the right credentials log in the user`() = runTest {
-        val viewModel = LoginViewModel(LoginUseCase(FakeRepository()), LoginState.DEFAULT)
+    fun `a search shows the matching friends`() = runTest {
+        val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())
         val recorder = viewModel.record()
 
-        viewModel.dispatch(LoginAction.UserNameWritten("Admin"))
-        viewModel.dispatch(LoginAction.PasswordWritten("1234"))
-        viewModel.dispatch(LoginAction.Login)
+        viewModel.dispatch(HomeAction.QueryWritten("An"))
+        viewModel.dispatch(HomeAction.RefreshRequested)
         advanceUntilIdle()
 
-        recorder.assertState { !it.isLoading }
-        recorder.assertEvents(LoginEvent.Message("Carmabs"), LoginEvent.LoginSuccess(admin))
+        recorder.assertState { !it.isLoading && it.friends == listOf(ana) }
+        recorder.assertEvents(HomeEvent.FriendsUpdated(1))
     }
 }
 ```
@@ -68,31 +70,30 @@ class LoginViewModelTest {
 - **Record before the first action** to record everything.
 - **`advanceUntilIdle()`** runs the side effects, delays included, because `runTest` uses the scheduler of the test
   dispatcher.
-- **Several ViewModels** can be tested together, for example the results broadcast between screens: the
-  `LoginViewModelTest` of the sample creates the profile creation, home and login ViewModels and checks the user
-  created in the first one reaches the last one.
+- **Several ViewModels** can be tested together, for example the results broadcast between screens. See
+  [Lifecycle, initializers and results](#lifecycle-initializers-and-results).
 
 ### Without changing the configuration of Emanate
 
 `useTestDispatchers()` changes the configuration of Emanate and `Dispatchers.Main`, which are shared by the whole
-process, so the tests that use it can't run in parallel in the same JVM. If your ViewModels receive the configuration in
+process, so the tests that use it can't run in parallel in the same process. If your ViewModels receive the configuration in
 the constructor (see [Explicit configuration](configuration.md#explicit-configuration)), pass them
 `testConfiguration(dispatcher)` instead: it doesn't change anything shared, so there is nothing to reset.
 
 ```kotlin
-class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
-    initialState: LoginState,
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
+    initialState: HomeState,
     configuration: EmaConfiguration = Emanate.configuration
-) : EmaViewModel<LoginState, LoginAction, LoginEvent>(initialState, configuration)
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState, configuration)
 
-class LoginViewModelTest {
+class HomeViewModelTest {
 
     @Test
-    fun `the right credentials log in the user`() = runTest {
-        val viewModel = LoginViewModel(
-            LoginUseCase(FakeRepository()),
-            LoginState.DEFAULT,
+    fun `a search shows the matching friends`() = runTest {
+        val viewModel = HomeViewModel(
+            GetFriendsUseCase(FakeRepository()),
+            HomeState(),
             testConfiguration(UnconfinedTestDispatcher(testScheduler))
         )
         val recorder = viewModel.record()
@@ -105,7 +106,7 @@ class LoginViewModelTest {
   the ViewModel. `Dispatchers.Main` isn't replaced, so `runTest` doesn't take it from there.
 - The rest of the configuration is the default `EmaConfiguration()`, not the one of Emanate. Pass another one as the
   second parameter to change it: `testConfiguration(dispatcher, EmaConfiguration(logger = null))`.
-- The [use cases](utilities.md#use-cases) run on the `io` dispatcher of the configuration of Emanate unless they receive
+- The [use cases](use-cases.md) run on the `io` dispatcher of the configuration of Emanate unless they receive
   another one in the constructor: fake them, or pass them the dispatcher of the test.
 - **Each `testConfiguration` has its own broadcaster**, so the actions broadcast in a test don't reach the others. The
   ViewModels of a test that send results to each other must receive the same configuration: create it once.
@@ -134,76 +135,82 @@ source, add listen<UserCreated>() in the broadcasts block.
 Only the types that the ViewModel can't receive for sure are reported. An interface can be implemented by an action of
 the screen, so a piece for an interface that isn't related to the actions of the screen is not reported.
 
-## Testing the classic ViewModels
+## Swapping pieces in the tests
 
-Add `kotlinx-coroutines-test` to your test dependencies:
+A ViewModel that [receives its pieces](environments.md) is tested with the pieces the test needs: a mock that answers
+at once, one that fails, one that takes a while. No mocking library is needed, and the reducers and events under test
+are the ones of production.
 
 ```kotlin
-class CounterViewModelTest {
+@Test
+fun `a failed load shows the error dialog`() = runTest {
+    val viewModel = HomeViewModel(loadFriends = MockFriends(friends = null))
+    val recorder = viewModel.record()
 
-    private fun TestScope.createViewModel() =
-        CounterViewModel(UnconfinedTestDispatcher(testScheduler)).apply {
-            onCreated()
-        }
+    viewModel.dispatch(HomeAction.RefreshRequested)
+    advanceUntilIdle()
 
-    @Test
-    fun `increment action updates the state`() = runTest {
-        val viewModel = createViewModel()
+    recorder.assertState { it.dialog == HomeDialog.LoadError && !it.isLoading }
+    recorder.assertNoEvents()
+}
 
-        viewModel.dispatch(CounterAction.Increment)
+@Test
+fun `a second refresh while loading is ignored`() = runTest {
+    val viewModel = HomeViewModel(loadFriends = MockFriends(friends = listOf(ana), latency = 1.seconds))
+    val recorder = viewModel.record()
 
-        assertEquals(CounterState(count = 1), viewModel.stateFlow.value)
-    }
+    viewModel.dispatch(HomeAction.RefreshRequested)
+    viewModel.dispatch(HomeAction.RefreshRequested)
+    advanceUntilIdle()
 
-    @Test
-    fun `reaching the limit posts an event`() = runTest {
-        val viewModel = createViewModel()
-
-        repeat(10) { viewModel.dispatch(CounterAction.Increment) }
-
-        assertEquals(
-            listOf<CounterEvent>(CounterEvent.LimitReached(10)),
-            viewModel.eventFlow.first()
-        )
-    }
+    recorder.assertActions(
+        HomeAction.RefreshRequested, HomeAction.EffectQueryResult.Started, HomeAction.RefreshRequested, HomeAction.EffectQueryResult.Loaded(listOf(ana))
+    )
 }
 ```
 
-The tests of the library itself, in `emanate-core/src/commonTest`, have more examples: side effects, events,
-results between screens and the view lifecycle.
+### Time is virtual
 
-### Things to know
+The side effects and middlewares run on the dispatcher of the test, so their `delay`s use the virtual clock of
+`runTest`. A debounce, a timeout or a three-second request are tested in milliseconds, and `advanceTimeBy` checks the
+state at any point in between:
 
-1. **Pass your own dispatcher.** The `dispatcher` parameter of `EmaViewModelClassic` / `EmaViewModelAction` is the
-   `CoroutineDispatcher` where the ViewModel runs; it creates its own scope with it. Expose it in the constructor of
-   your ViewModels, with a default value, so tests can replace it. The default one is the `main` dispatcher of the
-   configuration, `Dispatchers.Main`, which does not exist in unit tests. With an `UnconfinedTestDispatcher` the work
-   runs immediately; with a `StandardTestDispatcher`, call `advanceUntilIdle()` to run it.
+```kotlin
+viewModel.dispatch(HomeAction.QueryWritten("an"))
+viewModel.dispatch(HomeAction.QueryWritten("ana"))
+advanceTimeBy(200.milliseconds)
+recorder.assertNoEvents()          // still debouncing
 
-   ```kotlin
-   class CounterViewModel(dispatcher: CoroutineDispatcher = Emanate.configuration.dispatchers.main) :
-       EmaViewModelAction<CounterState, CounterAction, CounterEvent>(CounterState(), dispatcher = dispatcher)
-   ```
+advanceUntilIdle()
+recorder.assertState { it.friends == listOf(ana) && it.query == "ana" }
+```
 
-   The second parameter is the [configuration](configuration.md#explicit-configuration), so pass the dispatcher by
-   name, or expose the whole configuration instead.
-2. **No configuration is needed.** If `Emanate.init` is not called, the default configuration is used. Do not call
-   `Emanate.init` in tests: it can be called only once per process.
-3. **Call `onCreated()`** to run `onStateCreated(initializer)`. Pass an initializer if the screen needs one:
-   `viewModel.onCreated(MyInitializer.Default("x"))`.
-4. **Fake the use cases.** They are ordinary classes: pass a fake implementation, or mock them with your mocking library.
-5. **Events are consumed by the view.** In a test, read them with `eventFlow.first()` and call `consumeEvent(event)`
-   to simulate the view having handled them.
-6. **Time.** `delay` inside a `sideEffect` is skipped by the test dispatcher, so debounces and timeouts run instantly.
+### Lifecycle, initializers and results
+
+The lifecycle, the initializer and the results of other screens are actions too, so a test sends them the same way as
+the screen does:
+
+```kotlin
+viewModel.onCreated(HomeInitializer.HomeUser(ana))   // EmaInitializer
+viewModel.onResumeView()                             // EmaLifecycle.Resumed
+```
+
+Several ViewModels can be tested together, for example to check a result broadcast between screens: create the
+profile and home ViewModels, add a friend in the first one and check that it reaches the list of the second one.
+
+To check what a ViewModel saves across process death, use `testStateStore()`. See
+[Saving state](saving-state.md#testing-it).
 
 ## What to test
 
 | Test                                                 | How                                                        |
 |------------------------------------------------------|------------------------------------------------------------|
-| An action changes the state                          | `dispatch`, then assert `stateFlow.value`.                 |
-| An action posts an event                             | `dispatch`, then assert `eventFlow.first()`.               |
-| A failure shows the right dialog / error             | Fake use case that fails, assert the field of the state.   |
+| An action changes the state                          | `dispatch`, then `assertStates` or `assertState`.          |
+| An action posts an event                             | `dispatch`, then `assertEvents`.                           |
+| A failure shows the right dialog / error             | Inject a mock that fails, assert the field of the state.   |
+| A slow response keeps the loading state              | Inject a mock with latency, `advanceTimeBy`, assert the state. |
 | The initializer is applied                           | `onCreated(initializer)`, assert the state.                |
+| Every piece can run                                  | `assertSetup()`.                                           |
 | The state's derived properties                       | Plain unit tests on the data class.                        |
 
 ## Testing screens

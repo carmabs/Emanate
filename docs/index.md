@@ -1,87 +1,111 @@
 # Emanate
 
-Emanate is a small library for building screens with a **unidirectional, MVI-style flow**.
-It gives you three simple building blocks and takes care of everything around them
-(lifecycle, coroutines, navigation, dialogs, process death...).
+**Emanate is a unidirectional architecture for Kotlin where every behaviour of a screen is a small piece you can
+swap, intercept, reuse and test on its own.**
+
+You describe a screen with three plain types (a **state**, the **actions** of the user and the one-shot **events**) and
+an `EmaViewModel` that handles each action with **middlewares**, **reducers** and **side effects**. Emanate takes care
+of everything around them: lifecycle, coroutines, concurrency, navigation, process death, logs and errors.
+
+![How an action flows through an Emanate screen](assets/flow.svg)
 
 | Building block | What it is                                                           | You write                                          |
 |----------------|----------------------------------------------------------------------|----------------------------------------------------|
-| **State**      | An immutable data class with everything the screen shows.            | `data class LoginState(...) : EmaState`            |
-| **Action**     | Something the user did.                                              | `sealed interface LoginAction : EmaAction`         |
-| **Event**      | Something that happened in the feature, delivered to the view once.  | `sealed interface LoginEvent : EmaEvent`           |
+| **State**      | An immutable data class with everything the screen shows.            | `data class HomeState(...) : EmaState`             |
+| **Action**     | Something the user did.                                              | `sealed interface HomeAction : EmaAction`          |
+| **Event**      | Something that happened in the feature, delivered to the view once.  | `sealed interface HomeEvent : EmaEvent`            |
 
-```mermaid
-sequenceDiagram
-    participant V as View
-    participant VM as ViewModel
-    participant N as Navigator
-    V->>VM: dispatch(action)
-    VM-->>V: new state (stateFlow)
-    VM-->>V: one-shot event (eventFlow)
-    V->>N: navigate(event)
+The view **renders** the state, **reports** what the user did with actions and **reacts** to events. It never holds
+business logic.
+
+## A screen in a few lines
+
+Each piece is declared for the type of action it handles. This home screen searches the friends of the user as they
+type:
+
+```kotlin
+class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
+    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+
+    override fun setup() = source {
+        middlewares {
+            // Debounce: only the last query typed in 300 ms continues
+            add<HomeAction.QueryWritten> { nextAfter(id = "search") { delay(300) } }
+        }
+        reducers {
+            // The next state for every action of the screen
+            add<HomeAction> { action ->
+                when (action) {
+                    is HomeAction.QueryWritten -> state.copy(query = action.query)
+                    is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
+                    is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    is HomeAction.FriendClicked -> state
+                }
+            }
+        }
+        sideEffects {
+            // Searches with the new query, cancelling the previous search if it is still running
+            add<HomeAction.QueryWritten>(concurrency = SideEffectConcurrency.Latest) {
+                dispatch(HomeAction.EffectQueryResult.Started)
+                getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+                    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+                    .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+            }
+            // Tells the view to open the profile
+            add<HomeAction.FriendClicked> { action -> postEvent(HomeEvent.FriendSelected(action.friend)) }
+        }
+    }
+}
 ```
 
-The view **renders** the state and **reacts** to events. It never decides business logic:
-it only reports what the user did through actions.
+- The **middleware** waits until the user stops typing before the query continues.
+- The **reducer** returns the next state for each action, so the view always draws a valid state.
+- The **side effects** run the business logic and report it with actions (`HomeAction.EffectQueryResult`) or events.
 
-## Why Emanate
+The same pieces can also be declared as properties of the ViewModel, with `middlewareOf`, `reducerOf` and
+`sideEffectOf`, and installed with `+`. Then each one can be reused, received in the constructor to
+[change it by environment](guides/environments.md), or tested on its own:
 
-- **One way to do things.** Every screen has the same shape, so a new teammate can read any feature.
-- **State is the single source of truth.** Loading, errors and dialogs are part of the state, so rotating the device or
-  recreating the view never loses them.
-- **Events are not state.** Toasts, snackbars and "go to the next screen" are delivered exactly once and never replayed.
-- **Predictable ViewModels.** `EmaViewModel` handles every action with pure reducers, middlewares and side effects,
-  so every screen follows the same flow and is easy to test.
-- **ViewModels in pure Kotlin.** `emanate-core` is a Kotlin Multiplatform library with no Android dependency, so the
-  presentation layer can be tested on the JVM and shared with other platforms.
-- **Small surface.** No code generation and no custom build plugins.
+```kotlin
+class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
+    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
 
-## Modules
+    private val searchDebounce = middlewareOf(HomeAction.QueryWritten::class) {
+        nextAfter(id = "search") { delay(300) }
+    }
 
-| Artifact               | Use it for                                                                                       |
-|------------------------|--------------------------------------------------------------------------------------------------|
-| `emanate-core`         | State, actions, events, ViewModels and use cases. Pure Kotlin Multiplatform.                     |
-| `emanate-android`      | Android integration shared by every UI: configuration, initializers, permissions, texts, images. |
-| `emanate-compose`      | Jetpack Compose screens, navigation and previews. **The recommended way to build the UI.**       |
-| `emanate-android-view` | Fragments, Activities, dialogs and lists for the Android View system.                            |
-| `emanate-test`         | Utilities to test the ViewModels and the sources on the JVM. See [Testing](guides/testing.md).   |
+    private val homeReducer = reducerOf(HomeAction::class) { action ->
+        when (action) {
+            is HomeAction.QueryWritten -> state.copy(query = action.query)
+            is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
+            is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
+            is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+            is HomeAction.FriendClicked -> state
+        }
+    }
 
-`emanate-android-view` exposes `emanate-android`, and both expose `emanate-core`. A Compose app adds `emanate-android` and `emanate-compose`.
+    private val searchFriends = sideEffectOf(HomeAction.QueryWritten::class, SideEffectConcurrency.Latest) {
+        dispatch(HomeAction.EffectQueryResult.Started)
+        getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+    }
 
-> **Compose first.** New screens should be written with Compose. The View system support lives in its own module,
-> `emanate-android-view`, and will be deprecated in favour of Compose in the future.
+    private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
+        postEvent(HomeEvent.FriendSelected(action.friend))
+    }
 
-## Where to go next
+    override fun setup() = source {
+        middlewares { +searchDebounce }
+        reducers { +homeReducer }
+        sideEffects {
+            +searchFriends
+            +openFriend
+        }
+    }
+}
+```
 
-1. **[Getting started](getting-started.md)**: install the library and build your first screen.
-2. **Concepts**: how the pieces fit together.
-    - [Architecture](concepts/architecture.md)
-    - [State](concepts/state.md)
-    - [Actions](concepts/actions.md)
-    - [Events](concepts/events.md)
-    - [ViewModel](concepts/viewmodel.md)
-    - [Source](concepts/source.md)
-3. **Guides**: everything that does not depend on the UI technology.
-    - [Configuration](guides/configuration.md)
-    - [Initializers: passing data to a screen](guides/initializers.md)
-    - [Results between screens](guides/results-between-screens.md)
-    - [Async work and errors](guides/async-and-errors.md)
-    - [Dependency injection](guides/dependency-injection.md)
-    - [Permissions](guides/permissions.md)
-    - [Testing](guides/testing.md)
-    - [Kotlin Multiplatform](guides/multiplatform.md)
-    - [Utilities](guides/utilities.md)
-4. **Compose**
-    - [Screens](compose/screens.md)
-    - [Navigation](compose/navigation.md)
-    - [Back handling](compose/back-handling.md)
-    - [Dialogs](compose/dialogs.md)
-    - [Saving state across process death](compose/save-state.md)
-    - [Permissions](compose/permissions.md)
-    - [Utilities](compose/utilities.md)
-5. **[Android Views](android-view/index.md)** (`emanate-android-view`)
-6. [Recommendations](recommendations.md): project structure and naming conventions.
-7. [Contributing](contributing.md): building, testing and formatting the library.
-
-> **Note:** the code in this guide comes from the `sample/` app of this repository, which you can run
-> to see everything working together.
+Start with [Getting started](getting-started.md), or see what these pieces make possible in
+[Why Emanate](why-emanate.md).

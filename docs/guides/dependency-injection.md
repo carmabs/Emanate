@@ -4,15 +4,11 @@ Emanate does not depend on any dependency injection framework. Wherever it needs
 function, so you can use Koin, Hilt, Kodein, a manual container or plain constructors.
 
 ```kotlin
-// Compose
 createComposableScreen(
-    screenContent = LoginScreenContent(),
-    viewModel = { LoginViewModel(loginUseCase, LoginState.DEFAULT) },
+    screenContent = HomeScreenContent(),
+    viewModel = { HomeViewModel(getFriendsUseCase, HomeState()) },
     onEvent = { /* ... */ }
 )
-
-// Android Views
-override fun provideViewModel(store: EmaStateStore): LoginViewModel = LoginViewModel(loginUseCase, LoginState.DEFAULT)
 ```
 
 ## One ViewModel per screen
@@ -45,61 +41,55 @@ keeps the default state in one place:
 
 ```kotlin
 val uiModule = module {
-    factoryOf(::LoginViewModel)
     factoryOf(::HomeViewModel)
+    factoryOf(::ProfileViewModel)
 
-    factory { LoginState.DEFAULT }
-    factory { HomeState.DEFAULT }
+    factory { HomeState() }
+    factory { ProfileState() }
 }
 ```
 
 ```kotlin
-// Compose
 createComposableScreen(
-    screenContent = ProfileCreationScreenContent(),
-    viewModel = { get<ProfileCreationViewModel>() },
+    screenContent = HomeScreenContent(),
+    viewModel = { get<HomeViewModel>() },
     onEvent = { /* ... */ }
 )
-
-// Android Views
-override fun provideViewModel(store: EmaStateStore): LoginViewModel = get()
 ```
 
 ## The store of a backup
 
-A ViewModel that saves part of its state with a backup receives its `EmaStateStore` in the constructor. The function
-that creates the ViewModel receives the store of the screen, so pass it on:
+A ViewModel that saves part of its state with a [backup](saving-state.md) receives its `EmaStateStore` in the
+constructor. The function that creates the ViewModel receives the store of the screen, so pass it on:
 
 ```kotlin
-class ProfileCreationViewModel(
-    initialDataState: ProfileCreationState,
+class HomeViewModel(
+    initialDataState: HomeState,
     private val stateStore: EmaStateStore
-) : EmaViewModel<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>(initialDataState) {
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialDataState) {
 
     override fun setup() = source {
-        install(backupOf(stateStore) { /* ... */ })
+        plugins {
+            +backupOf(stateStore) { /* ... */ }
+        }
     }
 }
 
-// Compose
 createComposableScreen(
-    screenContent = ProfileCreationScreenContent(),
-    viewModel = { store -> ProfileCreationViewModel(ProfileCreationState.DEFAULT, store) },
+    screenContent = HomeScreenContent(),
+    viewModel = { store -> HomeViewModel(HomeState(), store) },
     onEvent = { /* ... */ }
 )
-
-// Android Views
-override fun provideViewModel(store: EmaStateStore) = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
 ```
 
 With Koin, pass it as a parameter:
 
 ```kotlin
 val uiModule = module {
-    factory { (stateStore: EmaStateStore) -> ProfileCreationViewModel(get(), stateStore) }
+    factory { (stateStore: EmaStateStore) -> HomeViewModel(get(), stateStore) }
 }
 
-viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } }
+viewModel = { store -> get<HomeViewModel> { parametersOf(store) } }
 ```
 
 On the platforms without a store, or in a test that doesn't check the saved state, pass `EmaStateStore.None`.
@@ -114,12 +104,18 @@ val dataModule = module {
 }
 
 val useCaseModule = module {
-    factory { LoginUseCase(get()) }
+    factory { GetFriendsUseCase(get()) }
     factory { GetUserFriendsUseCase(get()) }
 }
 ```
 
 The ViewModels receive the use cases in the constructor, so they can receive fakes in the [tests](testing.md).
+
+## Pieces by environment
+
+Besides use cases, a ViewModel can receive its middlewares, reducers and side effects. Then the dependency injection of
+each build type or flavor decides how the screen behaves: the real API in production, a mock in the demo build, extra
+latency in QA. See [Mocking and environments](environments.md#7-choose-the-pieces-by-environment).
 
 ## Injecting the configuration
 
@@ -128,10 +124,10 @@ instead, for example in a library that can't call `Emanate.init` or in a module 
 in the constructor and pass it to the ViewModel. See [Explicit configuration](configuration.md#explicit-configuration).
 
 ```kotlin
-class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
     configuration: EmaConfiguration
-) : EmaViewModel<LoginState, LoginAction, LoginEvent>(LoginState.DEFAULT, configuration)
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState(), configuration)
 ```
 
 With Koin, declare it as a `single`:
@@ -139,7 +135,7 @@ With Koin, declare it as a `single`:
 ```kotlin
 val uiModule = module {
     single { EmaConfiguration.Android(debug = BuildConfig.DEBUG) }
-    factoryOf(::LoginViewModel)
+    factoryOf(::HomeViewModel)
 }
 ```
 
@@ -160,6 +156,6 @@ The use cases only receive the `io` dispatcher of the configuration, in the cons
 
 ```kotlin
 val useCaseModule = module {
-    factory { LoginUseCase(get(), get<EmaConfiguration>().dispatchers.io) }
+    factory { GetFriendsUseCase(get(), get<EmaConfiguration>().dispatchers.io) }
 }
 ```

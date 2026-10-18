@@ -4,17 +4,17 @@ Dialogs follow the same rule as everything else on screen: **they are part of th
 The ViewModel sets a field, the screen draws the dialog while the field says so.
 
 ```kotlin
-sealed interface ProfileCreationOverlap {
-    data object DialogBackConfirmation : ProfileCreationOverlap
+sealed interface ProfileCreationDialog {
+    data object BackConfirmation : ProfileCreationDialog
 }
 
-data class ProfileCreationState(/* ... */ val overlap: ProfileCreationOverlap?) : EmaState
+data class ProfileCreationState(/* ... */ val dialog: ProfileCreationDialog?) : EmaState
 ```
 
 ```kotlin
-// ViewModel
-private fun showOverlap(overlap: ProfileCreationOverlap) = updateState { copy(overlap = overlap) }
-private fun hideOverlap() = updateState { copy(overlap = null) }
+// Reducers of the ViewModel
+is ProfileCreationAction.OnBack -> state.copy(dialog = ProfileCreationDialog.BackConfirmation)  // show
+is ProfileCreationAction.DialogBackCancel -> state.copy(dialog = null)                                 // hide
 ```
 
 Because it is state, the dialog is restored after a rotation and the ViewModel knows whether it is open.
@@ -25,9 +25,9 @@ There is nothing special to learn: emit a dialog composable while the state says
 **as actions**:
 
 ```kotlin
-state.overlap?.also { overlap ->
-    when (overlap) {
-        ProfileCreationOverlap.DialogBackConfirmation -> SimpleDialogComposable(
+state.dialog?.also { dialog ->
+    when (dialog) {
+        is ProfileCreationDialog.BackConfirmation -> SimpleDialogComposable(
             dialogData = SimpleDialogData(
                 title = EmaText.id(R.string.profile_creation_user_exit_title),
                 message = EmaText.id(R.string.profile_creation_user_exit_message),
@@ -47,6 +47,9 @@ The sample builds its dialogs on Material 3's `AlertDialog`, with a data class t
 listener that extends `EmaDialogListener`. A base screen content, `BaseScreenComposable`, gives every screen the
 `ShowDialog`, `ShowError` and `ShowLoading` functions.
 
+As the dialog is state and the choices are actions, a test checks the whole dialog flow without drawing it: dispatch
+`OnBack`, assert the dialog, dispatch `DialogBackConfirm`, assert the event.
+
 While a dialog is on screen, return `null` from `onBack`: the dialog handles the back button itself.
 See [Back handling](back-handling.md).
 
@@ -56,7 +59,7 @@ A spinner is not necessarily a dialog. Model it as a boolean in the state and dr
 belongs, for example inside the button that started the work:
 
 ```kotlin
-updateState { copy(isLoading = true) }
+LoginRequest.Started -> state.copy(isLoading = true)
 ```
 
 Use a blocking loading dialog only when the user must not interact with the screen.

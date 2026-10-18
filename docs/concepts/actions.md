@@ -1,79 +1,72 @@
 # Actions
 
-An action is **something the user did**: "tapped login", "wrote a name", "confirmed the dialog".
+An action is **something the user did**: "pulled to refresh", "wrote a query", "confirmed the dialog".
 Actions go from the view to the ViewModel.
 
 ```kotlin
-sealed interface LoginAction : EmaAction {
+sealed interface HomeAction : EmaAction {
 
-    data object Login : LoginAction
-    data object DeleteUser : LoginAction
-    data class UserNameWritten(val user: String) : LoginAction
-    data class PasswordWritten(val password: String) : LoginAction
-
-    sealed interface Error : LoginAction {
-        data object BadCredentialsAccepted : Error
-        data object BackPressed : Error
-    }
+    data object RefreshRequested : HomeAction
+    data class QueryWritten(val query: String) : HomeAction
+    data class FriendClicked(val friend: User) : HomeAction
+    data object ErrorAccepted : HomeAction
 }
 ```
 
 ## Naming
 
 Name actions after **what the user did**, in the past tense, not after what the ViewModel should do.
-`UserNameWritten` is better than `UpdateUserName`: the view reports the fact and the ViewModel decides what to do with it.
+`QueryWritten` is better than `UpdateQuery`: the view reports the fact and the ViewModel decides what to do with it.
 
 Use a `sealed interface` so that `when` is exhaustive. When you add an action the compiler tells you everywhere you must handle it.
 
 ## Handling actions
 
-In an `EmaViewModel`, declare in `setup` the reducers, middlewares and side effects of each type of action. With the
-`sealed` type, a reducer handles every action of the screen in an exhaustive `when`:
+Declare in the `setup` of the ViewModel the middlewares, reducers and side effects of each type of action. With the
+`sealed` type, a reducer handles every action of the screen in an exhaustive `when`, and a side effect can handle a
+single action:
 
 ```kotlin
 override fun setup() = source {
     reducers {
-        add<LoginAction> { action ->
+        add<HomeAction> { action ->
             when (action) {
-                is LoginAction.UserNameWritten -> state.copy(userName = action.user, userNameError = false)
-                is LoginAction.PasswordWritten -> state.copy(userPassword = action.password, passwordError = false)
+                is HomeAction.QueryWritten -> state.copy(query = action.query)
+                is HomeAction.ErrorAccepted -> state.copy(dialog = null)
                 // ...
             }
         }
     }
     sideEffects {
-        add<LoginAction.Login> { /* ... */ }
+        add<HomeAction.RefreshRequested> { /* ... */ }
     }
 }
 ```
 
-See [Source](source.md). In a classic ViewModel, extend `EmaViewModelAction<State, Action, Event>` and implement
-`onAction`:
+See [Source](source.md). The public entry point of the ViewModel is `dispatch(action)`, so a view can only communicate
+through actions and cannot call arbitrary functions of the ViewModel.
+
+## Actions are also results
+
+The side effects report what happened with actions too, so the reducers can apply it. Group them in a sealed type
+inside the actions of the screen, named after the side effect that dispatches them, so it is clear that only the
+ViewModel sends them:
 
 ```kotlin
-class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
-    initialDataState: LoginState
-) : EmaViewModelAction<LoginState, LoginAction, LoginEvent>(initialDataState) {
+sealed interface HomeAction : EmaAction {
+    // ...
 
-    override fun onAction(action: LoginAction) {
-        when (action) {
-            LoginAction.Login -> onActionLogin()
-            LoginAction.DeleteUser -> onActionDeleteUser()
-            is LoginAction.UserNameWritten -> onActionUserWrite(action.user)
-            is LoginAction.PasswordWritten -> onActionPasswordWrite(action.password)
-            LoginAction.Error.BadCredentialsAccepted -> hideOverlap()
-            LoginAction.Error.BackPressed -> hideOverlap()
-        }
+    // The results of the search, dispatched by its side effect
+    sealed interface EffectQueryResult : HomeAction {
+        data object Started : EffectQueryResult
+        data class Loaded(val friends: List<User>) : EffectQueryResult
+        data object Failed : EffectQueryResult
     }
 }
 ```
 
-In both, the public entry point is `dispatch(action)`, so a view can only communicate through actions and cannot call
-arbitrary ViewModel functions.
-
-If you prefer not to declare actions, `EmaViewModelClassic<State, Event>` lets the view call public functions of the
-ViewModel, as in classic MVVM. Actions are recommended: see [ViewModel](viewmodel.md).
+As every change of the state comes from an action, the log of the actions tells the whole story of the screen, and a
+test can check it step by step.
 
 ## Dispatching from the view
 
@@ -81,18 +74,20 @@ A Compose screen content receives an `EmaImmutableActionDispatcher`, a stable wr
 recompositions:
 
 ```kotlin
-Button(onClick = { actions.dispatch(LoginAction.Login) }) { ... }
+Button(onClick = { actions.dispatch(HomeAction.RefreshRequested) }) { ... }
 ```
 
 For previews use `EmaImmutableActionDispatcher.EMPTY`, which ignores every action. Outside Compose,
-`EmaActionDispatcher.EMPTY` does the same. With Android Views the actions are sent with `viewModel.dispatch(...)`,
-see [Android Views](../android-view/screens.md#sending-actions).
+`EmaActionDispatcher.EMPTY` does the same.
 
 ## Special action types
 
 | Type                      | Use                                                               |
 |---------------------------|-------------------------------------------------------------------|
 | `EmaAction`               | The actions of a screen. Your actions extend this.                |
-| `EmaAction.Initializer`   | The data a screen starts with. See [Initializers](../guides/initializers.md). |
-| `EmaAction.Lifecycle`     | The lifecycle of the view, received by an `EmaViewModel`: `Started`, `Resumed`, `Paused`, `Stopped` and `Destroyed`. |
+| `EmaInitializer`          | The data a screen starts with. See [Initializers](../guides/initializers.md). |
+| `EmaLifecycle`            | The lifecycle of the view: `Started`, `Resumed`, `Paused`, `Stopped` and `Destroyed`. See [ViewModel](viewmodel.md#the-lifecycle-as-actions). |
+| `EmaRestoreState`         | The values restored by a [backup](../guides/saving-state.md) after the death of the process. |
 | `EmaAction.EMPTY`         | The action type of a screen without actions.                      |
+
+Any of them can be handled by the middlewares, reducers and side effects, like the actions of the screen.

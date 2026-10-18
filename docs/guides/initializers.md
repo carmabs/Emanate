@@ -1,55 +1,87 @@
 # Initializers: passing data to a screen
 
-An **initializer** is the data a screen needs to start. It travels in the navigation arguments (a `Bundle`)
-and ends up in `onStateCreated` of the ViewModel.
+An **initializer** is the data a screen needs to start. It travels in the route of the destination and reaches the
+ViewModel as an action, **once**, the first time the screen is created.
 
 ## Declare it
 
 ```kotlin
 @Serializable
-sealed class ProfileOnBoardingInitializer : EmaAction.Initializer {
+sealed interface HomeInitializer : EmaInitializer {
 
     @Serializable
-    data class Default(val admin: String) : ProfileOnBoardingInitializer()
+    data class HomeUser(val user: User) : HomeInitializer
 }
 ```
 
-A `sealed` type lets one screen start in different ways. Use `EmaAction.Initializer.EMPTY` when there is nothing to pass.
-
-## Choose how it is serialized
-
-| Strategy                                                  | Requires                                     | Compose routes |
-|-----------------------------------------------------------|----------------------------------------------|:--------------:|
-| `BundleSerializerStrategy.kSerialization(X.serializer())` | `@Serializable` (kotlinx.serialization). **Recommended.** | ✔ |
-| `BundleSerializerStrategy.parcelable<X>()`                | `X : Parcelable`                             |                |
-| `BundleSerializerStrategy.serializable<X>()`              | `X : java.io.Serializable`                   |                |
-| `BundleSerializerStrategy.EMPTY`                          | Nothing: the screen receives no initializer  | ✔              |
-
-In Compose the initializer travels as text inside the route, and only `kSerialization` can turn it back into an object.
-Any character is allowed in its values: the route encodes them.
-
-## Send and receive it
-
-How the initializer travels depends on the UI technology:
-
-- **Compose**: `NavController.navigate(route, initializerBundle)` and the `initializerSupport` of the destination.
-  See [Compose navigation](../compose/navigation.md#passing-an-initializer).
-- **Android Views**: `NavController.navigate(id, initializerBundle)` and the `initializerStrategy` of the Fragment or
-  Activity. See [Android Views navigation](../android-view/navigation.md#passing-an-initializer).
-
-To start an activity yourself, put it in the intent with `Intent(...).setInitializer(initializer, strategy)`, and read it
-in the activity with `getInitializer(strategy, savedInstanceState)`. These extensions are in `emanate-android`.
+A `sealed` type lets one screen start in different ways. A screen that receives nothing gets `EmaInitializer.EMPTY`.
 
 ## Use it in the ViewModel
 
+The initializer is one more action: a reducer applies its data to the state, and a side effect loads what the screen
+needs.
+
 ```kotlin
-override fun onStateCreated(initializer: EmaAction.Initializer?) {
-    when (val onBoardingInitializer = initializer as ProfileOnBoardingInitializer) {
-        is ProfileOnBoardingInitializer.Default -> updateState {
-            copy(user = User(onBoardingInitializer.admin))
+override fun setup() = source {
+    reducers {
+        add<HomeInitializer> { initializer ->
+            when (initializer) {
+                is HomeInitializer.HomeUser -> state.copy(
+                    userData = HomeState.UserData(initializer.user.name, initializer.user.surname, initializer.user.role)
+                )
+            }
+        }
+    }
+    sideEffects {
+        add<HomeInitializer> { initializer ->
+            when (initializer) {
+                is HomeInitializer.HomeUser -> {
+                    val friends = getUserFriendsUseCase(GetUserFriendsUseCase.Input(initializer.user))
+                    dispatch(HomeFriendsLoaded(friends))
+                }
+            }
         }
     }
 }
 ```
 
-`onStateCreated` runs once, so a rotation does not apply the initializer twice.
+It arrives once, so a rotation doesn't apply it nor load the data again. After the death of the process, the screen
+receives it again, and a [backup](saving-state.md) restores what the user typed on top of it.
+
+## Send and receive it
+
+The initializer travels as text inside the route, serialized with kotlinx.serialization: annotate it with
+`@Serializable` and any character is allowed in its values.
+
+- The screen that navigates sends it with `NavController.navigate(route, initializerBundle)`.
+- The destination declares how to read it with `initializerSupport`.
+
+```kotlin
+// Send
+navController.navigate(
+    route = ProfileCreationScreenContent::class.routeId,
+    initializerBundle = EmaInitializerBundle(
+        ProfileCreationInitializer.Admin,
+        BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
+    )
+)
+
+// Receive
+createComposableScreen(
+    screenContent = ProfileCreationScreenContent(),
+    viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
+    initializerSupport = EmaInitializerSupport.kSerialization(ProfileCreationInitializer.serializer()),
+    onEvent = { navigator.handleProfileCreationEvent(it) }
+)
+```
+
+The details, including the first screen of an activity, are in
+[Compose navigation](../compose/navigation.md#passing-an-initializer).
+
+## Testing it
+
+In a test, call `onCreated` with the initializer, as the screen does:
+
+```kotlin
+viewModel.onCreated(HomeInitializer.HomeUser(ana))
+```

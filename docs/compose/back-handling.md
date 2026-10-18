@@ -5,7 +5,7 @@ system handle it.
 
 ```kotlin
 override fun onBack(state: ProfileCreationState): ProfileCreationAction? =
-    if (state.overlap == null) ProfileCreationAction.OnBack else null
+    if (state.dialog == null) ProfileCreationAction.OnBack else null
 ```
 
 Emanate installs a single `BackHandler`, enabled only when `onBack` returns an action. Returning `null` in some states is how you
@@ -23,15 +23,23 @@ The creation screen asks for confirmation before leaving. Both the toolbar arrow
 IconButton(onClick = { actions.dispatch(ProfileCreationAction.OnBack) }) { /* arrow */ }
 
 override fun onBack(state: ProfileCreationState): ProfileCreationAction? =
-    if (state.overlap == null) ProfileCreationAction.OnBack else null
+    if (state.dialog == null) ProfileCreationAction.OnBack else null
 ```
 
 ```kotlin
 // ViewModel
-private fun onActionBack() = showOverlap(ProfileCreationOverlap.DialogBackConfirmation)
-private fun onActionBackConfirmed() {
-    hideOverlap()
-    postEvent(ProfileCreationEvent.DialogConfirmationAccepted)  // the navigator pops the screen
+reducers {
+    add<ProfileCreationAction> { action ->
+        when (action) {
+            is ProfileCreationAction.OnBack -> state.copy(dialog = ProfileCreationDialog.BackConfirmation)
+            is ProfileCreationAction.DialogBackConfirm -> state.copy(dialog = null)
+            // ...
+        }
+    }
+}
+sideEffects {
+    // The navigator pops the screen
+    add<ProfileCreationAction.DialogBackConfirm> { postEvent(ProfileCreationEvent.DialogConfirmationAccepted) }
 }
 ```
 
@@ -41,7 +49,9 @@ On a screen where the arrow only goes back, send an action as well, so there is 
 override fun onBack(state: ProfileOnBoardingState) = ProfileOnBoardingActions.BackClicked
 
 // ViewModel
-private fun onActionBackClicked() = postEvent(ProfileOnBoardingEvent.OnBoardingCancelled)
+sideEffects {
+    add<ProfileOnBoardingActions.BackClicked> { postEvent(ProfileOnBoardingEvent.OnBoardingCancelled) }
+}
 ```
 
 The navigator turns the event into `navigateBack()`. See [Navigation](navigation.md).
