@@ -19,7 +19,7 @@ class HomeViewModel(
             add<HomeAction> { action ->
                 when (action) {
                     is HomeAction.QueryWritten -> state.copy(query = action.query)
-                    is HomeAction.RefreshRequested -> state.copy(queryTooShort = state.query.length == 1)
+                    is HomeAction.RefreshRequested -> state.copy(errorQueryTooShort = state.query.length == 1)
                     is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
                     is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
                     is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
@@ -29,7 +29,7 @@ class HomeViewModel(
         }
         sideEffects {
             add<HomeAction.RefreshRequested>(concurrency = SideEffectConcurrency.Leading) {
-                if (state.queryTooShort) return@add
+                if (state.errorQueryTooShort) return@add
                 dispatch(HomeAction.EffectQueryResult.Started)
                 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
                     .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
@@ -46,7 +46,7 @@ class HomeViewModel(
 | `middlewares { add<Type> { } }`    | Decides the path of the actions of that type before the reducers: `next()`, `nextAfter { }`... |
 | `reducers { add<Type> { } }`       | Returns the next state for the actions of that type. Pure: it only reads `state`. |
 | `sideEffects { add<Type> { } }`    | Business logic run after the reducers: use cases, `dispatch`, `postEvent`. |
-| `broadcasts { listen<Type>() }`    | Receives the actions of that type broadcast by other ViewModels. See [Results between screens](../guides/results-between-screens.md). |
+| `broadcasts { listen<Type>() }`    | Receives the actions of that type broadcast by other ViewModels. See [Results between screens](broadcasts.md). |
 | `plugins { +plugin }`              | Installs a group of pieces, like a [backup of the state](../guides/saving-state.md). |
 
 Inside each block, `+` adds a piece already created, like `+middlewareDelayOf(...)`, a reducer declared as a property
@@ -64,8 +64,10 @@ See [Configuration](../guides/configuration.md).
 
 ## The lifecycle as actions
 
-`EmaViewModel` has no lifecycle hooks: the lifecycle of the view arrives as actions, which the middlewares, reducers
-and side effects handle like any other.
+`EmaViewModel` has no lifecycle hooks: the lifecycle of the view and its initializer arrive as actions, which the
+middlewares, reducers and side effects handle like any other. Only the ViewModel receives them, from the screen.
+
+![The lifecycle of a screen as actions](../assets/lifecycle.svg)
 
 | Action                       | When                                                                     |
 |------------------------------|--------------------------------------------------------------------------|
@@ -76,23 +78,32 @@ and side effects handle like any other.
 | `EmaLifecycle.Stopped`       | The screen goes to the background.                                       |
 | `EmaLifecycle.Destroyed`     | The last action, right before the ViewModel is closed.                   |
 
-Loading the initial data is a side effect of the initializer. It runs once, not every time the screen is recreated:
+The initializer arrives **once**, the first time the screen is created, so recreating the screen doesn't load the data
+again. As they are actions, a reducer can change the state when they arrive, and a side effect can react to them:
 
 ```kotlin
-sideEffects {
-    add<HomeInitializer> { initializer ->
-        when (initializer) {
-            is HomeInitializer.HomeUser -> {
-                getFriendsUseCase(GetFriendsUseCase.Input(query = STRING_EMPTY))
-                    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+override fun setup() = source {
+    reducers {
+        // The initializer gives the screen its first state
+        add<HomeInitializer> { initializer ->
+            when (initializer) {
+                is HomeInitializer.HomeUser -> state.copy(user = initializer.user)
             }
         }
+        // The dialog is closed when the user leaves the screen
+        add<EmaLifecycle.Stopped> { state.copy(dialog = null) }
+    }
+    sideEffects {
+        // The friends are loaded once, when the screen is created
+        add<HomeInitializer> { dispatch(HomeAction.RefreshRequested) }
+        // And refreshed every time the user comes back to the screen
+        add<EmaLifecycle.Resumed> { dispatch(HomeAction.RefreshRequested) }
     }
 }
 ```
 
-And work that only makes sense while the user sees the screen, like a timer or location updates, starts and stops
-with `Started` and `Stopped`.
+Work that only makes sense while the user sees the screen, like a timer or location updates, starts and stops with
+`Started` and `Stopped`.
 
 ### When the ViewModel is closed
 
@@ -117,7 +128,6 @@ also finish after the ViewModel is closed.
 The views don't depend on the implementation of the ViewModel, but on `EmaViewModelContract<S, E>`: the initial
 state, `stateFlow`, `eventFlow`, `consumeEvent` and the lifecycle calls (`onCreated`, `onStartView`, `onResumeView`,
 `onPauseView`, `onStopView` and `close`). `EmaViewModel` turns each call into the action of the table above.
-`EmaViewModelContract.EMPTY` is the ViewModel of a screen without state, actions nor events.
 
 ## How the ViewModel is kept alive
 

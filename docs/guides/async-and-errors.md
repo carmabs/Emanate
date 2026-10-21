@@ -20,7 +20,7 @@ sideEffects {
 - Cancellation is not an error: a side effect cancelled by its concurrency, its timeout or the closing of the
   ViewModel is not reported.
 
-The whole API of the side effects is in [Source](../concepts/source.md#side-effects).
+The whole API of the side effects is in [Source](../concepts/side-effects.md).
 
 ## Concurrency, timeouts and debounce
 

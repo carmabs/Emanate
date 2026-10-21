@@ -8,7 +8,7 @@ data class HomeState(
     val query: String = STRING_EMPTY,
     val friends: List<User> = emptyList(),
     val isLoading: Boolean = false,
-    val queryTooShort: Boolean = false,
+    val errorQueryTooShort: Boolean = false,
     val dialog: HomeDialog? = null
 ) : EmaState
 ```
@@ -36,13 +36,13 @@ data class HomeState(
 
 ## Changing the state
 
-The state only changes in the [reducers](source.md#reducers) of the ViewModel, which return the next state with `copy`:
+The state only changes in the [reducers](reducers.md) of the ViewModel, which return the next state with `copy`:
 
 ```kotlin
 reducers {
     add<HomeAction> { action ->
         when (action) {
-            is HomeAction.QueryWritten -> state.copy(query = action.query, queryTooShort = false)
+            is HomeAction.QueryWritten -> state.copy(query = action.query, errorQueryTooShort = false)
             // ...
         }
     }
@@ -87,10 +87,29 @@ is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
 is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
 ```
 
-**Field errors**: one boolean (or a message) per field. Clear it when the user edits the field:
+**Field errors**: one boolean (or a message) per field, named with the prefix `error`. Set it when the input is not
+valid, and clear it when the user edits the field:
 
 ```kotlin
-is HomeAction.QueryWritten -> state.copy(query = action.query, queryTooShort = false)
+// Reducers
+is HomeAction.RefreshRequested -> state.copy(errorQueryTooShort = state.query.length == 1)  // show
+is HomeAction.QueryWritten -> state.copy(query = action.query, errorQueryTooShort = false)  // hide
+```
+
+The view only draws what the field says:
+
+```kotlin
+@Composable
+override fun onState(state: HomeState, actions: EmaImmutableActionDispatcher<HomeAction>) {
+    OutlinedTextField(
+        value = state.query,
+        onValueChange = { query -> actions.dispatch(HomeAction.QueryWritten(query)) },
+        isError = state.errorQueryTooShort,
+        supportingText = {
+            if (state.errorQueryTooShort) Text(text = "Write at least two letters")
+        }
+    )
+}
 ```
 
 ## Rendering the state

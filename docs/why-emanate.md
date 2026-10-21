@@ -65,7 +65,7 @@ middlewareOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction.Refr
 
 The same mechanism debounces a search field, stops the actions of a feature behind a flag or an expired session,
 replaces an action with another one, or tracks every action for analytics. Testing loading states and error dialogs
-no longer needs a broken network or a special backend. See [Middlewares](concepts/source.md#middlewares).
+no longer needs a broken network or a special backend. See [Middlewares](concepts/middlewares.md).
 
 ## 3. Plugins: write cross-cutting behaviour once and install it anywhere
 
@@ -106,7 +106,7 @@ override fun setup() = source {
 }
 ```
 
-No inheritance, no annotations and no code generation. See [Plugins](concepts/source.md#plugins).
+No inheritance, no annotations and no code generation. See [Plugins](concepts/plugins.md).
 
 ## 4. Concurrency under control
 
@@ -154,7 +154,7 @@ override fun setup() = source {
 ```
 
 With `keepUntilReceived`, the result waits for the first screen that listens to it, even if that screen is not created
-yet. See [Results between screens](guides/results-between-screens.md).
+yet. See [Results between screens](concepts/broadcasts.md).
 
 ## 6. The whole history of a screen, with no extra code
 

@@ -52,13 +52,3 @@ Examples from a home screen:
 | "The friends couldn't be loaded" dialog| State (`HomeState.dialog`)            |
 | "12 friends" message                   | Event (`HomeEvent.FriendsUpdated`)     |
 | Opening the profile of a friend        | Event (`HomeEvent.FriendSelected`)     |
-
-## Lifecycle at a glance
-
-The lifecycle of the screen reaches the ViewModel as **actions**, so the same middlewares, reducers and side effects
-that handle the user handle the lifecycle too.
-
-![The lifecycle of a screen as actions](../assets/lifecycle.svg)
-
-The initializer arrives **once**, the first time the screen is created, so recreating the screen doesn't load the data again.
-The details are in [ViewModel](viewmodel.md#the-lifecycle-as-actions).

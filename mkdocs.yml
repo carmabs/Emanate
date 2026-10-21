@@ -101,6 +101,11 @@ nav:
       - State: concepts/state.md
       - Actions: concepts/actions.md
       - Events: concepts/events.md
+      - Reducers: concepts/reducers.md
+      - Side effects: concepts/side-effects.md
+      - Middlewares: concepts/middlewares.md
+      - Broadcasts: concepts/broadcasts.md
+      - Plugins: concepts/plugins.md
       - ViewModel: concepts/viewmodel.md
       - Source: concepts/source.md
   - Guides:
@@ -108,7 +113,6 @@ nav:
       - Testing: guides/testing.md
       - Saving state: guides/saving-state.md
       - Async work and errors: guides/async-and-errors.md
-      - Results between screens: guides/results-between-screens.md
       - Initializers: guides/initializers.md
       - Dependency injection: guides/dependency-injection.md
       - Configuration: guides/configuration.md

@@ -87,7 +87,7 @@ abstract class BaseViewModel<S : EmaState, A : EmaAction, E : EmaEvent>(initialD
 ```
 
 An (even empty) `BaseViewModel` gives you a single place to add something later. For behaviour that only some screens
-need, prefer a [plugin](concepts/source.md#plugins) or an extension function of the setup to a deeper hierarchy.
+need, prefer a [plugin](concepts/plugins.md) or an extension function of the setup to a deeper hierarchy.
 
 ## Keep the ViewModel clean
 

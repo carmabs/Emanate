@@ -280,4 +280,4 @@ The delays run in virtual time, so a test of a three-second request takes millis
 - **Use `MiddlewarePosition.First`** for the middlewares that simulate conditions, so they run before the ones of the
   screen.
 - **Prefer a plugin for a whole feature** that an environment installs or not, like analytics or a debug overlay. See
-  [Plugins](../concepts/source.md#plugins).
+  [Plugins](../concepts/plugins.md).

@@ -70,12 +70,47 @@ test can check it step by step.
 
 ## Dispatching from the view
 
-A Compose screen content receives an `EmaImmutableActionDispatcher`, a stable wrapper that does not cause unnecessary
-recompositions:
+A Compose screen content receives the state and an `EmaImmutableActionDispatcher`, a stable wrapper that does not
+cause unnecessary recompositions. Every callback of the UI only reports what the user did with `actions.dispatch`:
 
 ```kotlin
-Button(onClick = { actions.dispatch(HomeAction.RefreshRequested) }) { ... }
+class HomeScreenContent : EmaComposableScreenContent<HomeState, HomeAction, HomeEvent> {
+
+    @Composable
+    override fun onState(state: HomeState, actions: EmaImmutableActionDispatcher<HomeAction>) {
+        Column {
+            // The user writes a query
+            OutlinedTextField(
+                value = state.query,
+                onValueChange = { query -> actions.dispatch(HomeAction.QueryWritten(query)) }
+            )
+            // The user asks for a refresh
+            Button(onClick = { actions.dispatch(HomeAction.RefreshRequested) }) {
+                Text(text = "Refresh")
+            }
+            // The user clicks a friend
+            FriendList(
+                friends = state.friends,
+                onFriendClick = { friend -> actions.dispatch(HomeAction.FriendClicked(friend)) }
+            )
+        }
+        // The user accepts the error dialog
+        if (state.dialog == HomeDialog.LoadError) {
+            AlertDialog(
+                onDismissRequest = { actions.dispatch(HomeAction.ErrorAccepted) },
+                confirmButton = {
+                    TextButton(onClick = { actions.dispatch(HomeAction.ErrorAccepted) }) { Text(text = "OK") }
+                },
+                text = { Text(text = "The friends couldn't be loaded") }
+            )
+        }
+    }
+}
 ```
+
+The callbacks never change the state nor decide what happens next: the ViewModel does, in its reducers and side
+effects. Child composables like `FriendList` receive plain callbacks, so they don't depend on Emanate and can be
+reused or previewed on their own.
 
 For previews use `EmaImmutableActionDispatcher.EMPTY`, which ignores every action. Outside Compose,
 `EmaActionDispatcher.EMPTY` does the same.

@@ -4,7 +4,7 @@ Android can kill your app while it is in the background, for example while the u
 grant a permission. When the user comes back, the screen is created again with its
 [initializer](initializers.md), but what the user typed is lost.
 
-Emanate solves it with a **backup**: a [plugin](../concepts/source.md#plugins) that saves the parts of the state you
+Emanate solves it with a **backup**: a [plugin](../concepts/plugins.md) that saves the parts of the state you
 choose every time they change, and restores them when the screen is created again. The ViewModel stays pure Kotlin:
 the platform only gives it the store where the values are kept.
 
