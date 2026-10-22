@@ -57,8 +57,10 @@ class ScreenAnalytics<S : EmaState>(private val tracker: Tracker, private val sc
 
 ## A plugin with its own actions
 
-A plugin can't post events, because the events belong to each screen. To tell the screen something, it dispatches its
-own actions, and the screen decides what to do with them.
+A plugin can't post events, because the events belong to each screen. To tell the screen something, it dispatches
+actions, and the screen decides what to do with them. Which actions it can dispatch is the second type of the plugin.
+Usually they are actions that the plugin defines, like the one below, so it works in any screen. A plugin written for
+one specific screen could also use the actions of that screen as its second type, but then it only works there.
 
 This plugin stops the actions of the user when the session has expired, and tells the screen with
 `SessionAction.Expired`:
@@ -100,21 +102,87 @@ override fun setup() = source {
 
 ## Where its pieces go
 
-- The reducers, side effects and broadcast listeners of a plugin stay **where the `plugins` block is written**, in
-  order with the pieces of the screen.
-- Its middlewares can choose a position: `MiddlewarePosition.First` to see every action before anything else, like the
-  `SessionGuard`, or `Last` to see the new state of every action, like the backup. See
-  [Where a middleware runs](middlewares.md#where-a-middleware-runs).
+The pieces of a plugin run in an order that depends on their kind.
 
-## Plugin or extension function?
+**Reducers, side effects and broadcast listeners** stay **where the `plugins` block is written**, in order with the
+pieces of the screen. Here, the plugin has a reducer and a side effect:
 
-To reuse pieces you can also write an extension function of the setup. Choose by what the pieces do:
+```kotlin
+override fun setup() = source {
+    reducers {
+        add<HomeAction> { /* reducer 1 */ }
+    }
+    plugins {
+        +MyPlugin()  // Its reducer and its side effect go here
+    }
+    reducers {
+        add<HomeAction> { /* reducer 3 */ }
+    }
+}
+```
 
-| Use a plugin when...                                    | Use an [extension function](source.md#reusing-pieces-between-screens) when... |
-|---------------------------------------------------------|-------------------------------------------------------------------|
-| It is a self-contained feature, like analytics.         | It splits the pieces of one big screen.                          |
-| It dispatches its own actions, or none.                 | It dispatches the actions of the screen.                          |
-| It should be injected, so an environment can install it or not. | It is always part of the screen.                          |
+When an action arrives, the reducers run in this order: reducer 1, the one of the plugin and reducer 3. Each one
+receives the state returned by the previous one. The side effects are launched in the same order.
+
+**Middlewares** can choose a position, wherever the plugin is installed: `MiddlewarePosition.First` to see every
+action before anything else, like the `SessionGuard`, or `Last` to see the new state of every action, like the backup.
+See [Where a middleware runs](middlewares.md#where-a-middleware-runs). Here, the plugins are written after the
+middleware of the screen:
+
+```kotlin
+override fun setup() = source {
+    middlewares {
+        add<HomeAction> { /* middleware of the screen */ }
+    }
+    plugins {
+        +SessionGuard<HomeState>(session)  // Its middleware is First
+        +backup                            // Its middleware is Last
+    }
+}
+```
+
+When an action arrives, the middlewares run in this order: the one of `SessionGuard` (`First`), the one of the screen
+and the one of the backup (`Last`). Then come the reducers. The position wins over the place where the plugin is
+written.
+
+## An alternative: extension functions
+
+A plugin can't post events, because it doesn't know the events of the screen. For that, write an **extension function
+of the setup** and call it inside `source { }`: it has the state, the actions and the events of the screen.
+
+They are also useful when a ViewModel gets big. Each function groups a **subfeature** of the screen, and the ViewModel
+only calls them. This one counts the loads that fail in a row, and after three of them the view suggests checking the
+connection:
+
+```kotlin
+fun SourceSetupScope<HomeState, HomeAction, HomeEvent>.suggestCheckingConnection() {
+    reducers {
+        // Counts the failures in a row, and starts again when a load works
+        add<HomeAction.EffectQueryResult> { action ->
+            when (action) {
+                is HomeAction.EffectQueryResult.Failed -> state.copy(failures = state.failures + 1)
+                is HomeAction.EffectQueryResult.Loaded -> state.copy(failures = 0)
+                is HomeAction.EffectQueryResult.Started -> state
+            }
+        }
+    }
+    sideEffects {
+        // The reducer has already counted this failure
+        add<HomeAction.EffectQueryResult.Failed> {
+            if (state.failures == 3) postEvent(HomeEvent.CheckConnection)
+        }
+    }
+}
+
+class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+
+    override fun setup() = source {
+        suggestCheckingConnection()
+        reducers { /* ... */ }
+        sideEffects { /* ... */ }
+    }
+}
+```
 
 ## The plugins of Emanate
 

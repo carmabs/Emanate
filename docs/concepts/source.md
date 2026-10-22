@@ -95,37 +95,7 @@ added after the ones of the previous blocks of the same kind.
 Each piece only reaches what belongs to it: a reducer can't add other pieces nor dispatch, and a side effect can't
 add other side effects. The properties of the ViewModel, like its use cases, can be used everywhere.
 
-### Reusing pieces between screens
-
-To share a group of pieces between screens, write an extension function of `SourceSetupScope` with its blocks and
-call it inside `source { }`. As the blocks can be used more than once, its pieces are added in the place where it is
-called, together with the ones of the screen:
-
-```kotlin
-fun <S : EmaState, A : EmaAction, E : EmaEvent> SourceSetupScope<S, A, E>.analytics(tracker: Tracker, screen: String) {
-    middlewares {
-        add<EmaAction> { action ->
-            tracker.track(action::class.simpleName.orEmpty())
-            next()
-        }
-    }
-    sideEffects {
-        add<EmaLifecycle.Resumed> { tracker.screenShown(screen) }
-    }
-}
-
-override fun setup() = source {
-    analytics(tracker, screen = "Home")
-    reducers {
-        add<HomeAction> { action -> /* ... */ }
-    }
-}
-```
-
-A generic function like this one can be used by any screen. Its side effects can only dispatch actions of type `A`,
-the actions of the screen that calls it, so a function that dispatches its own actions is written for the types of
-one screen: it is useful to split a big ViewModel by feature. The function only reaches what it receives as
-parameters, so pass it the use cases it needs.
+To share a group of pieces between screens, see [Plugins](plugins.md).
 
 ## Using a source on its own
 

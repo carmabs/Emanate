@@ -28,6 +28,7 @@ theme:
     - content.code.copy
 
 markdown_extensions:
+  - admonition
   - tables
   - toc:
       permalink: true
