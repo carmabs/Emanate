@@ -46,7 +46,7 @@ override fun setup() = source {
 ```
 
 It arrives once, so a rotation doesn't apply it nor load the data again. After the death of the process, the screen
-receives it again, and a [backup](saving-state.md) restores what the user typed on top of it.
+receives it again, and a [backup](process-death.md) restores what the user typed on top of it.
 
 ## Send and receive it
 

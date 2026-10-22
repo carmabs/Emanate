@@ -1,4 +1,4 @@
-# Configuration
+# Initialization and configuration
 
 Emanate has a configuration for the whole application, set once, when it starts, with `Emanate.init`:
 
@@ -27,11 +27,11 @@ Each property configures one thing:
 | Property             | Default `EmaConfiguration()`   | `EmaConfiguration.Android(debug)`             | Purpose |
 |----------------------|--------------------------------|-----------------------------------------------|---------|
 | `dispatchers`        | `EmaDispatchers()`             | `main` is `Dispatchers.Main.immediate`        | Where ViewModels, use cases and CPU-intensive work run. See [Dispatchers](#dispatchers). |
-| `errorPolicy`        | `EmaErrorPolicy.Catch()`       | `Throw` in debug, `Catch()` in release        | What happens when a middleware, reducer or side effect throws an exception. See [Errors](async-and-errors.md#errors). |
+| `errorPolicy`        | `EmaErrorPolicy.Catch()`       | `Throw` in debug, `Catch()` in release        | What happens when a middleware, reducer or side effect throws an exception. See [Errors](#errors). |
 | `logger`             | `EmaLogger.Println`            | `EmaLogger.Logcat` in debug, `null` in release | Where the logs of Emanate go. See [Logs](#logs). |
 | `printer`            | `EmaDataClassPrinter.ToString` | Prints every field, indented                  | How the states and actions are printed in the logs. |
 | `closeTimeout`       | 5 seconds                      | 5 seconds                                     | How long the `onClose` blocks and the side effects that survive close can run after the ViewModel is closed. |
-| `sideEffectListener` | `null`                         | `null`                                        | Receives the result of every side effect, to track or measure them. |
+| `sideEffectListener` | `null`                         | `null`                                        | Receives the result of every side effect, to track or measure them. See [Measuring the side effects](#measuring-the-side-effects). |
 | `methodNameResolver` | Generic names                  | Resolved from the lambdas                     | The name reported in the errors and in the `sideEffectListener` for each side effect. |
 | `broadcaster`        | `EmaActionBroadcaster.Shared`  | `EmaActionBroadcaster.Shared`                 | Sends the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
 
@@ -81,7 +81,7 @@ Implement `EmaDataClassPrinter` to print them your own way.
 Emanate writes its logs with the `logger` of the configuration. By default it is `EmaLogger.Println`, which writes to
 the standard output and adds `EMA_` before the tag. `EmaConfiguration.Android(debug)` uses `EmaLogger.Logcat` in debug
 builds, which writes with `Log.d`, and no logger in release builds. The errors caught by the
-[error policy](async-and-errors.md#errors) are also logged.
+[error policy](#errors) are also logged.
 
 Every `EmaViewModel` uses it, with its name as tag, to log its actions:
 
@@ -104,6 +104,47 @@ Emanate.init(
 
 To disable the logs of a single ViewModel, pass it a configuration without logger:
 `Emanate.configuration.copy(logger = null)`. A source used on its own doesn't log: add `loggerMiddleware(tag, logger)` as its last middleware.
+
+## Errors
+
+For the errors you expect, like a failed request, **return a result instead of throwing**: an
+[`EmaResult`](use-cases.md#emaresult) makes the failure part of the contract, and the side effect turns it into an
+action that the reducers show.
+
+For the unexpected ones, the `errorPolicy` decides what happens when a middleware, a reducer or a side effect throws an
+exception:
+
+| `EmaErrorPolicy`  | Effect |
+|-------------------|--------|
+| `Catch(onError)`  | **Default, and in release builds with `EmaConfiguration.Android(debug)`.** The exception is caught and written to the `logger`, and the ViewModel keeps working. `onError` also receives each one. |
+| `Throw`           | The exception is thrown again and the app fails at once. **In debug builds with `EmaConfiguration.Android(debug)`.** |
+
+With `Catch`, the action of a middleware or a reducer that fails is discarded, without changing the state, and the next
+actions are processed as usual. A bug in one action doesn't break the screen. A side effect cancelled by its
+concurrency, its timeout or the closing of the ViewModel is not an error, so it is not reported.
+
+```kotlin
+Emanate.init(
+    EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
+        errorPolicy = EmaErrorPolicy.Catch { error -> crashReporter.record(error.exception) }
+    )
+)
+```
+
+`onError` receives an `EmaError` with the exception and its `reflection`, which tells the ViewModel where it happened.
+
+## Measuring the side effects
+
+To track every side effect, for example to measure how long the business logic takes, set a `sideEffectListener`. Its
+`onSuccess` and `onFinish` are called when each one ends:
+
+```kotlin
+EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
+    sideEffectListener = object : EmaSideEffectListener {
+        override fun onFinish(reflection: Reflection) = analytics.track(reflection.methodName)
+    }
+)
+```
 
 ## Explicit configuration
 

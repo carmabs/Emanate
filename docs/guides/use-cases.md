@@ -1,7 +1,7 @@
 # Use cases and results
 
-Emanate has a few small types that belong to the architecture itself: the use cases that the side effects call, the
-results they return and the texts the state can hold.
+Emanate has a few small types that belong to the architecture itself: the use cases that the side effects call and the
+results they return. For the texts the state holds, see [Texts without Context](texts.md).
 
 ## Use cases
 
@@ -51,24 +51,3 @@ getFriendsUseCase(input)
 | `map`, `flatMap`                                   | Transform the success.                       |
 | `mapError`, `flatMapError`                         | Transform the failure.                       |
 | `onSuccess`, `onFailure`                           | Side effects, returning the same result.     |
-
-## `EmaText`: texts in the state
-
-The state must not contain `Context`, so it can't call `getString`. `EmaText` describes a text, and the view resolves
-it:
-
-```kotlin
-EmaText.text("Hello")                       // a literal
-EmaText.id(R.string.welcome, userName)      // a string resource with arguments
-EmaText.plural(R.plurals.friends, count)    // a plural resource
-EmaText.composition(EmaText.id(R.string.a), EmaText.text(" "), EmaText.id(R.string.b))  // concatenation
-EmaText.empty()
-```
-
-```kotlin
-// In a composable
-Text(text = state.title.stringResource())
-```
-
-Two `EmaText` are equal when they describe the same text, arguments included, so a state that holds them is compared
-correctly. A text without arguments is never formatted: `EmaText.text("50%")` is shown as is.

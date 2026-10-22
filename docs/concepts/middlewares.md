@@ -220,4 +220,4 @@ class HomeViewModel(
 }
 ```
 
-See [Mocking and environments](../guides/environments.md).
+See [Dependency injection and environments](../guides/dependency-injection.md#what-an-environment-can-change).

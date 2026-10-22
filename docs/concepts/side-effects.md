@@ -109,7 +109,7 @@ sideEffects {
 
 ## Errors
 
-If a side effect throws an exception, the [error policy](../guides/async-and-errors.md#errors) of the configuration
+If a side effect throws an exception, the [error policy](../guides/configuration.md#errors) of the configuration
 decides: fail at once while developing, or report it and keep the screen working. For the errors you expect, like a
 failed request, return a result from the use case and dispatch an action, as in the examples above.
 
@@ -133,7 +133,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
 }
 ```
 
-See [Pieces are values](viewmodel.md#pieces-are-values) and [Mocking and environments](../guides/environments.md).
+See [Pieces are values](viewmodel.md#pieces-are-values) and [Dependency injection and environments](../guides/dependency-injection.md#injecting-pieces).
 
 ## Tips
 

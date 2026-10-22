@@ -94,4 +94,4 @@ The view calls `permissionManager.handleRequest(request, scope, permission)` eve
 As the answer is an action, a test can dispatch `PermissionAnswered` directly to check every outcome, without a device.
 
 If the process is killed while the user is in the system settings, keep what the user typed with a
-[backup](saving-state.md).
+[backup](process-death.md).

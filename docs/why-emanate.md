@@ -46,7 +46,7 @@ HomeViewModel(MockFriends(friends = demoFriends))
 
 **Without Emanate** the usual options are an `if (isDemo)` inside the ViewModel, a mocking library in the tests, or a
 fake repository for the whole app. Here you replace exactly the behaviour you want, and nothing else.
-See [Mocking and environments](guides/environments.md).
+See [Dependency injection and environments](guides/dependency-injection.md).
 
 ## 2. Middlewares: step in before any action runs
 
@@ -128,7 +128,8 @@ middlewares {
 }
 ```
 
-See [Async work and errors](guides/async-and-errors.md#concurrency-timeouts-and-debounce).
+See [Side effects](concepts/side-effects.md#when-the-same-action-arrives-twice) and
+[Middlewares](concepts/middlewares.md#waiting-delays-and-debounce).
 
 ## 5. Results between screens, as typed actions
 
@@ -190,12 +191,12 @@ plugins {
 }
 ```
 
-See [Saving state](guides/saving-state.md).
+See [Surviving process death](guides/process-death.md).
 
 ## 8. One policy for every error
 
 Every `EmaViewModel` logs each action it receives and the state before and after it. The errors of any middleware,
-reducer or side effect go through a single configurable [error policy](guides/async-and-errors.md#errors): fail at
+reducer or side effect go through a single configurable [error policy](guides/configuration.md#errors): fail at
 once while developing, report and keep working in production. A `sideEffectListener` measures every piece of business
 logic.
 

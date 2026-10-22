@@ -110,15 +110,14 @@ nav:
       - ViewModel: concepts/viewmodel.md
       - Source: concepts/source.md
   - Guides:
-      - Mocking and environments: guides/environments.md
-      - Testing: guides/testing.md
-      - Saving state: guides/saving-state.md
-      - Async work and errors: guides/async-and-errors.md
+      - Initialization and configuration: guides/configuration.md
       - Initializers: guides/initializers.md
-      - Dependency injection: guides/dependency-injection.md
-      - Configuration: guides/configuration.md
-      - Permissions: guides/permissions.md
+      - Surviving process death: guides/process-death.md
+      - Dependency injection and environments: guides/dependency-injection.md
+      - Testing: guides/testing.md
       - Use cases and results: guides/use-cases.md
+      - Texts without Context: guides/texts.md
+      - Permissions: guides/permissions.md
       - Kotlin Multiplatform: guides/multiplatform.md
   - Compose:
       - Screens: compose/screens.md

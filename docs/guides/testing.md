@@ -137,7 +137,7 @@ the screen, so a piece for an interface that isn't related to the actions of the
 
 ## Swapping pieces in the tests
 
-A ViewModel that [receives its pieces](environments.md) is tested with the pieces the test needs: a mock that answers
+A ViewModel that [receives its pieces](dependency-injection.md#injecting-pieces) is tested with the pieces the test needs: a mock that answers
 at once, one that fails, one that takes a while. No mocking library is needed, and the reducers and events under test
 are the ones of production.
 
@@ -185,6 +185,23 @@ advanceUntilIdle()
 recorder.assertState { it.friends == listOf(ana) && it.query == "ana" }
 ```
 
+The same goes for a mock with latency, to check the loading state of a slow request:
+
+```kotlin
+@Test
+fun `a slow load keeps the loading state until it finishes`() = runTest {
+    val viewModel = HomeViewModel(loadFriends = MockFriends(friends = listOf(ana), latency = 3.seconds))
+    val recorder = viewModel.record()
+
+    viewModel.dispatch(HomeAction.RefreshRequested)
+    advanceTimeBy(2.seconds)
+    recorder.assertState { it.isLoading }
+
+    advanceUntilIdle()
+    recorder.assertState { it.friends == listOf(ana) }
+}
+```
+
 ### Lifecycle, initializers and results
 
 The lifecycle, the initializer and the results of other screens are actions too, so a test sends them the same way as
@@ -199,7 +216,7 @@ Several ViewModels can be tested together, for example to check a result broadca
 profile and home ViewModels, add a friend in the first one and check that it reaches the list of the second one.
 
 To check what a ViewModel saves across process death, use `testStateStore()`. See
-[Saving state](saving-state.md#testing-it).
+[Surviving process death](process-death.md#testing-it).
 
 ## What to test
 

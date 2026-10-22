@@ -65,7 +65,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
 
 The same pieces can also be declared as properties of the ViewModel, with `middlewareOf`, `reducerOf` and
 `sideEffectOf`, and installed with `+`. Then each one can be reused, received in the constructor to
-[change it by environment](guides/environments.md), or tested on its own:
+[change it by environment](guides/dependency-injection.md), or tested on its own:
 
 ```kotlin
 class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :

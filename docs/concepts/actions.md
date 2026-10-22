@@ -122,7 +122,7 @@ For previews use `EmaImmutableActionDispatcher.EMPTY`, which ignores every actio
 | `EmaAction`               | The actions of a screen. Your actions extend this.                |
 | `EmaInitializer`          | The data a screen starts with. See [Initializers](../guides/initializers.md). |
 | `EmaLifecycle`            | The lifecycle of the view: `Started`, `Resumed`, `Paused`, `Stopped` and `Destroyed`. See [ViewModel](viewmodel.md#the-lifecycle-as-actions). |
-| `EmaRestoreState`         | The values restored by a [backup](../guides/saving-state.md) after the death of the process. |
+| `EmaRestoreState`         | The values restored by a [backup](../guides/process-death.md) after the death of the process. |
 | `EmaAction.EMPTY`         | The action type of a screen without actions.                      |
 
 Any of them can be handled by the middlewares, reducers and side effects, like the actions of the screen.

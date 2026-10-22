@@ -68,7 +68,7 @@ The guide is in [`docs/`](docs/index.md):
 
 - [Why Emanate](docs/why-emanate.md) and [getting started](docs/getting-started.md)
 - Concepts: [architecture](docs/concepts/architecture.md), [state](docs/concepts/state.md), [actions](docs/concepts/actions.md), [events](docs/concepts/events.md), [ViewModel](docs/concepts/viewmodel.md), [source](docs/concepts/source.md)
-- Guides: [mocking and environments](docs/guides/environments.md), [testing](docs/guides/testing.md), [saving state](docs/guides/saving-state.md), [async work and errors](docs/guides/async-and-errors.md), [Kotlin Multiplatform](docs/guides/multiplatform.md) and more
+- Guides: [initialization and configuration](docs/guides/configuration.md), [surviving process death](docs/guides/process-death.md), [dependency injection and environments](docs/guides/dependency-injection.md), [testing](docs/guides/testing.md), [Kotlin Multiplatform](docs/guides/multiplatform.md) and more
 - [Compose](docs/compose/screens.md): screens, navigation, back handling, dialogs and permissions
 - [Recommendations](docs/recommendations.md) and [contributing](docs/contributing.md)
 

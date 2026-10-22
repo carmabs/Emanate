@@ -51,7 +51,7 @@ See [Kotlin Multiplatform](guides/multiplatform.md).
 | `emanate-core`          | State, actions, events, ViewModels, sources, plugins and use cases. Pure Kotlin Multiplatform. |
 | `emanate-compose`       | Jetpack Compose screens, navigation and previews.                                              |
 | `emanate-android`       | The integration with the Android platform: configuration, initializers, permissions and the store of the saved state. |
-| `emanate-serialization` | Saves any serializable value of the state across process death. Based on kotlinx.serialization. See the [backup plugin](guides/saving-state.md). |
+| `emanate-serialization` | Saves any serializable value of the state across process death. Based on kotlinx.serialization. See the [backup plugin](guides/process-death.md). |
 | `emanate-test`          | Records and checks the ViewModels and sources in your unit tests. See [Testing](guides/testing.md). |
 
 ## Initialize Emanate
@@ -70,7 +70,7 @@ class MyApplication : Application() {
 
 Register the application in `AndroidManifest.xml` (`android:name=".MyApplication"`). With `BuildConfig.DEBUG`, debug
 builds log every action and fail at once with any exception, and release builds don't log and keep working.
-See [Configuration](guides/configuration.md).
+See [Initialization and configuration](guides/configuration.md).
 
 ## Your first screen
 

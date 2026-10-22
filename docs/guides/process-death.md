@@ -1,4 +1,4 @@
-# Saving state across process death
+# Surviving process death
 
 Android can kill your app while it is in the background, for example while the user goes to the system settings to
 grant a permission. When the user comes back, the screen is created again with its

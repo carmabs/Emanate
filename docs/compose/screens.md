@@ -48,7 +48,7 @@ NavHost(
 | Parameter              | Purpose                                                                                        |
 |------------------------|------------------------------------------------------------------------------------------------|
 | `screenContent`        | The screen content.                                                                            |
-| `viewModel`            | A lambda that creates the ViewModel. It is called once, when the screen is opened, and receives the `EmaStateStore` of the screen for a [backup](../guides/saving-state.md). See [Dependency injection](../guides/dependency-injection.md). |
+| `viewModel`            | A lambda that creates the ViewModel. It is called once, when the screen is opened, and receives the `EmaStateStore` of the screen for a [backup](../guides/process-death.md). See [Dependency injection](../guides/dependency-injection.md). |
 | `onEvent`              | Receives every event. Put **navigation** here, where the `NavController` is available.         |
 | `routeId`              | The route. By default `ScreenContent::class.routeId`, which is unique per class.               |
 | `initializerSupport`   | How to read the [initializer](../guides/initializers.md) from the route. See [Navigation](navigation.md#passing-an-initializer). |

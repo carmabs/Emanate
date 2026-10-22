@@ -121,5 +121,5 @@ The view simply draws the state it receives. With Compose, recomposition does th
 
 - One-shot things: messages, navigation. Use [events](events.md).
 - Platform types, like a context, a view or an image of the platform. Use `EmaText` for texts with resources, see
-  [Use cases and results](../guides/use-cases.md#ematext-texts-in-the-state).
+  [Texts without Context](../guides/texts.md).
 - Mutable collections or objects that change without you calling `copy`.

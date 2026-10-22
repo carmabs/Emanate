@@ -6,7 +6,7 @@ work together, and any screen installs all of them in one line.
 ![A plugin groups pieces and is installed in many screens](../assets/plugin.svg)
 
 Use a plugin for a feature that many screens need, but that has nothing to do with what each screen does: analytics,
-a session check, a feature flag, the [backup of the state](../guides/saving-state.md)... Without plugins, that code is
+a session check, a feature flag, the [backup of the state](../guides/process-death.md)... Without plugins, that code is
 copied in every ViewModel, or hidden in a base class that every screen must extend.
 
 ## Installing a plugin
@@ -187,4 +187,4 @@ class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()
 ## The plugins of Emanate
 
 - **The backup of the state**, created with `backupOf`, saves parts of the state and restores them after the system
-  kills the app. See [Saving state](../guides/saving-state.md).
+  kills the app. See [Surviving process death](../guides/process-death.md).

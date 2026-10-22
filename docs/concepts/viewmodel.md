@@ -164,7 +164,7 @@ class HomeViewModel(
 
 The `setup` only installs them. That is what lets a ViewModel receive a piece in its constructor, without knowing which
 implementation it gets: the same screen can call the real backend in production, use a mock in a demo build and a fake in
-the tests. See [Mocking and environments](../guides/environments.md).
+the tests. See [Dependency injection and environments](../guides/dependency-injection.md#injecting-pieces).
 
 ## The lifecycle as actions
 

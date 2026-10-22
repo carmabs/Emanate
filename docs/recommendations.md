@@ -91,14 +91,14 @@ need, prefer a [plugin](concepts/plugins.md) or an extension function of the set
 
 ## Keep the ViewModel clean
 
-- No platform types, like a context, a view or resources. Use [`EmaText`](guides/use-cases.md#ematext-texts-in-the-state) for strings.
+- No platform types, like a context, a view or resources. Use [`EmaText`](guides/texts.md) for strings.
 - Repositories are only used from use cases, never from a ViewModel directly.
 - Use cases have one job and take a single `Input` data class.
 - Put derived values in the state (`val showCreateButton get() = ...`), not in the view.
 - The view does not call ViewModel functions other than `dispatch`.
 - The reducers only compute the state: the business logic goes in the side effects.
 - Receive in the constructor the pieces that change between environments, like the side effects that call the
-  backend, so they can be [mocked without touching the screen](guides/environments.md).
+  backend, so they can be [mocked without touching the screen](guides/dependency-injection.md).
 
 ## Strings
 
