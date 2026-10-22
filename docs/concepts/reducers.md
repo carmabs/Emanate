@@ -103,7 +103,7 @@ class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()
 }
 ```
 
-See [Pieces are values](source.md#pieces-are-values).
+See [Pieces are values](viewmodel.md#pieces-are-values).
 
 ## Testing a reducer
 

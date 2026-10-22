@@ -94,8 +94,7 @@ sideEffects {
 ## When the screen is closed
 
 When the screen is closed, the running side effects are cancelled, because nobody would see their result. Two options
-let work finish anyway, up to the `closeTimeout` of the [configuration](../guides/configuration.md), 5 seconds by
-default:
+let work finish anyway, up to the `closeTimeout` of the [configuration](../guides/configuration.md):
 
 - `survivesClose = true`: the side effect can finish after the screen is closed, like a request that saves what the
   user did.
@@ -134,7 +133,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
 }
 ```
 
-See [Pieces are values](source.md#pieces-are-values) and [Mocking and environments](../guides/environments.md).
+See [Pieces are values](viewmodel.md#pieces-are-values) and [Mocking and environments](../guides/environments.md).
 
 ## Tips
 

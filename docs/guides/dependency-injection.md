@@ -14,7 +14,7 @@ createComposableScreen(
 ## One ViewModel per screen
 
 Emanate calls the function once, when the screen is opened for the first time, and keeps the ViewModel while the screen
-exists: see [How the ViewModel is kept alive](../concepts/viewmodel.md#how-the-viewmodel-is-kept-alive).
+exists: see [How the ViewModel is kept alive](../concepts/viewmodel.md#the-viewmodel-and-its-screen).
 The function must create the ViewModel, not return one that already exists, so each screen gets its own. A singleton
 would be shared by every screen of that type and would keep the state of a screen that was already closed.
 

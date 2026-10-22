@@ -1,7 +1,7 @@
 # Mocking and environments
 
 The behaviour of an Emanate screen is a list of pieces (middlewares, reducers and side effects), and
-[every piece can be replaced](../concepts/source.md#pieces-are-values). A ViewModel that **receives** a piece instead of
+[every piece can be replaced](../concepts/viewmodel.md#pieces-are-values). A ViewModel that **receives** a piece instead of
 declaring it doesn't know which one it gets, so the same screen can:
 
 - call the real backend in production,

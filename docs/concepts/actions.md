@@ -43,7 +43,7 @@ override fun setup() = source {
 }
 ```
 
-See [Source](source.md). The public entry point of the ViewModel is `dispatch(action)`, so a view can only communicate
+See [The setup](viewmodel.md#the-setup). The public entry point of the ViewModel is `dispatch(action)`, so a view can only communicate
 through actions and cannot call arbitrary functions of the ViewModel.
 
 ## Actions are also results
