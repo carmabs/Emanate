@@ -76,10 +76,46 @@ Emanate.init(
 
 ## Dispatchers
 
-`EmaConfiguration.Android(debug)` uses `Dispatchers.Main.immediate` as `main`, as the `viewModelScope` of Android does: the
-work started from the main thread, such as dispatching an action from a click, runs at once instead of waiting for the
-next frame.
+`EmaDispatchers` groups the three coroutine dispatchers that Emanate uses, one for each kind of work. It is the
+`dispatchers` property of the configuration, and each one is applied in a different place:
 
+| Dispatcher | Default                                                   | Where it is applied |
+|------------|-----------------------------------------------------------|---------------------|
+| `main`     | `Dispatchers.Main`                                        | The scope of every `EmaViewModel` and `EmaSource`. Everything the ViewModel does runs there: its middlewares, its reducers, its side effects and the dispatch of its actions. |
+| `io`       | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | The [use cases](use-cases.md): `EmaUseCase` and `EmaFlowUseCase` switch to it to run, so the side effect that calls them doesn't block `main`. |
+| `default`  | `Dispatchers.Default`                                     | The CPU-intensive work of `emanate-android`: the extensions that create bitmaps from a `ByteArray` or a drawable resource (`toBitmap`, `getBitmapFromResource`, `getBitmapCropFromResource`), and the coroutines of `EmaJobService`. |
+
+**`main`** is the one you will change most. A side effect runs on `main`, so it can read the state and dispatch actions
+safely, and the work that blocks is delegated to a use case, which switches to `io` itself:
+
+```kotlin
+sideEffects {
+    add<HomeAction.RefreshRequested> {
+        // Runs on main
+        dispatch(HomeAction.EffectQueryResult.Started)
+        // The use case switches to io, and comes back to main with the result
+        getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+    }
+}
+```
+
+Platforms without a main thread (Linux, Windows, Android Native) have no `Dispatchers.Main`, so configure another one
+as `main`. In the tests, replace it with the dispatcher of the test, see [Testing](testing.md).
+
+**`io`** is read by the use case when it is created, from `Emanate.configuration`, not from the configuration of the
+ViewModel that calls it. To use another one, for example the `io` of a [library](#libraries-and-sdks), pass it to the
+constructor of the use case.
+
+**`default`** is read from `Emanate.configuration` when the work runs. You can use it for your own CPU-intensive work, so
+it is replaced together with the others in the tests:
+
+```kotlin
+suspend fun sortContacts(contacts: List<Contact>) =
+    withContext(Emanate.configuration.dispatchers.default) { contacts.sortedBy { it.name } }
+```
+
+`EmaConfiguration.Android(debug)` only changes `main`, see [Configuration for Android](#configuration-for-android).
 Change any of them with `copy`, keeping the others:
 
 ```kotlin
