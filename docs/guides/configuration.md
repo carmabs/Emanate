@@ -47,49 +47,37 @@ Emanate.init(
 
 ## What can be configured
 
-Each property configures one thing. The ones that hold an object with several parameters are explained in
-[Inside each property](#inside-each-property).
+Each property configures one thing. The ones that hold an object with several parameters are followed by a row for
+each of them, marked with `↳`:
 
 | Property             | Default `EmaConfiguration()`   | `EmaConfiguration.Android(debug)`              | Purpose |
 |----------------------|--------------------------------|------------------------------------------------|---------|
-| `dispatchers`        | `EmaDispatchers()`             | `main` is `Dispatchers.Main.immediate`         | The coroutine dispatchers: where ViewModels, use cases and CPU-intensive work run. See [Dispatchers](#dispatchers). |
+| `dispatchers`        | `EmaDispatchers()`             | `main` is `Dispatchers.Main.immediate`         | The coroutine dispatchers. See [Dispatchers](#dispatchers). |
+| ↳ `main`             | `Dispatchers.Main`             | `Dispatchers.Main.immediate`                   | Where ViewModels and sources run their coroutines, and so their reducers and side effects. |
+| ↳ `io`               | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | Same                | Where [use cases](use-cases.md) run: network, disk and any blocking work. |
+| ↳ `default`          | `Dispatchers.Default`          | Same                                           | CPU-intensive work, like processing images in `emanate-android`. |
 | `errorPolicy`        | `EmaErrorPolicy.Catch()`       | `Throw` in debug, `Catch()` in release         | What happens when a middleware, reducer or side effect throws an exception. See [Errors](#errors). |
+| ↳ `Catch(onError)`   | `onError` is `null`            | Same                                           | The exception is caught and the screen keeps working. `onError` is optional: it receives each `EmaError`, to send it to a crash reporter. |
+| ↳ `Throw`            | (no parameters)                | Used in debug                                  | The exception is thrown again and the app fails at once. |
 | `logger`             | `EmaLogger.Println`            | `EmaLogger.Logcat` in debug, `null` in release | Where the logs go. `null` disables them. See [Logs](#logs). |
+| ↳ `log(tag, message)`| Writes with `println`          | Writes with `Log.d`                            | Writes one line. The tag is the name of the ViewModel. |
+| ↳ `prefix`           | `EMA_`                         | `EMA_`                                         | Text added before every tag, to filter the logs of Emanate: `EMA_HomeViewModel`. Set it with `EmaLogger(prefix) { tag, message -> ... }`. |
 | `printer`            | `EmaDataClassPrinter.ToString` | `EmaAndroidDataClassPrinter()`                 | How the states and actions are turned into text in the logs. See [Printing the state](#printing-the-state). |
+| ↳ `print(value)`     | `value.toString()`             | Every field, indented                          | Returns the text of a state or an action. |
+| ↳ `indent`           | (not available)                | 2                                              | Only in `EmaAndroidDataClassPrinter`: spaces of each nesting level. |
+| ↳ `wrappedLineWidth` | (not available)                | 80                                             | Only in `EmaAndroidDataClassPrinter`: length from which a long `String` is split into several lines. |
 | `closeTimeout`       | 5 seconds                      | 5 seconds                                      | How long the work of a closed ViewModel can still run before it is cancelled. See [Closing a ViewModel](#closing-a-viewmodel). |
 | `sideEffectListener` | `null`                         | `null`                                         | Receives every side effect that ends, to track or measure it. See [Measuring the side effects](#measuring-the-side-effects). |
+| ↳ `onSuccess(data, duration)` | (not called)          | (not called)                                   | A side effect finished without error. Receives its `Reflection`, the value it returned and how long it took. |
+| ↳ `onError(error, duration)`  | (not called)          | (not called)                                   | A side effect threw an exception. Receives the `EmaError` and how long it took. |
+| ↳ `onFinish(reflection, duration)` | (not called)     | (not called)                                   | A side effect ended: with success, with error or cancelled. |
 | `methodNameResolver` | `EmaMethodNameResolver.Default`| `EmaAndroidMethodNameResolver`                 | The name of the work that has no name of its own in the errors and in the `sideEffectListener`. See [Naming the side effects](#naming-the-side-effects). |
+| ↳ `resolve(container, action)` | `Method in HomeViewModel` | Name read from the lambda, like `doLogin` | Returns the name from the ViewModel and the lambda it runs. |
 | `broadcaster`        | `EmaActionBroadcaster.Shared`  | `EmaActionBroadcaster.Shared`                  | Delivers the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
-
-### Inside each property
-
-| Object                 | Parameter / member | What it does |
-|------------------------|--------------------|--------------|
-| `EmaDispatchers`       | `main`             | Where ViewModels and sources run their coroutines, and so their reducers and side effects. |
-|                        | `io`               | Where [use cases](use-cases.md) run: network, disk and any blocking work. |
-|                        | `default`          | CPU-intensive work, like processing images. |
-| `EmaErrorPolicy.Catch` | `onError`          | Optional. A function that receives each `EmaError` that was caught, to send it to a crash reporter. |
-| `EmaErrorPolicy.Throw` | (none)             | The exception is thrown again and the app fails. |
-| `EmaLogger`            | `log(tag, message)`| Writes one line. The tag is the name of the ViewModel. |
-|                        | `prefix` (in `EmaLogger(prefix) { ... }`) | Text added before every tag, to filter the logs of Emanate: `EMA_HomeViewModel`. |
-| `EmaDataClassPrinter`  | `print(value)`     | Returns the text of a state or an action. |
-| `EmaAndroidDataClassPrinter` | `indent`     | Spaces of each nesting level. Default 2. |
-|                        | `wrappedLineWidth` | Length from which a long `String` is split into several lines. Default 80. |
-| `EmaSideEffectListener`| `onSuccess(data, duration)` | A side effect finished without error. Receives its `Reflection`, the value it returned and how long it took. |
-|                        | `onError(error, duration)` | A side effect threw an exception. Receives the `EmaError` and how long it took. |
-|                        | `onFinish(reflection, duration)` | A side effect ended: with success, with error or cancelled. |
-| `EmaMethodNameResolver`| `resolve(container, action)` | Names the work that has no name of its own, from the ViewModel and its lambda. |
-| `EmaActionBroadcaster` | (none)             | `Shared` is used by the whole process. Create another with `EmaActionBroadcaster()` to isolate a group of ViewModels. |
+| ↳ `Shared`           | Used by the whole process      | Same                                           | Every ViewModel that uses it receives the actions broadcast by the others. |
+| ↳ `EmaActionBroadcaster()` | (create it)              | (create it)                                    | A new one isolates the ViewModels that use it, for example the ones of a library. |
 
 ## Dispatchers
-
-`EmaDispatchers` groups the dispatchers Emanate uses by default:
-
-| Dispatcher | Default                                                   | Used by                                                               |
-|------------|-----------------------------------------------------------|-----------------------------------------------------------------------|
-| `main`     | `Dispatchers.Main`                                        | ViewModels and sources, by default.                                   |
-| `io`       | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | [Use cases](use-cases.md): network, disk and blocking work. |
-| `default`  | `Dispatchers.Default`                                     | CPU-intensive work, such as processing images in `emanate-android`.   |
 
 `EmaConfiguration.Android(debug)` uses `Dispatchers.Main.immediate` as `main`, as the `viewModelScope` of Android does: the
 work started from the main thread, such as dispatching an action from a click, runs at once instead of waiting for the
