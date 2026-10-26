@@ -1,4 +1,4 @@
-# Initialization and configuration
+# Configuration
 
 Emanate has a configuration for the whole application, set once, when it starts, with `Emanate.init`:
 
@@ -17,37 +17,68 @@ class MyApplication : Application() {
 - If it is never called, the default `EmaConfiguration()` is used. That is the usual case in unit tests and in
   non-Android platforms.
 
-A ViewModel or a source can also receive its own configuration, which is used instead of the one of the application.
-See [Explicit configuration](#explicit-configuration).
+Register the application in `AndroidManifest.xml` (`android:name=".MyApplication"`). A ViewModel or a source can also
+receive its own configuration, which is used instead of the one of the application. See
+[Explicit configuration](#explicit-configuration).
 
-## What can be configured
-
-Each property configures one thing:
-
-| Property             | Default `EmaConfiguration()`   | `EmaConfiguration.Android(debug)`             | Purpose |
-|----------------------|--------------------------------|-----------------------------------------------|---------|
-| `dispatchers`        | `EmaDispatchers()`             | `main` is `Dispatchers.Main.immediate`        | Where ViewModels, use cases and CPU-intensive work run. See [Dispatchers](#dispatchers). |
-| `errorPolicy`        | `EmaErrorPolicy.Catch()`       | `Throw` in debug, `Catch()` in release        | What happens when a middleware, reducer or side effect throws an exception. See [Errors](#errors). |
-| `logger`             | `EmaLogger.Println`            | `EmaLogger.Logcat` in debug, `null` in release | Where the logs of Emanate go. See [Logs](#logs). |
-| `printer`            | `EmaDataClassPrinter.ToString` | Prints every field, indented                  | How the states and actions are printed in the logs. |
-| `closeTimeout`       | 5 seconds                      | 5 seconds                                     | How long the `onClose` blocks and the side effects that survive close can run after the ViewModel is closed. |
-| `sideEffectListener` | `null`                         | `null`                                        | Receives the result of every side effect, to track or measure them. See [Measuring the side effects](#measuring-the-side-effects). |
-| `methodNameResolver` | Generic names                  | Resolved from the lambdas                     | The name reported in the errors and in the `sideEffectListener` for each side effect. |
-| `broadcaster`        | `EmaActionBroadcaster.Shared`  | `EmaActionBroadcaster.Shared`                 | Sends the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
+## What `debug` changes
 
 `EmaConfiguration.Android(debug)` is in `emanate-android` (`com.carmabs.emanate.android.configuration.Android`). Pass
-`BuildConfig.DEBUG`: debug builds log to logcat and fail at once with any exception, and release builds don't log, so
-the state doesn't reach logcat, and keep working after an exception.
+`BuildConfig.DEBUG`. The flag changes **two things**, and everything else is the same in both builds:
+
+| Property      | `debug = true`                                   | `debug = false` (release)                           |
+|---------------|--------------------------------------------------|-----------------------------------------------------|
+| `errorPolicy` | `Throw`: an exception in a middleware, reducer or side effect crashes the app at once, so you notice it while developing. See [Errors](#errors). | `Catch()`: the exception is caught and the screen keeps working. |
+| `logger`      | `EmaLogger.Logcat`: every action and state is written to logcat with `Log.d`. See [Logs](#logs). | `null`: nothing is logged, so the state of the user, which may have personal data, never reaches logcat. |
+
+What is the same in both: the `main` dispatcher is `Dispatchers.Main.immediate`, the `printer` prints every field, the
+`methodNameResolver` reads the names from the lambdas, and `closeTimeout`, `sideEffectListener` and `broadcaster` keep
+their defaults.
 
 `EmaConfiguration` is a data class, so change only what you need with `copy`:
 
 ```kotlin
 Emanate.init(
     EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
-        errorPolicy = EmaErrorPolicy.Catch { error -> crashReporter.record(error.exception) }
+        closeTimeout = 10.seconds
     )
 )
 ```
+
+## What can be configured
+
+Each property configures one thing. The ones that hold an object with several parameters are explained in
+[Inside each property](#inside-each-property).
+
+| Property             | Default `EmaConfiguration()`   | `EmaConfiguration.Android(debug)`              | Purpose |
+|----------------------|--------------------------------|------------------------------------------------|---------|
+| `dispatchers`        | `EmaDispatchers()`             | `main` is `Dispatchers.Main.immediate`         | The coroutine dispatchers: where ViewModels, use cases and CPU-intensive work run. See [Dispatchers](#dispatchers). |
+| `errorPolicy`        | `EmaErrorPolicy.Catch()`       | `Throw` in debug, `Catch()` in release         | What happens when a middleware, reducer or side effect throws an exception. See [Errors](#errors). |
+| `logger`             | `EmaLogger.Println`            | `EmaLogger.Logcat` in debug, `null` in release | Where the logs go. `null` disables them. See [Logs](#logs). |
+| `printer`            | `EmaDataClassPrinter.ToString` | `EmaAndroidDataClassPrinter()`                 | How the states and actions are turned into text in the logs. See [Printing the state](#printing-the-state). |
+| `closeTimeout`       | 5 seconds                      | 5 seconds                                      | How long the work of a closed ViewModel can still run before it is cancelled. See [Closing a ViewModel](#closing-a-viewmodel). |
+| `sideEffectListener` | `null`                         | `null`                                         | Receives every side effect that ends, to track or measure it. See [Measuring the side effects](#measuring-the-side-effects). |
+| `methodNameResolver` | `EmaMethodNameResolver.Default`| `EmaAndroidMethodNameResolver`                 | The name that identifies a side effect in the errors and in the `sideEffectListener`. See [Naming the side effects](#naming-the-side-effects). |
+| `broadcaster`        | `EmaActionBroadcaster.Shared`  | `EmaActionBroadcaster.Shared`                  | Delivers the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
+
+### Inside each property
+
+| Object                 | Parameter / member | What it does |
+|------------------------|--------------------|--------------|
+| `EmaDispatchers`       | `main`             | Where ViewModels and sources run their coroutines, and so their reducers and side effects. |
+|                        | `io`               | Where [use cases](use-cases.md) run: network, disk and any blocking work. |
+|                        | `default`          | CPU-intensive work, like processing images. |
+| `EmaErrorPolicy.Catch` | `onError`          | Optional. A function that receives each `EmaError` that was caught, to send it to a crash reporter. |
+| `EmaErrorPolicy.Throw` | (none)             | The exception is thrown again and the app fails. |
+| `EmaLogger`            | `log(tag, message)`| Writes one line. The tag is the name of the ViewModel. |
+|                        | `prefix` (in `EmaLogger(prefix) { ... }`) | Text added before every tag, to filter the logs of Emanate: `EMA_HomeViewModel`. |
+| `EmaDataClassPrinter`  | `print(value)`     | Returns the text of a state or an action. |
+| `EmaAndroidDataClassPrinter` | `indent`     | Spaces of each nesting level. Default 2. |
+|                        | `wrappedLineWidth` | Length from which a long `String` is split into several lines. Default 80. |
+| `EmaSideEffectListener`| `onSuccess(data)`  | A side effect finished without error. Receives its `Reflection` and the value it returned. |
+|                        | `onFinish(reflection)` | A side effect ended, with or without error. |
+| `EmaMethodNameResolver`| `resolve(container, action)` | Returns the name of the side effect from the ViewModel and its lambda. |
+| `EmaActionBroadcaster` | (none)             | `Shared` is used by the whole process. Create another with `EmaActionBroadcaster()` to isolate a group of ViewModels. |
 
 ## Dispatchers
 
@@ -72,27 +103,121 @@ Emanate.init(android.copy(dispatchers = android.dispatchers.copy(io = myIoDispat
 
 ## Printing the state
 
-The logs print each state with the `printer` of the configuration. `EmaConfiguration.Android(debug)` uses
-`EmaAndroidDataClassPrinter`, which prints the fields, nested objects, collections and maps with indentation.
-Implement `EmaDataClassPrinter` to print them your own way.
+The logs print each state and action with the `printer` of the configuration. Take this state:
+
+```kotlin
+data class HomeState(
+    val query: String = "",
+    val isLoading: Boolean = false,
+    val friends: List<User> = emptyList()
+) : EmaState
+```
+
+With the default printer, `EmaDataClassPrinter.ToString`, it is its `toString()`, in a single line:
+
+```
+HomeState(query=An, isLoading=false, friends=[User(name=Ana, role=USER), User(name=Andrés, role=ADMIN)])
+```
+
+`EmaConfiguration.Android(debug)` uses `EmaAndroidDataClassPrinter`, which reads the fields and indents the nested
+objects, collections and maps, so a big state can be read at a glance:
+
+```
+HomeState(
+  query = "An"
+  isLoading = false
+  friends = [
+              User(
+                name = "Ana"
+                role = Role.USER
+              ),
+              User(
+                name = "Andrés"
+                role = Role.ADMIN
+              )
+            ]
+)
+```
+
+It reads the fields with Java reflection, so it is only available on Android and the JVM. Change its indentation or
+the width where long texts are split with `EmaAndroidDataClassPrinter(indent = 4, wrappedLineWidth = 120)`.
+
+### A custom printer
+
+Implement `EmaDataClassPrinter` to print the states your way. A useful case is **hiding sensitive data**, so it doesn't
+reach the logs of a QA build:
+
+```kotlin
+val maskedPrinter = EmaDataClassPrinter { value ->
+    value.toString()
+        .replace(Regex("(password|token)=[^,)]*"), "$1=***")
+}
+
+Emanate.init(EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(printer = maskedPrinter))
+```
+
+```
+LoginState(user=ana, password=***, isLoading=false)
+```
+
+To print any object with the printer of the configuration, use `toStringPretty()`.
 
 ## Logs
 
-Emanate writes its logs with the `logger` of the configuration. By default it is `EmaLogger.Println`, which writes to
-the standard output and adds `EMA_` before the tag. `EmaConfiguration.Android(debug)` uses `EmaLogger.Logcat` in debug
-builds, which writes with `Log.d`, and no logger in release builds. The errors caught by the
-[error policy](#errors) are also logged.
+Emanate writes its logs with the `logger` of the configuration. A logger is a function that receives a `tag`, the
+name of the ViewModel, and a `message`:
 
-Every `EmaViewModel` uses it, with its name as tag, to log its actions:
+| Logger                         | Where it writes                                           | Used by                              |
+|--------------------------------|-----------------------------------------------------------|--------------------------------------|
+| `EmaLogger.Println`            | The standard output, with `EMA_` before the tag.          | `EmaConfiguration()`                 |
+| `EmaLogger.Logcat`             | Logcat with `Log.d`, with `EMA_` before the tag.          | `EmaConfiguration.Android(true)`     |
+| `null`                         | Nowhere.                                                  | `EmaConfiguration.Android(false)`    |
+| Your own `EmaLogger`           | Wherever you want.                                        | Anything                             |
 
-- One line when an action is received, before the middlewares: `Received action: Search(query=ema)`. It shows the
-  actions that a middleware stops, which don't reach the reducers.
-- A block with the action and the state before and after its reducers. It is written right before them, after all the
-  middlewares, so the state after the action is correct even if a middleware continues it later with `nextAfter`, and
-  the action is the one the reducers receive.
+Every `EmaViewModel` logs its actions with its name as tag:
 
-The state may contain data of the user, so don't log in release builds, as `EmaConfiguration.Android(debug)` does. To
-send the logs to your own logger:
+- One line when an action is received, before the middlewares. It shows the actions that a middleware stops, which
+  don't reach the reducers.
+- A block with the action and the state before and after its reducers. It is written right before them, after all
+  the middlewares, so the state after the action is correct even if a middleware continues it later with `nextAfter`,
+  and the action is the one the reducers receive.
+
+For the action `QueryWritten("An")` of the state above, logcat shows (the tag, `EMA_HomeViewModel`, is omitted):
+
+```
+Received action: QueryWritten(query=An)
+
+**********************    STARTING EMA ACTION LOGGING    ***********************
+**                                                                            **
+|||||||||||||||||||||||||||    Dispatched action    ||||||||||||||||||||||||||||
+||                                                                            ||
+||    QueryWritten(query=An)                                                  ||
+|||||||||||||||||||||||    State before apply action    ||||||||||||||||||||||||
+||                                                                            ||
+||    HomeState(                                                              ||
+||      query = ""                                                            ||
+||      isLoading = false                                                     ||
+||      friends = []                                                          ||
+||    )                                                                       ||
+||||||||||||||||||||||||    State after apply action    ||||||||||||||||||||||||
+||                                                                            ||
+||    HomeState(                                                              ||
+||      query = "An"                                                          ||
+||      isLoading = false                                                     ||
+||      friends = []                                                          ||
+||    )                                                                       ||
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+**                                                                            **
+**********************    FINISHED EMA ACTION LOGGING    ***********************
+```
+
+The errors caught by the [error policy](#errors) are logged too, with the same tag.
+
+The state may contain data of the user, so don't log in release builds, as `EmaConfiguration.Android(debug)` does.
+
+### A custom logger
+
+An `EmaLogger` is a lambda, so it can send the logs wherever you need. To use Timber in debug builds:
 
 ```kotlin
 Emanate.init(
@@ -102,49 +227,184 @@ Emanate.init(
 )
 ```
 
+Or keep the last actions as breadcrumbs of a crash report, and skip the big blocks of state:
+
+```kotlin
+val breadcrumbs = EmaLogger { tag, message ->
+    // "Received action: ..." is one line and enough to know what the user did before the crash
+    if (message.startsWith("Received action")) FirebaseCrashlytics.getInstance().log("$tag: $message")
+}
+```
+
+Use `EmaLogger(prefix = "MYAPP_") { tag, message -> ... }` to add a prefix to every tag, so they can be filtered in
+logcat.
+
 To disable the logs of a single ViewModel, pass it a configuration without logger:
-`Emanate.configuration.copy(logger = null)`. A source used on its own doesn't log: add `loggerMiddleware(tag, logger)` as its last middleware.
+`Emanate.configuration.copy(logger = null)`. A source used on its own doesn't log: add `loggerMiddleware(tag, logger)`
+as its last middleware.
 
 ## Errors
 
-For the errors you expect, like a failed request, **return a result instead of throwing**: an
-[`EmaResult`](use-cases.md#emaresult) makes the failure part of the contract, and the side effect turns it into an
-action that the reducers show.
+The code of your ViewModel can fail: a reducer that calls `friends.first()` on an empty list, a middleware that parses
+a wrong value, a side effect that throws. What Emanate does then is the `errorPolicy`.
 
-For the unexpected ones, the `errorPolicy` decides what happens when a middleware, a reducer or a side effect throws an
-exception:
+> **Errors you expect are not exceptions.** A request that can fail is not an error of this kind: return an
+> [`EmaResult`](use-cases.md#emaresult) from the use case and let the side effect dispatch an action that shows the
+> failure. The policy is for the **bugs**, the things you didn't expect.
 
-| `EmaErrorPolicy`  | Effect |
-|-------------------|--------|
-| `Catch(onError)`  | **Default, and in release builds with `EmaConfiguration.Android(debug)`.** The exception is caught and written to the `logger`, and the ViewModel keeps working. `onError` also receives each one. |
-| `Throw`           | The exception is thrown again and the app fails at once. **In debug builds with `EmaConfiguration.Android(debug)`.** |
+Take a reducer with a bug:
 
-With `Catch`, the action of a middleware or a reducer that fails is discarded, without changing the state, and the next
-actions are processed as usual. A bug in one action doesn't break the screen. A side effect cancelled by its
-concurrency, its timeout or the closing of the ViewModel is not an error, so it is not reported.
+```kotlin
+reducers {
+    add<HomeAction.FriendClicked> { action ->
+        // Bug: throws NoSuchElementException when the friend isn't in the list
+        state.copy(selected = state.friends.first { it.id == action.id })
+    }
+}
+```
+
+| | `Throw` | `Catch` |
+|---|---------|---------|
+| **What happens** | The exception is thrown again where it happened, so the app crashes with its stack trace. | The exception is caught. The app keeps running. |
+| **The screen** | Closed by the crash. | Still working. The state is the one it had before the action. |
+| **The log** | The crash of the app. | One line with the stack trace: `HomeViewModel: action FriendClicked failed: java.util.NoSuchElementException ...` |
+| **`onError`** | Not called. | Called with an `EmaError`. |
+| **Use it** | While developing, so the bug can't go unnoticed. It is the default of `EmaConfiguration.Android(true)`. | In production, so a bug in one action doesn't take the whole app down. It is the default of `EmaConfiguration()` and of release builds. |
+
+What "keeps working" means depends on the piece that failed:
+
+| It threw in...  | With `Catch`                                                                                  |
+|-----------------|-----------------------------------------------------------------------------------------------|
+| A reducer       | The action is discarded: the state doesn't change and the next actions are processed as usual. |
+| A middleware    | The action is discarded and doesn't reach the reducers or the side effects.                   |
+| A side effect   | That side effect ends. The rest of the side effects and the actions keep working.             |
+
+Cancellations are never errors: a side effect cancelled by its concurrency, its timeout or the closing of the
+ViewModel is not reported.
+
+### Reporting the errors
+
+With `Catch`, pass `onError` to send each error to your crash reporter, so a bug that is silent for the user is not
+silent for you:
 
 ```kotlin
 Emanate.init(
     EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
-        errorPolicy = EmaErrorPolicy.Catch { error -> crashReporter.record(error.exception) }
+        errorPolicy = if (BuildConfig.DEBUG) {
+            EmaErrorPolicy.Throw
+        } else {
+            EmaErrorPolicy.Catch { error ->
+                crashReporter.recordException(error.exception)
+                crashReporter.setCustomKey("viewModel", error.reflection.containerClassName)
+                crashReporter.setCustomKey("where", error.reflection.methodName)
+            }
+        }
     )
 )
 ```
 
-`onError` receives an `EmaError` with the exception and its `reflection`, which tells the ViewModel where it happened.
+An `EmaError` has:
+
+| Field                                     | Example                                          |
+|-------------------------------------------|--------------------------------------------------|
+| `exception`                               | The `NoSuchElementException` that was thrown.    |
+| `reflection.containerClassName`           | `HomeViewModel`                                  |
+| `reflection.containerClassQualifiedName`  | `com.carmabs.sample.home.HomeViewModel`          |
+| `reflection.methodName`                   | `action FriendClicked` for a middleware or a reducer. For a side effect, its name, see [Naming the side effects](#naming-the-side-effects). |
+
+To crash also in the QA builds, so the testers report the bugs instead of the app hiding them, use `Throw` there: the
+`debug` flag is only the default of `EmaConfiguration.Android`, and the policy is yours to choose.
 
 ## Measuring the side effects
 
-To track every side effect, for example to measure how long the business logic takes, set a `sideEffectListener`. Its
-`onSuccess` and `onFinish` are called when each one ends:
+To track the side effects, for example to count how many run, which ones succeed or what they return, set a
+`sideEffectListener`. It has two functions, both optional:
+
+| Function                  | Called when                                          | Receives                                       |
+|---------------------------|------------------------------------------------------|------------------------------------------------|
+| `onSuccess(data)`         | A side effect finishes without error.                | A `ReflectionData`: the `reflection` and the value `data` that the side effect returned. |
+| `onFinish(reflection)`    | A side effect ends, with an error or not, or cancelled. | The `reflection`.                           |
+
+The `Reflection` says which side effect it is:
+
+| Field                         | Example                                  |
+|-------------------------------|------------------------------------------|
+| `containerClassName`          | `HomeViewModel`                          |
+| `containerClassQualifiedName` | `com.carmabs.sample.home.HomeViewModel`  |
+| `methodName`                  | The name of the side effect, resolved by the [`methodNameResolver`](#naming-the-side-effects). |
+
+With them you can track, for each side effect: which ViewModel launched it, its name and what it returned. The
+listener doesn't receive the time it took: to measure it, take the time in the side effect itself.
 
 ```kotlin
-EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
-    sideEffectListener = object : EmaSideEffectListener {
-        override fun onFinish(reflection: Reflection) = analytics.track(reflection.methodName)
+class SideEffectTracker(private val analytics: Analytics) : EmaSideEffectListener {
+
+    override fun onSuccess(data: ReflectionData) {
+        analytics.track(
+            event = "side_effect_success",
+            "viewModel" to data.reflection.containerClassName,
+            "name" to data.reflection.methodName,
+            "result" to data.data.toString()
+        )
     }
+
+    override fun onFinish(reflection: Reflection) {
+        analytics.track(
+            event = "side_effect_finish",
+            "viewModel" to reflection.containerClassName,
+            "name" to reflection.methodName
+        )
+    }
+}
+
+Emanate.init(
+    EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(sideEffectListener = SideEffectTracker(analytics))
 )
 ```
+
+`onSuccess` is called right before `onFinish`, so a side effect that ends with an error only calls `onFinish`.
+The errors are not given to the listener: they go to the [error policy](#errors).
+
+## Naming the side effects
+
+The `methodNameResolver` gives each side effect the `methodName` that you see in the errors and in the
+`sideEffectListener`. It receives the object that launched it, usually the ViewModel, and the lambda that it runs:
+
+| Resolver                       | Result                                                                  |
+|--------------------------------|-------------------------------------------------------------------------|
+| `EmaMethodNameResolver.Default`| A generic name: `Method in HomeViewModel`.                              |
+| `EmaAndroidMethodNameResolver` | Reads the name from the class that the compiler generates for the lambda, so a lambda written in `doLogin` of `LoginViewModel` (`LoginViewModel$doLogin$1`) is named `doLogin`. If it can't find it, it uses the generic one. |
+| Your own                       | Anything: `EmaMethodNameResolver { container, action -> "${container::class.simpleName}.effect" }`. |
+
+The side effects that you declare in the `setup` of a source are launched by Emanate, so their lambda isn't the one you
+wrote and their name is not specific. Use `containerClassName` and the data that `onSuccess` receives to tell them
+apart.
+
+## Closing a ViewModel
+
+When a ViewModel is closed, its side effects are cancelled, so the work that was running stops. Two things can still
+run after it:
+
+- the `onClose` blocks of its source, which are the last thing the ViewModel does, and
+- the side effects added with `survivesClose = true`, like the one that saves a draft when the user leaves the editor.
+
+The `closeTimeout` is how long they have. After it, they are cancelled, so a request that never answers doesn't keep
+the ViewModel alive for ever. By default it is 5 seconds.
+
+```kotlin
+sideEffects {
+    add<EditorAction.SaveClicked>(survivesClose = true) { saveDraftUseCase(state.draft) }
+}
+```
+
+If the user leaves the editor and the save takes 8 seconds, it is cancelled at the 5th. For slower work, increase it:
+
+```kotlin
+Emanate.init(EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(closeTimeout = 15.seconds))
+```
+
+Keep it short: it is the time a ViewModel that was already closed stays in memory. See
+[Side effects](../concepts/side-effects.md#when-the-screen-is-closed).
 
 ## Explicit configuration
 
@@ -181,8 +441,8 @@ by default the `io` dispatcher of the configuration of Emanate, so pass the `io`
 ## Libraries and SDKs
 
 A library built with Emanate can be used by an application that also uses Emanate and calls `Emanate.init`. To keep
-them apart, the library doesn't call `Emanate.init` nor use the configuration of Emanate: it creates its own and passes
-it to all its pieces.
+them apart, the library doesn't call `Emanate.init` nor use the configuration of Emanate: it creates its own and
+passes it to all its pieces.
 
 ```kotlin
 internal object MyLibraryEmanate {
@@ -191,23 +451,47 @@ internal object MyLibraryEmanate {
         broadcaster = EmaActionBroadcaster()
     )
 }
+```
 
-internal class PayUseCase(private val repository: PaymentRepository) :
-    EmaUseCase<Payment, Receipt>(MyLibraryEmanate.configuration.dispatchers.io) {
+### Wrap the classes of Emanate in base classes
+
+Passing the configuration in every ViewModel and use case of the library is easy to forget: one that doesn't receive it
+silently uses the one of the application, or the default one if the application never initialized Emanate. **Don't
+extend the classes of Emanate directly in the library: create a base class for each one that already passes the
+configuration**, and extend only those:
+
+```kotlin
+internal abstract class MyLibViewModel<S : EmaState, A : EmaAction, E : EmaEvent>(initialState: S) :
+    EmaViewModel<S, A, E>(initialState, MyLibraryEmanate.configuration)
+
+internal abstract class MyLibUseCase<I, O> :
+    EmaUseCase<I, O>(MyLibraryEmanate.configuration.dispatchers.io)
+
+internal abstract class MyLibFlowUseCase<I, O> :
+    EmaFlowUseCase<I, O>(MyLibraryEmanate.configuration.dispatchers.io)
+```
+
+The classes of the library extend them, and there is nothing to remember:
+
+```kotlin
+internal class PayUseCase(private val repository: PaymentRepository) : MyLibUseCase<Payment, Receipt>() {
     // ...
 }
 
 internal class PaymentViewModel(private val payUseCase: PayUseCase) :
-    EmaViewModel<PaymentState, PaymentAction, PaymentEvent>(PaymentState(), MyLibraryEmanate.configuration) {
+    MyLibViewModel<PaymentState, PaymentAction, PaymentEvent>(PaymentState()) {
     // ...
 }
 ```
 
-- **ViewModels and sources** receive the configuration of the library as their `configuration` parameter.
-- **Use cases** receive its `io` dispatcher.
+The base classes are also the place to add what every piece of the library shares, like a plugin that all its
+ViewModels install. If the library creates a source on its own with `EmaSource(...)`, wrap it the same way.
+
 - **Broadcast actions.** With its own `EmaActionBroadcaster`, the ViewModels of the library only receive the actions
   broadcast by each other, and the ones of the application don't receive theirs. Keep the shared one,
   `EmaActionBroadcaster.Shared`, if the library and the application send results to each other.
+- **Public ViewModels.** If the application must create the ViewModels of the library, expose factories or a public
+  base class of your own, not the classes of Emanate, so the configuration can't be skipped.
 
 If the application must be able to change something, like the logger, add a function to the library that receives it
 before any of its screens is opened, instead of using `Emanate.init`.

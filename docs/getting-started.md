@@ -70,7 +70,7 @@ class MyApplication : Application() {
 
 Register the application in `AndroidManifest.xml` (`android:name=".MyApplication"`). With `BuildConfig.DEBUG`, debug
 builds log every action and fail at once with any exception, and release builds don't log and keep working.
-See [Initialization and configuration](guides/configuration.md).
+See [Configuration](guides/configuration.md).
 
 ## Your first screen
 

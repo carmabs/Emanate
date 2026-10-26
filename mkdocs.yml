@@ -110,7 +110,7 @@ nav:
       - ViewModel: concepts/viewmodel.md
       - Source: concepts/source.md
   - Guides:
-      - Initialization and configuration: guides/configuration.md
+      - Configuration: guides/configuration.md
       - Initializers: guides/initializers.md
       - Surviving process death: guides/process-death.md
       - Dependency injection and environments: guides/dependency-injection.md
