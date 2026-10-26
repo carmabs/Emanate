@@ -39,8 +39,7 @@ import kotlinx.coroutines.launch
  * @param container class that launches the side effect. It is reported in [Reflection]
  * @param scope where the side effect is launched
  * @param dispatcher where the side effect runs
- * @param logName name reported as method name in [Reflection]. If it is null,
- * [EmaConfiguration.methodNameResolver] is used
+ * @param logName name reported in [Reflection]. If it is null, "sideEffect" is used
  * @param configuration configuration applied
  * @param throwException if true, the exceptions are thrown instead of being handled
  * @param output what the action has launched, given to the side effect listener when it succeeds
@@ -74,7 +73,7 @@ class SideEffectResult<T> internal constructor(
             Reflection(
                 containerClassName = container::class.simpleName.toNonNull(),
                 containerClassQualifiedName = container::class.qualifiedNameOrSimpleName,
-                methodName = logName ?: configuration.methodNameResolver.resolve(container, action)
+                name = logName ?: "sideEffect"
             )
         }
         val start = TimeSource.Monotonic.markNow()

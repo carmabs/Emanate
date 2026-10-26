@@ -73,7 +73,7 @@ class EmaSourceErrorTest {
         runCurrent()
 
         assertEquals(CountState(count = 1), source.state)
-        assertEquals("action BrokenReducer", errors.single().reflection.methodName)
+        assertEquals("action BrokenReducer", errors.single().reflection.name)
         assertEquals("broken reducer", errors.single().exception.message)
         source.close()
     }
@@ -88,7 +88,7 @@ class EmaSourceErrorTest {
 
         // The reducer of BrokenMiddleware doesn't run
         assertEquals(CountState(count = 1), source.state)
-        assertEquals("action BrokenMiddleware", errors.single().reflection.methodName)
+        assertEquals("action BrokenMiddleware", errors.single().reflection.name)
         source.close()
     }
 
@@ -112,7 +112,7 @@ class EmaSourceErrorTest {
         runCurrent()
 
         // Caught with the policy of the source instead of thrown
-        assertEquals("action BrokenReducer", errors.single().reflection.methodName)
+        assertEquals("action BrokenReducer", errors.single().reflection.name)
         source.close()
     }
 
@@ -127,7 +127,7 @@ class EmaSourceErrorTest {
         runCurrent()
 
         // Caught with the policy it had when it was created instead of thrown
-        assertEquals("action BrokenReducer", errors.single().reflection.methodName)
+        assertEquals("action BrokenReducer", errors.single().reflection.name)
         source.close()
     }
 }

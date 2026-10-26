@@ -59,6 +59,6 @@ class EmaSourceThrowListenerTest {
         }
 
         assertEquals("broken effect", errors.single().exception.message)
-        assertEquals("FailingAction", errors.single().reflection.methodName)
+        assertEquals("FailingAction", errors.single().reflection.name)
     }
 }

@@ -76,7 +76,7 @@ class EmaViewModelClassicErrorTest {
         viewModel.dispatch(BrokenAction.Broken)
         viewModel.dispatch(BrokenAction.Increment)
 
-        assertEquals("action Broken", errors.single().reflection.methodName)
+        assertEquals("action Broken", errors.single().reflection.name)
         // The state is changed imperatively, so the change made before the error is kept
         assertEquals(BrokenState(count = 11), viewModel.stateFlow.value)
         viewModel.close()
@@ -88,7 +88,7 @@ class EmaViewModelClassicErrorTest {
 
         viewModel.onCreated(null)
 
-        assertEquals(listOf("onStateCreated"), errors.map { it.reflection.methodName })
+        assertEquals(listOf("onStateCreated"), errors.map { it.reflection.name })
         assertEquals("BrokenViewModel", errors.single().reflection.containerClassName)
         viewModel.close()
     }
@@ -103,7 +103,7 @@ class EmaViewModelClassicErrorTest {
         runCurrent()
 
         assertEquals(listOf("ping 2"), viewModel.received)
-        assertEquals("broadcast listener of Ping", errors.last().reflection.methodName)
+        assertEquals("broadcast listener of Ping", errors.last().reflection.name)
         viewModel.close()
     }
 
