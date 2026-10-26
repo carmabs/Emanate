@@ -22,7 +22,6 @@ import androidx.test.core.app.ApplicationProvider
 import com.carmabs.emanate.android.base.EmaSingleToast
 import com.carmabs.emanate.android.base.showToast
 import com.carmabs.emanate.android.configuration.Android
-import com.carmabs.emanate.android.configuration.EmaAndroidMethodNameResolver
 import com.carmabs.emanate.android.extension.addOnBackPressedListener
 import com.carmabs.emanate.android.extension.copyDefault
 import com.carmabs.emanate.android.extension.getRoundedCornerBitmap
@@ -282,18 +281,11 @@ class EmaAndroidViewModelTest {
 @RunWith(RobolectricTestRunner::class)
 class EmaAndroidConfigurationTest {
 
-    private class Container {
-        // sideEffect receives suspend lambdas, which the compiler generates as named classes
-        fun launch(block: suspend () -> Unit): Any = block
-        fun method() = launch { }
-    }
-
     @Test
     fun `android configuration uses the android implementations`() {
         val configuration = EmaConfiguration.Android(debug = true)
         assertSame(Dispatchers.Main.immediate, configuration.dispatchers.main)
         assertSame(Dispatchers.IO, configuration.dispatchers.io)
-        assertSame(EmaAndroidMethodNameResolver, configuration.methodNameResolver)
         assertIs<EmaAndroidDataClassPrinter>(configuration.printer)
     }
 
@@ -306,13 +298,6 @@ class EmaAndroidConfigurationTest {
         val release = EmaConfiguration.Android(debug = false)
         assertNull(release.logger)
         assertIs<EmaErrorPolicy.Catch>(release.errorPolicy)
-    }
-
-    @Test
-    fun `the method name is resolved from the lambda class`() {
-        val container = Container()
-        assertEquals("method", EmaAndroidMethodNameResolver.resolve(container, container.method()))
-        assertEquals("Method in String", EmaAndroidMethodNameResolver.resolve("container", Any()))
     }
 }
 

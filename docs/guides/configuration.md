@@ -33,7 +33,6 @@ Each property configures one thing. The ones that hold an object with several pa
 | `printer` | `EmaDataClassPrinter.ToString` | **`print(value)`**: returns the text of the state or the action. By default its `toString()`.<br>**`indent`** and **`wrappedLineWidth`**: only in `EmaAndroidDataClassPrinter`. The spaces of each nesting level (2) and the length from which a long `String` is split into lines (80). | How the states and actions are turned into text in the logs. See [Printing the state](#printing-the-state). |
 | `closeTimeout` | 5 seconds |  | How long the work of a closed ViewModel can still run before it is cancelled. See [Closing a ViewModel](#closing-a-viewmodel). |
 | `sideEffectListener` | `null` | **`onSuccess(reflection, output, duration)`**: it finished without error. Receives its `Reflection`, what it launched (`output`) and how long it took.<br>**`onError(error, duration)`**: it threw an exception. Receives the `EmaError` and how long it took.<br>**`onFinish(reflection, duration)`**: it ended, with success, with error or cancelled. | Receives every side effect that ends, to track or measure it. See [Measuring the side effects](#measuring-the-side-effects). |
-| `methodNameResolver` | `EmaMethodNameResolver.Default` | **`resolve(container, action)`**: returns the name from the ViewModel and the lambda it runs. By default `Method in ` followed by the name of the ViewModel class, like `Method in LoginViewModel`. | The name of the work that has no name of its own, in the errors and in the `sideEffectListener`. See [Naming the side effects](#naming-the-side-effects). |
 | `broadcaster` | `EmaActionBroadcaster.Shared` | **`Shared`**: used by the whole process, so every ViewModel receives the actions broadcast by the others.<br>**`EmaActionBroadcaster()`**: a new one isolates the ViewModels that use it, for example the ones of a library. | Delivers the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
 
 ### Configuration for Android
@@ -49,7 +48,6 @@ you can compare them:
 | `logger`             | `EmaLogger.Println`            | `EmaLogger.Logcat`               | `null`                           |
 | `dispatchers.main`   | `Dispatchers.Main`             | `Dispatchers.Main.immediate`     | `Dispatchers.Main.immediate`     |
 | `printer`            | `EmaDataClassPrinter.ToString` | `EmaAndroidDataClassPrinter()`   | `EmaAndroidDataClassPrinter()`   |
-| `methodNameResolver` | `EmaMethodNameResolver.Default`| `EmaAndroidMethodNameResolver`   | `EmaAndroidMethodNameResolver`   |
 
 - **`errorPolicy`.** With `Throw`, an exception in a middleware, reducer or side effect crashes the app at once, so you
   notice it while developing. With `Catch()`, it is caught and the screen keeps working. See [Errors](#errors).
@@ -59,7 +57,6 @@ you can compare them:
   from the main thread, like dispatching an action from a click, runs at once instead of waiting for the next frame.
 - **`printer`.** `EmaAndroidDataClassPrinter` prints every field, indented. In release builds there is no `logger`, so
   it isn't used. See [Printing the state](#printing-the-state).
-- **`methodNameResolver`.** The name is read from the lambda. See [Naming the side effects](#naming-the-side-effects).
 
 Only `errorPolicy` and `logger` depend on the flag. `closeTimeout`, `sideEffectListener`, `broadcaster` and the other
 dispatchers keep the default values in all of them.
@@ -318,7 +315,7 @@ Emanate.init(
             EmaErrorPolicy.Catch { error ->
                 crashReporter.recordException(error.exception)
                 crashReporter.setCustomKey("viewModel", error.reflection.containerClassName)
-                crashReporter.setCustomKey("where", error.reflection.methodName)
+                crashReporter.setCustomKey("where", error.reflection.name)
             }
         }
     )
@@ -332,7 +329,7 @@ An `EmaError` has:
 | `exception`                               | The `NoSuchElementException` that was thrown.    |
 | `reflection.containerClassName`           | `HomeViewModel`                                  |
 | `reflection.containerClassQualifiedName`  | `com.carmabs.sample.home.HomeViewModel`          |
-| `reflection.methodName`                   | `action FriendClicked` for a middleware or a reducer. For a side effect, its name: `RefreshRequested`, see [Naming the side effects](#naming-the-side-effects). |
+| `reflection.name`                   | `action FriendClicked` for a middleware or a reducer. For a side effect, its name: `RefreshRequested`, see [Naming the side effects](#naming-the-side-effects). |
 
 To crash also in the QA builds, so the testers report the bugs instead of the app hiding them, use `Throw` there: the
 `debug` flag is only the default of `EmaConfiguration.Android`, and the policy is yours to choose.
@@ -359,7 +356,7 @@ The `Reflection` says which side effect it is:
 |-------------------------------|------------------------------------------|
 | `containerClassName`          | `HomeViewModel`                          |
 | `containerClassQualifiedName` | `com.carmabs.sample.home.HomeViewModel`  |
-| `methodName`                  | The name of the side effect, see [Naming the side effects](#naming-the-side-effects). |
+| `name`                        | The name of the side effect, see [Naming the side effects](#naming-the-side-effects). |
 
 The `SideEffectOutput` says what the side effect produced, in the order it happened:
 
@@ -379,7 +376,7 @@ class SideEffectTracker(private val analytics: Analytics) : EmaSideEffectListene
     override fun onSuccess(reflection: Reflection, output: SideEffectOutput, duration: Duration) {
         analytics.track(
             event = "side_effect_success",
-            "name" to "${reflection.containerClassName}.${reflection.methodName}",
+            "name" to "${reflection.containerClassName}.${reflection.name}",
             "millis" to duration.inWholeMilliseconds.toString(),
             // Loaded(friends = [...]), Failed...
             "actions" to output.actions.joinToString { it::class.simpleName.toString() }
@@ -390,7 +387,7 @@ class SideEffectTracker(private val analytics: Analytics) : EmaSideEffectListene
         analytics.track(
             event = "side_effect_error",
             "viewModel" to error.reflection.containerClassName,
-            "name" to error.reflection.methodName,
+            "name" to error.reflection.name,
             "error" to error.exception::class.simpleName.toString(),
             "millis" to duration.inWholeMilliseconds.toString()
         )
@@ -418,8 +415,15 @@ Emanate.init(
 
 ## Naming the side effects
 
-The `methodName` identifies the side effect in the errors and in the `sideEffectListener`. A side effect declared in
-the `setup` of a ViewModel is named after **the type of the actions that launch it**:
+The `name` of the `Reflection` identifies the work in the errors and in the `sideEffectListener`. Emanate gives it a
+name from what it knows:
+
+| Work                                   | Name                                | Example              |
+|----------------------------------------|-------------------------------------|----------------------|
+| A side effect of the `setup`           | The type of the action that launches it, or the `name` you pass. | `RefreshRequested` |
+| A `nextAfter` of a middleware          | `nextAfter` and the type of the action it received. | `nextAfter QueryWritten` |
+| An `onClose` block                     | `onClose`                           | `onClose`            |
+| A reducer or a middleware that fails (errors only) | `action` and the type of the action. | `action FriendClicked` |
 
 ```kotlin
 sideEffects {
@@ -430,16 +434,7 @@ sideEffects {
 
 Pass `name` to `add`, to `sideEffectOf` or to the `name` property of a class that implements `SideEffect`, when the
 type of the action isn't a good name, for example when two side effects listen to the same action or to a base type
-like `EmaAction`. The `onClose` blocks are named `onClose`.
-
-The other work that Emanate launches takes its name from the `methodNameResolver`, which receives the object that
-launched it, usually the ViewModel, and the lambda that it runs:
-
-| Resolver                       | Result                                                                  |
-|--------------------------------|-------------------------------------------------------------------------|
-| `EmaMethodNameResolver.Default` | A generic name: `Method in ` followed by the name of the ViewModel class, like `Method in LoginViewModel`.                              |
-| `EmaAndroidMethodNameResolver` | Reads the name from the class that the compiler generates for the lambda, so a lambda written in `doLogin` of `LoginViewModel` (`LoginViewModel$doLogin$1`) is named `doLogin`. If it can't find it, it uses the generic one. |
-| Your own                       | Anything: `EmaMethodNameResolver { container, action -> "${container::class.simpleName}.work" }`. |
+like `EmaAction`.
 
 ## Closing a ViewModel
 

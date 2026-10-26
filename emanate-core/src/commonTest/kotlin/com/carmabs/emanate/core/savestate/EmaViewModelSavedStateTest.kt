@@ -299,7 +299,7 @@ class EmaViewModelSavedStateTest {
         runCurrent()
 
         assertEquals(FormState(), viewModel.stateFlow.value)
-        assertEquals("action EmaRestoreState", errors.single().reflection.methodName)
+        assertEquals("action EmaRestoreState", errors.single().reflection.name)
         viewModel.close()
     }
 

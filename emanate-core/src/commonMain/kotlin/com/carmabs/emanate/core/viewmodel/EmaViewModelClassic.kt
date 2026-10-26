@@ -155,8 +155,8 @@ abstract class EmaViewModelClassic<S : EmaState, E : EmaEvent>(
      * be called through this method with [action] function
      * @param action is the function that will be executed in background
      * @param dispatcher where the useCase is launched by default
-     * @param logName name reported as method name in [Reflection], in the errors and the side effect listener of the
-     * configuration. If it is null, [EmaConfiguration.methodNameResolver] is used
+     * @param logName name reported in [Reflection], in the errors and the side effect listener of the
+     * configuration. If it is null, "sideEffect" is used
      * @return The EmaUseCaseResult where you can handle the result with the methods
      * - onSuccess when the result of action function is successful
      * - onError when the action function has thrown an error

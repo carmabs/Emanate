@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
  * Emanate configuration for Android:
  * - ViewModels run on [Dispatchers.Main.immediate], so the work started from the main thread runs at once, and use
  *   cases on `Dispatchers.IO`.
- * - The method that launched a sideEffect is resolved from its lambda.
  * - Objects are printed with their fields.
  * - In debug builds the logs go to logcat and the exceptions are thrown, so the app fails at once. In release builds
  *   there are no logs, so the state doesn't reach logcat, and the exceptions are caught.
@@ -26,6 +25,5 @@ fun EmaConfiguration.Companion.Android(debug: Boolean): EmaConfiguration = EmaCo
     dispatchers = EmaDispatchers(main = Dispatchers.Main.immediate),
     errorPolicy = if (debug) EmaErrorPolicy.Throw else EmaErrorPolicy.Catch(),
     logger = if (debug) EmaLogger.Logcat else null,
-    printer = EmaAndroidDataClassPrinter(),
-    methodNameResolver = EmaAndroidMethodNameResolver
+    printer = EmaAndroidDataClassPrinter()
 )

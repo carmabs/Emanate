@@ -29,7 +29,6 @@ import com.carmabs.emanate.core.model.onFailure
 import com.carmabs.emanate.core.model.onSuccess
 import com.carmabs.emanate.core.navigator.EmaNavigationNode
 import com.carmabs.emanate.core.selector.EmaUniqueSelector
-import com.carmabs.emanate.core.sideeffect.EmaMethodNameResolver
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.usecase.EmaFlowUseCase
@@ -198,11 +197,6 @@ class EmaModelTest {
         Emanate.init(EmaConfiguration(printer = { "printed $it" }))
         assertEquals("printed 1", 1.toStringPretty())
         assertEquals("passed 1", 1.toStringPretty(EmaDataClassPrinter { "passed $it" }))
-    }
-
-    @Test
-    fun `the default method name resolver names the container class`() {
-        assertEquals("Method in CounterState", EmaMethodNameResolver.Default.resolve(CounterState(), {}))
     }
 
     @Test

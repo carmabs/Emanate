@@ -12,7 +12,7 @@ import kotlinx.coroutines.CancellationException
 internal fun EmaConfiguration.reportError(error: EmaError) {
     logger?.log(
         error.reflection.containerClassName,
-        "${error.reflection.methodName} failed: ${error.exception.stackTraceToString()}"
+        "${error.reflection.name} failed: ${error.exception.stackTraceToString()}"
     )
     (errorPolicy as? EmaErrorPolicy.Catch)?.onError?.invoke(error)
 }
@@ -32,7 +32,7 @@ internal inline fun EmaConfiguration.runHandlingErrors(container: Any, where: ()
         val reflection = Reflection(
             containerClassName = container::class.simpleName.toNonNull(),
             containerClassQualifiedName = container::class.qualifiedNameOrSimpleName,
-            methodName = where()
+            name = where()
         )
         reportError(EmaError(reflection, exception))
     }

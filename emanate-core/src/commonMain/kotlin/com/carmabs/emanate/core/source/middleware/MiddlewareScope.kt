@@ -63,7 +63,8 @@ class MiddlewareScope<out S : EmaState, in A : EmaAction> internal constructor(
     ): Job {
         checkRunning("nextAfter")
         val nextAfterScope = NextAfterScope(this)
-        return context.launch(id, timeout, onTimeout = { onTimeout?.invoke(nextAfterScope) }) {
+        val name = "nextAfter ${receivedAction::class.simpleName}"
+        return context.launch(id, timeout, name, onTimeout = { onTimeout?.invoke(nextAfterScope) }) {
             try {
                 nextAfterScope.block()
             } catch (stop: NextAfterScope.StopException) {
@@ -140,8 +141,8 @@ internal class MiddlewareContext<out S : EmaState>(private val source: EmaSource
         source.dispatchAction(action)
     }
 
-    fun launch(id: String?, timeout: Duration?, onTimeout: () -> Unit, block: suspend () -> Unit): Job =
-        source.launch(key = id, timeout = timeout, onTimeout = onTimeout, block = block)
+    fun launch(id: String?, timeout: Duration?, name: String, onTimeout: () -> Unit, block: suspend () -> Unit): Job =
+        source.launch(key = id, timeout = timeout, onTimeout = onTimeout, name = name, block = block)
 
     fun enqueue(step: () -> Unit) {
         source.enqueue(step)

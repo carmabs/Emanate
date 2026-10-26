@@ -29,6 +29,7 @@ private sealed interface ListenerAction : EmaAction {
     data object Broken : ListenerAction
     data object Named : ListenerAction
     data object Chain : ListenerAction
+    data object Typed : ListenerAction
     data class Result(val id: Int) : ListenerAction
 }
 
@@ -67,6 +68,9 @@ class EmaSourceSideEffectListenerTest {
             EmaConfiguration(sideEffectListener = listener, errorPolicy = errorPolicy, logger = null)
         )
     ) {
+        middlewares {
+            add<ListenerAction.Typed> { nextAfter { } }
+        }
         sideEffects {
             add<ListenerAction.Refresh> { delay(2.seconds) }
             add<ListenerAction.Broken> { error("boom") }
@@ -88,8 +92,8 @@ class EmaSourceSideEffectListenerTest {
         source.dispatch(ListenerAction.Refresh)
         advanceUntilIdle()
 
-        assertEquals(listOf("Refresh"), listener.successes.map { it.first.methodName })
-        assertEquals(listOf("Refresh"), listener.finishes.map { it.first.methodName })
+        assertEquals(listOf("Refresh"), listener.successes.map { it.first.name })
+        assertEquals(listOf("Refresh"), listener.finishes.map { it.first.name })
         source.close()
     }
 
@@ -101,7 +105,7 @@ class EmaSourceSideEffectListenerTest {
         source.dispatch(ListenerAction.Chain)
         advanceUntilIdle()
 
-        val output = listener.successes.single { it.first.methodName == "Chain" }.second
+        val output = listener.successes.single { it.first.name == "Chain" }.second
         assertEquals(listOf(ListenerAction.Result(1), ListenerAction.Result(3)), output.actions)
         assertEquals(listOf(ListenerBroadcast(2)), output.broadcasts)
         assertEquals(listOf(ListenerEvent), output.events)
@@ -117,7 +121,19 @@ class EmaSourceSideEffectListenerTest {
         source.dispatch(ListenerAction.Named)
         advanceUntilIdle()
 
-        assertEquals(SideEffectOutput(), listener.successes.single { it.first.methodName == "custom" }.second)
+        assertEquals(SideEffectOutput(), listener.successes.single { it.first.name == "custom" }.second)
+        source.close()
+    }
+
+    @Test
+    fun `a nextAfter is named after the action of its middleware`() = runTest {
+        val listener = RecordingListener()
+        val source = source(listener)
+
+        source.dispatch(ListenerAction.Typed)
+        advanceUntilIdle()
+
+        assertEquals(listOf("nextAfter Typed"), listener.finishes.map { it.first.name })
         source.close()
     }
 
@@ -129,7 +145,7 @@ class EmaSourceSideEffectListenerTest {
         source.dispatch(ListenerAction.Named)
         advanceUntilIdle()
 
-        assertEquals(listOf("custom"), listener.finishes.map { it.first.methodName })
+        assertEquals(listOf("custom"), listener.finishes.map { it.first.name })
         source.close()
     }
 
@@ -157,9 +173,9 @@ class EmaSourceSideEffectListenerTest {
 
         val (error, _) = listener.errors.single()
         assertEquals("boom", error.exception.message)
-        assertEquals("Broken", error.reflection.methodName)
+        assertEquals("Broken", error.reflection.name)
         assertTrue(listener.successes.isEmpty())
-        assertEquals(listOf("Broken"), listener.finishes.map { it.first.methodName })
+        assertEquals(listOf("Broken"), listener.finishes.map { it.first.name })
         source.close()
     }
 }

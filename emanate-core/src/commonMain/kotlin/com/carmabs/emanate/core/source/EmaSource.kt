@@ -355,8 +355,7 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
      * @param key if work with the same key is running, it is cancelled
      * @param timeout if the work doesn't finish in this time, it is cancelled and [onTimeout] is called
      * @param launchScope where it is launched. By default the scope of the source, cancelled by [close].
-     * @param name reported as method name of the work. If it is null, the method name resolver of the configuration is
-     * used.
+     * @param name reported in the [com.carmabs.emanate.core.model.reflection.Reflection] of the work
      * @param recorder collects what the work launches, to give it to the side effect listener
      */
     internal fun launch(
