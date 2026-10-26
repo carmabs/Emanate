@@ -22,6 +22,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -279,11 +280,11 @@ class EmaViewModelActionTest {
         Emanate.init(
             EmaConfiguration(
                 sideEffectListener = object : EmaSideEffectListener {
-                    override fun onSuccess(data: ReflectionData) {
+                    override fun onSuccess(data: ReflectionData, duration: Duration) {
                         successes.add(data.reflection)
                     }
 
-                    override fun onFinish(reflection: Reflection) {
+                    override fun onFinish(reflection: Reflection, duration: Duration) {
                         finishes.add(reflection)
                     }
                 },
@@ -313,7 +314,7 @@ class EmaViewModelActionTest {
         Emanate.init(
             EmaConfiguration(
                 sideEffectListener = object : EmaSideEffectListener {
-                    override fun onFinish(reflection: Reflection) {
+                    override fun onFinish(reflection: Reflection, duration: Duration) {
                         methodName = reflection.methodName
                     }
                 }

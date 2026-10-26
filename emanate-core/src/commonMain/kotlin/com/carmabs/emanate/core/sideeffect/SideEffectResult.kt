@@ -18,6 +18,7 @@ import com.carmabs.emanate.core.model.reflection.ReflectionData
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.TimeSource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -75,20 +76,27 @@ class SideEffectResult<T> internal constructor(
                 methodName = logName ?: configuration.methodNameResolver.resolve(container, action)
             )
         }
+        val start = TimeSource.Monotonic.markNow()
         try {
             val data = action.invoke(this)
-            configuration.sideEffectListener?.onSuccess(ReflectionData(reflection, data))
+            configuration.sideEffectListener?.onSuccess(ReflectionData(reflection, data), start.elapsedNow())
             result = EmaResult.success(data)
         } catch (e: Throwable) {
             // A cancellation is not an error: it must be propagated to keep the coroutine cancellable
-            if (e is CancellationException || throwException) {
+            if (e is CancellationException) {
                 throw e
             }
 
-            configuration.reportError(EmaError(reflection, e))
+            val error = EmaError(reflection, e)
+            configuration.sideEffectListener?.onError(error, start.elapsedNow())
+            if (throwException) {
+                throw e
+            }
+
+            configuration.reportError(error)
             result = EmaResult.failure(e)
         } finally {
-            configuration.sideEffectListener?.onFinish(reflection)
+            configuration.sideEffectListener?.onFinish(reflection, start.elapsedNow())
             result?.apply {
                 onSuccess {
                     successListener?.invoke(it)

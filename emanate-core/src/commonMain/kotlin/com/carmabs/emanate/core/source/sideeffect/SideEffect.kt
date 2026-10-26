@@ -48,6 +48,13 @@ interface SideEffect<in S : EmaState, out A : EmaAction, out E : EmaEvent, F : E
         get() = false
 
     /**
+     * Name that identifies the side effect in the errors and in the side effect listener of the configuration. If it
+     * is null, the name of the type of the actions that launch it is used.
+     */
+    val name: String?
+        get() = null
+
+    /**
      * Called when the side effect doesn't finish before [timeout].
      */
     fun SideEffectScope<S, A, E>.onTimeout(action: F) = Unit
@@ -62,12 +69,15 @@ interface SideEffect<in S : EmaState, out A : EmaAction, out E : EmaEvent, F : E
  * @param timeout if the side effect doesn't finish in this time, it is cancelled and [onTimeout] is called
  * @param survivesClose whether it can finish after the source is closed, up to its timeout or the closeTimeout of the
  * configuration. Otherwise close cancels it.
+ * @param name identifies the side effect in the errors and in the side effect listener. By default, the name of the
+ * type of the actions.
  */
 fun <S : EmaState, A : EmaAction, E : EmaEvent, F : EmaAction> sideEffectOf(
     actionType: KClass<F>,
     concurrency: SideEffectConcurrency = SideEffectConcurrency.Every,
     timeout: Duration? = null,
     survivesClose: Boolean = false,
+    name: String? = null,
     onTimeout: (SideEffectScope<S, A, E>.(F) -> Unit)? = null,
     effect: suspend SideEffectScope<S, A, E>.(F) -> Unit
 ): SideEffect<S, A, E, F> = object : SideEffect<S, A, E, F> {
@@ -79,6 +89,8 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent, F : EmaAction> sideEffectOf(
     override val timeout: Duration? = timeout
 
     override val survivesClose: Boolean = survivesClose
+
+    override val name: String? = name
 
     override fun SideEffectScope<S, A, E>.onTimeout(action: F) {
         onTimeout?.invoke(this, action)
@@ -94,6 +106,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent, F : EmaAction> SideEffectSetupSc
     concurrency: SideEffectConcurrency = SideEffectConcurrency.Every,
     timeout: Duration? = null,
     survivesClose: Boolean = false,
+    name: String? = null,
     onTimeout: (SideEffectScope<S, A, E>.(F) -> Unit)? = null,
     effect: suspend SideEffectScope<S, A, E>.(F) -> Unit
 ): SideEffect<S, A, E, F> = com.carmabs.emanate.core.source.sideeffect.sideEffectOf(
@@ -101,6 +114,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent, F : EmaAction> SideEffectSetupSc
     concurrency,
     timeout,
     survivesClose,
+    name,
     onTimeout,
     effect
 )
@@ -110,6 +124,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent, F : EmaAction> EmaViewModel<S, A
     concurrency: SideEffectConcurrency = SideEffectConcurrency.Every,
     timeout: Duration? = null,
     survivesClose: Boolean = false,
+    name: String? = null,
     onTimeout: (SideEffectScope<S, A, E>.(F) -> Unit)? = null,
     effect: suspend SideEffectScope<S, A, E>.(F) -> Unit
 ): SideEffect<S, A, E, F> = com.carmabs.emanate.core.source.sideeffect.sideEffectOf(
@@ -117,6 +132,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent, F : EmaAction> EmaViewModel<S, A
     concurrency,
     timeout,
     survivesClose,
+    name,
     onTimeout,
     effect
 )
