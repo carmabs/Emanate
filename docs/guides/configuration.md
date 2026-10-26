@@ -33,25 +33,36 @@ Each property configures one thing. The ones that hold an object with several pa
 | `printer` | `EmaDataClassPrinter.ToString` | **`print(value)`**: returns the text of the state or the action. By default its `toString()`.<br>**`indent`** and **`wrappedLineWidth`**: only in `EmaAndroidDataClassPrinter`. The spaces of each nesting level (2) and the length from which a long `String` is split into lines (80). | How the states and actions are turned into text in the logs. See [Printing the state](#printing-the-state). |
 | `closeTimeout` | 5 seconds |  | How long the work of a closed ViewModel can still run before it is cancelled. See [Closing a ViewModel](#closing-a-viewmodel). |
 | `sideEffectListener` | `null` | **`onSuccess(data, duration)`**: it finished without error. Receives its `Reflection`, the value it returned and how long it took.<br>**`onError(error, duration)`**: it threw an exception. Receives the `EmaError` and how long it took.<br>**`onFinish(reflection, duration)`**: it ended, with success, with error or cancelled. | Receives every side effect that ends, to track or measure it. See [Measuring the side effects](#measuring-the-side-effects). |
-| `methodNameResolver` | `EmaMethodNameResolver.Default` | **`resolve(container, action)`**: returns the name from the ViewModel and the lambda it runs. By default `Method in HomeViewModel`. | The name of the work that has no name of its own, in the errors and in the `sideEffectListener`. See [Naming the side effects](#naming-the-side-effects). |
+| `methodNameResolver` | `EmaMethodNameResolver.Default` | **`resolve(container, action)`**: returns the name from the ViewModel and the lambda it runs. By default `Method in ` followed by the name of the ViewModel class, like `Method in LoginViewModel`. | The name of the work that has no name of its own, in the errors and in the `sideEffectListener`. See [Naming the side effects](#naming-the-side-effects). |
 | `broadcaster` | `EmaActionBroadcaster.Shared` | **`Shared`**: used by the whole process, so every ViewModel receives the actions broadcast by the others.<br>**`EmaActionBroadcaster()`**: a new one isolates the ViewModels that use it, for example the ones of a library. | Delivers the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
 
 ### Configuration for Android
 
 `EmaConfiguration.Android(debug)` is a predefined configuration in `emanate-android`
 (`com.carmabs.emanate.android.configuration.Android`). It is the one to use in an Android application, with
-`BuildConfig.DEBUG` as the flag. It changes these properties from the default configuration:
+`BuildConfig.DEBUG` as the flag. It changes these properties from the default configuration. Each column says the value that the property has, so
+you can compare them:
 
-| Property             | `debug = true`                                   | `debug = false` (release)                           |
-|----------------------|--------------------------------------------------|-----------------------------------------------------|
-| `errorPolicy`        | `Throw`: an exception in a middleware, reducer or side effect crashes the app at once, so you notice it while developing. See [Errors](#errors). | `Catch()`: the exception is caught and the screen keeps working. |
-| `logger`             | `EmaLogger.Logcat`: every action and state is written to logcat with `Log.d`. See [Logs](#logs). | `null`: nothing is logged, so the state of the user, which may have personal data, never reaches logcat. |
-| `dispatchers.main`   | `Dispatchers.Main.immediate`, as the `viewModelScope` of Android: the work started from the main thread, like dispatching an action from a click, runs at once instead of waiting for the next frame. | The same. |
-| `printer`            | `EmaAndroidDataClassPrinter()`: every field, indented. See [Printing the state](#printing-the-state). | The same, although with no `logger` it isn't used. |
-| `methodNameResolver` | `EmaAndroidMethodNameResolver`: the name is read from the lambda. See [Naming the side effects](#naming-the-side-effects). | The same. |
+| Property             | `EmaConfiguration()`           | `Android(debug = true)`          | `Android(debug = false)`         |
+|----------------------|--------------------------------|----------------------------------|----------------------------------|
+| `errorPolicy`        | `Catch()`                      | `Throw`                          | `Catch()`                        |
+| `logger`             | `EmaLogger.Println`            | `EmaLogger.Logcat`               | `null`                           |
+| `dispatchers.main`   | `Dispatchers.Main`             | `Dispatchers.Main.immediate`     | `Dispatchers.Main.immediate`     |
+| `printer`            | `EmaDataClassPrinter.ToString` | `EmaAndroidDataClassPrinter()`   | `EmaAndroidDataClassPrinter()`   |
+| `methodNameResolver` | `EmaMethodNameResolver.Default`| `EmaAndroidMethodNameResolver`   | `EmaAndroidMethodNameResolver`   |
+
+- **`errorPolicy`.** With `Throw`, an exception in a middleware, reducer or side effect crashes the app at once, so you
+  notice it while developing. With `Catch()`, it is caught and the screen keeps working. See [Errors](#errors).
+- **`logger`.** In debug builds every action and state is written to logcat with `Log.d`. In release builds nothing is
+  logged, so the state of the user, which may have personal data, never reaches logcat. See [Logs](#logs).
+- **`dispatchers.main`.** `Dispatchers.Main.immediate` is what the `viewModelScope` of Android uses: the work started
+  from the main thread, like dispatching an action from a click, runs at once instead of waiting for the next frame.
+- **`printer`.** `EmaAndroidDataClassPrinter` prints every field, indented. In release builds there is no `logger`, so
+  it isn't used. See [Printing the state](#printing-the-state).
+- **`methodNameResolver`.** The name is read from the lambda. See [Naming the side effects](#naming-the-side-effects).
 
 Only `errorPolicy` and `logger` depend on the flag. `closeTimeout`, `sideEffectListener`, `broadcaster` and the other
-dispatchers keep the default values in both builds.
+dispatchers keep the default values in all of them.
 
 `EmaConfiguration` is a data class, so change only what you need with `copy`:
 
@@ -376,7 +387,7 @@ launched it, usually the ViewModel, and the lambda that it runs:
 
 | Resolver                       | Result                                                                  |
 |--------------------------------|-------------------------------------------------------------------------|
-| `EmaMethodNameResolver.Default` | A generic name: `Method in HomeViewModel`.                              |
+| `EmaMethodNameResolver.Default` | A generic name: `Method in ` followed by the name of the ViewModel class, like `Method in LoginViewModel`.                              |
 | `EmaAndroidMethodNameResolver` | Reads the name from the class that the compiler generates for the lambda, so a lambda written in `doLogin` of `LoginViewModel` (`LoginViewModel$doLogin$1`) is named `doLogin`. If it can't find it, it uses the generic one. |
 | Your own                       | Anything: `EmaMethodNameResolver { container, action -> "${container::class.simpleName}.work" }`. |
 
