@@ -52,10 +52,11 @@ class SideEffectSetupScope<S : EmaState, A : EmaAction, E : EmaEvent> internal c
         concurrency: SideEffectConcurrency,
         timeout: Duration?,
         survivesClose: Boolean,
+        name: String?,
         onTimeout: (SideEffectScope<S, A, E>.(F) -> Unit)?,
         sideEffect: suspend SideEffectScope<S, A, E>.(F) -> Unit
     ) {
-        include(sideEffectOf(filter, concurrency, timeout, survivesClose, onTimeout, sideEffect))
+        include(sideEffectOf(filter, concurrency, timeout, survivesClose, name, onTimeout, sideEffect))
     }
 
     /**
@@ -64,15 +65,18 @@ class SideEffectSetupScope<S : EmaState, A : EmaAction, E : EmaEvent> internal c
      * @param timeout if the side effect doesn't finish in this time, it is cancelled and [onTimeout] is called
      * @param survivesClose whether it can finish after the source is closed, like a request that saves what the user
      * has done, up to its timeout or the closeTimeout of the configuration. Otherwise close cancels it.
+     * @param name identifies the side effect in the errors and in the side effect listener. By default, the name of
+     * the type of the actions.
      */
     inline fun <reified F : EmaAction> add(
         concurrency: SideEffectConcurrency = SideEffectConcurrency.Every,
         timeout: Duration? = null,
         survivesClose: Boolean = false,
+        name: String? = null,
         noinline onTimeout: (SideEffectScope<S, A, E>.(F) -> Unit)? = null,
         noinline sideEffect: suspend SideEffectScope<S, A, E>.(F) -> Unit
     ) {
-        add(F::class, concurrency, timeout, survivesClose, onTimeout, sideEffect)
+        add(F::class, concurrency, timeout, survivesClose, name, onTimeout, sideEffect)
     }
 
     /**

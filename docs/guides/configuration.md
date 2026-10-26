@@ -58,7 +58,7 @@ Each property configures one thing. The ones that hold an object with several pa
 | `printer`            | `EmaDataClassPrinter.ToString` | `EmaAndroidDataClassPrinter()`                 | How the states and actions are turned into text in the logs. See [Printing the state](#printing-the-state). |
 | `closeTimeout`       | 5 seconds                      | 5 seconds                                      | How long the work of a closed ViewModel can still run before it is cancelled. See [Closing a ViewModel](#closing-a-viewmodel). |
 | `sideEffectListener` | `null`                         | `null`                                         | Receives every side effect that ends, to track or measure it. See [Measuring the side effects](#measuring-the-side-effects). |
-| `methodNameResolver` | `EmaMethodNameResolver.Default`| `EmaAndroidMethodNameResolver`                 | The name that identifies a side effect in the errors and in the `sideEffectListener`. See [Naming the side effects](#naming-the-side-effects). |
+| `methodNameResolver` | `EmaMethodNameResolver.Default`| `EmaAndroidMethodNameResolver`                 | The name of the work that has no name of its own in the errors and in the `sideEffectListener`. See [Naming the side effects](#naming-the-side-effects). |
 | `broadcaster`        | `EmaActionBroadcaster.Shared`  | `EmaActionBroadcaster.Shared`                  | Delivers the actions broadcast between ViewModels. See [Libraries and SDKs](#libraries-and-sdks). |
 
 ### Inside each property
@@ -75,9 +75,10 @@ Each property configures one thing. The ones that hold an object with several pa
 | `EmaDataClassPrinter`  | `print(value)`     | Returns the text of a state or an action. |
 | `EmaAndroidDataClassPrinter` | `indent`     | Spaces of each nesting level. Default 2. |
 |                        | `wrappedLineWidth` | Length from which a long `String` is split into several lines. Default 80. |
-| `EmaSideEffectListener`| `onSuccess(data)`  | A side effect finished without error. Receives its `Reflection` and the value it returned. |
-|                        | `onFinish(reflection)` | A side effect ended, with or without error. |
-| `EmaMethodNameResolver`| `resolve(container, action)` | Returns the name of the side effect from the ViewModel and its lambda. |
+| `EmaSideEffectListener`| `onSuccess(data, duration)` | A side effect finished without error. Receives its `Reflection`, the value it returned and how long it took. |
+|                        | `onError(error, duration)` | A side effect threw an exception. Receives the `EmaError` and how long it took. |
+|                        | `onFinish(reflection, duration)` | A side effect ended: with success, with error or cancelled. |
+| `EmaMethodNameResolver`| `resolve(container, action)` | Names the work that has no name of its own, from the ViewModel and its lambda. |
 | `EmaActionBroadcaster` | (none)             | `Shared` is used by the whole process. Create another with `EmaActionBroadcaster()` to isolate a group of ViewModels. |
 
 ## Dispatchers
@@ -310,20 +311,26 @@ An `EmaError` has:
 | `exception`                               | The `NoSuchElementException` that was thrown.    |
 | `reflection.containerClassName`           | `HomeViewModel`                                  |
 | `reflection.containerClassQualifiedName`  | `com.carmabs.sample.home.HomeViewModel`          |
-| `reflection.methodName`                   | `action FriendClicked` for a middleware or a reducer. For a side effect, its name, see [Naming the side effects](#naming-the-side-effects). |
+| `reflection.methodName`                   | `action FriendClicked` for a middleware or a reducer. For a side effect, its name: `RefreshRequested`, see [Naming the side effects](#naming-the-side-effects). |
 
 To crash also in the QA builds, so the testers report the bugs instead of the app hiding them, use `Throw` there: the
 `debug` flag is only the default of `EmaConfiguration.Android`, and the policy is yours to choose.
 
 ## Measuring the side effects
 
-To track the side effects, for example to count how many run, which ones succeed or what they return, set a
-`sideEffectListener`. It has two functions, both optional:
+To track the side effects, for example to measure how long they take, count how many fail or send them to your
+analytics, set a `sideEffectListener`. It is called for every side effect of every ViewModel, and it has three
+functions, all optional. Each one receives the `duration` the side effect took:
 
-| Function                  | Called when                                          | Receives                                       |
-|---------------------------|------------------------------------------------------|------------------------------------------------|
-| `onSuccess(data)`         | A side effect finishes without error.                | A `ReflectionData`: the `reflection` and the value `data` that the side effect returned. |
-| `onFinish(reflection)`    | A side effect ends, with an error or not, or cancelled. | The `reflection`.                           |
+| Function                          | Called when                                                  | Receives                                       |
+|-----------------------------------|--------------------------------------------------------------|------------------------------------------------|
+| `onSuccess(data, duration)`       | A side effect finishes without error.                        | A `ReflectionData`: the `reflection` and the value `data` that the side effect returned. |
+| `onError(error, duration)`        | A side effect throws, with `Catch` and with `Throw` (right before the app fails). | An `EmaError`: the `reflection` and the `exception`. |
+| `onFinish(reflection, duration)`  | A side effect ends: after `onSuccess`, after `onError`, or when it is cancelled. | The `reflection`.              |
+
+A cancellation (a new action with `Latest`, a timeout, the closing of the ViewModel) is not an error, so it only calls
+`onFinish`. That is how you tell the three endings apart: `onSuccess` is a success, `onError` a failure, and an
+`onFinish` with neither before it is a cancellation.
 
 The `Reflection` says which side effect it is:
 
@@ -331,29 +338,33 @@ The `Reflection` says which side effect it is:
 |-------------------------------|------------------------------------------|
 | `containerClassName`          | `HomeViewModel`                          |
 | `containerClassQualifiedName` | `com.carmabs.sample.home.HomeViewModel`  |
-| `methodName`                  | The name of the side effect, resolved by the [`methodNameResolver`](#naming-the-side-effects). |
+| `methodName`                  | The name of the side effect, see [Naming the side effects](#naming-the-side-effects). |
 
-With them you can track, for each side effect: which ViewModel launched it, its name and what it returned. The
-listener doesn't receive the time it took: to measure it, take the time in the side effect itself.
+With them you can track, for each side effect, which ViewModel launched it, its name, how long it took and how it
+ended:
 
 ```kotlin
 class SideEffectTracker(private val analytics: Analytics) : EmaSideEffectListener {
 
-    override fun onSuccess(data: ReflectionData) {
-        analytics.track(
-            event = "side_effect_success",
-            "viewModel" to data.reflection.containerClassName,
-            "name" to data.reflection.methodName,
-            "result" to data.data.toString()
+    override fun onSuccess(data: ReflectionData, duration: Duration) {
+        analytics.timing(
+            name = "${data.reflection.containerClassName}.${data.reflection.methodName}",
+            millis = duration.inWholeMilliseconds
         )
     }
 
-    override fun onFinish(reflection: Reflection) {
+    override fun onError(error: EmaError, duration: Duration) {
         analytics.track(
-            event = "side_effect_finish",
-            "viewModel" to reflection.containerClassName,
-            "name" to reflection.methodName
+            event = "side_effect_error",
+            "viewModel" to error.reflection.containerClassName,
+            "name" to error.reflection.methodName,
+            "error" to error.exception::class.simpleName.toString(),
+            "millis" to duration.inWholeMilliseconds.toString()
         )
+    }
+
+    override fun onFinish(reflection: Reflection, duration: Duration) {
+        // Also called by the cancelled ones
     }
 }
 
@@ -362,23 +373,38 @@ Emanate.init(
 )
 ```
 
-`onSuccess` is called right before `onFinish`, so a side effect that ends with an error only calls `onFinish`.
-The errors are not given to the listener: they go to the [error policy](#errors).
+- **`onSuccess` and `onError` are for tracking, not for handling.** The error is also handled by the
+  [error policy](#errors): `onError` of the listener tells you about **that side effect and its time**, while the
+  `onError` of `EmaErrorPolicy.Catch` is the place to report bugs.
+- **The `data` of the side effects of a `setup` is always `Unit`**, because the lambda that Emanate runs doesn't
+  return what yours does. Use the `reflection` and the `duration`.
+- **The duration** is the time the side effect was running, including the `delay`s and the suspensions. A side effect
+  that ends by its `timeout` calls `onSuccess` after the time of the timeout.
 
 ## Naming the side effects
 
-The `methodNameResolver` gives each side effect the `methodName` that you see in the errors and in the
-`sideEffectListener`. It receives the object that launched it, usually the ViewModel, and the lambda that it runs:
+The `methodName` identifies the side effect in the errors and in the `sideEffectListener`. A side effect declared in
+the `setup` of a ViewModel is named after **the type of the actions that launch it**:
+
+```kotlin
+sideEffects {
+    add<HomeAction.RefreshRequested> { /* ... */ }                       // RefreshRequested
+    add<HomeAction.FriendClicked>(name = "openProfile") { /* ... */ }    // openProfile
+}
+```
+
+Pass `name` to `add`, to `sideEffectOf` or to the `name` property of a class that implements `SideEffect`, when the
+type of the action isn't a good name, for example when two side effects listen to the same action or to a base type
+like `EmaAction`. The `onClose` blocks are named `onClose`.
+
+The other work that Emanate launches takes its name from the `methodNameResolver`, which receives the object that
+launched it, usually the ViewModel, and the lambda that it runs:
 
 | Resolver                       | Result                                                                  |
 |--------------------------------|-------------------------------------------------------------------------|
 | `EmaMethodNameResolver.Default`| A generic name: `Method in HomeViewModel`.                              |
 | `EmaAndroidMethodNameResolver` | Reads the name from the class that the compiler generates for the lambda, so a lambda written in `doLogin` of `LoginViewModel` (`LoginViewModel$doLogin$1`) is named `doLogin`. If it can't find it, it uses the generic one. |
-| Your own                       | Anything: `EmaMethodNameResolver { container, action -> "${container::class.simpleName}.effect" }`. |
-
-The side effects that you declare in the `setup` of a source are launched by Emanate, so their lambda isn't the one you
-wrote and their name is not specific. Use `containerClassName` and the data that `onSuccess` receives to tell them
-apart.
+| Your own                       | Anything: `EmaMethodNameResolver { container, action -> "${container::class.simpleName}.work" }`. |
 
 ## Closing a ViewModel
 

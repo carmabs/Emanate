@@ -113,6 +113,10 @@ If a side effect throws an exception, the [error policy](../guides/configuration
 decides: fail at once while developing, or report it and keep the screen working. For the errors you expect, like a
 failed request, return a result from the use case and dispatch an action, as in the examples above.
 
+The errors and the [side effect listener](../guides/configuration.md#measuring-the-side-effects) identify each side
+effect by the type of its action, `RefreshRequested` in the examples above. Pass `name` to `add` to choose another
+one: `add<HomeAction.RefreshRequested>(name = "refreshFriends") { ... }`.
+
 ## Side effects as values
 
 A side effect can also be created with `sideEffectOf`, or written as a class that implements `SideEffect`, to declare

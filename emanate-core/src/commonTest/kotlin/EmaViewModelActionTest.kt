@@ -15,6 +15,7 @@ import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.viewmodel.EmaViewModelAction
 import com.carmabs.emanate.core.viewmodel.EmaViewModelClassic
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -279,11 +280,11 @@ class EmaViewModelActionTest {
         Emanate.init(
             EmaConfiguration(
                 sideEffectListener = object : EmaSideEffectListener {
-                    override fun onSuccess(data: ReflectionData) {
+                    override fun onSuccess(data: ReflectionData, duration: Duration) {
                         successes.add(data.reflection)
                     }
 
-                    override fun onFinish(reflection: Reflection) {
+                    override fun onFinish(reflection: Reflection, duration: Duration) {
                         finishes.add(reflection)
                     }
                 },
@@ -313,7 +314,7 @@ class EmaViewModelActionTest {
         Emanate.init(
             EmaConfiguration(
                 sideEffectListener = object : EmaSideEffectListener {
-                    override fun onFinish(reflection: Reflection) {
+                    override fun onFinish(reflection: Reflection, duration: Duration) {
                         methodName = reflection.methodName
                     }
                 }

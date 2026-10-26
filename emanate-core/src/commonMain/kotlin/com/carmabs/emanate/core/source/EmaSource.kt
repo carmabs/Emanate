@@ -195,7 +195,7 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
         broadcastJob?.cancel()
         queue.trySend {
             closeEffects.forEach { effect ->
-                launch(key = null, timeout = null, onTimeout = {}, launchScope = closingScope) {
+                launch(key = null, timeout = null, onTimeout = {}, launchScope = closingScope, name = "onClose") {
                     sideEffectScope.effect()
                 }
             }
@@ -332,6 +332,7 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
                 timeout = timeout,
                 onTimeout = { sideEffectScope.onTimeout(typedAction) },
                 launchScope = if (survivesClose) closingScope else scope,
+                name = name ?: actionType.simpleName,
                 block = { sideEffectScope.invoke(typedAction) }
             )
         }
@@ -342,16 +343,19 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
      * @param key if work with the same key is running, it is cancelled
      * @param timeout if the work doesn't finish in this time, it is cancelled and [onTimeout] is called
      * @param launchScope where it is launched. By default the scope of the source, cancelled by [close].
+     * @param name reported as method name of the work. If it is null, the method name resolver of the configuration is
+     * used.
      */
     internal fun launch(
         key: Any?,
         timeout: Duration?,
         onTimeout: () -> Unit,
         launchScope: CoroutineScope = scope,
+        name: String? = null,
         block: suspend () -> Unit
     ): Job {
         key?.let { removeJob(it)?.cancel() }
-        val job = SideEffectResult(container = container, scope = launchScope, configuration = configuration) {
+        val job = SideEffectResult(container = container, scope = launchScope, logName = name, configuration = configuration) {
             if (timeout == null) {
                 block()
             } else if (withTimeoutOrNull(timeout) { block() } == null) {
