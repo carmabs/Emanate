@@ -10,6 +10,7 @@ import com.carmabs.emanate.core.action.EventDispatcher
 import com.carmabs.emanate.core.broadcast.EmaActionBroadcaster
 import com.carmabs.emanate.core.error.runHandlingErrors
 import com.carmabs.emanate.core.model.EmaConfiguration
+import com.carmabs.emanate.core.sideeffect.SideEffectOutputRecorder
 import com.carmabs.emanate.core.sideeffect.SideEffectResult
 import com.carmabs.emanate.core.source.middleware.EmaMiddleware
 import com.carmabs.emanate.core.source.middleware.MiddlewareContext
@@ -133,8 +134,6 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
 
     private val middlewareContext = MiddlewareContext(this)
 
-    private val sideEffectScope = SideEffectScope<S, A, E>(this)
-
     /**
      * Sends and receives the broadcast actions: the one of the configuration
      */
@@ -195,7 +194,16 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
         broadcastJob?.cancel()
         queue.trySend {
             closeEffects.forEach { effect ->
-                launch(key = null, timeout = null, onTimeout = {}, launchScope = closingScope, name = "onClose") {
+                val recorder = SideEffectOutputRecorder()
+                val sideEffectScope = SideEffectScope<S, A, E>(this, recorder)
+                launch(
+                    key = null,
+                    timeout = null,
+                    onTimeout = {},
+                    launchScope = closingScope,
+                    name = "onClose",
+                    recorder = recorder
+                ) {
                     sideEffectScope.effect()
                 }
             }
@@ -325,6 +333,9 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
                 sideEffect
             }
         }
+        // Each execution has its scope, that records what it launches for the side effect listener
+        val recorder = SideEffectOutputRecorder()
+        val sideEffectScope = SideEffectScope<S, A, E>(this, recorder)
         // The side effects that survive close run in a scope that close doesn't cancel
         with(sideEffect) {
             launch(
@@ -333,6 +344,7 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
                 onTimeout = { sideEffectScope.onTimeout(typedAction) },
                 launchScope = if (survivesClose) closingScope else scope,
                 name = name ?: actionType.simpleName,
+                recorder = recorder,
                 block = { sideEffectScope.invoke(typedAction) }
             )
         }
@@ -345,6 +357,7 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
      * @param launchScope where it is launched. By default the scope of the source, cancelled by [close].
      * @param name reported as method name of the work. If it is null, the method name resolver of the configuration is
      * used.
+     * @param recorder collects what the work launches, to give it to the side effect listener
      */
     internal fun launch(
         key: Any?,
@@ -352,10 +365,17 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
         onTimeout: () -> Unit,
         launchScope: CoroutineScope = scope,
         name: String? = null,
+        recorder: SideEffectOutputRecorder? = null,
         block: suspend () -> Unit
     ): Job {
         key?.let { removeJob(it)?.cancel() }
-        val job = SideEffectResult(container = container, scope = launchScope, logName = name, configuration = configuration) {
+        val job = SideEffectResult(
+            container = container,
+            scope = launchScope,
+            logName = name,
+            configuration = configuration,
+            output = recorder?.let { { it.output() } }
+        ) {
             if (timeout == null) {
                 block()
             } else if (withTimeoutOrNull(timeout) { block() } == null) {

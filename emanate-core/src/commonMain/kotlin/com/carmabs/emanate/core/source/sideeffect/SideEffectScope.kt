@@ -1,6 +1,7 @@
 package com.carmabs.emanate.core.source.sideeffect
 
 import com.carmabs.emanate.core.action.EmaAction
+import com.carmabs.emanate.core.sideeffect.SideEffectOutputRecorder
 import com.carmabs.emanate.core.source.EmaSource
 import com.carmabs.emanate.core.source.EmaSourceDsl
 import com.carmabs.emanate.core.state.EmaEvent
@@ -20,7 +21,8 @@ import com.carmabs.emanate.core.state.EmaState
  */
 @EmaSourceDsl
 class SideEffectScope<out S : EmaState, in A : EmaAction, in E : EmaEvent> internal constructor(
-    private val source: EmaSource<S, *, E>
+    private val source: EmaSource<S, *, E>,
+    private val recorder: SideEffectOutputRecorder? = null
 ) {
     /**
      * The state at the moment it is read.
@@ -29,6 +31,7 @@ class SideEffectScope<out S : EmaState, in A : EmaAction, in E : EmaEvent> inter
         get() = source.state
 
     fun dispatch(action: A) {
+        recorder?.action(action)
         source.dispatchAction(action)
     }
 
@@ -39,6 +42,7 @@ class SideEffectScope<out S : EmaState, in A : EmaAction, in E : EmaEvent> inter
      * its type. For example, when the previous screen is created again after the process has been killed.
      */
     fun broadcast(action: EmaAction, keepUntilReceived: Boolean = false) {
+        recorder?.broadcast(action)
         source.broadcaster.broadcast(action, keepUntilReceived)
     }
 
@@ -47,6 +51,7 @@ class SideEffectScope<out S : EmaState, in A : EmaAction, in E : EmaEvent> inter
      * @param allowDuplicated If true, allows the same event to be dispatched multiple times before being consumed.
      */
     fun postEvent(event: E, allowDuplicated: Boolean = false) {
+        recorder?.event(event)
         source.postEvent(event, allowDuplicated)
     }
 }

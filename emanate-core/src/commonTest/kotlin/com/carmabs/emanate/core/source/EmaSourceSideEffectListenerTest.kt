@@ -6,7 +6,7 @@ import com.carmabs.emanate.core.error.EmaError
 import com.carmabs.emanate.core.error.EmaErrorPolicy
 import com.carmabs.emanate.core.model.EmaConfiguration
 import com.carmabs.emanate.core.model.reflection.Reflection
-import com.carmabs.emanate.core.model.reflection.ReflectionData
+import com.carmabs.emanate.core.sideeffect.SideEffectOutput
 import com.carmabs.emanate.core.sideeffect.EmaSideEffectListener
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
@@ -28,17 +28,21 @@ private sealed interface ListenerAction : EmaAction {
     data object Refresh : ListenerAction
     data object Broken : ListenerAction
     data object Named : ListenerAction
+    data object Chain : ListenerAction
+    data class Result(val id: Int) : ListenerAction
 }
 
 private data object ListenerEvent : EmaEvent
 
+private data class ListenerBroadcast(val id: Int) : EmaAction
+
 private class RecordingListener : EmaSideEffectListener {
-    val successes = mutableListOf<Pair<ReflectionData, Duration>>()
+    val successes = mutableListOf<Triple<Reflection, SideEffectOutput, Duration>>()
     val errors = mutableListOf<Pair<EmaError, Duration>>()
     val finishes = mutableListOf<Pair<Reflection, Duration>>()
 
-    override fun onSuccess(data: ReflectionData, duration: Duration) {
-        successes += data to duration
+    override fun onSuccess(reflection: Reflection, output: SideEffectOutput, duration: Duration) {
+        successes += Triple(reflection, output, duration)
     }
 
     override fun onError(error: EmaError, duration: Duration) {
@@ -67,6 +71,12 @@ class EmaSourceSideEffectListenerTest {
             add<ListenerAction.Refresh> { delay(2.seconds) }
             add<ListenerAction.Broken> { error("boom") }
             add<ListenerAction.Named>(name = "custom") { }
+            add<ListenerAction.Chain> {
+                dispatch(ListenerAction.Result(1))
+                postEvent(ListenerEvent)
+                broadcast(ListenerBroadcast(2))
+                dispatch(ListenerAction.Result(3))
+            }
         }
     }
 
@@ -78,8 +88,36 @@ class EmaSourceSideEffectListenerTest {
         source.dispatch(ListenerAction.Refresh)
         advanceUntilIdle()
 
-        assertEquals(listOf("Refresh"), listener.successes.map { it.first.reflection.methodName })
+        assertEquals(listOf("Refresh"), listener.successes.map { it.first.methodName })
         assertEquals(listOf("Refresh"), listener.finishes.map { it.first.methodName })
+        source.close()
+    }
+
+    @Test
+    fun `the listener receives what the side effect has launched`() = runTest {
+        val listener = RecordingListener()
+        val source = source(listener)
+
+        source.dispatch(ListenerAction.Chain)
+        advanceUntilIdle()
+
+        val output = listener.successes.single { it.first.methodName == "Chain" }.second
+        assertEquals(listOf(ListenerAction.Result(1), ListenerAction.Result(3)), output.actions)
+        assertEquals(listOf(ListenerBroadcast(2)), output.broadcasts)
+        assertEquals(listOf(ListenerEvent), output.events)
+        source.close()
+    }
+
+    @Test
+    fun `the output of a side effect doesn't include what other side effects launch`() = runTest {
+        val listener = RecordingListener()
+        val source = source(listener)
+
+        source.dispatch(ListenerAction.Chain)
+        source.dispatch(ListenerAction.Named)
+        advanceUntilIdle()
+
+        assertEquals(SideEffectOutput(), listener.successes.single { it.first.methodName == "custom" }.second)
         source.close()
     }
 
@@ -104,8 +142,8 @@ class EmaSourceSideEffectListenerTest {
         advanceUntilIdle()
 
         // The real time of the test is almost zero: the virtual delay doesn't count, but it can't be negative
-        assertTrue(listener.successes.single().second >= Duration.ZERO)
-        assertTrue(listener.finishes.single().second >= listener.successes.single().second)
+        assertTrue(listener.successes.single().third >= Duration.ZERO)
+        assertTrue(listener.finishes.single().second >= listener.successes.single().third)
         source.close()
     }
 

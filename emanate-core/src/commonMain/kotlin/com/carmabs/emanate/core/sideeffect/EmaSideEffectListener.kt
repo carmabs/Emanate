@@ -3,7 +3,6 @@ package com.carmabs.emanate.core.sideeffect
 import com.carmabs.emanate.core.model.reflection.Reflection
 import com.carmabs.emanate.core.error.EmaError
 import com.carmabs.emanate.core.error.EmaErrorPolicy
-import com.carmabs.emanate.core.model.reflection.ReflectionData
 import kotlin.time.Duration
 
 /**
@@ -23,11 +22,13 @@ import kotlin.time.Duration
 interface EmaSideEffectListener {
 
     /**
-     * A side effect has finished successfully, returning [ReflectionData.data]
+     * A side effect has finished successfully
      *
+     * @param output what it has launched while it ran: the actions, broadcasts and events. It is empty for the work
+     * that doesn't launch any
      * @param duration time that the side effect took
      */
-    fun onSuccess(data: ReflectionData, duration: Duration) = Unit
+    fun onSuccess(reflection: Reflection, output: SideEffectOutput, duration: Duration) = Unit
 
     /**
      * A side effect has thrown [error]. It is called with every error policy: with [EmaErrorPolicy.Throw] right before
