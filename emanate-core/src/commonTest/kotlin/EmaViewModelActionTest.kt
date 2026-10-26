@@ -7,9 +7,9 @@ import com.carmabs.emanate.core.initializer.EmaInitializer
 import com.carmabs.emanate.core.logging.EmaLogger
 import com.carmabs.emanate.core.model.EmaConfiguration
 import com.carmabs.emanate.core.model.reflection.Reflection
-import com.carmabs.emanate.core.model.reflection.ReflectionData
 import com.carmabs.emanate.core.sideeffect.EmaMethodNameResolver
 import com.carmabs.emanate.core.sideeffect.EmaSideEffectListener
+import com.carmabs.emanate.core.sideeffect.SideEffectOutput
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.viewmodel.EmaViewModelAction
@@ -280,8 +280,8 @@ class EmaViewModelActionTest {
         Emanate.init(
             EmaConfiguration(
                 sideEffectListener = object : EmaSideEffectListener {
-                    override fun onSuccess(data: ReflectionData, duration: Duration) {
-                        successes.add(data.reflection)
+                    override fun onSuccess(reflection: Reflection, output: SideEffectOutput, duration: Duration) {
+                        successes.add(reflection)
                     }
 
                     override fun onFinish(reflection: Reflection, duration: Duration) {
