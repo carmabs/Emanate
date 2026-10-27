@@ -292,11 +292,11 @@ Emanate.init(
 )
 ```
 
-## Under the hood: a source
+## Under the hood: EmaSource
 
 Inside every `EmaViewModel` there is an `EmaSource`: the engine that runs the pieces. The `source { }` of `setup` is
 what builds it. The ViewModel adds what a screen needs on top of it: the lifecycle and the initializer as actions, the
 logs, and a life tied to its screen.
 
 You don't need to know more to write screens. If you need the same engine without a screen, for example for a state
-shared by several screens, see [Source](source.md).
+shared by several screens, see [EmaSource](source.md).

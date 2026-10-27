@@ -42,17 +42,16 @@ dependencies {
 ```
 
 `emanate-core` is a Kotlin Multiplatform library, so it can also be used from the `commonMain` of a multiplatform module.
-See [Kotlin Multiplatform](guides/multiplatform.md).
 
 ## Modules
 
 | Artifact                | Use it for                                                                                     |
 |-------------------------|------------------------------------------------------------------------------------------------|
-| `emanate-core`          | State, actions, events, ViewModels, sources, plugins and use cases. Pure Kotlin Multiplatform. |
+| `emanate-core`          | State, actions, events, ViewModels, `EmaSource`, plugins and use cases. Pure Kotlin Multiplatform. |
 | `emanate-compose`       | Jetpack Compose screens, navigation and previews.                                              |
 | `emanate-android`       | The integration with the Android platform: configuration, initializers, permissions and the store of the saved state. |
 | `emanate-serialization` | Saves any serializable value of the state across process death. Based on kotlinx.serialization. See the [backup plugin](guides/process-death.md). |
-| `emanate-test`          | Records and checks the ViewModels and sources in your unit tests. See [Testing](guides/testing.md). |
+| `emanate-test`          | Records and checks `EmaViewModel` and `EmaSource` in your unit tests. See [Testing](guides/testing.md). |
 
 ## Initialize Emanate
 

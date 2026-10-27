@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" role="img" aria-label="Android flavors dev and pro choose different pieces for the same ViewModel"><title>Android flavors dev and pro choose different pieces for the same ViewModel</title><defs><style>text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif}.h{font-size:13px;font-weight:700;fill:#4b6a8a;letter-spacing:.3px}.t{font-size:13px;font-weight:600}.s{font-size:12px;fill:#7a8aa0}.m{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;fill:#44546B}</style><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#7a8aa0"/></marker></defs>
+<rect x="0.75" y="0.75" width="898.5" height="418.5" rx="20" fill="#FFFFFF" stroke="#E1E7F0" stroke-width="1.5"/>
+<rect x="250" y="20" width="400" height="104" rx="18" fill="#E6DDFF" stroke="#5A3BD1" stroke-opacity="0.25" stroke-width="1.5"/>
+<text x="268" y="46" class="h" style="fill:#5A3BD1">src/main · shared by every flavor</text>
+<rect x="268" y="62" width="364" height="46" rx="12" fill="#FFFFFF" stroke="#5A3BD1" stroke-opacity="0.25"/>
+<text x="284" y="82" class="t" fill="#5A3BD1">HomeViewModel</text><text x="284" y="99" class="s">created by homeModule, asks Koin for its pieces</text>
+<path d="M450,124 L450,144 L230,144 L230,164" fill="none" stroke="#7a8aa0" stroke-width="1.8" stroke-linejoin="round" marker-end="url(#a)"/>
+<path d="M450,124 L450,144 L670,144 L670,164" fill="none" stroke="#7a8aa0" stroke-width="1.8" stroke-linejoin="round" marker-end="url(#a)"/>
+<rect x="20" y="164" width="420" height="236" rx="18" fill="#EEF4FB" stroke="#B4CCE4" stroke-width="1.5"/>
+<text x="38" y="190" class="h">src/dev · its own environmentModule</text>
+<rect x="50" y="208" width="170" height="96" rx="16" fill="#FFE5CF" stroke="#B3520F" stroke-opacity="0.18" stroke-width="1.5"/>
+<text x="135" y="240" text-anchor="middle" class="t" fill="#B3520F">MockFriends</text><text x="135" y="260" text-anchor="middle" class="s">side effect</text><text x="135" y="284" text-anchor="middle" class="m">demoFriends</text>
+<text x="235" y="262" text-anchor="middle" font-size="22" font-weight="700" fill="#7a8aa0">+</text>
+<rect x="250" y="208" width="170" height="96" rx="16" fill="#FFDCEA" stroke="#B0245C" stroke-opacity="0.18" stroke-width="1.5"/>
+<text x="335" y="240" text-anchor="middle" class="t" fill="#B0245C">Latency 2 s</text><text x="335" y="260" text-anchor="middle" class="s">middleware</text><text x="335" y="284" text-anchor="middle" class="m">homeTuning</text>
+<text x="230" y="334" text-anchor="middle" class="s">No backend needed</text>
+<text x="230" y="358" text-anchor="middle" class="s">Every loading state is visible</text>
+<text x="230" y="382" text-anchor="middle" class="s" style="fill:#4b6a8a">Only this environmentModule is compiled</text>
+<rect x="460" y="164" width="420" height="236" rx="18" fill="#EEF4FB" stroke="#B4CCE4" stroke-width="1.5"/>
+<text x="478" y="190" class="h">src/pro · its own environmentModule</text>
+<rect x="490" y="208" width="170" height="96" rx="16" fill="#FFE5CF" stroke="#B3520F" stroke-opacity="0.18" stroke-width="1.5"/>
+<text x="575" y="240" text-anchor="middle" class="t" fill="#B3520F">LiveFriends</text><text x="575" y="260" text-anchor="middle" class="s">side effect</text><text x="575" y="284" text-anchor="middle" class="m">real API</text>
+<text x="675" y="262" text-anchor="middle" font-size="22" font-weight="700" fill="#7a8aa0">+</text>
+<rect x="690" y="208" width="170" height="96" rx="16" fill="#E2E7EF" stroke="#44546B" stroke-opacity="0.18" stroke-width="1.5"/>
+<text x="775" y="240" text-anchor="middle" class="t" fill="#44546B">No middleware</text><text x="775" y="260" text-anchor="middle" class="s">emptyList()</text><text x="775" y="284" text-anchor="middle" class="m">homeTuning</text>
+<text x="670" y="334" text-anchor="middle" class="s">Calls the real backend</text>
+<text x="670" y="358" text-anchor="middle" class="s">Production speed</text>
+<text x="670" y="382" text-anchor="middle" class="s" style="fill:#4b6a8a">Only this environmentModule is compiled</text>
+</svg>

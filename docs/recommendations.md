@@ -1,6 +1,6 @@
 # Recommendations
 
-None of this is required by Emanate, but it is how the `sample/` app is organised and it works well.
+None of this is required by Emanate, but it is how the `sample` app is organised and it works well.
 
 ## Split the app into modules
 
@@ -31,7 +31,7 @@ Keeping `presentation` free of platform code has two benefits:
 - **The compiler enforces the architecture.** A ViewModel cannot use `Context`, resources or views by mistake, because the module
   does not have them.
 - **It is ready for Kotlin Multiplatform.** `emanate-core` is multiplatform, so `presentation` and `domain` can become
-  multiplatform modules and share the ViewModels with other platforms. See [Kotlin Multiplatform](guides/multiplatform.md).
+  multiplatform modules and share the ViewModels with other platforms.
 
 ## Organise by feature
 
@@ -91,7 +91,7 @@ need, prefer a [plugin](concepts/plugins.md) or an extension function of the set
 
 ## Keep the ViewModel clean
 
-- No platform types, like a context, a view or resources. Use [`EmaText`](guides/texts.md) for strings.
+- No platform types, like a context, a view or resources. Use [`EmaText`](utils/texts.md) for strings.
 - Repositories are only used from use cases, never from a ViewModel directly.
 - Use cases have one job and take a single `Input` data class.
 - Put derived values in the state (`val showCreateButton get() = ...`), not in the view.

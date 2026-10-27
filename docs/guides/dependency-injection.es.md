@@ -1,7 +1,7 @@
 # Inyección de dependencias
 
 Emanate no depende de ningún framework de inyección de dependencias. Allí donde necesita un ViewModel, te lo pide con una
-función, así que puedes usar Koin, Hilt, Kodein, un contenedor manual o constructores normales.
+función, así que puedes usar Koin, un contenedor manual o constructores normales.
 
 ```kotlin
 // Compose
@@ -24,7 +24,7 @@ singleton se compartiría entre todas las pantallas de ese tipo y conservaría e
 
 ## Con Koin
 
-Así lo hace la app `sample/`. Arranca Koin después de inicializar Emanate:
+Así lo hace la app `sample`. Arranca Koin después de inicializar Emanate:
 
 ```kotlin
 class EmaSampleApplication : Application() {
@@ -142,19 +142,6 @@ Con Koin, declárala como `single`:
 val uiModule = module {
     single { EmaConfiguration.Android(debug = BuildConfig.DEBUG) }
     factoryOf(::LoginViewModel)
-}
-```
-
-Con Hilt, proporciónala desde un módulo y añade `@Inject` al constructor del ViewModel:
-
-```kotlin
-@Module
-@InstallIn(SingletonComponent::class)
-object EmanateModule {
-
-    @Provides
-    @Singleton
-    fun provideConfiguration(): EmaConfiguration = EmaConfiguration.Android(debug = BuildConfig.DEBUG)
 }
 ```
 

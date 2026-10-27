@@ -8,7 +8,7 @@
 | `emanate-android`         | Android integration: configuration, initializers, permissions and the saved state store.         |
 | `emanate-android-compose` | Compose support, published as `emanate-compose`.                                                  |
 | `emanate-serialization`   | Kotlin Multiplatform. Saves serializable values of the state with kotlinx.serialization.          |
-| `emanate-test`            | JVM utilities to test the ViewModels and the sources, a friend module of `emanate-core`.          |
+| `emanate-test`            | JVM utilities to test `EmaViewModel` and `EmaSource`, a friend module of `emanate-core`.          |
 | `sample`                  | A separate Gradle build with the sample app. It includes the library modules from the repository. |
 
 ## Building

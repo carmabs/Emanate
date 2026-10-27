@@ -1,7 +1,7 @@
 # Dependency injection and environments
 
 Emanate does not depend on any dependency injection framework. Wherever it needs a ViewModel, it asks you for it with a
-function, so you can use Koin, Hilt, Kodein, a manual container or plain constructors.
+function, so you can use Koin, a manual container or plain constructors.
 
 ```kotlin
 createComposableScreen(
@@ -25,7 +25,7 @@ would be shared by every screen of that type and would keep the state of a scree
 
 ## With Koin
 
-This is how the `sample/` app does it. Start Koin after initializing Emanate:
+This is how the `sample` app does it. Start Koin after initializing Emanate:
 
 ```kotlin
 class EmaSampleApplication : Application() {
@@ -119,8 +119,9 @@ The ViewModel receives it and installs it with `+`. Middlewares can be received 
 ```kotlin
 class HomeViewModel(
     private val loadFriends: FriendsEffect,
-    private val tuning: List<EmaMiddleware<HomeState, HomeAction, *>> = emptyList()
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+    private val tuning: List<EmaMiddleware<HomeState, HomeAction, *>> = emptyList(),
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
 
     override fun setup() = source {
         // Before anything else, so they see every action first
@@ -169,10 +170,15 @@ class MockFriends(
 `MockFriends(hundredFriends)` a long one. The reducers and the events don't change: the screen still shows its loading
 state, its error dialog and its navigation exactly as in production.
 
-## Two behaviours by flavor: dev and pro
+## Two behaviours by flavor on Android: dev and pro
 
-Decide the pieces where the ViewModel is created: in the dependency injection of each build. With two flavors, `dev`
-works without a backend and `pro` calls the real one:
+This example is specific to Android, the only platform with product flavors. On the other platforms you get the same
+result by choosing the modules in each target, or with a manual factory.
+
+Decide the pieces where the ViewModel is created: in the dependency injection of each build. With two Android flavors,
+`dev` works without a backend and `pro` calls the real one:
+
+![Android flavors dev and pro choose different pieces for the same ViewModel](../assets/flavors.svg)
 
 ```kotlin
 // build.gradle.kts of the app
@@ -191,7 +197,9 @@ same name and its own pieces:
 ```kotlin
 // src/main: the same in every build
 val homeModule = module {
-    factory { HomeViewModel(loadFriends = get(), tuning = get(named("homeTuning"))) }
+    factory {
+        HomeViewModel(loadFriends = get(), tuning = get(named("homeTuning")), initialState = get())
+    }
 }
 
 // src/pro: the real backend
@@ -265,10 +273,10 @@ val profilesDisabled = middlewareOf<HomeState, HomeAction, HomeAction.FriendClic
 }
 ```
 
-### A rule
+### A different business rule
 
-Reducers can be replaced too. A development build can give every user the administrator role, to show the screens
-that only administrators see, without a special account:
+Reducers can be replaced too, to change a business rule in one build. A development build can give every user the
+administrator role, to show the screens that only administrators see, without a special account:
 
 ```kotlin
 class HomeViewModel(
@@ -296,35 +304,40 @@ HomeViewModel(
 
 ### The starting state
 
-For QA, open a screen already in the state you want to check, without repeating the steps that lead to it. An
-extension function adds a side effect that dispatches a list of actions when the screen is created:
+For QA, open a screen already in the state you want to check, without repeating the steps that lead to it. Receive
+the initial state in the constructor, with the usual one as default, and pass the one you need:
 
 ```kotlin
-fun <S : EmaState, A : EmaAction, E : EmaEvent> SourceSetupScope<S, A, E>.startWith(actions: List<A>) {
-    sideEffects {
-        add<EmaInitializer> { actions.forEach { dispatch(it) } }
-    }
-}
-
 class HomeViewModel(
     private val loadFriends: FriendsEffect,
-    private val startActions: List<HomeAction> = emptyList()
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
-
-    override fun setup() = source {
-        startWith(startActions)
-        // ...
-    }
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
+    // ...
 }
 
 // QA: a search with no results
 HomeViewModel(
     loadFriends = MockFriends(friends = emptyList()),
-    startActions = listOf(HomeAction.QueryWritten("Zoe"), HomeAction.RefreshRequested)
+    initialState = HomeState(query = "Zoe", friends = emptyList())
 )
 ```
 
-The actions go through the same reducers as the ones of the user, so the state is always a valid one.
+With the environment modules of the [flavors](#two-behaviours-by-flavor-on-android-dev-and-pro), each build provides its
+own state and the `homeModule` of `src/main` passes it with `initialState = get()`:
+
+```kotlin
+// src/pro
+val environmentModule = module {
+    factory { HomeState() }
+}
+
+// src/dev
+val environmentModule = module {
+    factory { HomeState(query = "Zoe", friends = emptyList()) }
+}
+```
+
+The state is built by hand, so keep it a valid one.
 
 ### The tests
 
@@ -353,19 +366,6 @@ val uiModule = module {
 }
 ```
 
-With Hilt, provide it from a module, and add `@Inject` to the constructor of the ViewModel:
-
-```kotlin
-@Module
-@InstallIn(SingletonComponent::class)
-object EmanateModule {
-
-    @Provides
-    @Singleton
-    fun provideConfiguration(): EmaConfiguration = EmaConfiguration.Android(debug = BuildConfig.DEBUG)
-}
-```
-
 The use cases only receive the `io` dispatcher of the configuration, in the constructor:
 
 ```kotlin
@@ -376,11 +376,16 @@ val useCaseModule = module {
 
 ## Guidelines
 
-- **Swap the smallest piece.** Replace the side effect that calls the backend, not the ViewModel. The reducers, the
-  events and the screen are then tested and demoed exactly as they run in production.
-- **Mocks dispatch the same actions as the real pieces.** Then the rest of the screen can't tell them apart.
-- **Keep the mocks out of the production build**, in the source set of their flavor or build type.
-- **Use `MiddlewarePosition.First`** for the middlewares that simulate conditions, so they run before the ones of the
-  screen.
-- **Prefer a plugin for a whole feature** that an environment installs or not, like analytics or a debug overlay. See
+- **Declare the ViewModel as `factory`.** Each screen needs its own instance; a `single` would share the state of a
+  screen that was already closed.
+- **Inject the pieces, not the ViewModel, and only the ones that an environment may change.** Receive in the
+  constructor the side effect of the backend, the middlewares or the initial state, with the production ones as default
+  values. What never changes stays inside the ViewModel, so the constructor doesn't grow with every detail.
+- **Choose the environment in the dependency injection, never in the ViewModel.** An `if (isDemo)` inside the
+  ViewModel is a branch that production carries and nobody tests.
+- **Keep the mocks out of the production build.** Declare them in the source set of their flavor or build type, as in
+  [the flavors example](#two-behaviours-by-flavor-on-android-dev-and-pro).
+- **Run the middlewares that simulate conditions first**, with `MiddlewarePosition.First`, so they act before the
+  middlewares of the screen.
+- **Use a plugin for a whole feature** that an environment installs or not, like analytics or a debug overlay. See
   [Plugins](../concepts/plugins.md).
