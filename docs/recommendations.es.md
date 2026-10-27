@@ -1,6 +1,6 @@
 # Recomendaciones
 
-Nada de esto lo exige Emanate, pero así está organizada la app `sample/` y funciona bien.
+Nada de esto lo exige Emanate, pero así está organizada la app `sample` y funciona bien.
 
 ## Divide la app en módulos
 

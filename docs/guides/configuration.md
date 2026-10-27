@@ -486,7 +486,7 @@ parameter. **Pass the configuration** when the one of the application isn't enou
   Emanate passes its own configuration to its ViewModels, so it doesn't clash with an application that also uses
   Emanate, nor depend on whether it was initialized. See [Libraries and SDKs](#libraries-and-sdks).
 - **A module with a different configuration**, for example its own logger or error policy.
-- **Dependency injection.** The configuration is one more dependency, provided by Hilt or Koin. See
+- **Dependency injection.** The configuration is one more dependency, provided by Koin or any other dependency injection framework. See
   [Dependency injection](dependency-injection.md#injecting-the-configuration).
 - **Tests.** Each test passes its configuration, with the dispatchers of the test, without changing the one of Emanate,
   so the tests can run in parallel. See [Testing](testing.md#without-changing-the-configuration-of-emanate).

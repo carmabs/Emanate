@@ -145,7 +145,7 @@ parámetro. **Pasa la configuración** cuando la de la aplicación no basta o no
   con Emanate pasa su propia configuración a sus ViewModels, así no choca con una aplicación que también use Emanate ni
   depende de que se haya inicializado. Consulta [Librerías y SDKs](#librerías-y-sdks).
 - **Un módulo con otra configuración**, por ejemplo con su propio logger o su propia política de errores.
-- **Inyección de dependencias.** La configuración es una dependencia más, que proporcionan Hilt o Koin. Consulta
+- **Inyección de dependencias.** La configuración es una dependencia más, que proporciona Koin u otro framework de inyección de dependencias. Consulta
   [Inyección de dependencias](dependency-injection.es.md#inyectar-la-configuración).
 - **Tests.** Cada test pasa su configuración, con los dispatchers del test, sin cambiar la de Emanate, así que los tests
   se pueden ejecutar en paralelo. Consulta [Testing](testing.es.md#sin-cambiar-la-configuración-de-emanate).

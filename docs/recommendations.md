@@ -1,6 +1,6 @@
 # Recommendations
 
-None of this is required by Emanate, but it is how the `sample/` app is organised and it works well.
+None of this is required by Emanate, but it is how the `sample` app is organised and it works well.
 
 ## Split the app into modules
 

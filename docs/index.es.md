@@ -85,5 +85,5 @@ solo informa de lo que ha hecho el usuario mediante acciones.
 6. [Recomendaciones](recommendations.es.md): estructura del proyecto y convenciones de nombres.
 7. [Contribuir](contributing.es.md): compilar, testear y formatear la librería.
 
-> **Nota:** el código de esta guía sale de la app `sample/` de este repositorio, que puedes ejecutar para ver todo
+> **Nota:** el código de esta guía sale de la app `sample` de este repositorio, que puedes ejecutar para ver todo
 > funcionando junto.
