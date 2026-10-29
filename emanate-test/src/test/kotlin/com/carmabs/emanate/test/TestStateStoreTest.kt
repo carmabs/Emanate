@@ -48,12 +48,12 @@ class TestStateStoreTest {
 
     @BeforeTest
     fun setUp() {
-        useTestDispatchers()
+        useTestConfiguration()
     }
 
     @AfterTest
     fun tearDown() {
-        resetTestDispatchers()
+        resetTestConfiguration()
     }
 
     @Test
