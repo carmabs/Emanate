@@ -2,10 +2,10 @@ package com.carmabs.emanate.presentation.profile.creation
 
 import com.carmabs.domain.model.Role
 import com.carmabs.emanate.test.record
-import com.carmabs.emanate.test.resetTestDispatchers
+import com.carmabs.emanate.test.resetTestConfiguration
 import com.carmabs.emanate.test.restoreStateOf
 import com.carmabs.emanate.test.testStateStore
-import com.carmabs.emanate.test.useTestDispatchers
+import com.carmabs.emanate.test.useTestConfiguration
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -16,12 +16,12 @@ class ProfileCreationViewModelTest {
 
     @BeforeTest
     fun setUp() {
-        useTestDispatchers()
+        useTestConfiguration()
     }
 
     @AfterTest
     fun tearDown() {
-        resetTestDispatchers()
+        resetTestConfiguration()
     }
 
     @Test

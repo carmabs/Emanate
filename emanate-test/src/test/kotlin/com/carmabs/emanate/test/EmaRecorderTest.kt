@@ -64,12 +64,12 @@ class EmaRecorderTest {
 
     @BeforeTest
     fun setUp() {
-        useTestDispatchers()
+        useTestConfiguration()
     }
 
     @AfterTest
     fun tearDown() {
-        resetTestDispatchers()
+        resetTestConfiguration()
     }
 
     @Test
@@ -143,12 +143,12 @@ class EmaRecorderStandardDispatcherTest {
 
     @BeforeTest
     fun setUp() {
-        dispatcher = useTestDispatchers(StandardTestDispatcher())
+        dispatcher = useTestConfiguration(StandardTestDispatcher())
     }
 
     @AfterTest
     fun tearDown() {
-        resetTestDispatchers()
+        resetTestConfiguration()
     }
 
     @Test
@@ -167,14 +167,14 @@ class EmaRecorderStandardDispatcherTest {
     fun `resetting the dispatchers restores the configuration of Emanate`() {
         assertSame(dispatcher, Emanate.configuration.dispatchers.main)
 
-        resetTestDispatchers()
+        resetTestConfiguration()
 
         assertNotSame(dispatcher, Emanate.configuration.dispatchers.main)
     }
 }
 
 /**
- * Without useTestDispatchers: the view models receive the configuration of the test
+ * Without useTestConfiguration: the view models receive the configuration of the test
  */
 @OptIn(ExperimentalCoroutinesApi::class)
 class TestConfigurationTest {

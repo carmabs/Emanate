@@ -18,8 +18,8 @@ import com.carmabs.emanate.presentation.profile.creation.ProfileCreationState
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationViewModel
 import com.carmabs.emanate.test.assertSetup
 import com.carmabs.emanate.test.record
-import com.carmabs.emanate.test.resetTestDispatchers
-import com.carmabs.emanate.test.useTestDispatchers
+import com.carmabs.emanate.test.resetTestConfiguration
+import com.carmabs.emanate.test.useTestConfiguration
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -59,12 +59,12 @@ class LoginViewModelTest {
 
     @BeforeTest
     fun setUp() {
-        useTestDispatchers()
+        useTestConfiguration()
     }
 
     @AfterTest
     fun tearDown() {
-        resetTestDispatchers()
+        resetTestConfiguration()
     }
 
     private fun loginViewModel() = LoginViewModel(LoginUseCase(repository), LoginState.DEFAULT)
