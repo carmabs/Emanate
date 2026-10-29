@@ -69,7 +69,7 @@ La guía está en [`docs/`](docs/index.es.md):
 
 - [Primeros pasos](docs/getting-started.es.md)
 - Conceptos: [arquitectura](docs/concepts/architecture.es.md), [estado](docs/concepts/state.es.md), [acciones](docs/concepts/actions.es.md), [eventos](docs/concepts/events.es.md), [ViewModel](docs/concepts/viewmodel.es.md), [source](docs/concepts/source.es.md)
-- Guías: [configuración](docs/guides/configuration.es.md), [inicializadores](docs/guides/initializers.es.md), [trabajo asíncrono y errores](docs/guides/async-and-errors.es.md), [testing](docs/guides/testing.es.md), [Kotlin Multiplatform](docs/guides/multiplatform.es.md) y más
+- Guías: [configuración](docs/guides/configuration.es.md), [inicializadores](docs/guides/initializers.es.md), [trabajo asíncrono y errores](docs/guides/async-and-errors.es.md), [testing](docs/guides/testing.es.md) y más
 - [Compose](docs/compose/screens.es.md): pantallas, navegación, botón atrás, diálogos, estado guardado y permisos
 - [Vistas de Android](docs/android-view/index.es.md): Fragments, Activities, diálogos y listas
 - [Recomendaciones](docs/recommendations.es.md) y [contribuir](docs/contributing.es.md)

@@ -204,7 +204,7 @@ logic.
 
 `emanate-core` is pure Kotlin Multiplatform, with no platform dependency. The same ViewModels run in your app, in your
 unit tests and on every platform Kotlin targets, so the presentation layer can be shared between mobile, desktop and
-the web. See [Kotlin Multiplatform](guides/multiplatform.md).
+the web.
 
 ## The rules that make it work
 

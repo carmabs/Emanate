@@ -267,4 +267,4 @@ with `assertActions`.
 - **Save only what the user would lose**: form fields, selected items, the current step. The platform limits the size
   of the saved values.
 - **Don't save what you can load again**, like lists from the network: load them again from the initializer.
-- **One backup per source.** A backup can't be installed in two ViewModels: create one in each.
+- **One backup per ViewModel or `EmaSource`.** A backup can't be installed in two ViewModels: create one in each.

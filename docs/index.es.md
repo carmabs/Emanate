@@ -71,7 +71,6 @@ solo informa de lo que ha hecho el usuario mediante acciones.
     - [Inyección de dependencias](guides/dependency-injection.es.md)
     - [Permisos](guides/permissions.es.md)
     - [Testing](guides/testing.es.md)
-    - [Kotlin Multiplatform](guides/multiplatform.es.md)
     - [Utilidades](guides/utilities.es.md)
 4. **Compose**
     - [Pantallas](compose/screens.es.md)

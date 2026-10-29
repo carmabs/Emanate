@@ -46,7 +46,7 @@ dependencies {
 ```
 
 `emanate-core` es una librería Kotlin Multiplatform, así que también se puede usar desde el `commonMain` de un módulo
-multiplataforma. Consulta [Kotlin Multiplatform](guides/multiplatform.es.md).
+multiplataforma.
 
 ## Inicializar Emanate
 

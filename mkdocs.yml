@@ -69,7 +69,7 @@ plugins:
             State: Estado
             Actions: Acciones
             Events: Eventos
-            Source: Fuente
+            EmaSource: EmaSource
             Guides: Guías
             Configuration: Configuración
             Initializers: Inicializadores
@@ -77,8 +77,8 @@ plugins:
             Async work and errors: Trabajo asíncrono y errores
             Dependency injection: Inyección de dependencias
             Permissions: Permisos
+            Permissions (Android): Permisos (Android)
             Testing: Testing
-            Kotlin Multiplatform: Kotlin Multiplatform
             Utilities: Utilidades
             Screens: Pantallas
             Navigation: Navegación
@@ -108,23 +108,23 @@ nav:
       - Broadcasts: concepts/broadcasts.md
       - Plugins: concepts/plugins.md
       - ViewModel: concepts/viewmodel.md
-      - Source: concepts/source.md
+      - EmaSource: concepts/source.md
+  - Utils:
+      - Use cases: utils/use-cases.md
+      - Results: utils/results.md
+      - Texts in the state: utils/texts.md
   - Guides:
       - Configuration: guides/configuration.md
       - Initializers: guides/initializers.md
       - Surviving process death: guides/process-death.md
       - Dependency injection and environments: guides/dependency-injection.md
       - Testing: guides/testing.md
-      - Use cases and results: guides/use-cases.md
-      - Texts without Context: guides/texts.md
-      - Permissions: guides/permissions.md
-      - Kotlin Multiplatform: guides/multiplatform.md
   - Compose:
       - Screens: compose/screens.md
       - Navigation: compose/navigation.md
       - Back handling: compose/back-handling.md
       - Dialogs: compose/dialogs.md
-      - Permissions: compose/permissions.md
+      - Permissions (Android): compose/permissions.md
   - Recommendations: recommendations.md
   - Contributing: contributing.md
 

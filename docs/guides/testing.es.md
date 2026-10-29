@@ -23,9 +23,9 @@ Incluye `kotlinx-coroutines-test` y necesita la misma versión de `emanate-core`
 
 | Utilidad                        | Para qué                                                                      |
 |---------------------------------|-------------------------------------------------------------------------------|
-| `useTestDispatchers()`          | Ejecuta los ViewModels, las sources y los casos de uso creados después en el dispatcher del test, también como `Dispatchers.Main`. Llámalo antes de cada test. |
-| `resetTestDispatchers()`        | Restaura los dispatchers y la configuración de Emanate. Llámalo después de cada test. |
-| `testConfiguration(dispatcher)` | Una configuración que se ejecuta en el dispatcher del test, para pasársela a los ViewModels en lugar de llamar a `useTestDispatchers()`. Consulta [Sin cambiar la configuración de Emanate](#sin-cambiar-la-configuración-de-emanate). |
+| `useTestConfiguration()`          | Ejecuta los ViewModels, las sources y los casos de uso creados después en el dispatcher del test, también como `Dispatchers.Main`. Llámalo antes de cada test. |
+| `resetTestConfiguration()`        | Restaura los dispatchers y la configuración de Emanate. Llámalo después de cada test. |
+| `testConfiguration(dispatcher)` | Una configuración que se ejecuta en el dispatcher del test, para pasársela a los ViewModels en lugar de llamar a `useTestConfiguration()`. Consulta [Sin cambiar la configuración de Emanate](#sin-cambiar-la-configuración-de-emanate). |
 | `viewModel.record()`            | Graba en orden las acciones, los estados y los eventos de un ViewModel o una source. |
 | `assertActions(...)`            | Las acciones grabadas, incluidas las que bloquea un middleware.               |
 | `assertStates(...)`             | Todos los estados que devuelven los reducers.                                 |
@@ -38,12 +38,12 @@ class LoginViewModelTest {
 
     @BeforeTest
     fun setUp() {
-        useTestDispatchers()
+        useTestConfiguration()
     }
 
     @AfterTest
     fun tearDown() {
-        resetTestDispatchers()
+        resetTestConfiguration()
     }
 
     @Test
@@ -62,7 +62,7 @@ class LoginViewModelTest {
 }
 ```
 
-- **Crea el ViewModel después de `useTestDispatchers`**, para que se ejecute en el dispatcher del test. Por defecto es
+- **Crea el ViewModel después de `useTestConfiguration`**, para que se ejecute en el dispatcher del test. Por defecto es
   un `UnconfinedTestDispatcher`, que procesa las acciones en cuanto se despachan; pasa un `StandardTestDispatcher` para
   procesarlas cuando avance el test.
 - **Graba antes de la primera acción** para grabarlo todo.
@@ -74,7 +74,7 @@ class LoginViewModelTest {
 
 ### Sin cambiar la configuración de Emanate
 
-`useTestDispatchers()` cambia la configuración de Emanate y `Dispatchers.Main`, que son compartidos por todo el proceso,
+`useTestConfiguration()` cambia la configuración de Emanate y `Dispatchers.Main`, que son compartidos por todo el proceso,
 así que los tests que lo usan no se pueden ejecutar en paralelo en la misma JVM. Si tus ViewModels reciben la
 configuración en el constructor (consulta [Configuración explícita](configuration.es.md#configuración-explícita)),
 pásales `testConfiguration(dispatcher)` en su lugar: no cambia nada compartido, así que no hay nada que restaurar.

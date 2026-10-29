@@ -31,8 +31,7 @@ Mantener `presentation` sin Android tiene dos ventajas:
 - **El compilador hace cumplir la arquitectura.** Un ViewModel no puede usar `Context`, recursos ni vistas por error,
   porque el módulo no los tiene.
 - **Está preparado para Kotlin Multiplatform.** `emanate-core` es multiplataforma, así que `presentation` y `domain` pueden
-  convertirse en módulos multiplataforma y compartir los ViewModels con otras plataformas. Consulta
-  [Kotlin Multiplatform](guides/multiplatform.es.md).
+  convertirse en módulos multiplataforma y compartir los ViewModels con otras plataformas.
 
 ## Organiza por funcionalidad
 

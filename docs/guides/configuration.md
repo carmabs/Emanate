@@ -17,7 +17,7 @@ class MyApplication : Application() {
 - If it is never called, the default `EmaConfiguration()` is used. That is the usual case in unit tests and in
   non-Android platforms.
 
-Register the application in `AndroidManifest.xml` (`android:name=".MyApplication"`). A ViewModel or a source can also
+Register the application in `AndroidManifest.xml` (`android:name=".MyApplication"`). A ViewModel or an `EmaSource` can also
 receive its own configuration, which is used instead of the one of the application. See
 [Explicit configuration](#explicit-configuration).
 
@@ -27,7 +27,7 @@ Each property configures one thing. The ones that hold an object with several pa
 
 | Property             | Default `EmaConfiguration()`   | Parameters | What it configures |
 |----------------------|--------------------------------|------------|--------------------|
-| `dispatchers` | `EmaDispatchers()` | **`main`**: where ViewModels and sources run, and so their reducers and side effects. Default `Dispatchers.Main`.<br>**`io`**: where [use cases](use-cases.md) run, for network, disk and blocking work. Default `Dispatchers.IO` (`Dispatchers.Default` on JS and Wasm).<br>**`default`**: CPU-intensive work, like processing images. Default `Dispatchers.Default`. | The coroutine dispatchers. See [Dispatchers](#dispatchers). |
+| `dispatchers` | `EmaDispatchers()` | **`main`**: where ViewModels and `EmaSource` run, and so their reducers and side effects. Default `Dispatchers.Main`.<br>**`io`**: where [use cases](../utils/use-cases.md) run, for network, disk and blocking work. Default `Dispatchers.IO` (`Dispatchers.Default` on JS and Wasm).<br>**`default`**: CPU-intensive work, like processing images. Default `Dispatchers.Default`. | The coroutine dispatchers. See [Dispatchers](#dispatchers). |
 | `errorPolicy` | `EmaErrorPolicy.Catch()` | **`Catch(onError)`**: the exception is caught and the screen keeps working. `onError` is optional and receives each `EmaError`, to send it to a crash reporter.<br>**`Throw`**: the exception is thrown again and the app fails at once. | What happens when a middleware, reducer or side effect throws an exception. See [Errors](#errors). |
 | `logger` | `EmaLogger.Println` | **`log(tag, message)`**: writes one line. The tag is the name of the ViewModel.<br>**`prefix`**: text added before every tag, to filter the logs of Emanate, like `EMA_HomeViewModel`. Set it with `EmaLogger(prefix) { tag, message -> ... }`. | Where the logs go. `null` disables them. See [Logs](#logs). |
 | `printer` | `EmaDataClassPrinter.ToString` | **`print(value)`**: returns the text of the state or the action. By default its `toString()`.<br>**`indent`** and **`wrappedLineWidth`**: only in `EmaAndroidDataClassPrinter`. The spaces of each nesting level (2) and the length from which a long `String` is split into lines (80). | How the states and actions are turned into text in the logs. See [Printing the state](#printing-the-state). |
@@ -79,7 +79,7 @@ Emanate.init(
 | Dispatcher | Default                                                   | Where it is applied |
 |------------|-----------------------------------------------------------|---------------------|
 | `main`     | `Dispatchers.Main`                                        | The scope of every `EmaViewModel` and `EmaSource`. Everything the ViewModel does runs there: its middlewares, its reducers, its side effects and the dispatch of its actions. |
-| `io`       | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | The [use cases](use-cases.md): `EmaUseCase` and `EmaFlowUseCase` switch to it to run, so the side effect that calls them doesn't block `main`. |
+| `io`       | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | The [use cases](../utils/use-cases.md): `EmaUseCase` and `EmaFlowUseCase` switch to it to run, so the side effect that calls them doesn't block `main`. |
 | `default`  | `Dispatchers.Default`                                     | The CPU-intensive work of `emanate-android`: the extensions that create bitmaps from a `ByteArray` or a drawable resource (`toBitmap`, `getBitmapFromResource`, `getBitmapCropFromResource`), and the coroutines of `EmaJobService`. |
 
 **`main`** is the one you will change most. A side effect runs on `main`, so it can read the state and dispatch actions
@@ -259,7 +259,7 @@ Use `EmaLogger(prefix = "MYAPP_") { tag, message -> ... }` to add a prefix to ev
 logcat.
 
 To disable the logs of a single ViewModel, pass it a configuration without logger:
-`Emanate.configuration.copy(logger = null)`. A source used on its own doesn't log: add `loggerMiddleware(tag, logger)`
+`Emanate.configuration.copy(logger = null)`. An `EmaSource` used on its own doesn't log: add `loggerMiddleware(tag, logger)`
 as its last middleware.
 
 ## Errors
@@ -268,7 +268,7 @@ The code of your ViewModel can fail: a reducer that calls `friends.first()` on a
 a wrong value, a side effect that throws. What Emanate does then is the `errorPolicy`.
 
 > **Errors you expect are not exceptions.** A request that can fail is not an error of this kind: return an
-> [`EmaResult`](use-cases.md#emaresult) from the use case and let the side effect dispatch an action that shows the
+> [`EmaResult`](../utils/results.md) from the use case and let the side effect dispatch an action that shows the
 > failure. The policy is for the **bugs**, the things you didn't expect.
 
 Take a reducer with a bug:
@@ -441,7 +441,7 @@ like `EmaAction`.
 When a ViewModel is closed, its side effects are cancelled, so the work that was running stops. Two things can still
 run after it:
 
-- the `onClose` blocks of its source, which are the last thing the ViewModel does, and
+- the `onClose` blocks of its `EmaSource`, which are the last thing the ViewModel does, and
 - the side effects added with `survivesClose = true`, like the one that saves a draft when the user leaves the editor.
 
 The `closeTimeout` is how long they have. After it, they are cancelled, so a request that never answers doesn't keep
@@ -476,7 +476,7 @@ class HomeViewModel(
 }
 ```
 
-The ViewModel runs on its `main` dispatcher and logs with its `logger`. The configuration is kept by the ViewModel and its source, so its error policy, side effect listener,
+The ViewModel runs on its `main` dispatcher and logs with its `logger`. The configuration is kept by the ViewModel and its `EmaSource`, so its error policy, side effect listener,
 `closeTimeout` and broadcaster are the ones of the configuration they received.
 
 **Use `Emanate.init`** in an application: it configures every ViewModel in one place, and they don't need any
@@ -491,7 +491,7 @@ parameter. **Pass the configuration** when the one of the application isn't enou
 - **Tests.** Each test passes its configuration, with the dispatchers of the test, without changing the one of Emanate,
   so the tests can run in parallel. See [Testing](testing.md#without-changing-the-configuration-of-emanate).
 
-The [use cases](use-cases.md) don't receive the whole configuration, only a dispatcher in the constructor:
+The [use cases](../utils/use-cases.md) don't receive the whole configuration, only a dispatcher in the constructor:
 by default the `io` dispatcher of the configuration of Emanate, so pass the `io` dispatcher of yours.
 
 ## Libraries and SDKs
@@ -541,7 +541,7 @@ internal class PaymentViewModel(private val payUseCase: PayUseCase) :
 ```
 
 The base classes are also the place to add what every piece of the library shares, like a plugin that all its
-ViewModels install. If the library creates a source on its own with `EmaSource(...)`, wrap it the same way.
+ViewModels install. If the library creates an `EmaSource` on its own with `EmaSource(...)`, wrap it the same way.
 
 - **Broadcast actions.** With its own `EmaActionBroadcaster`, the ViewModels of the library only receive the actions
   broadcast by each other, and the ones of the application don't receive theirs. Keep the shared one,

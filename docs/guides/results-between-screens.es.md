@@ -90,7 +90,7 @@ Cubre la pantalla que todavía no se ha creado: después de que se mate el proce
 pero el ViewModel de la anterior solo se crea cuando el usuario vuelve a ella. Sin guardar el resultado, se perdería. No
 cubre un proceso que muere después de emitir el resultado: también se guarda en memoria.
 
-En los tests, `resetTestDispatchers` de `emanate-test` elimina las acciones guardadas en el broadcaster compartido que
+En los tests, `resetTestConfiguration` de `emanate-test` elimina las acciones guardadas en el broadcaster compartido que
 nadie ha recibido. Cada `testConfiguration` tiene su propio broadcaster, así que sus acciones guardadas no llegan a
 otros tests.
 
