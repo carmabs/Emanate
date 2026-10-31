@@ -1,19 +1,32 @@
 # Compose navigation
 
-In Emanate the **ViewModel never navigates**. It posts an [event](../concepts/events.md) that says what happened,
-and the `onEvent` lambda of the destination hands it to a **navigator**, which knows how to move around.
+In Emanate a **ViewModel never navigates**. Navigating is the job of the navigation graph that contains the screen,
+usually the `NavHost`: it is the one that knows which screens exist and holds the `NavController` to move between them.
 
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"actorBkg": "#4F86F7", "actorBorder": "#2447C9", "actorTextColor": "#ffffff", "noteBkgColor": "#EEF4FB", "noteBorderColor": "#B4CCE4", "signalColor": "#7a8aa0", "signalTextColor": "#232f3e", "fontFamily": "Inter, Roboto, sans-serif"}}}%%
-sequenceDiagram
-    participant VM as ViewModel
-    participant G as emaScreen
-    participant N as Navigator
-    participant NC as NavController
-    VM->>G: postEvent(UserTypeSelected)
-    G->>N: onEvent(event)
-    N->>NC: navigate(route, initializer)
-```
+The ViewModel only posts an [event](../concepts/events.md) that says **what happened**, like "the user chose to be an
+admin". Someone outside the screens has to receive those events and decide **where to go**: the **navigator**, a class
+that lives next to the `NavHost` and holds its `NavController`. It is not a class of Emanate: it is a plain class of
+yours, and it is a good pattern to handle all the navigation of your app this way.
+
+This is the profile flow of the sample, with two screens:
+
+![Each screen of the NavHost sends its events to the navigator, which decides where to go](../assets/compose-navigation.svg)
+
+1. Each destination of the `NavHost` is an `emaScreen`, with its screen content, its ViewModel and its `onEvent`.
+2. When the user taps **Admin**, the ViewModel of `ProfileOnBoarding` posts `UserTypeSelected(ADMIN)`. It doesn't
+   know which screen comes next.
+3. The `onEvent` of that screen hands the event to the navigator, to its function for that screen:
+   `handleProfileOnBoardingEvent`.
+4. The navigator decides for each event: `UserTypeSelected` opens `ProfileCreation`, and `OnBoardingCancelled` goes
+   back. It does it with the `navController`, which changes the destination shown by the `NavHost`.
+
+Keeping the navigation out of the ViewModel has two advantages. The ViewModel can be tested without Android, and the
+same event can lead to different places in different apps or graphs: on a phone it may open a new screen and on a
+tablet update a side panel.
+
+The decision of where to go could be written directly in each `onEvent` lambda, but we recommend that every navigation
+goes through a navigator: the graph only declares the screens, and all the navigation of a flow lives in one place that
+is easy to read and to change. See [The navigator](#the-navigator).
 
 ## Routes
 
@@ -26,14 +39,13 @@ navController.navigate(ProfileCreationScreenContent::class.routeId)
 
 ## The navigator
 
-Navigation lives in a plain class that wraps the `NavController`. Extend `EmaComposableNavigator` and create it once,
-with `remember`, next to the `NavHost`:
+Create **one navigator per navigation graph**, not one per screen, and let it handle the navigation of all the screens
+of the graph. It is a plain class that receives the `NavController` and has one function per screen: each function
+receives the events of that screen and decides where to go. Emanate doesn't require a base class or an interface for it:
+any class with this shape works. Create it once, with `remember`, next to the `NavHost`:
 
 ```kotlin
-class ProfileOnBoardingNavigator(
-    activity: ComponentActivity,
-    navController: NavController
-) : EmaComposableNavigator(context = activity, navController = navController) {
+class ProfileNavigator(private val navController: NavController) {
 
     fun handleProfileOnBoardingEvent(event: ProfileOnBoardingEvent) {
         when (event) {
@@ -45,7 +57,13 @@ class ProfileOnBoardingNavigator(
                 )
             )
 
-            is ProfileOnBoardingEvent.OnBoardingCancelled -> navigateBack()
+            is ProfileOnBoardingEvent.OnBoardingCancelled -> navController.navigateBack()
+        }
+    }
+
+    fun handleProfileCreationEvent(event: ProfileCreationEvent) {
+        when (event) {
+            ProfileCreationEvent.DialogConfirmationAccepted -> navController.navigateBack()
         }
     }
 }
@@ -54,7 +72,7 @@ class ProfileOnBoardingNavigator(
 ```kotlin
 setContent {
     val navController = rememberNavController()
-    val navigator = remember { ProfileOnBoardingNavigator(this, navController) }
+    val navigator = remember { ProfileNavigator(navController) }
 
     NavHost(navController, startDestination = ProfileOnBoardingScreenContent::class.routeId) {
         emaScreen(
@@ -66,9 +84,8 @@ setContent {
 }
 ```
 
-`navigateBack(closeActivityWhenBackstackIsEmpty = true)` pops the back stack and closes the activity when there is
-nothing left. The same function is available on any `NavController`, and `NavController.navigateToExternalLink(url)`
-opens a link in another app.
+`NavController.navigateBack(closeActivityWhenBackstackIsEmpty = true)` pops the back stack and closes the activity when
+there is nothing left, and `NavController.navigateToExternalLink(url)` opens a link in another app.
 
 ## Passing an initializer
 
