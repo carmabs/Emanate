@@ -24,7 +24,7 @@ import com.carmabs.emanate.compose.CounterViewModel
 import com.carmabs.emanate.compose.RouteInitializer
 import com.carmabs.emanate.compose.RouteInitializerSerializer
 import com.carmabs.emanate.compose.SilentScreen
-import com.carmabs.emanate.compose.extension.createComposableScreen
+import com.carmabs.emanate.compose.extension.emaScreen
 import com.carmabs.emanate.compose.extension.navigate
 import com.carmabs.emanate.compose.extension.navigateBack
 import com.carmabs.emanate.compose.extension.navigateToExternalLink
@@ -84,17 +84,17 @@ class EmaComposeNavigationTest {
             navController = rememberNavController()
             NavHost(navController, startDestination = "home") {
                 composable("home") { BasicText("Home") }
-                createComposableScreen(
+                emaScreen(
                     screenContent = CounterScreen(),
                     viewModel = { CounterViewModel().also { viewModel = it } },
                     initializerSupport = initializerSupport,
                     saveStateManager = EmaSaveStateManager<CounterState, CounterEvent> { _, _, _ -> saveStateSetups++ },
                     onViewModelInstance = { instances += it },
-                    transitionAnimation = EmaComposableTransitions(enterTransition = { fadeIn() }),
+                    transitionAnimation = EmaAnimTransition(enterTransition = { fadeIn() }),
                     decoration = { content, _ -> Box { content() } },
                     onEvent = { received += it }
                 )
-                createComposableScreen(
+                emaScreen(
                     screenContent = SilentScreen(),
                     viewModel = { CounterViewModel() },
                     fullScreenDialogMode = true,
@@ -249,11 +249,11 @@ class EmaComposeNavigationTest {
 
     @Test
     fun `the pop transitions default to the enter and exit transitions`() {
-        val empty = EmaComposableTransitions()
+        val empty = EmaAnimTransition()
         assertNull(empty.enterTransition)
         assertNull(empty.popExitTransition)
 
-        val transitions = EmaComposableTransitions(enterTransition = { fadeIn() }, exitTransition = { null })
+        val transitions = EmaAnimTransition(enterTransition = { fadeIn() }, exitTransition = { null })
         assertSame(transitions.enterTransition, transitions.popEnterTransition)
         assertSame(transitions.exitTransition, transitions.popExitTransition)
         assertNotNull(EmaInitializerSupport(strategy).serializerStrategy)

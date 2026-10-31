@@ -14,7 +14,7 @@ import androidx.navigation.NavBackStackEntry
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
-class EmaComposableTransitions(
+class EmaAnimTransition(
     val enterTransition: (
         @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
     )? = null,

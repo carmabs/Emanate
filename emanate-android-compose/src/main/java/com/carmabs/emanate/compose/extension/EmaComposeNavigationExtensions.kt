@@ -25,11 +25,11 @@ import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
 import com.carmabs.emanate.compose.action.toImmutable
 import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
-import com.carmabs.emanate.compose.navigation.EmaComposableTransitions
+import com.carmabs.emanate.compose.navigation.EmaAnimTransition
 import com.carmabs.emanate.compose.navigation.EmaInitializerNavType
 import com.carmabs.emanate.compose.provider.EmaScreenProvider
-import com.carmabs.emanate.compose.ui.EmaComposableScreen
-import com.carmabs.emanate.compose.ui.EmaComposableScreenContent
+import com.carmabs.emanate.compose.ui.EmaScreen
+import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.core.action.EmaAction
 import com.carmabs.emanate.core.initializer.EmaInitializer
 import com.carmabs.emanate.core.savestate.EmaStateStore
@@ -56,15 +56,15 @@ fun NavController.navigate(
     navigate(routeParsed, navOptions, navigatorExtras)
 }
 
-fun <S : EmaState, A : EmaAction, E : EmaEvent> NavGraphBuilder.createComposableScreen(
-    screenContent: EmaComposableScreenContent<S, A>,
+fun <S : EmaState, A : EmaAction, E : EmaEvent> NavGraphBuilder.emaScreen(
+    screenContent: EmaScreenContent<S, A>,
     viewModel: (store: EmaStateStore) -> EmaViewModelContract<S, E>,
     routeId: String = screenContent::class.routeId,
     initializerSupport: EmaInitializerSupport? = null,
     saveStateManager: EmaSaveStateManager<S, E>? = null,
     onViewModelInstance: (@Composable (EmaViewModelContract<S, E>) -> Unit)? = null,
     fullScreenDialogMode: Boolean = false,
-    transitionAnimation: EmaComposableTransitions = EmaComposableTransitions(),
+    transitionAnimation: EmaAnimTransition = EmaAnimTransition(),
     decoration: @Composable (
         (
             content: @Composable () -> Unit,
@@ -105,7 +105,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> NavGraphBuilder.createComposable
             }
             onViewModelInstance?.invoke(vm)
             val screenToDraw = @Composable {
-                EmaComposableScreen(
+                EmaScreen(
                     initializer = initializer,
                     vm = vm,
                     actions = vmActions,

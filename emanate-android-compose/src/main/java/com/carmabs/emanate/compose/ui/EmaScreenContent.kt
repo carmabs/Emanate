@@ -8,9 +8,9 @@ import com.carmabs.emanate.core.state.EmaState
 
 /**
  * Draws a screen: renders its state and reports what the user does as actions. The events of the screen are handled
- * where it is created, with the onEvent of [EmaComposableScreen] or createComposableScreen.
+ * where it is created, with the onEvent of [EmaScreen] or emaScreen.
  */
-interface EmaComposableScreenContent<S : EmaState, A : EmaAction> {
+interface EmaScreenContent<S : EmaState, A : EmaAction> {
 
     /**
      * Action to dispatch when back is pressed. The view model decides how to react to it.

@@ -11,7 +11,7 @@ import com.carmabs.emanate.android.extension.getInitializer
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.compose.extension.asActionDispatcher
-import com.carmabs.emanate.compose.extension.createComposableScreen
+import com.carmabs.emanate.compose.extension.emaScreen
 import com.carmabs.emanate.compose.extension.routeId
 import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationAction
@@ -46,7 +46,7 @@ class ProfileActivity : ComponentActivity() {
                     navController = navController,
                     startDestination = ProfileOnBoardingScreenContent::class.routeId
                 ) {
-                    createComposableScreen(
+                    emaScreen(
                         initializerSupport = EmaInitializerSupport.kSerialization(
                             ProfileOnBoardingInitializer.serializer(),
                             getInitializer(
@@ -68,7 +68,7 @@ class ProfileActivity : ComponentActivity() {
                             )
                         }
                     )
-                    createComposableScreen(
+                    emaScreen(
                         screenContent = ProfileCreationScreenContent(),
                         viewModel = { store ->
                             sampleViewModel(
