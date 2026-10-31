@@ -7,7 +7,7 @@ and the `onEvent` lambda of the destination hands it to a **navigator**, which k
 %%{init: {"theme": "base", "themeVariables": {"actorBkg": "#4F86F7", "actorBorder": "#2447C9", "actorTextColor": "#ffffff", "noteBkgColor": "#EEF4FB", "noteBorderColor": "#B4CCE4", "signalColor": "#7a8aa0", "signalTextColor": "#232f3e", "fontFamily": "Inter, Roboto, sans-serif"}}}%%
 sequenceDiagram
     participant VM as ViewModel
-    participant G as createComposableScreen
+    participant G as emaScreen
     participant N as Navigator
     participant NC as NavController
     VM->>G: postEvent(UserTypeSelected)
@@ -17,7 +17,7 @@ sequenceDiagram
 
 ## Routes
 
-Every screen registered with `createComposableScreen` has a route. By default it is `ScreenContent::class.routeId`,
+Every screen registered with `emaScreen` or `emaDialog` has a route. By default it is `ScreenContent::class.routeId`,
 unique per class:
 
 ```kotlin
@@ -57,7 +57,7 @@ setContent {
     val navigator = remember { ProfileOnBoardingNavigator(this, navController) }
 
     NavHost(navController, startDestination = ProfileOnBoardingScreenContent::class.routeId) {
-        createComposableScreen(
+        emaScreen(
             screenContent = ProfileOnBoardingScreenContent(),
             viewModel = { get<ProfileOnBoardingViewModel>() },
             onEvent = { navigator.handleProfileOnBoardingEvent(it) }
@@ -92,7 +92,7 @@ strategy, and the `parcelable` and `serializable` strategies, which only work wi
 route:
 
 ```kotlin
-createComposableScreen(
+emaScreen(
     screenContent = ProfileCreationScreenContent(),
     viewModel = { get<ProfileCreationViewModel>() },
     initializerSupport = EmaInitializerSupport.kSerialization(ProfileCreationInitializer.serializer()),
@@ -108,7 +108,7 @@ The start destination is not reached with `navigate`, so it has no initializer i
 started with an initializer in its intent, read it and pass it as `overrideInitializer`, which replaces the one of the route:
 
 ```kotlin
-createComposableScreen(
+emaScreen(
     screenContent = ProfileOnBoardingScreenContent(),
     viewModel = { get<ProfileOnBoardingViewModel>() },
     initializerSupport = EmaInitializerSupport.kSerialization(

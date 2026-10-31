@@ -100,7 +100,7 @@ The view only draws what the field says:
 
 ```kotlin
 @Composable
-override fun onState(state: HomeState, actions: EmaImmutableActionDispatcher<HomeAction>) {
+override fun onState(state: HomeState, actions: EmaActionDispatcher<HomeAction>) {
     OutlinedTextField(
         value = state.query,
         onValueChange = { query -> actions.dispatch(HomeAction.QueryWritten(query)) },

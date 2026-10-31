@@ -67,7 +67,7 @@ class HomeViewModel(
 **3. Give it to the screen.** The screen creates it once, and keeps it while the screen exists:
 
 ```kotlin
-createComposableScreen(
+emaScreen(
     screenContent = HomeScreenContent(),
     viewModel = { HomeViewModel(getFriendsUseCase) },
     onEvent = { event -> /* navigation */ }
@@ -221,7 +221,7 @@ it, and keeps it while the screen exists. Recreating the view or coming back to 
 closed for good, the ViewModel receives `Destroyed` and is closed. Opening the screen again creates a new one.
 
 ```kotlin
-createComposableScreen(
+emaScreen(
     screenContent = HomeScreenContent(),
     // Called once, the first time the screen is opened
     viewModel = { HomeViewModel(getFriendsUseCase) },

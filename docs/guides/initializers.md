@@ -67,7 +67,7 @@ navController.navigate(
 )
 
 // Receive
-createComposableScreen(
+emaScreen(
     screenContent = ProfileCreationScreenContent(),
     viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
     initializerSupport = EmaInitializerSupport.kSerialization(ProfileCreationInitializer.serializer()),

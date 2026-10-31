@@ -67,8 +67,7 @@ Define the behaviour that every screen shares once. The sample has a `BaseScreen
 which draws the dialogs every screen needs, and a `BaseViewModel` in `presentation`:
 
 ```kotlin
-abstract class BaseScreenComposable<S : EmaState, A : EmaAction, E : EmaEvent> :
-    EmaComposableScreenContent<S, A, E> {
+abstract class BaseScreenComposable<S : EmaState, A : EmaAction> : EmaScreenContent<S, A> {
 
     @Composable
     protected fun ShowDialog(data: SimpleDialogData, listener: SimpleDialogListener) { /* ... */ }

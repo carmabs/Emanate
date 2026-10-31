@@ -70,14 +70,15 @@ test can check it step by step.
 
 ## Dispatching from the view
 
-A Compose screen content receives the state and an `EmaImmutableActionDispatcher`, a stable wrapper that does not
-cause unnecessary recompositions. Every callback of the UI only reports what the user did with `actions.dispatch`:
+A Compose screen content receives the state and an `EmaActionDispatcher`, the same one for the whole life of the
+screen, so it doesn't cause unnecessary recompositions. Every callback of the UI only reports what the user did with
+`actions.dispatch`:
 
 ```kotlin
-class HomeScreenContent : EmaComposableScreenContent<HomeState, HomeAction, HomeEvent> {
+class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
 
     @Composable
-    override fun onState(state: HomeState, actions: EmaImmutableActionDispatcher<HomeAction>) {
+    override fun onState(state: HomeState, actions: EmaActionDispatcher<HomeAction>) {
         Column {
             // The user writes a query
             OutlinedTextField(
@@ -112,8 +113,7 @@ The callbacks never change the state nor decide what happens next: the ViewModel
 effects. Child composables like `FriendList` receive plain callbacks, so they don't depend on Emanate and can be
 reused or previewed on their own.
 
-For previews use `EmaImmutableActionDispatcher.EMPTY`, which ignores every action. Outside Compose,
-`EmaActionDispatcher.EMPTY` does the same.
+For previews use `EmaActionDispatcher.EMPTY`, which ignores every action.
 
 ## Special action types
 

@@ -102,7 +102,7 @@ the flag changes:
 
 ```kotlin
 @Composable
-override fun onState(state: LocationState, actions: EmaImmutableActionDispatcher<LocationAction>) {
+override fun onState(state: LocationState, actions: EmaActionDispatcher<LocationAction>) {
     val permissionManager = rememberEmaPermissionManager()
     val scope = rememberCoroutineScope()
 
