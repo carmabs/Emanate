@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -35,7 +34,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaComposableScreen(
     initializer: EmaInitializer? = null,
     vm: EmaViewModelContract<S, E>,
     actions: EmaActionDispatcher<A>,
-    screenContent: EmaComposableScreenContent<S, A, E>,
+    screenContent: EmaComposableScreenContent<S, A>,
     onEvent: (E) -> Unit,
     previewRenderState: S? = null
 ) {
@@ -67,7 +66,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaComposableScreen(
 fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaComposableScreen(
     initializer: EmaInitializer? = null,
     vm: (store: EmaStateStore) -> EmaViewModelContract<S, E>,
-    screenContent: EmaComposableScreenContent<S, A, E>,
+    screenContent: EmaComposableScreenContent<S, A>,
     onEvent: (E) -> Unit,
     saveStateSupport: SavedStateSupport<S, E>? = null,
     previewRenderState: S? = null
@@ -115,7 +114,7 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaComposableScreen(
 @Composable
 private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
     initializer: EmaInitializer?,
-    screenContent: EmaComposableScreenContent<S, A, E>,
+    screenContent: EmaComposableScreenContent<S, A>,
     vm: EmaViewModelContract<S, E>,
     immutableActions: EmaImmutableActionDispatcher<A>,
     onEvent: (E) -> Unit
@@ -171,13 +170,11 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
         .collectAsStateWithLifecycle(initialValue = vm.initialState, lifecycle = lifecycle).value
 
     val eventFlow = vm.eventFlow
-    val context = LocalContext.current
     LaunchedEffect(key1 = eventFlow, lifecycle) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             eventFlow.collect { events ->
                 events.forEach { event ->
                     onEvent(event)
-                    screenContent.onEvent(context, event, immutableActions)
                     (vm as? EmaEventConsumer<E>)?.consumeEvent(event)
                 }
             }

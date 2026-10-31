@@ -38,14 +38,13 @@ import androidx.compose.ui.unit.dp
 import com.carmabs.domain.model.User
 import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingActions
-import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingEvent
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingState
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.base.compose.BaseScreenComposable
 import com.carmabs.emanate.ui.theme.EmaSampleTheme
 
 class ProfileOnBoardingScreenContent :
-    BaseScreenComposable<ProfileOnBoardingState, ProfileOnBoardingActions, ProfileOnBoardingEvent>() {
+    BaseScreenComposable<ProfileOnBoardingState, ProfileOnBoardingActions>() {
 
     // System back follows the same flow as the back arrow
     override fun onBack(state: ProfileOnBoardingState): ProfileOnBoardingActions = ProfileOnBoardingActions.BackClicked
