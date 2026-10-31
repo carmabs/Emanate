@@ -33,7 +33,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.carmabs.domain.model.Role
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
+import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.model.EmaText
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationAction
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationOverlap
@@ -54,7 +54,7 @@ class ProfileCreationScreenContent :
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    override fun onState(state: ProfileCreationState, actions: EmaImmutableActionDispatcher<ProfileCreationAction>) {
+    override fun onState(state: ProfileCreationState, actions: EmaActionDispatcher<ProfileCreationAction>) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
             topBar = {
@@ -172,7 +172,7 @@ class ProfileCreationScreenContent :
     }
 
     @Composable
-    private fun Overlap(overlap: ProfileCreationOverlap, actions: EmaImmutableActionDispatcher<ProfileCreationAction>) {
+    private fun Overlap(overlap: ProfileCreationOverlap, actions: EmaActionDispatcher<ProfileCreationAction>) {
         when (overlap) {
             ProfileCreationOverlap.DialogBackConfirmation -> {
                 ShowDialog(
@@ -250,7 +250,7 @@ class ProfileCreationScreenContent :
                     "Carlos",
                     "Mateo"
                 ),
-                actions = EmaImmutableActionDispatcher.EMPTY
+                actions = EmaActionDispatcher.EMPTY
             )
         }
     }
@@ -266,7 +266,7 @@ class ProfileCreationScreenContent :
                     "Mateo",
                     ProfileCreationOverlap.DialogUserCreated(Role.ADMIN)
                 ),
-                actions = EmaImmutableActionDispatcher.EMPTY
+                actions = EmaActionDispatcher.EMPTY
             )
         }
     }

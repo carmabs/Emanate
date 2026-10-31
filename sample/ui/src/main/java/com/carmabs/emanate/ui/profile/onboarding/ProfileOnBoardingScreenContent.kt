@@ -36,7 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.carmabs.domain.model.User
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
+import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingActions
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingState
 import com.carmabs.emanate.sample.ui.R
@@ -53,7 +53,7 @@ class ProfileOnBoardingScreenContent :
     @Composable
     override fun onState(
         state: ProfileOnBoardingState,
-        actions: EmaImmutableActionDispatcher<ProfileOnBoardingActions>
+        actions: EmaActionDispatcher<ProfileOnBoardingActions>
     ) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
@@ -186,7 +186,7 @@ class ProfileOnBoardingScreenContent :
                         "Mateo"
                     )
                 ),
-                actions = EmaImmutableActionDispatcher.EMPTY
+                actions = EmaActionDispatcher.EMPTY
             )
         }
     }

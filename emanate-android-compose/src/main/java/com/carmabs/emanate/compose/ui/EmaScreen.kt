@@ -13,8 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import com.carmabs.emanate.android.savestate.SavedStateSupport
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
-import com.carmabs.emanate.compose.action.toImmutable
 import com.carmabs.emanate.compose.extension.asActionDispatcher
 import com.carmabs.emanate.compose.provider.EmaScreenProvider
 import com.carmabs.emanate.compose.utils.Compose
@@ -43,20 +41,16 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaScreen(
             previewRenderState?.also { previewState ->
                 screenContent.onState(
                     state = previewState,
-                    actions = EmaImmutableActionDispatcher.EMPTY
+                    actions = EmaActionDispatcher.EMPTY
                 )
             }
         }
     ) {
-        val immutableActions = remember {
-            actions.toImmutable()
-        }
-
         RenderScreen(
             initializer,
             screenContent,
             vm,
-            immutableActions,
+            actions,
             onEvent
         )
     }
@@ -76,7 +70,7 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaScreen(
             previewRenderState?.also { previewState ->
                 screenContent.onState(
                     state = previewState,
-                    actions = EmaImmutableActionDispatcher.EMPTY
+                    actions = EmaActionDispatcher.EMPTY
                 )
             }
         }
@@ -89,8 +83,8 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaScreen(
 
         val emaVm = androidVm.emaViewModel
 
-        val immutableActions = remember {
-            emaVm.asActionDispatcher<A>().toImmutable()
+        val actions = remember {
+            emaVm.asActionDispatcher<A>()
         }
 
         LaunchedEffect(androidVm) {
@@ -105,7 +99,7 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaScreen(
             initializer,
             screenContent,
             emaVm,
-            immutableActions,
+            actions,
             onEvent
         )
     }
@@ -116,7 +110,7 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
     initializer: EmaInitializer?,
     screenContent: EmaScreenContent<S, A>,
     vm: EmaViewModelContract<S, E>,
-    immutableActions: EmaImmutableActionDispatcher<A>,
+    actions: EmaActionDispatcher<A>,
     onEvent: (E) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -183,10 +177,10 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
 
     val backAction = screenContent.onBack(state)
     BackHandler(enabled = backAction != null) {
-        backAction?.also(immutableActions::dispatch)
+        backAction?.also(actions::dispatch)
     }
 
     if (vm.shouldRenderState) {
-        screenContent.onState(state, immutableActions)
+        screenContent.onState(state, actions)
     }
 }
