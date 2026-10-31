@@ -182,8 +182,8 @@ session check above, and with `Last` it sees the new state after the reducers, l
 ## The rules
 
 - **Call `next` once**, now or later with `nextAfter`.
-- **Don't post events.** To tell the view something, dispatch an action with `dispatch(action)` and let a side effect
-  post the event.
+- **Don't publish events.** To tell the view something, dispatch an action with `dispatch(action)` and let a side effect
+  publish the event.
 - **Keep the business logic in the side effects.** A middleware decides the path of the action; the work it starts
   belongs to a side effect.
 

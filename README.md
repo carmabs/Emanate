@@ -34,7 +34,7 @@ class CounterViewModel :
         }
         sideEffects {
             add<CounterAction.Increment> {
-                if (state.count == 10) postEvent(CounterEvent.LimitReached(10))
+                if (state.count == 10) publish(CounterEvent.LimitReached(10))
             }
         }
     }
@@ -51,7 +51,9 @@ maven { url = uri("https://jitpack.io") }
 ```kotlin
 dependencies {
     implementation("com.github.carmabs.ema:emanate-android:7.0.0")
-    implementation("com.github.carmabs.ema:emanate-compose:7.0.0")
+    implementation("com.github.carmabs.ema:emanate-compose-android:7.0.0")
+    // Only if your screens are in a Navigation Compose graph
+    implementation("com.github.carmabs.ema:emanate-compose-android-nav2:7.0.0")
 }
 ```
 

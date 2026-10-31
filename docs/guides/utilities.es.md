@@ -92,10 +92,10 @@ Los módulos de Android añaden sus propias funciones a las temáticas, bajo el 
 | `EmaUtils.Size`              | `emanate-core`            | `fitInTargetMaxSizeProportionally(width, height, targetWidth, targetHeight)` |
 | `EmaUtils.Values`            | `emanate-core`            | `checkUpdate(old, new) { }`: ejecuta el bloque solo si el valor ha cambiado. |
 | `EmaUtils.Screen.Android`    | `emanate-android`         | `metrics(context, includeInsets)`                                      |
-| `EmaUtils.Screen.Compose`    | `emanate-android-compose` | `widthDp()`, `heightDp()`, `widthPx()`, `heightPx()`                   |
+| `EmaUtils.Screen.Compose`    | `emanate-compose-android` | `widthDp()`, `heightDp()`, `widthPx()`, `heightPx()`                   |
 | `EmaUtils.Color.Android`     | `emanate-android`         | `fromGradient(colors, positions, value)`, `lerp(colorA, colorB, t)`    |
 | `EmaUtils.View.Android`      | `emanate-android-view`    | `visibility(visible, gone)`: `VISIBLE`, `GONE` o `INVISIBLE`.          |
-| `EmaUtils.Preview.Compose`   | `emanate-android-compose` | `isInPreview()`, `skipForPreview(previewComposable) { }`               |
+| `EmaUtils.Preview.Compose`   | `emanate-compose-android` | `isInPreview()`, `skipForPreview(previewComposable) { }`               |
 
 ```kotlin
 val user = EmaUtils.Coroutines.requireMinDurationOf(1.seconds) { loginUseCase(input) }

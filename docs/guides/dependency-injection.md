@@ -4,7 +4,7 @@ Emanate does not depend on any dependency injection framework. Wherever it needs
 function, so you can use Koin, a manual container or plain constructors.
 
 ```kotlin
-createComposableScreen(
+emaScreen(
     screenContent = HomeScreenContent(),
     viewModel = { HomeViewModel(getFriendsUseCase, HomeState()) },
     onEvent = { /* ... */ }
@@ -60,7 +60,7 @@ val uiModule = module {
 ```
 
 ```kotlin
-createComposableScreen(
+emaScreen(
     screenContent = HomeScreenContent(),
     viewModel = { get<HomeViewModel>() },
     onEvent = { /* ... */ }
@@ -78,7 +78,7 @@ val uiModule = module {
     factory { (stateStore: EmaStateStore) -> HomeViewModel(get(), stateStore) }
 }
 
-createComposableScreen(
+emaScreen(
     screenContent = HomeScreenContent(),
     viewModel = { store -> get<HomeViewModel> { parametersOf(store) } },
     onEvent = { /* ... */ }
@@ -140,7 +140,7 @@ class HomeViewModel(
         }
         sideEffects {
             +loadFriends
-            add<HomeAction.FriendClicked> { action -> postEvent(HomeEvent.FriendSelected(action.friend)) }
+            add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
         }
     }
 }

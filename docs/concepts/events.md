@@ -11,14 +11,14 @@ sealed interface HomeEvent : EmaEvent {
 }
 ```
 
-## Posting events
+## Publishing events
 
-Events are posted from the side effects of the ViewModel, with `postEvent`:
+Events are published from the side effects of the ViewModel, with `publish`:
 
 ```kotlin
 sideEffects {
-    add<HomeAction.EffectQueryResult.Loaded> { action -> postEvent(HomeEvent.FriendsUpdated(action.friends.size)) }
-    add<HomeAction.FriendClicked> { action -> postEvent(HomeEvent.FriendSelected(action.friend)) }
+    add<HomeAction.EffectQueryResult.Loaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
+    add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
 }
 ```
 
@@ -26,11 +26,9 @@ An event arrives after the actions dispatched before it, so the view sees the st
 
 ## Handling events
 
-The view handles each event once, in the order they were posted. A Compose screen handles them in two places, and
-each event reaches both: first the navigation graph, then the screen content.
-
-**1. The navigation graph**, for the events that navigate. The `onEvent` lambda of `createComposableScreen` is where the
-`NavController` and the navigator are at hand:
+The view handles each event once, in the order they were published. A Compose screen handles all of them in one place: the
+`onEvent` lambda of `emaScreen`, in the navigation graph. There the `NavController`, the navigator and the `Context`
+are at hand, so it can navigate, show a message or do anything else:
 
 ```kotlin
 class MainActivity : ComponentActivity() {
@@ -41,44 +39,27 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val navigator = remember { HomeNavigator(navController) }
             NavHost(navController, startDestination = HomeScreenContent::class.routeId) {
-                createComposableScreen(
+                emaScreen(
                     screenContent = HomeScreenContent(),
                     viewModel = { get<HomeViewModel>() },
                     onEvent = { event ->
-                        if (event is HomeEvent.FriendSelected) navigator.goToProfile(event.friend)
+                        when (event) {
+                            is HomeEvent.FriendSelected -> navigator.goToProfile(event.friend)
+                            is HomeEvent.FriendsUpdated -> toast("${event.count} friends")
+                            is HomeEvent.FriendAdded -> toast("${event.friend.name} is now your friend")
+                        }
                     }
                 )
             }
         }
     }
+
+    private fun toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 ```
 
-**2. The screen content**, for the rest: messages, sounds, animations... Its `onEvent` receives a `context` and the
-action dispatcher, next to the `onState` that draws the screen:
-
-```kotlin
-class HomeScreenContent : EmaComposableScreenContent<HomeState, HomeAction, HomeEvent> {
-
-    @Composable
-    override fun onState(state: HomeState, actions: EmaImmutableActionDispatcher<HomeAction>) {
-        // Draws the screen
-    }
-
-    override suspend fun onEvent(context: Context, event: HomeEvent, actions: EmaImmutableActionDispatcher<HomeAction>) {
-        when (event) {
-            is HomeEvent.FriendsUpdated ->
-                Toast.makeText(context, "${event.count} friends", Toast.LENGTH_SHORT).show()
-            is HomeEvent.FriendAdded ->
-                Toast.makeText(context, "${event.friend.name} is now your friend", Toast.LENGTH_SHORT).show()
-            // Already handled by the navigation graph
-            is HomeEvent.FriendSelected -> Unit
-        }
-    }
-}
-```
-
-See [Compose screens](../compose/screens.md#two-places-to-handle-events).
+As every event arrives at the same `when`, the compiler warns you when a new event is not handled. If the `when` grows,
+move it to a function of the navigator. See [Compose screens](../compose/screens.md#handling-the-events).
 
 ## Naming
 
@@ -96,23 +77,23 @@ A good test: the name still makes sense if you replace the screen's UI completel
 ## Delivery rules
 
 - **Once.** After `onEvent` returns, the event is consumed. It is not replayed when the view is recreated.
-- **Not lost.** Events are queued in the ViewModel until a view is able to receive them. If you post an event while the screen is in the background, or while it is being recreated, it is delivered afterwards.
-- **In order.** Several pending events are delivered as a batch, in the order they were posted.
-- **Equal events.** While an event is waiting to be delivered, posting an equal one does nothing, so a double tap does
+- **Not lost.** Events are queued in the ViewModel until a view is able to receive them. If you publish an event while the screen is in the background, or while it is being recreated, it is delivered afterwards.
+- **In order.** Several pending events are delivered as a batch, in the order they were published.
+- **Equal events.** While an event is waiting to be delivered, publishing an equal one does nothing, so a double tap does
   not show the same message twice. Once the view has handled it, an equal event is a new one and is delivered again.
   To queue an equal event while the first one is still waiting, pass `allowDuplicated = true`:
 
 ```kotlin
-postEvent(HomeEvent.FriendAdded(ana), allowDuplicated = true)
+publish(HomeEvent.FriendAdded(ana), allowDuplicated = true)
 ```
 
 - **Only while the screen is visible.** Compose screens receive events while the lifecycle is `STARTED`.
 - **Not persisted.** Events live in the ViewModel, so they survive configuration changes but not process death.
 
 > **Keep `onEvent` short.** The events are delivered one after another, and an event is consumed when its `onEvent`
-> returns. While an `onEvent` is suspended, the next events wait for it. And if the screen stops being visible before
-> it returns, the event is not consumed, so it is delivered again when the screen is visible. Do quick work in
-> `onEvent`, and send long-running work back to the ViewModel as an action.
+> returns. Navigating or showing a toast is immediate. For something that takes time, like a snackbar that waits for
+> the user, launch it in a coroutine scope of yours, such as the one of `rememberCoroutineScope()`, so the next events
+> do not wait for it. Send long-running work back to the ViewModel as an action.
 
 ## Events or state
 
@@ -121,16 +102,18 @@ See the table in [Architecture](architecture.md#state-or-event).
 
 ## Screens with no events
 
-A screen that never posts events uses `EmaEvent.EMPTY` as its event type, and doesn't implement `onEvent`:
+A screen that never publishes events uses `EmaEvent.EMPTY` as its event type, and its `onEvent` does nothing:
 
 ```kotlin
 class SettingsViewModel : EmaViewModel<SettingsState, SettingsAction, EmaEvent.EMPTY>(SettingsState()) {
     // ...
 }
 
-class SettingsScreenContent : EmaComposableScreenContent<SettingsState, SettingsAction, EmaEvent.EMPTY> {
-    // Only onState
-}
+emaScreen(
+    screenContent = SettingsScreenContent(),
+    viewModel = { SettingsViewModel() },
+    onEvent = {}
+)
 ```
 
 In the same way, `EmaState.EMPTY` is the state of a screen with no state, and `EmaAction.EMPTY` the actions of a screen

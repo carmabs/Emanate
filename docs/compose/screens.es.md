@@ -1,7 +1,7 @@
 # Pantallas de Compose
 
 Las pantallas de Compose se describen con un `EmaComposableScreenContent` y se registran en un grafo de navegación con
-`createComposableScreen`. Necesitan los artefactos `emanate-android` y `emanate-compose`.
+`createComposableScreen`. Necesitan los artefactos `emanate-android` y `emanate-compose-android`.
 
 ## Contenido de la pantalla
 

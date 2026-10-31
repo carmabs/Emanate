@@ -42,7 +42,7 @@ store over the `SavedStateHandle` of its destination, and the `viewModel` functi
 it to the ViewModel.
 
 ```kotlin
-createComposableScreen(
+emaScreen(
     screenContent = ProfileCreationScreenContent(),
     viewModel = { store -> ProfileCreationViewModel(ProfileCreationState.DEFAULT, store) },
     onEvent = { /* ... */ }
@@ -228,7 +228,7 @@ class SignUpViewModel(
 }
 
 // In the screen (Android)
-createComposableScreen(
+emaScreen(
     screenContent = SignUpScreenContent(),
     viewModel = { store -> SignUpViewModel(SignUpState.DEFAULT, store) },
     onEvent = { /* ... */ }

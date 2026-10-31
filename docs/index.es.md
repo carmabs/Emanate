@@ -44,11 +44,11 @@ solo informa de lo que ha hecho el usuario mediante acciones.
 |------------------------|------------------------------------------------------------------------------------------------------------------|
 | `emanate-core`         | Estado, acciones, eventos, ViewModels y casos de uso. Kotlin Multiplatform puro.                                 |
 | `emanate-android`      | Integración con Android compartida por todas las UI: configuración, inicializadores, permisos, textos, imágenes. |
-| `emanate-compose`      | Pantallas, navegación y previews de Jetpack Compose. **La forma recomendada de construir la UI.**                |
+| `emanate-compose-android`      | Pantallas, navegación y previews de Jetpack Compose. **La forma recomendada de construir la UI.**                |
 | `emanate-android-view` | Fragments, Activities, diálogos y listas para el sistema de vistas de Android.                                   |
 | `emanate-test`         | Utilidades para testear los ViewModels y las sources en la JVM. Consulta [Testing](guides/testing.es.md).        |
 
-`emanate-android-view` expone `emanate-android`, y ambos exponen `emanate-core`. Una app con Compose añade `emanate-android` y `emanate-compose`.
+`emanate-android-view` expone `emanate-android`, y ambos exponen `emanate-core`. Una app con Compose añade `emanate-android` y `emanate-compose-android`.
 
 > **Compose primero.** Las pantallas nuevas deberían escribirse con Compose. El soporte del sistema de vistas está en su
 > propio módulo, `emanate-android-view`, y se deprecará en el futuro en favor de Compose.

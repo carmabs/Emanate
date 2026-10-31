@@ -49,7 +49,7 @@ maven { url = uri("https://jitpack.io") }
 dependencies {
     // Compose
     implementation("com.github.carmabs.ema:emanate-android:7.0.0")
-    implementation("com.github.carmabs.ema:emanate-compose:7.0.0")
+    implementation("com.github.carmabs.ema:emanate-compose-android:7.0.0")
 
     // Vistas de Android
     implementation("com.github.carmabs.ema:emanate-android-view:7.0.0")

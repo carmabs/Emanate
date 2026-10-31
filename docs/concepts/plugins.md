@@ -57,7 +57,7 @@ class ScreenAnalytics<S : EmaState>(private val tracker: Tracker, private val sc
 
 ## A plugin with its own actions
 
-A plugin can't post events, because the events belong to each screen. To tell the screen something, it dispatches
+A plugin can't publish events, because the events belong to each screen. To tell the screen something, it dispatches
 actions, and the screen decides what to do with them. Which actions it can dispatch is the second type of the plugin.
 Usually they are actions that the plugin defines, like the one below, so it works in any screen. A plugin written for
 one specific screen could also use the actions of that screen as its second type, but then it only works there.
@@ -95,7 +95,7 @@ override fun setup() = source {
         +SessionGuard<HomeState>(session)
     }
     sideEffects {
-        add<SessionAction.Expired> { postEvent(HomeEvent.SessionExpired) }
+        add<SessionAction.Expired> { publish(HomeEvent.SessionExpired) }
     }
 }
 ```
@@ -147,7 +147,7 @@ written.
 
 ## An alternative: extension functions
 
-A plugin can't post events, because it doesn't know the events of the screen. For that, write an **extension function
+A plugin can't publish events, because it doesn't know the events of the screen. For that, write an **extension function
 of the setup** and call it inside `source { }`: it has the state, the actions and the events of the screen.
 
 They are also useful when a ViewModel gets big. Each function groups a **subfeature** of the screen, and the ViewModel
@@ -169,7 +169,7 @@ fun SourceSetupScope<HomeState, HomeAction, HomeEvent>.suggestCheckingConnection
     sideEffects {
         // The reducer has already counted this failure
         add<HomeAction.EffectQueryResult.Failed> {
-            if (state.failures == 3) postEvent(HomeEvent.CheckConnection)
+            if (state.failures == 3) publish(HomeEvent.CheckConnection)
         }
     }
 }

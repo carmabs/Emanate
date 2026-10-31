@@ -66,7 +66,7 @@ it does nothing else. That is what makes it easy to read and to test.
 | A reducer can                         | A reducer can't                                                      |
 |---------------------------------------|----------------------------------------------------------------------|
 | Read `state` and the action           | Call use cases, repositories or the network                          |
-| Return a new state with `copy`        | Dispatch actions or post events: `dispatch` doesn't even compile here |
+| Return a new state with `copy`        | Dispatch actions or publish events: `dispatch` doesn't even compile here |
 | Compute values from them              | Read the clock, random numbers or anything that changes on its own   |
 
 Work like loading data or saving something goes in a [side effect](side-effects.md), which runs after the reducers and

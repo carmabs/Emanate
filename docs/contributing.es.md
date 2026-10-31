@@ -6,7 +6,7 @@
 |---------------------------|-------------------------------------------------------------------------------------------------------------|
 | `emanate-core`            | Kotlin Multiplatform. Todo el código está en `commonMain`.                                                  |
 | `emanate-android`         | Librería Android compartida por las dos tecnologías de UI.                                                  |
-| `emanate-android-compose` | Soporte de Compose, publicado como `emanate-compose`.                                                       |
+| `emanate-compose-android` | Soporte de Compose.                                                                                         |
 | `emanate-android-view`    | Soporte del sistema de vistas de Android.                                                                   |
 | `emanate-test`            | Utilidades JVM para testear los ViewModels y las sources, friend module de `emanate-core`.                  |
 | `sample`                  | Un build de Gradle independiente con la app de ejemplo. Incluye los módulos de la librería del repositorio. |
@@ -38,7 +38,7 @@ El target JVM se compila siempre, porque lo usan los módulos de Android.
 | `emanate-core`            | `commonTest`, en todos los targets activos | `./gradlew :emanate-core:allTests`                     |
 | `emanate-android`         | Robolectric                                | `./gradlew :emanate-android:testDebugUnitTest`         |
 | `emanate-android-view`    | Robolectric                                | `./gradlew :emanate-android-view:testDebugUnitTest`    |
-| `emanate-android-compose` | Tests de UI de Compose sobre Robolectric   | `./gradlew :emanate-android-compose:testDebugUnitTest` |
+| `emanate-compose-android` | Tests de UI de Compose sobre Robolectric   | `./gradlew :emanate-compose-android:testDebugUnitTest` |
 | `emanate-test`            | JUnit                                      | `./gradlew :emanate-test:test`                         |
 
 Los recursos que solo necesitan los tests están en `src/test/res`, así que no se publican.

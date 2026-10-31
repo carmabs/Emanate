@@ -12,7 +12,7 @@ these three functions, depending on what has to happen with it:
 | Use it to                                              | Call                 | Example                                                                             | Result                                              |
 |--------------------------------------------------------|----------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------|
 | **Save the result in the state**                       | `dispatch(action)`   | The friends were loaded: `dispatch(HomeAction.EffectQueryResult.Loaded(friends))`  | A reducer puts them in the state and the list shows them. |
-| **Trigger a one-time UI action**, like navigating or showing a message | `postEvent(event)` | The user clicked a friend: `postEvent(HomeEvent.FriendSelected(friend))` | The profile of the friend is opened.                |
+| **Trigger a one-time UI action**, like navigating or showing a message | `publish(event)` | The user clicked a friend: `publish(HomeEvent.FriendSelected(friend))` | The profile of the friend is opened.                |
 | **Notify other ViewModels**                            | `broadcast(action)`  | A friend was created: `broadcast(ProfileBroadcast.FriendCreated(friend))`           | The ViewModels that listen to it receive it. See [Broadcasts](broadcasts.md). |
 
 A side effect never changes the state by itself: it dispatches an action and a reducer applies it. That keeps every
@@ -42,17 +42,17 @@ Step by step:
 4. It waits for the use case. The screen keeps working meanwhile.
 5. It dispatches `Loaded` or `Failed`: a reducer shows the list or the error dialog.
 
-Inside the lambda you have `state` (always the latest one), the `action` that launched it, and `dispatch`, `postEvent`
+Inside the lambda you have `state` (always the latest one), the `action` that launched it, and `dispatch`, `publish`
 and `broadcast`.
 
-## Posting an event
+## Publishing an event
 
-When the view must do something once, like navigating or showing a message, post an [event](events.md):
+When the view must do something once, like navigating or showing a message, publish an [event](events.md):
 
 ```kotlin
 sideEffects {
     add<HomeAction.FriendClicked> { action ->
-        postEvent(HomeEvent.FriendSelected(action.friend))
+        publish(HomeEvent.FriendSelected(action.friend))
     }
 }
 ```
@@ -128,7 +128,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
     EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
-        postEvent(HomeEvent.FriendSelected(action.friend))
+        publish(HomeEvent.FriendSelected(action.friend))
     }
 
     override fun setup() = source {
