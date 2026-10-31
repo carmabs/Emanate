@@ -36,7 +36,6 @@ import com.carmabs.domain.model.Role
 import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
 import com.carmabs.emanate.core.model.EmaText
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationAction
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationEvent
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationOverlap
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationState
 import com.carmabs.emanate.sample.ui.R
@@ -47,7 +46,7 @@ import com.carmabs.emanate.ui.dialog.simple.SimpleDialogListener
 import com.carmabs.emanate.ui.theme.EmaSampleTheme
 
 class ProfileCreationScreenContent :
-    BaseScreenComposable<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>() {
+    BaseScreenComposable<ProfileCreationState, ProfileCreationAction>() {
 
     // When a dialog is shown, it handles the back press itself
     override fun onBack(state: ProfileCreationState): ProfileCreationAction? =

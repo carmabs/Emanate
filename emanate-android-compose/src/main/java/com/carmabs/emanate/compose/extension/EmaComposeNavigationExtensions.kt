@@ -57,7 +57,7 @@ fun NavController.navigate(
 }
 
 fun <S : EmaState, A : EmaAction, E : EmaEvent> NavGraphBuilder.createComposableScreen(
-    screenContent: EmaComposableScreenContent<S, A, E>,
+    screenContent: EmaComposableScreenContent<S, A>,
     viewModel: (store: EmaStateStore) -> EmaViewModelContract<S, E>,
     routeId: String = screenContent::class.routeId,
     initializerSupport: EmaInitializerSupport? = null,

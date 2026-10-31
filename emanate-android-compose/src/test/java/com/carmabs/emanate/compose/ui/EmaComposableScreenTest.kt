@@ -41,13 +41,12 @@ class EmaComposableScreenTest {
     @Test
     fun `the screen renders the states, dispatches the actions and receives the events`() {
         lateinit var viewModel: CounterViewModel
-        val screen = CounterScreen()
         val received = mutableListOf<CounterEvent>()
         composeRule.setContent {
             EmaComposableScreen(
                 initializer = RouteInitializer("screen"),
                 vm = { CounterViewModel().also { viewModel = it } },
-                screenContent = screen,
+                screenContent = CounterScreen(),
                 onEvent = { received += it }
             )
         }
@@ -60,7 +59,6 @@ class EmaComposableScreenTest {
         composeRule.waitForIdle()
 
         assertEquals(listOf<CounterEvent>(CounterEvent.Notified), received)
-        assertEquals(listOf<CounterEvent>(CounterEvent.Notified), screen.events)
         assertEquals(listOf("created", "started", "resumed"), viewModel.hooks)
         assertEquals(RouteInitializer("screen"), viewModel.initializer)
     }
@@ -178,7 +176,7 @@ class EmaComposableScreenTest {
                 EmaComposableScreen(
                     vm = { error("The ViewModel is not created in previews") },
                     screenContent = CounterScreen(),
-                    onEvent = {},
+                    onEvent = { _: CounterEvent -> },
                     previewRenderState = CounterState(5)
                 )
                 EmaComposableScreen(
