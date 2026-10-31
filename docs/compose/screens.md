@@ -224,27 +224,121 @@ private fun NormalPreview() {
 
 ## Using a screen without a navigation graph
 
-Not every app uses Navigation Compose, and sometimes you only want an Emanate screen as a **part** of another
-screen, such as a small counter inside a bigger layout. For those cases you can skip the graph and place the screen
-as any other composable.
+`emaScreen` needs a `NavHost`. But not every app uses Navigation Compose: an activity may show a single screen, or
+you may want an Emanate screen as just a **part** of a bigger layout, like a counter inside a page. For those cases
+there is `EmaScreen`, a composable that you place wherever you want, like a `Text` or a `Column`.
 
-`EmaScreen` is the composable behind `emaScreen`. Use it to place an Emanate screen anywhere:
+`EmaScreen` is in fact what `emaScreen` draws inside each destination, so it does the same work: it creates the
+ViewModel, connects it to the lifecycle, draws the state with the screen content, sends the back button actions and
+passes every event to `onEvent`. The only thing missing is the graph.
+
+### A screen in an activity
+
+The most common case: an activity that shows one Emanate screen and nothing else. Imagine a counter with a `+` button
+that warns the user when it reaches 10.
+
+```kotlin
+class CounterActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            EmaSampleTheme {
+                EmaScreen(
+                    vm = { CounterViewModel() },
+                    screenContent = CounterScreenContent(),
+                    onEvent = { event ->
+                        when (event) {
+                            CounterEvent.LimitReached ->
+                                Toast.makeText(this, "You reached 10", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                )
+            }
+        }
+    }
+}
+```
+
+The parameters are the ones of `emaScreen`, with shorter names:
+
+| Parameter            | Purpose                                                                                     |
+|----------------------|---------------------------------------------------------------------------------------------|
+| `vm`                 | A lambda that creates the ViewModel. It is called only the first time, as in `emaScreen`.   |
+| `screenContent`      | The screen content.                                                                         |
+| `onEvent`            | Receives every event of the screen, as in [Handling the events](#handling-the-events).      |
+| `initializer`        | The [initializer](../guides/initializers.md) of the screen. Here there is no route to read it from, so you pass it directly. Optional. |
+| `previewRenderState` | The state to draw in a preview. See [Previews of a bigger layout](#previews-of-a-bigger-layout). Optional. |
+
+For example, to open the counter starting at 5, pass the initializer yourself:
 
 ```kotlin
 EmaScreen(
+    initializer = CounterInitializer(start = 5),
     vm = { CounterViewModel() },
     screenContent = CounterScreenContent(),
     onEvent = { /* ... */ }
 )
 ```
 
-It accepts the `initializer` and a `previewRenderState`: when a preview draws a composable that contains the screen,
-the ViewModel is not created and the screen draws that state. Another overload receives a ViewModel instance and its
-action dispatcher, for ViewModels created and kept by you.
+### A screen inside a bigger layout
 
-## Theme
+As `EmaScreen` is a composable, it can be one piece of a page. Here the counter sits under a title and over a button
+that is not part of it:
 
-The screen content draws with whatever theme surrounds it, so it does not set colors or typography itself. You only
-need to set the theme once, at the top.
+```kotlin
+@Composable
+fun DashboardPage(onSettingsClicked: () -> Unit) {
+    Column {
+        Text("Dashboard", style = MaterialTheme.typography.headlineMedium)
 
-Wrap the `NavHost` (or your content) in your Material theme. The sample uses `EmaSampleTheme`.
+        EmaScreen(
+            vm = { CounterViewModel() },
+            screenContent = CounterScreenContent(),
+            onEvent = { /* ... */ }
+        )
+
+        Button(onClick = onSettingsClicked) { Text("Settings") }
+    }
+}
+```
+
+The ViewModel lives as long as the activity (or the destination of the graph) that contains the page, not as long as
+the composable. If the counter is inside an `if` and disappears, its ViewModel receives `Paused` and `Stopped`, and
+keeps its state: when the counter appears again, it shows the same number.
+
+### Previews of a bigger layout
+
+`previewRenderState` is the state that the screen shows **instead of the real one** when it is drawn in the preview
+of Android Studio:
+
+| Where the screen is drawn       | What it shows                                    |
+|---------------------------------|--------------------------------------------------|
+| In the app, on a device         | The real state, the one of the ViewModel. `previewRenderState` is ignored. |
+| In the preview of Android Studio | `previewRenderState`. The ViewModel is not even created. |
+
+You need it because a [preview](#previews) cannot create the ViewModel, so without `previewRenderState` the screen
+has no state to draw and its space stays empty. With it, you see the whole page as it will look:
+
+```kotlin
+@Composable
+fun DashboardPage() {
+    Column {
+        Text("Dashboard")
+        EmaScreen(
+            vm = { CounterViewModel() },
+            screenContent = CounterScreenContent(),
+            onEvent = { /* ... */ },
+            // Only for the preview: the app shows the real count of the ViewModel
+            previewRenderState = CounterState(count = 3)
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun DashboardPreview() {
+    // The title and a counter with the number 3
+    DashboardPage()
+}
+```
