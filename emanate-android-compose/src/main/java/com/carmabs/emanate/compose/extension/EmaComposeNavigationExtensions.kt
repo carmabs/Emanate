@@ -22,7 +22,6 @@ import com.carmabs.emanate.android.extension.getInitializer
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
 import com.carmabs.emanate.compose.action.toImmutable
 import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
 import com.carmabs.emanate.compose.navigation.EmaAnimTransition
@@ -56,93 +55,113 @@ fun NavController.navigate(
     navigate(routeParsed, navOptions, navigatorExtras)
 }
 
+/**
+ * Adds the screen drawn by [screenContent] to the graph, as a composable destination.
+ *
+ * @param viewModel creates the ViewModel of the screen, once, with the store of its backup
+ * @param routeId route of the destination, unique per screen content class by default
+ * @param initializerSupport how to read the initializer of the screen from its route
+ * @param saveStateManager saves the state of the screen if the process dies
+ * @param transitionAnimation animations of the destination
+ * @param onEvent receives every event of the screen
+ */
 fun <S : EmaState, A : EmaAction, E : EmaEvent> NavGraphBuilder.emaScreen(
     screenContent: EmaScreenContent<S, A>,
     viewModel: (store: EmaStateStore) -> EmaViewModelContract<S, E>,
     routeId: String = screenContent::class.routeId,
     initializerSupport: EmaInitializerSupport? = null,
     saveStateManager: EmaSaveStateManager<S, E>? = null,
-    onViewModelInstance: (@Composable (EmaViewModelContract<S, E>) -> Unit)? = null,
-    fullScreenDialogMode: Boolean = false,
     transitionAnimation: EmaAnimTransition = EmaAnimTransition(),
-    decoration: @Composable (
-        (
-            content: @Composable () -> Unit,
-            dispatcher: EmaImmutableActionDispatcher<A>
-        ) -> Unit
-    )? = null,
-    previewRenderState: S? = null,
     onEvent: (E) -> Unit
 ) {
-    val content: @Composable (NavGraphBuilder.(NavBackStackEntry) -> Unit) =
-        @Composable { backEntry ->
-
-            // We use savedStateHandle of backEntry due to SavedStateHandled of viewmodel is attached to
-            // navController and is restarted on kill process.
-            // With backEntry.savedStateHandle data is rightly persisted
-            val androidVm = EmaScreenProvider.provideComposableViewModel(
-                key = EmaScreenProvider.viewModelKey(screenContent),
-                viewModel = viewModel,
-                backEntry.savedStateHandle
-            )
-
-            val vm = androidVm.emaViewModel
-
-            val vmActions = remember {
-                vm.asActionDispatcher<A>().toImmutable()
-            }
-
-            val initializer = initializerSupport?.let {
-                it.overrideInitializer ?: backEntry.arguments?.getInitializer(it.serializerStrategy)
-            }
-
-            LaunchedEffect(key1 = Unit) {
-                saveStateManager?.onSaveStateHandling(
-                    androidVm.viewModelScope,
-                    androidVm.savedStateHandle,
-                    androidVm.emaViewModel
-                )
-            }
-            onViewModelInstance?.invoke(vm)
-            val screenToDraw = @Composable {
-                EmaScreen(
-                    initializer = initializer,
-                    vm = vm,
-                    actions = vmActions,
-                    screenContent = screenContent,
-                    previewRenderState = previewRenderState,
-                    onEvent = onEvent
-                )
-            }
-            decoration?.also {
-                it.invoke(screenToDraw, vmActions)
-            } ?: also {
-                screenToDraw()
-            }
-        }
-    if (fullScreenDialogMode) {
-        dialog(route = routeId, dialogProperties = DialogProperties()) {
-            content(it)
-        }
-    } else {
-        composable(
-            route = parseRouteWithInitializerSupport(routeId),
-            arguments = listOf(
-                navArgument(EmaInitializer.KEY) {
-                    initializerSupport?.also {
-                        type = EmaInitializerNavType(it.serializerStrategy)
-                    }
-                    nullable = true
-                }
-            ),
-            enterTransition = transitionAnimation.enterTransition,
-            exitTransition = transitionAnimation.exitTransition,
-            popEnterTransition = transitionAnimation.popEnterTransition,
-            popExitTransition = transitionAnimation.popExitTransition
-        ) {
-            content(it)
-        }
+    composable(
+        route = parseRouteWithInitializerSupport(routeId),
+        arguments = initializerArguments(initializerSupport),
+        enterTransition = transitionAnimation.enterTransition,
+        exitTransition = transitionAnimation.exitTransition,
+        popEnterTransition = transitionAnimation.popEnterTransition,
+        popExitTransition = transitionAnimation.popExitTransition
+    ) { backEntry ->
+        EmaDestination(backEntry, screenContent, viewModel, initializerSupport, saveStateManager, onEvent)
     }
+}
+
+/**
+ * Adds the screen drawn by [screenContent] to the graph, as a dialog destination. It works as [emaScreen], but the
+ * screen is shown in a dialog over the previous one.
+ *
+ * @param dialogProperties properties of the dialog
+ */
+fun <S : EmaState, A : EmaAction, E : EmaEvent> NavGraphBuilder.emaDialog(
+    screenContent: EmaScreenContent<S, A>,
+    viewModel: (store: EmaStateStore) -> EmaViewModelContract<S, E>,
+    routeId: String = screenContent::class.routeId,
+    initializerSupport: EmaInitializerSupport? = null,
+    saveStateManager: EmaSaveStateManager<S, E>? = null,
+    dialogProperties: DialogProperties = DialogProperties(),
+    onEvent: (E) -> Unit
+) {
+    dialog(
+        route = parseRouteWithInitializerSupport(routeId),
+        arguments = initializerArguments(initializerSupport),
+        dialogProperties = dialogProperties
+    ) { backEntry ->
+        EmaDestination(backEntry, screenContent, viewModel, initializerSupport, saveStateManager, onEvent)
+    }
+}
+
+private fun initializerArguments(initializerSupport: EmaInitializerSupport?) = listOf(
+    navArgument(EmaInitializer.KEY) {
+        initializerSupport?.also {
+            type = EmaInitializerNavType(it.serializerStrategy)
+        }
+        nullable = true
+    }
+)
+
+@Composable
+private fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaDestination(
+    backEntry: NavBackStackEntry,
+    screenContent: EmaScreenContent<S, A>,
+    viewModel: (store: EmaStateStore) -> EmaViewModelContract<S, E>,
+    initializerSupport: EmaInitializerSupport?,
+    saveStateManager: EmaSaveStateManager<S, E>?,
+    onEvent: (E) -> Unit
+) {
+    // We use savedStateHandle of backEntry due to SavedStateHandled of viewmodel is attached to
+    // navController and is restarted on kill process.
+    // With backEntry.savedStateHandle data is rightly persisted
+    val androidVm = EmaScreenProvider.provideComposableViewModel(
+        key = EmaScreenProvider.viewModelKey(screenContent),
+        viewModel = viewModel,
+        backEntry.savedStateHandle
+    )
+
+    val vm = androidVm.emaViewModel
+
+    val vmActions = remember {
+        vm.asActionDispatcher<A>().toImmutable()
+    }
+
+    val initializer = initializerSupport?.let {
+        it.overrideInitializer ?: backEntry.arguments?.getInitializer(it.serializerStrategy)
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        saveStateManager?.onSaveStateHandling(
+            androidVm.viewModelScope,
+            androidVm.savedStateHandle,
+            androidVm.emaViewModel
+        )
+    }
+
+    EmaScreen(
+        initializer = initializer,
+        vm = vm,
+        actions = vmActions,
+        screenContent = screenContent,
+        onEvent = onEvent
+    )
 }
 
 fun routeWithInitializer(route: String, initializerBundle: EmaInitializerBundle?) = initializerBundle?.let {
