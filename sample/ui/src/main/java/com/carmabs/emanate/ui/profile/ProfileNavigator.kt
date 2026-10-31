@@ -1,6 +1,5 @@
-package com.carmabs.emanate.ui.profile.onboarding
+package com.carmabs.emanate.ui.profile
 
-import androidx.activity.ComponentActivity
 import androidx.navigation.NavController
 import com.carmabs.domain.model.Role
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
@@ -8,17 +7,12 @@ import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerS
 import com.carmabs.emanate.compose.extension.navigate
 import com.carmabs.emanate.compose.extension.navigateBack
 import com.carmabs.emanate.compose.extension.routeId
-import com.carmabs.emanate.compose.navigation.EmaComposableNavigator
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationEvent
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationInitializer
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingEvent
 import com.carmabs.emanate.ui.profile.creation.ProfileCreationScreenContent
 
-class ProfileOnBoardingNavigator(activity: ComponentActivity, navController: NavController) :
-    EmaComposableNavigator(
-        context = activity,
-        navController = navController
-    ) {
+class ProfileNavigator(private val navController: NavController) {
     fun handleProfileOnBoardingEvent(event: ProfileOnBoardingEvent) {
         when (event) {
             is ProfileOnBoardingEvent.UserTypeSelected -> {
@@ -31,7 +25,7 @@ class ProfileOnBoardingNavigator(activity: ComponentActivity, navController: Nav
                 )
             }
 
-            ProfileOnBoardingEvent.OnBoardingCancelled -> navigateBack()
+            ProfileOnBoardingEvent.OnBoardingCancelled -> navController.navigateBack()
         }
     }
 

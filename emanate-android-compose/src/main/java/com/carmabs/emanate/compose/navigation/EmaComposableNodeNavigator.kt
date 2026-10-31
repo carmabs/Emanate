@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.carmabs.emanate.compose.extension.activity
+import com.carmabs.emanate.compose.extension.navigateBack
 import com.carmabs.emanate.core.navigator.EmaNavigationNode
 import com.carmabs.emanate.core.state.EmaEvent
 
@@ -21,8 +22,10 @@ fun <D : EmaEvent> rememberEmaNodeNavigator(
     return navigator
 }
 
-abstract class EmaComposableNodeNavigator<D : EmaEvent>(activity: Activity, navController: NavHostController) :
-    EmaComposableNavigator(activity, navController) {
+abstract class EmaComposableNodeNavigator<D : EmaEvent>(
+    protected val activity: Activity,
+    protected val navController: NavHostController
+) {
 
     private var previousNavigationNode: EmaNavigationNode<D>? = null
 
@@ -39,6 +42,12 @@ abstract class EmaComposableNodeNavigator<D : EmaEvent>(activity: Activity, navC
             }
         }
     }
+
+    /**
+     * Pops the back stack, and closes the activity when there is nothing left and [closeActivityWhenBackstackIsEmpty].
+     */
+    fun navigateBack(closeActivityWhenBackstackIsEmpty: Boolean = true): Boolean =
+        navController.navigateBack(closeActivityWhenBackstackIsEmpty)
 
     abstract fun onNavigation(navigationEvent: D): Boolean
 }

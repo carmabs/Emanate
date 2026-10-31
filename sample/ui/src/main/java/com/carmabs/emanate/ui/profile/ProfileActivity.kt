@@ -25,7 +25,6 @@ import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingInit
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingViewModel
 import com.carmabs.emanate.ui.base.sampleViewModel
 import com.carmabs.emanate.ui.profile.creation.ProfileCreationScreenContent
-import com.carmabs.emanate.ui.profile.onboarding.ProfileOnBoardingNavigator
 import com.carmabs.emanate.ui.profile.onboarding.ProfileOnBoardingScreenContent
 import com.carmabs.emanate.ui.theme.EmaSampleTheme
 import kotlinx.coroutines.launch
@@ -39,7 +38,7 @@ class ProfileActivity : ComponentActivity() {
             EmaSampleTheme {
                 val navController = rememberNavController()
                 val navigator = remember {
-                    ProfileOnBoardingNavigator(this, navController)
+                    ProfileNavigator(navController)
                 }
 
                 NavHost(
