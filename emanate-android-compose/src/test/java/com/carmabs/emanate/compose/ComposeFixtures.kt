@@ -6,7 +6,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
-import com.carmabs.emanate.compose.ui.EmaComposableScreenContent
+import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.core.action.EmaAction
 import com.carmabs.emanate.core.initializer.EmaInitializer
 import com.carmabs.emanate.core.state.EmaEvent
@@ -83,8 +83,7 @@ class ClassicViewModel : EmaViewModelClassic<CounterState, CounterEvent>(Counter
     override fun onStateCreated(initializer: EmaInitializer?) = Unit
 }
 
-class CounterScreen(private val backEnabled: Boolean = true) :
-    EmaComposableScreenContent<CounterState, CounterAction> {
+class CounterScreen(private val backEnabled: Boolean = true) : EmaScreenContent<CounterState, CounterAction> {
 
     override fun onBack(state: CounterState) = if (backEnabled) CounterAction.Back else null
 
@@ -101,7 +100,7 @@ class CounterScreen(private val backEnabled: Boolean = true) :
 /**
  * Screen that keeps the default back handling.
  */
-class SilentScreen : EmaComposableScreenContent<CounterState, CounterAction> {
+class SilentScreen : EmaScreenContent<CounterState, CounterAction> {
     @Composable
     override fun onState(state: CounterState, actions: EmaImmutableActionDispatcher<CounterAction>) {
         BasicText("Silent ${state.count}", Modifier.clickable { actions.dispatch(CounterAction.Notify) })
