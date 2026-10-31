@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.compose.animation.fadeIn
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -24,6 +23,7 @@ import com.carmabs.emanate.compose.CounterViewModel
 import com.carmabs.emanate.compose.RouteInitializer
 import com.carmabs.emanate.compose.RouteInitializerSerializer
 import com.carmabs.emanate.compose.SilentScreen
+import com.carmabs.emanate.compose.extension.emaDialog
 import com.carmabs.emanate.compose.extension.emaScreen
 import com.carmabs.emanate.compose.extension.navigate
 import com.carmabs.emanate.compose.extension.navigateBack
@@ -33,7 +33,6 @@ import com.carmabs.emanate.compose.extension.routeWithInitializer
 import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
 import com.carmabs.emanate.core.navigator.EmaNavigationNode
 import com.carmabs.emanate.core.state.EmaEvent
-import com.carmabs.emanate.core.viewmodel.EmaViewModelContract
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -75,7 +74,7 @@ class EmaComposeNavigationTest {
 
     private lateinit var navController: NavHostController
     private var viewModel: CounterViewModel? = null
-    private val instances = mutableListOf<EmaViewModelContract<*, *>>()
+    private var dialogViewModel: CounterViewModel? = null
     private val received = mutableListOf<CounterEvent>()
     private var saveStateSetups = 0
 
@@ -89,15 +88,13 @@ class EmaComposeNavigationTest {
                     viewModel = { CounterViewModel().also { viewModel = it } },
                     initializerSupport = initializerSupport,
                     saveStateManager = EmaSaveStateManager<CounterState, CounterEvent> { _, _, _ -> saveStateSetups++ },
-                    onViewModelInstance = { instances += it },
                     transitionAnimation = EmaAnimTransition(enterTransition = { fadeIn() }),
-                    decoration = { content, _ -> Box { content() } },
                     onEvent = { received += it }
                 )
-                emaScreen(
+                emaDialog(
                     screenContent = SilentScreen(),
-                    viewModel = { CounterViewModel() },
-                    fullScreenDialogMode = true,
+                    viewModel = { CounterViewModel().also { dialogViewModel = it } },
+                    initializerSupport = initializerSupport,
                     onEvent = {}
                 )
             }
@@ -119,7 +116,6 @@ class EmaComposeNavigationTest {
 
         composeRule.onNodeWithText("Count 0").assertIsDisplayed()
         assertEquals(initializer, viewModel?.initializer)
-        assertSame<Any?>(viewModel, instances.last())
         assertEquals(1, saveStateSetups)
     }
 
@@ -148,12 +144,23 @@ class EmaComposeNavigationTest {
     }
 
     @Test
-    fun `a composable screen can be shown as a full screen dialog`() {
+    fun `a screen can be shown as a dialog`() {
         setNavHost()
 
         onMain { navController.navigate(SilentScreen::class.routeId, noInitializer) { launchSingleTop = true } }
 
         composeRule.onNodeWithText("Silent 0").assertIsDisplayed()
+    }
+
+    @Test
+    fun `a dialog receives the initializer of its route`() {
+        setNavHost()
+        val initializer = RouteInitializer("dialog")
+
+        onMain { navController.navigate(SilentScreen::class.routeId, EmaInitializerBundle(initializer, strategy)) }
+
+        composeRule.onNodeWithText("Silent 0").assertIsDisplayed()
+        assertEquals(initializer, dialogViewModel?.initializer)
     }
 
     @Test
