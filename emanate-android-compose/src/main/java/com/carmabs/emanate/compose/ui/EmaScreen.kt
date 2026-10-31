@@ -27,8 +27,12 @@ import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.utils.EmaUtils
 import com.carmabs.emanate.core.viewmodel.EmaViewModelContract
 
+/**
+ * Draws a view model created and kept by its caller, which also closes it. Used by the destinations of the navigation
+ * graph, whose view model is kept by their back stack entry.
+ */
 @Composable
-fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaScreen(
+internal fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaScreen(
     initializer: EmaInitializer? = null,
     vm: EmaViewModelContract<S, E>,
     actions: EmaActionDispatcher<A>,
