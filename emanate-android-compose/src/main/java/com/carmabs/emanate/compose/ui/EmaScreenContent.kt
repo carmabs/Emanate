@@ -2,8 +2,8 @@ package com.carmabs.emanate.compose.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
 import com.carmabs.emanate.core.action.EmaAction
+import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.state.EmaState
 
 /**
@@ -21,5 +21,5 @@ interface EmaScreenContent<S : EmaState, A : EmaAction> {
 
     @Composable
     @SuppressLint("ComposableNaming")
-    fun onState(state: S, actions: EmaImmutableActionDispatcher<A>)
+    fun onState(state: S, actions: EmaActionDispatcher<A>)
 }

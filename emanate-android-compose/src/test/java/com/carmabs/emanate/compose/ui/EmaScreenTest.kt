@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.android.savestate.SavedStateSupport
+import com.carmabs.emanate.compose.ActionsScreen
 import com.carmabs.emanate.compose.ClassicViewModel
 import com.carmabs.emanate.compose.CounterEvent
 import com.carmabs.emanate.compose.CounterScreen
@@ -61,6 +62,20 @@ class EmaScreenTest {
         assertEquals(listOf<CounterEvent>(CounterEvent.Notified), received)
         assertEquals(listOf("created", "started", "resumed"), viewModel.hooks)
         assertEquals(RouteInitializer("screen"), viewModel.initializer)
+    }
+
+    @Test
+    fun `a composable that only receives the actions is not recomposed when the state changes`() {
+        val screen = ActionsScreen()
+        composeRule.setContent {
+            EmaScreen(vm = { CounterViewModel() }, screenContent = screen, onEvent = {})
+        }
+
+        composeRule.onNodeWithText("Increment").performClick()
+        composeRule.onNodeWithText("Increment").performClick()
+        composeRule.onNodeWithText("Count 2").assertIsDisplayed()
+
+        assertEquals(1, screen.buttonCompositions)
     }
 
     @Test
