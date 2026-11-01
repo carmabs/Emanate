@@ -58,38 +58,40 @@ plugins:
           build: true
         - locale: es
           name: Español
-          # Not built until the Spanish pages are translated from the current English ones
-          build: false
-          site_description: Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android
+          build: true
+          site_description: Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform
           nav_translations:
             Home: Inicio
             Getting started: Primeros pasos
+            Why Emanate: Por qué Emanate
             Concepts: Conceptos
             Architecture: Arquitectura
             State: Estado
             Actions: Acciones
             Events: Eventos
+            Reducers: Reducers
+            Side effects: Side effects
+            Middlewares: Middlewares
+            Broadcasts: Broadcasts
+            Plugins: Plugins
+            ViewModel: ViewModel
             EmaSource: EmaSource
+            Utils: Utilidades
+            Use cases: Casos de uso
+            Results: Resultados
+            Texts in the state: Textos en el estado
             Guides: Guías
             Configuration: Configuración
             Initializers: Inicializadores
-            Results between screens: Resultados entre pantallas
-            Async work and errors: Trabajo asíncrono y errores
-            Dependency injection: Inyección de dependencias
-            Permissions: Permisos
-            Permissions (Android): Permisos (Android)
+            Surviving process death: Sobrevivir a la muerte del proceso
+            Dependency injection and environments: Inyección de dependencias y entornos
             Testing: Testing
-            Utilities: Utilidades
+            Compose: Compose
             Screens: Pantallas
             Navigation: Navegación
             Back handling: Botón atrás
             Dialogs: Diálogos
-            Saving state: Guardar el estado
-            Android Views: Vistas de Android
-            Overview: Introducción
-            Fragments and Activities: Fragments y Activities
-            Navigation and back handling: Navegación y botón atrás
-            Lists: Listas
+            Permissions (Android): Permisos (Android)
             Recommendations: Recomendaciones
             Contributing: Contribuir
 

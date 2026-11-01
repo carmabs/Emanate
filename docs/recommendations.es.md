@@ -69,7 +69,7 @@ ventajas:
 - **Está preparado para Kotlin Multiplatform.** `emanate-core` es multiplataforma, así que `presentation` y `domain`
   pueden convertirse en módulos multiplataforma y compartir los ViewModels con otras plataformas.
 
-Además, sus tests se ejecutan en milisegundos en tu ordenador, sin emulador (consulta [Testing](guides/testing.es.md)).
+Además, sus tests se ejecutan en milisegundos en tu ordenador, sin emulador (consulta [Testing](guides/testing.md)).
 
 ### ¿Qué va dónde?
 
@@ -119,6 +119,7 @@ pantalla Home como ejemplo:
 | Resultados de los side effects | `<Pantalla>Action.Effect<Qué>Result` | `HomeAction.EffectQueryResult.Loaded` |
 | Contenido de Compose | `<Pantalla>ScreenContent`           | `HomeScreenContent`              |
 | Inicializador    | `<Pantalla>Initializer`                 | `HomeInitializer.HomeUser`       |
+| Preview          | `Preview<Qué>`, con el prefijo para que las previews queden juntas | `PreviewAdmin`, `PreviewLoading` |
 
 Las dos filas con pista son las que más ayudan a entender el código:
 
@@ -253,13 +254,13 @@ El ViewModel es el mismo en los dos casos, pero ahora **quien lo crea elige lo q
 | Una build de QA | Un doble que falla o es lento. | Puedes ver los estados de error y de carga de la pantalla. |
 
 Si el ViewModel creara el caso de uso por sí mismo, nada de esto sería posible sin cambiar su código. Consulta
-[Inyección de dependencias](guides/dependency-injection.es.md) para ver cómo lo hace el sample con Koin.
+[Inyección de dependencias](guides/dependency-injection.md) para ver cómo lo hace el sample con Koin.
 
 No es solo para los casos de uso. Un ViewModel también puede **recibir sus middlewares, reducers y side effects**, y
 entonces la inyección decide cómo se comporta toda la pantalla: por ejemplo, un side effect que devuelve amigos falsos en
 una build de QA, o un middleware que añade latencia para ver el estado de carga. El ViewModel se escribe una vez y no
-cambia. Consulta [Inyectar piezas](guides/dependency-injection.md#injecting-pieces) para aprender a escribirlas, y
-[Las piezas son valores](concepts/viewmodel.md#pieces-are-values) para ver cómo se declara una pieza fuera de `setup`.
+cambia. Consulta [Inyectar piezas](guides/dependency-injection.md#inyectar-piezas) para aprender a escribirlas, y
+[Las piezas son valores](concepts/viewmodel.md#las-piezas-son-valores) para ver cómo se declara una pieza fuera de `setup`.
 
 ## Textos
 

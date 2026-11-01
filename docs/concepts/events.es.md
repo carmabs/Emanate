@@ -1,99 +1,124 @@
 # Eventos
 
-Un evento es **algo que ha pasado en la funcionalidad** y que la vista tiene que gestionar **una vez**:
+Un evento es **algo que ha ocurrido en la funcionalidad** y que la vista debe gestionar **una sola vez**:
 mostrar un mensaje, abrir otra pantalla, cerrar la pantalla.
 
 ```kotlin
-sealed interface LoginEvent : EmaEvent {
-    data class Message(val userName: String) : LoginEvent
-    data class LastUserAdded(val user: User) : LoginEvent
-    data class LoginSuccess(val user: User) : LoginEvent
+sealed interface HomeEvent : EmaEvent {
+    data class FriendsUpdated(val count: Int) : HomeEvent
+    data class FriendAdded(val friend: User) : HomeEvent
+    data class FriendSelected(val friend: User) : HomeEvent
 }
 ```
 
 ## Publicar eventos
 
-Desde el ViewModel, llama a `postEvent`:
+Los eventos se publican desde los side effects del ViewModel, con `publish`:
 
 ```kotlin
-userLogged.onSuccess { user ->
-    postEvent(LoginEvent.Message(user.name))
-    postEvent(LoginEvent.LoginSuccess(user))
+sideEffects {
+    add<HomeAction.EffectQueryResult.Loaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
+    add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
 }
 ```
+
+Un evento llega después de las acciones enviadas antes que él, así que la vista ve el estado que produjeron.
 
 ## Gestionar los eventos
 
-La vista gestiona cada evento una vez, en el orden en que se publicaron. Una pantalla Compose los gestiona en dos sitios:
-la lambda `onEvent` del grafo de navegación, para la navegación, y `onEvent` del contenido de la pantalla, para el resto.
+La vista gestiona cada evento una vez, en el orden en que se publicaron. Una pantalla Compose los gestiona todos en un
+único sitio: la lambda `onEvent` de `emaScreen`, en el grafo de navegación. Ahí tienes a mano el `NavController`, el
+navigator y el `Context`, así que puede navegar, mostrar un mensaje o hacer cualquier otra cosa:
 
 ```kotlin
-// Grafo de navegación: los eventos que navegan
-createComposableScreen(
-    screenContent = LoginScreenContent(),
-    viewModel = { LoginViewModel(loginUseCase, LoginState.DEFAULT) },
-    onEvent = { event -> if (event is LoginEvent.LoginSuccess) navigator.goToHome(event.user) }
-)
+class MainActivity : ComponentActivity() {
 
-// Contenido de la pantalla: el resto
-override suspend fun onEvent(
-    context: Context,
-    event: LoginEvent,
-    actions: EmaImmutableActionDispatcher<LoginAction>
-) {
-    when (event) {
-        is LoginEvent.Message -> showMessage(context.getString(R.string.login_welcome, event.userName))
-        is LoginEvent.LastUserAdded -> showMessage(context.getString(R.string.login_last_user_added, event.user.fullName))
-        is LoginEvent.LoginSuccess -> Unit
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val navController = rememberNavController()
+            val navigator = remember { HomeNavigator(navController) }
+            NavHost(navController, startDestination = HomeScreenContent::class.routeId) {
+                emaScreen(
+                    screenContent = HomeScreenContent(),
+                    viewModel = { get<HomeViewModel>() },
+                    onEvent = { event ->
+                        when (event) {
+                            is HomeEvent.FriendSelected -> navigator.goToProfile(event.friend)
+                            is HomeEvent.FriendsUpdated -> toast("${event.count} amigos")
+                            is HomeEvent.FriendAdded -> toast("${event.friend.name} ya es tu amigo")
+                        }
+                    }
+                )
+            }
+        }
     }
+
+    private fun toast(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 }
 ```
 
-Consulta [Pantallas de Compose](../compose/screens.es.md#dos-sitios-para-gestionar-los-eventos). Con las vistas de
-Android, los eventos se gestionan en `onEvent` del Fragment o la Activity, consulta [Vistas de Android](../android-view/screens.es.md).
+Como todos los eventos llegan al mismo `when`, el compilador te avisa cuando un evento nuevo no está gestionado. Si el
+`when` crece, muévelo a una función del navigator. Mira [Pantallas en Compose](../compose/screens.md#gestionar-los-eventos).
 
 ## Nombres
 
-**Los eventos dicen lo que ha pasado, nunca lo que hay que hacer.** Quien los recibe decide la reacción.
+**Los eventos dicen lo que ha pasado, nunca lo que hay que hacer.** El receptor decide la reacción.
 
-| Mejor                   | Evita                  | Por qué                                                           |
-|-------------------------|------------------------|-------------------------------------------------------------------|
-| `LoginSuccess(user)`    | `NavigateToHome(user)` | El ViewModel no sabe que "éxito" significa navegar.               |
-| `UserTypeSelected(role)`| `GoToProfileCreation`  | Qué pantalla viene después lo decide el navigator.                |
-| `OnBoardingCancelled`   | `CloseScreen`          | La vista también podría simplemente ocultar un panel.             |
-| `LastUserAdded(user)`   | `ShowToast(user)`      | Podría ser un toast, un snackbar o nada.                          |
+| Prefiere                | Evita                 | Por qué                                                           |
+|-------------------------|-----------------------|-------------------------------------------------------------------|
+| `FriendSelected(user)`  | `OpenProfile(user)`   | El ViewModel no sabe que seleccionar significa navegar.           |
+| `UserTypeSelected(role)`| `GoToProfileCreation` | Qué pantalla sigue es decisión del navigator.                     |
+| `OnBoardingCancelled`   | `CloseScreen`         | La vista también podría simplemente ocultar un panel.             |
+| `FriendAdded(user)`     | `ShowToast(user)`     | Podría ser un toast, un snackbar o nada en absoluto.              |
 
-Una buena prueba: el nombre sigue teniendo sentido si reemplazas por completo la UI de la pantalla.
+Una buena prueba: el nombre sigue teniendo sentido si cambias por completo la UI de la pantalla.
 
 ## Reglas de entrega
 
-- **Una vez.** Cuando `onEvent` termina, el evento queda consumido. No se repite al recrear la vista.
-- **No se pierden.** Los eventos se encolan en el ViewModel hasta que una vista puede recibirlos. Si publicas un evento
-  mientras la pantalla está en segundo plano, o durante una rotación, se entrega después.
-- **En orden.** Varios eventos pendientes se entregan juntos, en el orden en que se publicaron.
-- **Eventos iguales.** Mientras un evento espera a ser entregado, publicar otro igual no hace nada, así que una doble
-  pulsación no muestra el mismo mensaje dos veces. Cuando la vista ya lo ha gestionado, un evento igual es uno nuevo y se
-  vuelve a entregar. Para encolar un evento igual mientras el primero sigue esperando, pasa `allowDuplicated = true`:
+- **Una vez.** Cuando `onEvent` termina, el evento queda consumido. No se reenvía cuando se recrea la vista.
+- **Sin perderse.** Los eventos se encolan en el ViewModel hasta que una vista pueda recibirlos. Si publicas un evento
+  mientras la pantalla está en segundo plano, o mientras se recrea, se entrega después.
+- **En orden.** Varios eventos pendientes se entregan en bloque, en el orden en que se publicaron.
+- **Eventos iguales.** Mientras un evento espera a ser entregado, publicar otro igual no hace nada, así que un doble
+  toque no muestra el mismo mensaje dos veces. Cuando la vista ya lo ha gestionado, un evento igual es uno nuevo y se
+  entrega de nuevo. Para encolar un evento igual mientras el primero sigue esperando, pasa `allowDuplicated = true`:
 
 ```kotlin
-postEvent(LoginEvent.Message("Ana"), allowDuplicated = true)
+publish(HomeEvent.FriendAdded(ana), allowDuplicated = true)
 ```
 
-- **Solo mientras la pantalla está visible.** Las pantallas Compose reciben eventos mientras el ciclo de vida está en
-  `STARTED`; los Fragments y las Activities, desde `onResume` hasta `onStop`.
-- **No se guardan.** Los eventos viven en el ViewModel, así que sobreviven a los cambios de configuración pero no a la
+- **Solo mientras la pantalla es visible.** Las pantallas Compose reciben eventos mientras el ciclo de vida está en
+  `STARTED`.
+- **No se persisten.** Los eventos viven en el ViewModel, así que sobreviven a los cambios de configuración pero no a la
   muerte del proceso.
 
-> **Mantén `onEvent` breve.** Si llega un evento nuevo mientras un `onEvent` anterior está suspendido, la entrega se
-> reinicia y el evento sin terminar se puede volver a entregar. Haz trabajo rápido en `onEvent` y devuelve el trabajo
-> largo al ViewModel como una acción.
+> **Mantén `onEvent` corto.** Los eventos se entregan uno tras otro, y un evento se consume cuando su `onEvent` termina.
+> Navegar o mostrar un toast es inmediato. Para algo que tarda, como un snackbar que espera al usuario, lánzalo en un
+> scope de corrutinas tuyo, como el de `rememberCoroutineScope()`, para que los siguientes eventos no esperen por él.
+> Devuelve el trabajo largo al ViewModel como una acción.
 
-## ¿Eventos o estado?
+## Eventos o estado
 
-Si tiene que seguir ahí cuando el usuario vuelve, es [estado](state.es.md), no un evento.
-Consulta la tabla de [Arquitectura](architecture.es.md#estado-o-evento).
+Si debe estar ahí cuando el usuario vuelve, es [estado](state.md), no un evento.
+Mira la tabla en [Arquitectura](architecture.md#estado-o-evento).
 
 ## Pantallas sin eventos
 
-Usa `EmaEvent.EMPTY` como tipo de evento, y `EmaViewModelContract.EMPTY` en una pantalla sin estado, acciones ni eventos,
-como una activity que solo aloja otras pantallas.
+Una pantalla que nunca publica eventos usa `EmaEvent.EMPTY` como tipo de evento, y su `onEvent` no hace nada:
+
+```kotlin
+class SettingsViewModel : EmaViewModel<SettingsState, SettingsAction, EmaEvent.EMPTY>(SettingsState()) {
+    // ...
+}
+
+emaScreen(
+    screenContent = SettingsScreenContent(),
+    viewModel = { SettingsViewModel() },
+    onEvent = {}
+)
+```
+
+Del mismo modo, `EmaState.EMPTY` es el estado de una pantalla sin estado, y `EmaAction.EMPTY` las acciones de una
+pantalla con la que el usuario no puede interactuar. Una pantalla sin estado, acciones ni eventos no tiene lógica:
+píntala con un composable normal, sin Emanate.

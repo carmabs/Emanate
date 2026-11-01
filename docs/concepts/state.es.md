@@ -3,104 +3,123 @@
 El estado es una `data class` inmutable con **todo lo que la pantalla necesita para pintarse**.
 
 ```kotlin
-data class LoginState(
-    val userName: String,
-    val userPassword: String,
-    val isLoading: Boolean,
-    val userNameError: Boolean,
-    val passwordError: Boolean,
-    val overlap: LoginOverlap?
-) : EmaState {
-
-    companion object {
-        val DEFAULT = LoginState(
-            userName = STRING_EMPTY,
-            userPassword = STRING_EMPTY,
-            isLoading = false,
-            userNameError = false,
-            passwordError = false,
-            overlap = null
-        )
-    }
-}
+data class HomeState(
+    val user: User? = null,
+    val query: String = STRING_EMPTY,
+    val friends: List<User> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorQueryTooShort: Boolean = false,
+    val dialog: HomeDialog? = null
+) : EmaState
 ```
 
 ## Reglas
 
-- **Hazlo una `data class`.** Con `copy` se crea el siguiente estado, y su `equals` permite a la vista ignorar los
-  estados que no han cambiado. Usa `EmaState.EMPTY` en pantallas sin estado.
+- **Hazlo una `data class`.** `copy` es como se crea el siguiente estado, y su `equals` permite a la vista omitir los
+  estados que no han cambiado. Usa `EmaState.EMPTY` para pantallas sin estado.
 - **Hazlo inmutable.** Usa `val` y colecciones de solo lectura. Cámbialo con `copy`.
-- **Dale un `DEFAULT`.** Será el estado inicial y es útil para las previews y los tests.
+- **Dale valores por defecto** (o una instancia `DEFAULT`). Se convierten en el estado inicial y son útiles para
+  previews y tests.
 - **Añade propiedades derivadas en lugar de duplicar datos.** Mantienen la vista libre de lógica:
 
 ```kotlin
 data class HomeState(
-    val userData: UserData?,
-    val userList: List<User>
+    val user: User? = null,
+    val friends: List<User> = emptyList(),
+    // ...
 ) : EmaState {
 
-    val showCreateButton get() = userData?.role == Role.ADMIN
-    val showEmptyList get() = userData != null && userList.isEmpty()
+    val showCreateButton get() = user?.role == Role.ADMIN
+    val showEmptyList get() = user != null && friends.isEmpty()
 }
 ```
 
 ## Cambiar el estado
 
-Dentro de un ViewModel usa `updateState`, que recibe el estado actual como `this`:
+El estado solo cambia en los [reducers](reducers.md) del ViewModel, que devuelven el siguiente estado con `copy`:
 
 ```kotlin
-updateState { copy(isLoading = true) }
+reducers {
+    add<HomeAction> { action ->
+        when (action) {
+            is HomeAction.QueryWritten -> state.copy(query = action.query, errorQueryTooShort = false)
+            // ...
+        }
+    }
+}
 ```
 
-Lee el valor actual con la propiedad protegida `state`:
+Los middlewares y los side effects pueden leer el valor actual con `state`, pero nunca cambiarlo:
 
 ```kotlin
-if (state.isLoading) return
+sideEffects {
+    add<HomeAction.RefreshRequested> {
+        if (state.isLoading) return@add
+        // ...
+    }
+}
 ```
 
-El estado se expone como `stateFlow: StateFlow<S>`. Al ser un `StateFlow`, dos estados iguales seguidos no se entregan
-dos veces y los colectores lentos solo ven el último valor.
+El estado se expone como `stateFlow: StateFlow<S>`. Al ser un `StateFlow`, los estados consecutivos iguales no se
+entregan dos veces y los colectores lentos solo ven el último valor.
 
 ## Modelar diálogos, carga y errores
 
-Emanate no tiene estados especiales de "carga" o "error". Son campos normales de tu estado, así que sobreviven a una rotación
-y son fáciles de testear.
+Emanate no tiene estados especiales de "carga" o "error". Son campos normales de tu estado, así que sobreviven a un
+cambio de configuración y son fáciles de testear.
 
-**Un diálogo**: un tipo sellado nullable. `null` significa que no hay diálogo.
+**Un diálogo**: un tipo sealed nullable. `null` significa que no hay diálogo.
 
 ```kotlin
-sealed interface LoginOverlap {
-    data object ErrorBadCredentials : LoginOverlap
+sealed interface HomeDialog {
+    data object LoadError : HomeDialog
 }
 
-// ViewModel
-updateState { copy(overlap = LoginOverlap.ErrorBadCredentials) }  // mostrar
-updateState { copy(overlap = null) }                              // ocultar
+// Reducers
+is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // mostrar
+is HomeAction.ErrorAccepted -> state.copy(dialog = null)                                    // ocultar
 ```
 
-**Carga**: un booleano.
+**Carga**: un booleano, activado por la acción que inicia el trabajo y desactivado por la que comunica su resultado.
 
 ```kotlin
-updateState { copy(isLoading = true) }
+is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
+is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
 ```
 
-**Errores de los campos**: un booleano (o un mensaje) por campo. Bórralo cuando el usuario edita el campo:
+**Errores de campo**: un booleano (o un mensaje) por campo, con el prefijo `error`. Actívalo cuando la entrada no sea
+válida y límpialo cuando el usuario edite el campo:
 
 ```kotlin
-private fun onActionUserWrite(user: String) {
-    updateState { copy(userName = user, userNameError = false) }
+// Reducers
+is HomeAction.RefreshRequested -> state.copy(errorQueryTooShort = state.query.length == 1)  // mostrar
+is HomeAction.QueryWritten -> state.copy(query = action.query, errorQueryTooShort = false)  // ocultar
+```
+
+La vista solo pinta lo que dice el campo:
+
+```kotlin
+@Composable
+override fun onState(state: HomeState, actions: EmaActionDispatcher<HomeAction>) {
+    OutlinedTextField(
+        value = state.query,
+        onValueChange = { query -> actions.dispatch(HomeAction.QueryWritten(query)) },
+        isError = state.errorQueryTooShort,
+        supportingText = {
+            if (state.errorQueryTooShort) Text(text = "Escribe al menos dos letras")
+        }
+    )
 }
 ```
 
 ## Pintar el estado
 
-En Compose simplemente pintas el estado: la recomposición calcula las diferencias. Consulta
-[Pantallas de Compose](../compose/screens.es.md). Con las vistas de Android, `bindForUpdate` ejecuta cada parte del código
-de UI solo cuando su campo ha cambiado: consulta [Vistas de Android](../android-view/screens.es.md#renderizar-con-bindforupdate).
+La vista simplemente pinta el estado que recibe. Con Compose, la recomposición se encarga de calcular las diferencias.
+Mira [Pantallas en Compose](../compose/screens.md).
 
-## Lo que *no* va en el estado
+## Lo que *no* pertenece al estado
 
-- Lo que ocurre una sola vez: snackbars, toasts, navegación. Usa [eventos](events.es.md).
-- Tipos de Android (`Context`, `View`, `Bitmap`...). Usa `EmaText` para los textos con recursos, consulta
-  [Utilidades](../guides/utilities.es.md).
-- Colecciones mutables u objetos que cambian sin que llames a `copy`.
+- Cosas de un solo uso: mensajes, navegación. Usa [eventos](events.md).
+- Tipos de la plataforma, como un contexto, una vista o una imagen de la plataforma. Usa `EmaText` para textos con
+  recursos, mira [Textos en el estado](../utils/texts.md).
+- Colecciones u objetos mutables que cambian sin que llames a `copy`.

@@ -66,7 +66,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
   eventos.
 
 Las mismas piezas también se pueden declarar como propiedades del ViewModel, con `middlewareOf`, `reducerOf` y
-`sideEffectOf`, e instalarse con `+`. Así cada una se puede reutilizar, recibir en el constructor para
+`sideEffectOf`, e instalarse con `add`. Así cada una se puede reutilizar, recibir en el constructor para
 [cambiarla según el entorno](guides/dependency-injection.md) o testear por separado:
 
 ```kotlin
@@ -99,11 +99,10 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
     }
 
     override fun setup() = source {
-        middlewares { +searchDebounce }
-        reducers { +homeReducer }
+        middlewares { add(searchDebounce) }
+        reducers { add(homeReducer) }
         sideEffects {
-            +searchFriends
-            +openFriend
+            add(searchFriends, openFriend)
         }
     }
 }
