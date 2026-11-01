@@ -57,10 +57,13 @@ class EmaComposeNavigationTest {
     private val received = mutableListOf<CounterEvent>()
     private var saveStateSetups = 0
 
-    private fun setNavHost(initializerSupport: EmaInitializerSupport? = EmaInitializerSupport(strategy)) {
+    private fun setNavHost(
+        initializerSupport: EmaInitializerSupport? = EmaInitializerSupport.fromRoute(RouteInitializerSerializer),
+        startDestination: String = "home"
+    ) {
         composeRule.setContent {
             navController = rememberNavController()
-            NavHost(navController, startDestination = "home") {
+            NavHost(navController, startDestination = startDestination) {
                 composable("home") { BasicText("Home") }
                 emaScreen(
                     screenContent = CounterScreen(),
@@ -109,8 +112,17 @@ class EmaComposeNavigationTest {
     }
 
     @Test
-    fun `the initializer support can override the initializer of the route`() {
-        setNavHost(EmaInitializerSupport.kSerialization(RouteInitializerSerializer, RouteInitializer("override")))
+    fun `the origin of the support is used when the route has no initializer`() {
+        setNavHost(EmaInitializerSupport.fromInitializer(RouteInitializerSerializer, RouteInitializer("backup")))
+
+        onMain { navController.navigate(CounterScreen::class.routeId, initializerBundle = noInitializer) }
+
+        assertEquals(RouteInitializer("backup"), viewModel?.initializer)
+    }
+
+    @Test
+    fun `the initializer of the route wins over the origin of the support`() {
+        setNavHost(EmaInitializerSupport.fromInitializer(RouteInitializerSerializer, RouteInitializer("backup")))
 
         onMain {
             navController.navigate(
@@ -119,7 +131,48 @@ class EmaComposeNavigationTest {
             )
         }
 
-        assertEquals(RouteInitializer("override"), viewModel?.initializer)
+        assertEquals(RouteInitializer("route"), viewModel?.initializer)
+    }
+
+    @Test
+    fun `an initializer without values in the route avoids the origin of the support`() {
+        setNavHost(EmaInitializerSupport.fromInitializer(RouteInitializerSerializer, RouteInitializer("backup")))
+
+        onMain {
+            navController.navigate(
+                CounterScreen::class.routeId,
+                EmaInitializerBundle(RouteInitializer(""), strategy)
+            )
+        }
+
+        assertEquals(RouteInitializer(""), viewModel?.initializer)
+    }
+
+    @Test
+    fun `the first screen of an activity reads the initializer of its intent`() {
+        composeRule.activity.intent.putExtras(
+            Bundle().also {
+                strategy.save(RouteInitializer("intent"), it)
+            }
+        )
+
+        setNavHost(
+            initializerSupport = EmaInitializerSupport.fromIntent(RouteInitializerSerializer),
+            startDestination = CounterScreen::class.routeId
+        )
+
+        composeRule.onNodeWithText("Count 0").assertIsDisplayed()
+        assertEquals(RouteInitializer("intent"), viewModel?.initializer)
+    }
+
+    @Test
+    fun `a screen reads the initializer of a bundle`() {
+        val bundle = Bundle().also { strategy.save(RouteInitializer("bundle"), it) }
+        setNavHost(EmaInitializerSupport.fromBundle(RouteInitializerSerializer, bundle))
+
+        onMain { navController.navigate(CounterScreen::class.routeId, initializerBundle = noInitializer) }
+
+        assertEquals(RouteInitializer("bundle"), viewModel?.initializer)
     }
 
     @Test
@@ -204,6 +257,6 @@ class EmaComposeNavigationTest {
         val transitions = EmaAnimTransition(enterTransition = { fadeIn() }, exitTransition = { null })
         assertSame(transitions.enterTransition, transitions.popEnterTransition)
         assertSame(transitions.exitTransition, transitions.popExitTransition)
-        assertNotNull(EmaInitializerSupport(strategy).serializerStrategy)
+        assertNotNull(EmaInitializerSupport.fromRoute(RouteInitializerSerializer).serializerStrategy)
     }
 }
