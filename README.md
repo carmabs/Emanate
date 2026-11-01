@@ -34,7 +34,7 @@ class CounterViewModel :
         }
         sideEffects {
             add<CounterAction.Increment> {
-                if (state.count == 10) postEvent(CounterEvent.LimitReached(10))
+                if (state.count == 10) publish(CounterEvent.LimitReached(10))
             }
         }
     }

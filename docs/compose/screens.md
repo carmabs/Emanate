@@ -15,7 +15,7 @@ an admin or a user:
 
 1. The user taps **Admin**, and the screen content sends the action `AdminClicked`.
 2. The ViewModel decides what that means. Whenever its state changes, the screen content draws it again.
-3. Here the answer is a one-off: the ViewModel posts the event `UserTypeSelected(ADMIN)`, and the `onEvent` of
+3. Here the answer is a one-off: the ViewModel publishes the event `UserTypeSelected(ADMIN)`, and the `onEvent` of
    `emaScreen` opens the next screen.
 
 The screen **never changes the state itself**: it only sends [actions](../concepts/actions.md) and draws whatever

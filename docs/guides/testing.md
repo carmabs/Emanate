@@ -7,7 +7,7 @@ and each event.
 | You control                                        | You check                                         |
 |----------------------------------------------------|---------------------------------------------------|
 | The actions, with `dispatch` and `onCreated`       | The states returned by the reducers, in order     |
-| The pieces it receives: fakes, mocks, delays       | The events posted, in order                       |
+| The pieces it receives: fakes, mocks, delays       | The events published, in order                       |
 | The time, with the virtual clock of `runTest`      | The actions, including the ones a middleware stopped |
 
 ## What to test
@@ -15,7 +15,7 @@ and each event.
 | Test                                                 | How                                                        |
 |------------------------------------------------------|------------------------------------------------------------|
 | An action changes the state                          | `dispatch`, then `assertStates` or `assertState`.          |
-| An action posts an event                             | `dispatch`, then `assertEvents`.                           |
+| An action publishes an event                             | `dispatch`, then `assertEvents`.                           |
 | A failure shows the right dialog / error             | Inject a mock that fails, assert the field of the state.   |
 | A slow response keeps the loading state              | Inject a mock with latency, `advanceTimeBy`, assert the state. |
 | The initializer is applied                           | `onCreated(initializer)`, assert the state.                |
@@ -48,7 +48,7 @@ happens if you don't use it.
 | [`assertActions(...)`](#checking-what-was-recorded) | The recorded actions, including the ones blocked by a middleware. |
 | [`assertStates(...)`](#checking-what-was-recorded) | Every state returned by the reducers, in order. |
 | [`assertState(state)` / `assertState { }`](#checking-what-was-recorded) | The last state, or a condition on it. |
-| [`assertEvents(...)` / `assertNoEvents()`](#checking-what-was-recorded) | The posted events. |
+| [`assertEvents(...)` / `assertNoEvents()`](#checking-what-was-recorded) | The published events. |
 | [`viewModel.assertSetup()`](#checking-the-setup) | Fails if a middleware, reducer or side effect never runs. |
 | [`testStateStore()` / `restoreStateOf(...)`](#process-death-testing) | A store in memory to test what a ViewModel saves and restores. |
 
@@ -225,11 +225,11 @@ class InboxViewModelTest {
 an `EmaRecorder`.
 
 **What it does.** From that moment, it keeps in order every action that enters the `EmaSource`, every state returned by a
-reducer and every event posted. The recorder exposes them as lists: `recorder.actions`, `recorder.states` and
+reducer and every event published. The recorder exposes them as lists: `recorder.actions`, `recorder.states` and
 `recorder.events`.
 
 **Why it matters.** The ViewModel only exposes its **current** state. A test that reads it can't see that the screen
-went through `isLoading = true` before showing the friends, that an event was posted, or that a middleware blocked an
+went through `isLoading = true` before showing the friends, that an event was published, or that a middleware blocked an
 action. The recorder is what lets you check the behavior, not only the final result.
 
 **What happens without it.** You can only read the last state with `viewModel.stateFlow.value`. A bug that shows a
@@ -263,8 +263,8 @@ fails and the message shows both lists. You don't write the loops and the compar
 | `assertStates(...)` | The states returned by the reducers, one for each reduced action. | `recorder.assertStates(HomeState(isLoading = true), HomeState(friends = listOf(ana)))` |
 | `assertState(state)` | The last state is exactly that one. | `recorder.assertState(HomeState(friends = listOf(ana)))` |
 | `assertState { }` | The last state fulfils a condition, without writing the whole state. | `recorder.assertState { !it.isLoading && it.friends.size == 1 }` |
-| `assertEvents(...)` | The posted events, in order. | `recorder.assertEvents(HomeEvent.FriendsUpdated(1))` |
-| `assertNoEvents()` | No event was posted. | `recorder.assertNoEvents()` |
+| `assertEvents(...)` | The published events, in order. | `recorder.assertEvents(HomeEvent.FriendsUpdated(1))` |
+| `assertNoEvents()` | No event was published. | `recorder.assertNoEvents()` |
 
 **Why it matters.**
 
@@ -273,11 +273,11 @@ fails and the message shows both lists. You don't write the loops and the compar
 - `assertStates` checks the **path**, not only the destination: loading first, the result later.
 - `assertState { }` keeps the test short and robust, because it doesn't break when an unrelated field of the state
   changes.
-- `assertNoEvents()` is the check that something **didn't** happen: a failed load must not post
+- `assertNoEvents()` is the check that something **didn't** happen: a failed load must not publish
   the success event.
 
 **What happens without them.** You compare `recorder.states` and `recorder.events` by hand. It works, but every test
-repeats the same code, and a test that forgets to check the events passes when a wrong one is posted. A check also
+repeats the same code, and a test that forgets to check the events passes when a wrong one is published. A check also
 fails with a clear message:
 
 ```

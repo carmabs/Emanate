@@ -85,7 +85,7 @@ class NoteViewModel(private val deleteNote: DeleteNoteUseCase) :
             // The work is done after confirming: the dialog is already closed
             add<NoteAction.DeleteConfirmed> {
                 deleteNote(Unit)
-                postEvent(NoteEvent.NoteDeleted)
+                publish(NoteEvent.NoteDeleted)
             }
         }
     }

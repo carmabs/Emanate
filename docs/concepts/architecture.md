@@ -8,7 +8,7 @@ Every Emanate screen is made of the same pieces, and every action follows the sa
 2. The **middlewares** of its type decide its path: let it continue, change it, delay it or stop it.
 3. The **reducers** of its type return the next state, which the view renders.
 4. The **side effects** of its type run the business logic asynchronously. They report the result by dispatching new
-   actions, which go through the same path, or by posting events.
+   actions, which go through the same path, or by publishing events.
 5. The view handles each **event** once, for example to navigate or show a message.
 
 | Piece         | Responsibility                                                                 | Depends on the platform? |

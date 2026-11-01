@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
  * Created by Carlos Mateo Benito on 03/08/2026.
  *
  * The side of the events that the view uses: it observes the pending events and consumes them once handled. The
- * events are posted only by the view model or the source that owns them.
+ * events are published only by the view model or the source that owns them.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -23,7 +23,7 @@ interface EmaEventConsumer<E : EmaEvent> {
     fun consumeEvent(event: E)
 
     /**
-     * The pending events. It emits when new events are posted, not when they are consumed.
+     * The pending events. It emits when new events are published, not when they are consumed.
      */
     val eventFlow: Flow<List<E>>
 }

@@ -11,7 +11,7 @@ import com.carmabs.emanate.core.state.EmaEvent
  *
  * @param actions the actions it has dispatched to its own source
  * @param broadcasts the actions it has broadcast to the other sources
- * @param events the events it has posted for the view
+ * @param events the events it has published for the view
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.

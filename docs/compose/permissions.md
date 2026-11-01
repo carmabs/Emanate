@@ -140,7 +140,7 @@ class LocationViewModel : EmaViewModel<LocationState, LocationAction, LocationEv
         sideEffects {
             add<LocationAction.PermissionAnswered> { action ->
                 if (action.permissionState == PermissionState.NOT_GRANTED_SHOULD_EXPLAIN) {
-                    postEvent(LocationEvent.PermissionRationaleNeeded)
+                    publish(LocationEvent.PermissionRationaleNeeded)
                 }
             }
         }
@@ -153,7 +153,7 @@ Read it as a conversation:
 - `AllowClicked` → *"I need the permission"*: the reducer turns `requestingPermission` on.
 - `PermissionAnswered` → *"here is the answer"*: the reducer turns `requestingPermission` **off** (very important, see
   the warning below) and stores whether it was granted.
-- If Android recommends an explanation, the side effect posts an [event](../concepts/events.md) so the screen can
+- If Android recommends an explanation, the side effect publishes an [event](../concepts/events.md) so the screen can
   show it.
 
 ### Step 3: the screen executes the request
@@ -210,7 +210,7 @@ Let's follow what happens when the user presses *Allow*:
 
 ### Step 4: explain when Android recommends it
 
-The side effect of Step 2 posted `PermissionRationaleNeeded`. Handle it like any other event, for example opening a
+The side effect of Step 2 published `PermissionRationaleNeeded`. Handle it like any other event, for example opening a
 [dialog](dialogs.md) that explains why the app needs the location, with a button that asks again:
 
 ```kotlin

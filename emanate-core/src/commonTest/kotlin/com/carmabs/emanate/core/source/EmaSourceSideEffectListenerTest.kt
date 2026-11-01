@@ -77,7 +77,7 @@ class EmaSourceSideEffectListenerTest {
             add<ListenerAction.Named>(name = "custom") { }
             add<ListenerAction.Chain> {
                 dispatch(ListenerAction.Result(1))
-                postEvent(ListenerEvent)
+                publish(ListenerEvent)
                 broadcast(ListenerBroadcast(2))
                 dispatch(ListenerAction.Result(3))
             }

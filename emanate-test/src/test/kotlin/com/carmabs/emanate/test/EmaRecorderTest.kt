@@ -54,7 +54,7 @@ private class ProfileViewModel(configuration: EmaConfiguration = Emanate.configu
                 delay(1000)
                 dispatch(ProfileAction.Loaded("Ema"))
             }
-            add<ProfileAction.Loaded> { postEvent(ProfileEvent.Welcome) }
+            add<ProfileAction.Loaded> { publish(ProfileEvent.Welcome) }
         }
     }
 }

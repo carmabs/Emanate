@@ -364,7 +364,7 @@ The `SideEffectOutput` says what the side effect produced, in the order it happe
 |--------------|-------------------------------------------------------------------------------------------------|
 | `actions`    | The actions it dispatched to its ViewModel with `dispatch`: `Started`, `Loaded(friends)`...     |
 | `broadcasts` | The actions it sent to other ViewModels with `broadcast`.                                       |
-| `events`     | The events it posted for the view with `postEvent`.                                             |
+| `events`     | The events it published for the view with `publish`.                                             |
 
 It only has what **that execution** launched, not what other side effects launched at the same time. With all of it you
 can track, for each side effect, which ViewModel launched it, its name, how long it took, how it ended and what it

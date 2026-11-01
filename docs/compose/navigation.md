@@ -6,7 +6,7 @@
 In Emanate a **ViewModel never navigates**. Navigating is the job of the navigation graph that contains the screen,
 usually the `NavHost`: it is the one that knows which screens exist and holds the `NavController` to move between them.
 
-The ViewModel only posts an [event](../concepts/events.md) that says **what happened**, like "the user chose to be an
+The ViewModel only publishes an [event](../concepts/events.md) that says **what happened**, like "the user chose to be an
 admin". Someone outside the screens has to receive those events and decide **where to go**: the **navigator**, a class
 that lives next to the `NavHost` and holds its `NavController`. It is not a class of Emanate: it is a plain class of
 yours, and it is a good pattern to handle all the navigation of your app this way.
@@ -16,7 +16,7 @@ This is the profile flow of the sample, with two screens:
 ![Each screen of the NavHost sends its events to the navigator, which decides where to go](../assets/compose-navigation.svg)
 
 1. Each destination of the `NavHost` is an `emaScreen`, with its screen content, its ViewModel and its `onEvent`.
-2. When the user taps **Admin**, the ViewModel of `ProfileOnBoarding` posts `UserTypeSelected(ADMIN)`. It doesn't
+2. When the user taps **Admin**, the ViewModel of `ProfileOnBoarding` publishes `UserTypeSelected(ADMIN)`. It doesn't
    know which screen comes next.
 3. The `onEvent` of that screen hands the event to the navigator, to its function for that screen:
    `handleProfileOnBoardingEvent`.

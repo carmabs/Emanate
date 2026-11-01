@@ -53,7 +53,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
                     .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
             }
             // Tells the view to open the profile
-            add<HomeAction.FriendClicked> { action -> postEvent(HomeEvent.FriendSelected(action.friend)) }
+            add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
         }
     }
 }
@@ -93,7 +93,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
     }
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
-        postEvent(HomeEvent.FriendSelected(action.friend))
+        publish(HomeEvent.FriendSelected(action.friend))
     }
 
     override fun setup() = source {

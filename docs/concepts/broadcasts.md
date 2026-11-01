@@ -42,7 +42,7 @@ sealed interface ProfileBroadcast : EmaAction {
 sideEffects {
     add<ProfileAction.SaveClicked> {
         broadcast(ProfileBroadcast.FriendCreated(state.friend))
-        postEvent(ProfileEvent.Saved)  // The navigator closes the screen
+        publish(ProfileEvent.Saved)  // The navigator closes the screen
     }
 }
 ```
@@ -67,7 +67,7 @@ reducers {
     add<ProfileBroadcast.FriendCreated> { action -> state.copy(friends = state.friends + action.friend) }
 }
 sideEffects {
-    add<ProfileBroadcast.FriendCreated> { action -> postEvent(HomeEvent.FriendAdded(action.friend)) }
+    add<ProfileBroadcast.FriendCreated> { action -> publish(HomeEvent.FriendAdded(action.friend)) }
 }
 ```
 

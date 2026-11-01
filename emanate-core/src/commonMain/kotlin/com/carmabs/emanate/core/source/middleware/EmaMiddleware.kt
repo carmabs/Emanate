@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
  * Created by Carlos Mateo Benito on 11/10/2026.
  *
  * Middleware for the actions of type [F]. It decides the path of the action calling next once, now or later with
- * nextAfter. The other actions skip it. It doesn't post events: a side effect of the action it dispatches does it.
+ * nextAfter. The other actions skip it. It doesn't publish events: a side effect of the action it dispatches does it.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.

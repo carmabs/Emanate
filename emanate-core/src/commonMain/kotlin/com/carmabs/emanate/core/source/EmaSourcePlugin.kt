@@ -13,7 +13,7 @@ import com.carmabs.emanate.core.state.EmaState
  * place to work go at MiddlewarePosition.First or Last; the rest of its pieces stay where the plugins block is written.
  *
  * Its actions are of type [P]: the only ones it can dispatch, which the source accepts and the developer can handle
- * like any other. A plugin that doesn't dispatch actions is of type Nothing. It can't post events, as they belong to
+ * like any other. A plugin that doesn't dispatch actions is of type Nothing. It can't publish events, as they belong to
  * the screen: to notify the view, it dispatches an action and the source decides the event.
  *
  * <p>

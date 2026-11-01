@@ -11,14 +11,14 @@ sealed interface HomeEvent : EmaEvent {
 }
 ```
 
-## Posting events
+## Publishing events
 
-Events are posted from the side effects of the ViewModel, with `postEvent`:
+Events are published from the side effects of the ViewModel, with `publish`:
 
 ```kotlin
 sideEffects {
-    add<HomeAction.EffectQueryResult.Loaded> { action -> postEvent(HomeEvent.FriendsUpdated(action.friends.size)) }
-    add<HomeAction.FriendClicked> { action -> postEvent(HomeEvent.FriendSelected(action.friend)) }
+    add<HomeAction.EffectQueryResult.Loaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
+    add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
 }
 ```
 
@@ -26,7 +26,7 @@ An event arrives after the actions dispatched before it, so the view sees the st
 
 ## Handling events
 
-The view handles each event once, in the order they were posted. A Compose screen handles all of them in one place: the
+The view handles each event once, in the order they were published. A Compose screen handles all of them in one place: the
 `onEvent` lambda of `emaScreen`, in the navigation graph. There the `NavController`, the navigator and the `Context`
 are at hand, so it can navigate, show a message or do anything else:
 
@@ -77,14 +77,14 @@ A good test: the name still makes sense if you replace the screen's UI completel
 ## Delivery rules
 
 - **Once.** After `onEvent` returns, the event is consumed. It is not replayed when the view is recreated.
-- **Not lost.** Events are queued in the ViewModel until a view is able to receive them. If you post an event while the screen is in the background, or while it is being recreated, it is delivered afterwards.
-- **In order.** Several pending events are delivered as a batch, in the order they were posted.
-- **Equal events.** While an event is waiting to be delivered, posting an equal one does nothing, so a double tap does
+- **Not lost.** Events are queued in the ViewModel until a view is able to receive them. If you publish an event while the screen is in the background, or while it is being recreated, it is delivered afterwards.
+- **In order.** Several pending events are delivered as a batch, in the order they were published.
+- **Equal events.** While an event is waiting to be delivered, publishing an equal one does nothing, so a double tap does
   not show the same message twice. Once the view has handled it, an equal event is a new one and is delivered again.
   To queue an equal event while the first one is still waiting, pass `allowDuplicated = true`:
 
 ```kotlin
-postEvent(HomeEvent.FriendAdded(ana), allowDuplicated = true)
+publish(HomeEvent.FriendAdded(ana), allowDuplicated = true)
 ```
 
 - **Only while the screen is visible.** Compose screens receive events while the lifecycle is `STARTED`.
@@ -102,7 +102,7 @@ See the table in [Architecture](architecture.md#state-or-event).
 
 ## Screens with no events
 
-A screen that never posts events uses `EmaEvent.EMPTY` as its event type, and its `onEvent` does nothing:
+A screen that never publishes events uses `EmaEvent.EMPTY` as its event type, and its `onEvent` does nothing:
 
 ```kotlin
 class SettingsViewModel : EmaViewModel<SettingsState, SettingsAction, EmaEvent.EMPTY>(SettingsState()) {

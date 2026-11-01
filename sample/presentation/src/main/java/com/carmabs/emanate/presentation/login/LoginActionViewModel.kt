@@ -70,7 +70,7 @@ class LoginActionViewModel(private val loginUseCase: LoginUseCase, initialDataSt
     override fun onViewResumed() {
         super.onViewResumed()
         pendingUser?.also {
-            postEvent(LoginEvent.LastUserAdded(it))
+            publish(LoginEvent.LastUserAdded(it))
         }
         pendingUser = null
     }
@@ -86,8 +86,8 @@ class LoginActionViewModel(private val loginUseCase: LoginUseCase, initialDataSt
                 copy(isLoading = false)
             }
             userLogged.onSuccess { user ->
-                postEvent(LoginEvent.Message(user.name))
-                postEvent(LoginEvent.LoginSuccess(user))
+                publish(LoginEvent.Message(user.name))
+                publish(LoginEvent.LoginSuccess(user))
             }.onFailure {
                 showOverlap(LoginOverlap.ErrorBadCredentials)
             }

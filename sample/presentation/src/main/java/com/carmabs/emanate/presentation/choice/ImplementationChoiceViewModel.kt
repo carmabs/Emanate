@@ -13,7 +13,7 @@ class ImplementationChoiceViewModel(private val selector: ViewModelImplementatio
         sideEffects {
             add<ImplementationChoiceAction.ImplementationSelected> { action ->
                 selector.implementation = action.implementation
-                postEvent(ImplementationChoiceEvent.ImplementationChosen)
+                publish(ImplementationChoiceEvent.ImplementationChosen)
             }
         }
     }

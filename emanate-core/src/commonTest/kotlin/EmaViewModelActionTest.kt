@@ -90,14 +90,14 @@ class CounterViewModel(dispatcher: CoroutineDispatcher, private val renderOnInit
         when (action) {
             CounterAction.Increment -> {
                 updateState { copy(count = count + 1) }
-                if (state.count == LIMIT) postEvent(CounterEvent.LimitReached(LIMIT))
+                if (state.count == LIMIT) publish(CounterEvent.LimitReached(LIMIT))
             }
 
             is CounterAction.Write -> updateState { copy(text = action.text) }
         }
     }
 
-    fun message(allowDuplicated: Boolean = false) = postEvent(CounterEvent.Message, allowDuplicated)
+    fun message(allowDuplicated: Boolean = false) = publish(CounterEvent.Message, allowDuplicated)
 
     fun <T> launch(
         logName: String? = null,

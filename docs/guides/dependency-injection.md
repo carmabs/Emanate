@@ -140,7 +140,7 @@ class HomeViewModel(
         }
         sideEffects {
             +loadFriends
-            add<HomeAction.FriendClicked> { action -> postEvent(HomeEvent.FriendSelected(action.friend)) }
+            add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
         }
     }
 }

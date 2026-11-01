@@ -58,7 +58,7 @@ The flow has four steps:
 1. The user presses back (the arrow or the system back).
 2. `onBack` returns `OnBack`, so Emanate sends that action to the ViewModel.
 3. The ViewModel puts the dialog in the state and the screen draws it.
-4. If the user confirms, the ViewModel posts an event and the navigator closes the screen.
+4. If the user confirms, the ViewModel publishes an event and the navigator closes the screen.
 
 ### Step 1: the screen content
 
@@ -100,13 +100,13 @@ reducers {
 }
 sideEffects {
     // The user confirmed: the navigator closes the screen
-    add<ProfileCreationAction.DialogBackConfirm> { postEvent(ProfileCreationEvent.DialogConfirmationAccepted) }
+    add<ProfileCreationAction.DialogBackConfirm> { publish(ProfileCreationEvent.DialogConfirmationAccepted) }
 }
 ```
 
 ### Step 3: the navigator closes the screen
 
-The ViewModel cannot close a screen by itself: it posts an [event](../concepts/events.md), and the code that
+The ViewModel cannot close a screen by itself: it publishes an [event](../concepts/events.md), and the code that
 registers the screen turns it into `navigateBack()`. See [Navigation](navigation.md).
 
 ```kotlin
@@ -145,7 +145,7 @@ override fun onBack(state: ProfileOnBoardingState) = ProfileOnBoardingActions.Ba
 
 // ViewModel
 sideEffects {
-    add<ProfileOnBoardingActions.BackClicked> { postEvent(ProfileOnBoardingEvent.OnBoardingCancelled) }
+    add<ProfileOnBoardingActions.BackClicked> { publish(ProfileOnBoardingEvent.OnBoardingCancelled) }
 }
 ```
 
@@ -158,6 +158,6 @@ behavior without drawing the screen: dispatch `BackClicked` and assert the event
 | I want... | Do this |
 |-----------|---------|
 | Nothing special, the screen just closes | Don't override `onBack` (it returns `null`) |
-| The ViewModel to know that the user left | Return an action always, and post the navigation event from the ViewModel |
+| The ViewModel to know that the user left | Return an action always, and publish the navigation event from the ViewModel |
 | To ask for confirmation before leaving | Return the action only when there is something to protect, and show a dialog |
 | Back to work normally while a dialog is open | Return `null` when the state has a dialog |

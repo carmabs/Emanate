@@ -103,7 +103,7 @@ class CounterViewModel :
         }
         sideEffects {
             add<CounterAction.Increment> {
-                if (state.count == LIMIT) postEvent(CounterEvent.LimitReached(LIMIT))
+                if (state.count == LIMIT) publish(CounterEvent.LimitReached(LIMIT))
             }
         }
     }
@@ -115,7 +115,7 @@ class CounterViewModel :
 ```
 
 - The **reducer** returns the next state for each action, and the view is notified.
-- The **side effect** runs after the reducer, with the new state, and `postEvent` sends a one-shot event to the view.
+- The **side effect** runs after the reducer, with the new state, and `publish` sends a one-shot event to the view.
 - The ViewModel never touches platform classes, so it can be tested as plain Kotlin and shared between platforms.
 
 ### The screen
@@ -202,7 +202,7 @@ per interesting state (empty, loading, an error dialog...) to see every case of 
 1. The user taps the button: the screen calls `actions.dispatch(Increment)`.
 2. The reducer of the ViewModel computes the next state.
 3. The screen receives the new state and recomposes.
-4. On the tenth tap the side effect also posts `LimitReached`, which the screen shows once and consumes.
+4. On the tenth tap the side effect also publishes `LimitReached`, which the screen shows once and consumes.
 
 Continue with [Why Emanate](why-emanate.md) to see what else the same pieces can do, or with
 [Architecture](concepts/architecture.md).

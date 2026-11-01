@@ -57,7 +57,7 @@ class HomeViewModel(
                     .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
             }
             add<HomeAction.FriendClicked> { action ->
-                postEvent(HomeEvent.FriendSelected(action.friend))
+                publish(HomeEvent.FriendSelected(action.friend))
             }
         }
     }
@@ -149,7 +149,7 @@ class HomeViewModel(
     }
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
-        postEvent(HomeEvent.FriendSelected(action.friend))
+        publish(HomeEvent.FriendSelected(action.friend))
     }
 
     override fun setup() = source {
