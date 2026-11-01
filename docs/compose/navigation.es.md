@@ -120,29 +120,3 @@ createComposableScreen(
     onEvent = { navigator.handleProfileOnBoardingEvent(it) }
 )
 ```
-
-## Nodos de navegación
-
-Para flujos en los que el ViewModel guarda el *historial* de la navegación, `EmaNavigationNode<T>` lo modela como una
-lista enlazada: `next(destination, singleTop)` añade un nodo y `back()` devuelve el anterior.
-
-`EmaComposableNodeNavigator` navega a un nodo: hacia delante, llamando a `onNavigation(event)`, o hacia atrás, cuando el
-nodo ya está en el historial. Navegar dos veces al mismo nodo no hace nada.
-
-```kotlin
-class ProfileNodeNavigator(activity: Activity, navController: NavHostController) :
-    EmaComposableNodeNavigator<ProfileDestination>(activity, navController) {
-
-    override fun onNavigation(navigationEvent: ProfileDestination): Boolean {
-        navController.navigate(navigationEvent.route)
-        return true
-    }
-}
-
-val navigator = rememberEmaNodeNavigator(navController) { activity, controller ->
-    ProfileNodeNavigator(activity, controller)
-}
-navigator.navigate(state.navigationNode)
-```
-
-Es una opción avanzada; la mayoría de apps no la necesitan.

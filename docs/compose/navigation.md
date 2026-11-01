@@ -138,29 +138,3 @@ emaScreen(
     onEvent = { navigator.handleProfileOnBoardingEvent(it) }
 )
 ```
-
-## Navigation nodes
-
-For flows where the ViewModel keeps the *history* of the navigation, `EmaNavigationNode<T>` models it as a linked list:
-`next(destination, singleTop)` adds a node and `back()` returns the previous one.
-
-`EmaComposableNodeNavigator` navigates to a node: forward, calling `onNavigation(event)`, or back, when the node is already
-in the history. Navigating to the same node twice does nothing.
-
-```kotlin
-class ProfileNodeNavigator(activity: Activity, navController: NavHostController) :
-    EmaComposableNodeNavigator<ProfileDestination>(activity, navController) {
-
-    override fun onNavigation(navigationEvent: ProfileDestination): Boolean {
-        navController.navigate(navigationEvent.route)
-        return true
-    }
-}
-
-val navigator = rememberEmaNodeNavigator(navController) { activity, controller ->
-    ProfileNodeNavigator(activity, controller)
-}
-navigator.navigate(state.navigationNode)
-```
-
-It is an advanced option, most apps do not need it.
