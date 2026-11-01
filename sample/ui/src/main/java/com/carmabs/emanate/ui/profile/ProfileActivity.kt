@@ -7,8 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.carmabs.emanate.android.extension.getInitializer
-import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.compose.extension.asActionDispatcher
 import com.carmabs.emanate.compose.extension.emaScreen
@@ -46,14 +44,9 @@ class ProfileActivity : ComponentActivity() {
                     startDestination = ProfileOnBoardingScreenContent::class.routeId
                 ) {
                     emaScreen(
-                        initializerSupport = EmaInitializerSupport.kSerialization(
-                            ProfileOnBoardingInitializer.serializer(),
-                            getInitializer(
-                                BundleSerializerStrategy.kSerialization(
-                                    ProfileOnBoardingInitializer.serializer()
-                                ),
-                                savedInstanceState
-                            )
+                        // The home screen opens this activity with the initializer in its intent
+                        initializerSupport = EmaInitializerSupport.fromIntent(
+                            ProfileOnBoardingInitializer.serializer()
                         ),
                         screenContent = ProfileOnBoardingScreenContent(),
                         onEvent = {
@@ -79,7 +72,7 @@ class ProfileActivity : ComponentActivity() {
                         onEvent = {
                             navigator.handleProfileCreationEvent(it)
                         },
-                        initializerSupport = EmaInitializerSupport.kSerialization(
+                        initializerSupport = EmaInitializerSupport.fromRoute(
                             ProfileCreationInitializer.serializer()
                         ),
                         saveStateManager = EmaSaveStateManager<ProfileCreationState, ProfileCreationEvent> {

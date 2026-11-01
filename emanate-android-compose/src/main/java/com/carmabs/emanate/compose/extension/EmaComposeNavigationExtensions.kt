@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
 import com.carmabs.emanate.android.extension.findComponentActivity
-import com.carmabs.emanate.android.extension.getInitializer
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
@@ -59,7 +59,7 @@ fun NavController.navigate(
  *
  * @param viewModel creates the ViewModel of the screen, once, with the store of its backup
  * @param routeId route of the destination, unique per screen content class by default
- * @param initializerSupport how to read the initializer of the screen from its route
+ * @param initializerSupport where to read the initializer of the screen from: its route and, if it has none, the origin of the support
  * @param saveStateManager saves the state of the screen if the process dies
  * @param transitionAnimation animations of the destination
  * @param onEvent receives every event of the screen
@@ -142,9 +142,8 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaDestination(
         vm.asActionDispatcher<A>()
     }
 
-    val initializer = initializerSupport?.let {
-        it.overrideInitializer ?: backEntry.arguments?.getInitializer(it.serializerStrategy)
-    }
+    val context = LocalContext.current
+    val initializer = initializerSupport?.read(backEntry.arguments, context)
 
     LaunchedEffect(key1 = Unit) {
         saveStateManager?.onSaveStateHandling(
