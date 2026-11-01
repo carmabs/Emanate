@@ -28,6 +28,8 @@ val emanateVersion = "7.0.0"
 dependencies {
     implementation("com.github.carmabs.ema:emanate-android:$emanateVersion")
     implementation("com.github.carmabs.ema:emanate-compose:$emanateVersion")
+    // Only if your screens are in a Navigation Compose graph
+    implementation("com.github.carmabs.ema:emanate-compose-nav2:$emanateVersion")
 }
 ```
 
@@ -48,7 +50,8 @@ dependencies {
 | Artifact                | Use it for                                                                                     |
 |-------------------------|------------------------------------------------------------------------------------------------|
 | `emanate-core`          | State, actions, events, ViewModels, `EmaSource`, plugins and use cases. Pure Kotlin Multiplatform. |
-| `emanate-compose`       | Jetpack Compose screens, navigation and previews.                                              |
+| `emanate-compose`       | Jetpack Compose screens, back handling, dialogs, permissions and previews. It doesn't depend on any navigation library. |
+| `emanate-compose-nav2`  | Emanate screens in a Navigation Compose graph (`emaScreen`, `emaDialog`). See [Compose navigation](compose/navigation.md). |
 | `emanate-android`       | The integration with the Android platform: configuration, initializers, permissions and the store of the saved state. |
 | `emanate-serialization` | Saves any serializable value of the state across process death. Based on kotlinx.serialization. See the [backup plugin](guides/process-death.md). |
 | `emanate-test`          | Records and checks `EmaViewModel` and `EmaSource` in your unit tests. See [Testing](guides/testing.md). |

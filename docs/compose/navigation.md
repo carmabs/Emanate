@@ -1,5 +1,8 @@
 # Compose navigation
 
+> This page is about Navigation Compose, and it needs the `emanate-compose-nav2` artifact. The rest of the Compose
+> artifacts don't depend on any navigation library, so a different navigation can be used with `EmaScreen`.
+
 In Emanate a **ViewModel never navigates**. Navigating is the job of the navigation graph that contains the screen,
 usually the `NavHost`: it is the one that knows which screens exist and holds the `NavController` to move between them.
 
