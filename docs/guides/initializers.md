@@ -70,7 +70,7 @@ navController.navigate(
 emaScreen(
     screenContent = ProfileCreationScreenContent(),
     viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
-    initializerSupport = EmaInitializerSupport.kSerialization(ProfileCreationInitializer.serializer()),
+    initializerSupport = EmaInitializerSupport.fromRoute(ProfileCreationInitializer.serializer()),
     onEvent = { navigator.handleProfileCreationEvent(it) }
 )
 ```
