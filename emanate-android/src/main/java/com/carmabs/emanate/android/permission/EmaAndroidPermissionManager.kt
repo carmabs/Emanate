@@ -74,7 +74,7 @@ class EmaAndroidPermissionManager : EmaPermissionManager {
 
     /**
      * Creates the manager from the functions of its host: an Activity, a Fragment or a composable. The Fragment factory of
-     * emanate-android-view and the composable of emanate-android-compose use it, and it can be used for other hosts.
+     * emanate-android-view and the composable of emanate-compose-android use it, and it can be used for other hosts.
      */
     constructor(
         contextProvider: () -> Context,

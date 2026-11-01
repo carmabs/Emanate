@@ -3,8 +3,8 @@ rootProject.ext {
     emanateLibraries = [
             emanateAndroid       : ':emanate-android',
             emanateAndroidView   : ':emanate-android-view',
-            emanateAndroidCompose: ':emanate-android-compose',
-            emanateAndroidComposeNav2: ':emanate-android-compose-nav2',
+            emanateComposeAndroid: ':emanate-compose-android',
+            emanateComposeNav2Android: ':emanate-compose-nav2-android',
             emanateCore          : ':emanate-core',
             emanateTest          : ':emanate-test',
             emanateSerialization : ':emanate-serialization',

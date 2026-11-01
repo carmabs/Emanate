@@ -38,7 +38,7 @@ rootProject.name = "Emanate"
 include ':emanate-core',
         ':emanate-android',
         ':emanate-android-view',
-        ':emanate-android-compose',
-        ':emanate-android-compose-nav2',
+        ':emanate-compose-android',
+        ':emanate-compose-nav2-android',
         ':emanate-test',
         ':emanate-serialization'

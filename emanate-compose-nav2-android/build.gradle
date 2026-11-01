@@ -66,7 +66,7 @@ android {
 dependencies {
     // The navigation module is the only one that depends on Navigation Compose: who uses another navigation does
     // not get it
-    api project(path: ':emanate-android-compose')
+    api project(path: ':emanate-compose-android')
     implementation project(path: ':emanate-android')
 
     api libs.androidx.navigation.compose

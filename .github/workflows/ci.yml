@@ -38,8 +38,8 @@ jobs:
           :emanate-core:allTests
           :emanate-android:testDebugUnitTest
           :emanate-android-view:testDebugUnitTest
-          :emanate-android-compose:testDebugUnitTest
-          :emanate-android-compose-nav2:testDebugUnitTest
+          :emanate-compose-android:testDebugUnitTest
+          :emanate-compose-nav2-android:testDebugUnitTest
           :emanate-test:test
 
   sample:

@@ -110,7 +110,7 @@ EmaText.plural(R.plurals.friends, count, count)
 
 | Where            | How                             | Module                     |
 |------------------|---------------------------------|----------------------------|
-| A composable     | `text.stringResource()`         | `emanate-android-compose`  |
+| A composable     | `text.stringResource()`         | `emanate-compose-android`  |
 | With a `Context` | `text.string(context)`          | `emanate-android`          |
 
 ```kotlin

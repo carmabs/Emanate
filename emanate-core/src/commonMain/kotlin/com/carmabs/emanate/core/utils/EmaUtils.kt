@@ -5,7 +5,7 @@ package com.carmabs.emanate.core.utils
  *
  * Utility functions of Emanate, grouped by theme, so they can be found by writing `EmaUtils.`. The Android modules add
  * their own functions to the themes, under the name of the platform: for example `EmaUtils.Screen.Android` in
- * emanate-android and `EmaUtils.Screen.Compose` in emanate-android-compose.
+ * emanate-android and `EmaUtils.Screen.Compose` in emanate-compose-android.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -42,7 +42,7 @@ object EmaUtils {
 
     /**
      * Screen utilities: `EmaUtils.Screen.Android` in emanate-android and `EmaUtils.Screen.Compose` in
-     * emanate-android-compose.
+     * emanate-compose-android.
      */
     val Screen: EmaScreenUtils = EmaScreenUtils
 
@@ -57,7 +57,7 @@ object EmaUtils {
     val View: EmaViewUtils = EmaViewUtils
 
     /**
-     * Utilities of the previews: `EmaUtils.Preview.Compose` in emanate-android-compose.
+     * Utilities of the previews: `EmaUtils.Preview.Compose` in emanate-compose-android.
      */
     val Preview: EmaPreviewUtils = EmaPreviewUtils
 }
