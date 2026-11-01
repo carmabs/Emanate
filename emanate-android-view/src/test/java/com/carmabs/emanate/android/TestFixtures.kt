@@ -55,7 +55,7 @@ class ViewTestViewModel : EmaViewModelClassic<ViewState, ViewEvent>(ViewState())
 
     fun increment() = updateState { copy(count = count + 1) }
 
-    fun done() = postEvent(ViewEvent.Done)
+    fun done() = publish(ViewEvent.Done)
 }
 
 /**

@@ -135,7 +135,7 @@ private class TestViewModel(
      */
     private val loadSideEffect = sideEffectOf(TestAction.Load::class) {
         dispatch(TestAction.Update(loadUseCase()))
-        postEvent(TestEvent.Loaded)
+        publish(TestEvent.Loaded)
     }
 
     override fun setup() = source {

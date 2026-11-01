@@ -52,7 +52,7 @@ class ProfileCreationActionViewModel(initialDataState: ProfileCreationState) :
 
     private fun onActionBackConfirmed() {
         hideOverlap()
-        postEvent(ProfileCreationEvent.DialogConfirmationAccepted)
+        publish(ProfileCreationEvent.DialogConfirmationAccepted)
     }
 
     private fun onActionUserNameWritten(name: String) {
@@ -78,7 +78,7 @@ class ProfileCreationActionViewModel(initialDataState: ProfileCreationState) :
         hideOverlap()
         val user = User(state.name, state.surname, state.role)
         broadcast(ProfileCreationBroadcast.UserCreated(user), keepUntilReceived = true)
-        postEvent(ProfileCreationEvent.DialogConfirmationAccepted)
+        publish(ProfileCreationEvent.DialogConfirmationAccepted)
     }
 
     private fun onActionDialogCancelClicked() {

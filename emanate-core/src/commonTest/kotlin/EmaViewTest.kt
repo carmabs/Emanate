@@ -106,7 +106,7 @@ class EmaViewTest {
     }
 
     @Test
-    fun `events posted while unbound are delivered when the view binds`() = runTest {
+    fun `events published while unbound are delivered when the view binds`() = runTest {
         val viewModel = CounterViewModel(UnconfinedTestDispatcher(testScheduler))
         viewModel.message()
         val view = FakeView(scope(), viewModel)

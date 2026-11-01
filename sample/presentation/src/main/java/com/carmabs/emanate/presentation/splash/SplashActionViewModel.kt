@@ -12,7 +12,7 @@ class SplashActionViewModel : BaseActionViewModel<EmaState.EMPTY, EmaAction.EMPT
     override fun onStateCreated(initializer: EmaInitializer?) {
         sideEffect {
             delay(1500)
-            postEvent(SplashEvent.SplashFinished)
+            publish(SplashEvent.SplashFinished)
         }
     }
 }

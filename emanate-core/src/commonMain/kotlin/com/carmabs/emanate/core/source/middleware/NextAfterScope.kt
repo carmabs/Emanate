@@ -13,7 +13,7 @@ import kotlinx.coroutines.CancellationException
  * Created by Carlos Mateo Benito on 11/10/2026.
  *
  * Scope of the block of nextAfter. While the middleware waits, it can read the state and dispatch actions. When the
- * block finishes the chain continues, unless [stop] is called. Events are posted by side effects.
+ * block finishes the chain continues, unless [stop] is called. Events are published by side effects.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.

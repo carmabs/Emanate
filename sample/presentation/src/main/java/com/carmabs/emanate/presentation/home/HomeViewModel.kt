@@ -37,7 +37,7 @@ class HomeViewModel(private val getUserFriendsUseCase: GetUserFriendsUseCase, in
                 }
             }
             add<HomeAction.ProfileClicked> {
-                state.userData?.also { postEvent(HomeEvent.ProfileClicked(User(it.name, it.surname, it.role))) }
+                state.userData?.also { publish(HomeEvent.ProfileClicked(User(it.name, it.surname, it.role))) }
             }
             // The login screen shows the last user added
             add<ProfileCreationBroadcast.UserCreated> { action ->

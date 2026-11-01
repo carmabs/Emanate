@@ -11,7 +11,7 @@ import com.carmabs.emanate.core.state.EmaState
  * Created by Carlos Mateo Benito on 11/10/2026.
  *
  * Scope of a side effect. It runs after the reducers of the action, so it can read the new state, dispatch actions,
- * broadcast them and post events, but it can't decide the path of the action.
+ * broadcast them and publish events, but it can't decide the path of the action.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -47,11 +47,11 @@ class SideEffectScope<out S : EmaState, in A : EmaAction, in E : EmaEvent> inter
     }
 
     /**
-     * Posts an event for the view. It arrives after the actions dispatched before it, so the view sees their state.
+     * Publishes an event for the view. It arrives after the actions dispatched before it, so the view sees their state.
      * @param allowDuplicated If true, allows the same event to be dispatched multiple times before being consumed.
      */
-    fun postEvent(event: E, allowDuplicated: Boolean = false) {
+    fun publish(event: E, allowDuplicated: Boolean = false) {
         recorder?.event(event)
-        source.postEvent(event, allowDuplicated)
+        source.publish(event, allowDuplicated)
     }
 }

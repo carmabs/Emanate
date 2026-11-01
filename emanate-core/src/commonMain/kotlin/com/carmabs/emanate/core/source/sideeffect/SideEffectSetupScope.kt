@@ -82,7 +82,7 @@ class SideEffectSetupScope<S : EmaState, A : EmaAction, E : EmaEvent> internal c
     /**
      * Adds work that runs when the source is closed, for example to send a result to the previous screen. Close doesn't
      * cancel it, so it can finish, up to the closeTimeout of the configuration. It can read the state and broadcast
-     * actions, while the actions it dispatches and the events it posts are ignored, as the source is closed.
+     * actions, while the actions it dispatches and the events it publishes are ignored, as the source is closed.
      */
     fun onClose(effect: suspend SideEffectScope<S, A, E>.() -> Unit) {
         guard.checkNotBuilt()

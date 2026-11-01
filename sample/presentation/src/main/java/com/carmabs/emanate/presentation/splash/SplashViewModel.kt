@@ -13,7 +13,7 @@ class SplashViewModel : BaseViewModel<EmaState.EMPTY, EmaAction.EMPTY, SplashEve
             // The view is created
             add<EmaInitializer> {
                 delay(1500)
-                postEvent(SplashEvent.SplashFinished)
+                publish(SplashEvent.SplashFinished)
             }
         }
     }

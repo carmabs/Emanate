@@ -58,12 +58,12 @@ class LoginViewModel(private val loginUseCase: LoginUseCase, initialDataState: L
             }
 
             add<LoginRequest.Succeeded> { action ->
-                postEvent(LoginEvent.Message(action.user.name))
-                postEvent(LoginEvent.LoginSuccess(action.user))
+                publish(LoginEvent.Message(action.user.name))
+                publish(LoginEvent.LoginSuccess(action.user))
             }
 
             add<HomeBroadcast.UserAdded> { action ->
-                postEvent(LoginEvent.LastUserAdded(action.user))
+                publish(LoginEvent.LastUserAdded(action.user))
             }
         }
 

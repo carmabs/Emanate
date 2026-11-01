@@ -72,7 +72,7 @@ class CounterViewModel : EmaViewModelAction<CounterState, CounterAction, Counter
         when (action) {
             CounterAction.Increment -> updateState { copy(count = count + 1) }
             CounterAction.Back -> hooks += "back"
-            CounterAction.Notify -> postEvent(CounterEvent.Notified)
+            CounterAction.Notify -> publish(CounterEvent.Notified)
         }
     }
 }
