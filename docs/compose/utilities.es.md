@@ -1,6 +1,6 @@
 # Utilidades de Compose
 
-Las ayudas de `emanate-compose` están en `com.carmabs.emanate.compose.extension`.
+Las ayudas de `emanate-compose-android` están en `com.carmabs.emanate.compose.extension`.
 
 ## Textos y recursos
 

@@ -56,7 +56,7 @@ dependencies {
     implementation project(path: ':presentation')
     implementation project(path: ':android-utils')
     implementation project(rootProject.emanateLibraries.emanateComposeAndroid)
-    implementation project(rootProject.emanateLibraries.emanateComposeNav2Android)
+    implementation project(rootProject.emanateLibraries.emanateComposeAndroidNav2)
     implementation project(rootProject.emanateLibraries.emanateAndroid)
     implementation project(rootProject.emanateLibraries.emanateAndroidView)
     implementation libs.koin.android

@@ -7,7 +7,7 @@ Nada de esto lo exige Emanate, pero así está organizada la app `sample` y func
 | Módulo          | Contiene                                                                             | Tipo             | Depende de                                                                 |
 |-----------------|--------------------------------------------------------------------------------------|------------------|----------------------------------------------------------------------------|
 | `app`           | La `Application`, la configuración de la inyección de dependencias y el manifest.    | App Android      | Todo                                                                       |
-| `ui`            | Composables, fragments, activities, navigators, adapters, diálogos, tema y recursos. | Librería Android | `presentation`, `android-utils`, `emanate-compose`, `emanate-android-view` |
+| `ui`            | Composables, fragments, activities, navigators, adapters, diálogos, tema y recursos. | Librería Android | `presentation`, `android-utils`, `emanate-compose-android`, `emanate-android-view` |
 | `presentation`  | Estado, acciones, eventos, inicializadores y ViewModels.                             | **Kotlin puro**  | `domain`                                                                   |
 | `domain`        | Modelos, casos de uso e interfaces de los repositorios.                              | **Kotlin puro**  | `emanate-core`                                                             |
 | `data`          | Implementaciones de los repositorios, red y almacenamiento.                          | Librería Android | `domain`, `android-utils`                                                  |

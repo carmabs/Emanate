@@ -7,7 +7,7 @@ None of this is required by Emanate, but it is how the `sample` app is organised
 | Module          | Contains                                                                                | Type            | Depends on                                                                 |
 |-----------------|-----------------------------------------------------------------------------------------|-----------------|----------------------------------------------------------------------------|
 | `app`           | The `Application`, the dependency injection setup and the manifest.                     | Android app     | Everything                                                                 |
-| `ui`            | Screen contents, navigators, dialogs, theme and resources.                              | Android library | `presentation`, `android-utils`, `emanate-compose`                         |
+| `ui`            | Screen contents, navigators, dialogs, theme and resources.                              | Android library | `presentation`, `android-utils`, `emanate-compose-android`                         |
 | `presentation`  | State, actions, events, initializers and ViewModels.                                    | **Pure Kotlin** | `domain`                                                                   |
 | `domain`        | Models, use cases and repository interfaces.                                            | **Pure Kotlin** | `emanate-core`                                                             |
 | `data`          | Repository implementations, network and storage.                                        | Android library | `domain`, `android-utils`                                                  |

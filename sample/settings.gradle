@@ -40,8 +40,8 @@ project(':emanate-android-view').projectDir = new File("../emanate-android-view"
 include(':emanate-compose-android')
 project(':emanate-compose-android').projectDir = new File("../emanate-compose-android")
 
-include(':emanate-compose-nav2-android')
-project(':emanate-compose-nav2-android').projectDir = new File("../emanate-compose-nav2-android")
+include(':emanate-compose-android-nav2')
+project(':emanate-compose-android-nav2').projectDir = new File("../emanate-compose-android-nav2")
 
 include(':emanate-test')
 project(':emanate-test').projectDir = new File("../emanate-test")

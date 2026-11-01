@@ -28,7 +28,7 @@ val emanateVersion = "7.0.0"
 dependencies {
     // Compose (recomendado)
     implementation("com.github.carmabs.ema:emanate-android:$emanateVersion")
-    implementation("com.github.carmabs.ema:emanate-compose:$emanateVersion")
+    implementation("com.github.carmabs.ema:emanate-compose-android:$emanateVersion")
 
     // Vistas de Android: Fragments y Activities
     implementation("com.github.carmabs.ema:emanate-android-view:$emanateVersion")

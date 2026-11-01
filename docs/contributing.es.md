@@ -6,7 +6,7 @@
 |---------------------------|-------------------------------------------------------------------------------------------------------------|
 | `emanate-core`            | Kotlin Multiplatform. Todo el código está en `commonMain`.                                                  |
 | `emanate-android`         | Librería Android compartida por las dos tecnologías de UI.                                                  |
-| `emanate-compose-android` | Soporte de Compose, publicado como `emanate-compose`.                                                       |
+| `emanate-compose-android` | Soporte de Compose.                                                                                         |
 | `emanate-android-view`    | Soporte del sistema de vistas de Android.                                                                   |
 | `emanate-test`            | Utilidades JVM para testear los ViewModels y las sources, friend module de `emanate-core`.                  |
 | `sample`                  | Un build de Gradle independiente con la app de ejemplo. Incluye los módulos de la librería del repositorio. |
