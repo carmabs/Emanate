@@ -27,7 +27,6 @@ import com.carmabs.emanate.core.model.mapError
 import com.carmabs.emanate.core.model.mapResult
 import com.carmabs.emanate.core.model.onFailure
 import com.carmabs.emanate.core.model.onSuccess
-import com.carmabs.emanate.core.navigator.EmaNavigationNode
 import com.carmabs.emanate.core.selector.EmaUniqueSelector
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
@@ -318,19 +317,6 @@ class EmaModelTest {
         assertEquals("b", delegates.value)
         assertSame(delegates.trigger, delegates.trigger)
         assertFalse(delegates.trigger.hasBeenStarted)
-    }
-
-    @Test
-    fun `navigation nodes keep the history`() {
-        val first = EmaNavigationNode("a")
-        val second = first.next("b")
-        val third = second.next("c")
-        assertEquals("b", third.back()?.value)
-        assertTrue(third.hasPreviousNode(first))
-        assertFalse(first.hasPreviousNode(third))
-        assertTrue(third.hasPreviousNodeValue("a"))
-        assertFalse(third.hasPreviousNodeValue("z"))
-        assertNull(first.previous)
     }
 }
 

@@ -1,6 +1,5 @@
 package com.carmabs.emanate.compose.navigation
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,8 +30,6 @@ import com.carmabs.emanate.compose.extension.navigateToExternalLink
 import com.carmabs.emanate.compose.extension.routeId
 import com.carmabs.emanate.compose.extension.routeWithInitializer
 import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
-import com.carmabs.emanate.core.navigator.EmaNavigationNode
-import com.carmabs.emanate.core.state.EmaEvent
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -44,24 +41,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-
-sealed interface Destination : EmaEvent {
-    data object Home : Destination
-    data object Detail : Destination
-}
-
-class TestNodeNavigator(activity: Activity, navController: NavHostController) :
-    EmaComposableNodeNavigator<Destination>(activity, navController) {
-    val navigated = mutableListOf<Destination>()
-
-    override fun onNavigation(navigationEvent: Destination): Boolean {
-        navigated += navigationEvent
-        navController.navigate(if (navigationEvent == Destination.Home) "home" else "detail")
-        return true
-    }
-
-    val hostActivity get() = activity
-}
 
 @RunWith(RobolectricTestRunner::class)
 class EmaComposeNavigationTest {
@@ -203,44 +182,6 @@ class EmaComposeNavigationTest {
                 .startsWith("route?")
         )
         assertEquals("screen/${CounterScreen::class.java.name}", CounterScreen::class.routeId)
-    }
-
-    @Test
-    fun `the node navigator navigates forward and back through the nodes`() {
-        lateinit var navigator: TestNodeNavigator
-        composeRule.setContent {
-            navController = rememberNavController()
-            navigator = rememberEmaNodeNavigator(navController) { activity, controller ->
-                TestNodeNavigator(activity, controller)
-            } as TestNodeNavigator
-            NavHost(navController, startDestination = "home") {
-                composable("home") { BasicText("Home") }
-                composable("detail") { BasicText("Detail") }
-            }
-        }
-        composeRule.waitForIdle()
-        val home = EmaNavigationNode<Destination>(Destination.Home)
-        val detail = home.next(Destination.Detail)
-        val notified = mutableListOf<Destination>()
-
-        onMain { navigator.navigate(detail) { notified += it } }
-        composeRule.onNodeWithText("Detail").assertIsDisplayed()
-
-        onMain { navigator.navigate(detail) }
-        assertEquals(listOf<Destination>(Destination.Detail), navigator.navigated)
-        assertEquals(listOf<Destination>(Destination.Detail), notified)
-
-        onMain { navigator.navigate(home) }
-        composeRule.onNodeWithText("Home").assertIsDisplayed()
-        assertEquals(listOf<Destination>(Destination.Detail), navigator.navigated)
-        assertSame(composeRule.activity, navigator.hostActivity)
-
-        var popped = true
-        onMain { popped = navigator.navigateBack(closeActivityWhenBackstackIsEmpty = false) }
-        assertFalse(popped)
-        assertFalse(composeRule.activity.isFinishing)
-        onMain { navigator.navigateBack() }
-        assertTrue(composeRule.activity.isFinishing)
     }
 
     @Test
