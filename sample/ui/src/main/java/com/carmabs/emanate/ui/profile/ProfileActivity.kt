@@ -9,9 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.compose.extension.asActionDispatcher
-import com.carmabs.emanate.compose.extension.emaScreen
-import com.carmabs.emanate.compose.extension.routeId
-import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
+import com.carmabs.emanate.compose.nav2.emaScreen
+import com.carmabs.emanate.compose.nav2.routeId
+import com.carmabs.emanate.compose.nav2.EmaInitializerSupport
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationAction
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationActionViewModel
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationEvent

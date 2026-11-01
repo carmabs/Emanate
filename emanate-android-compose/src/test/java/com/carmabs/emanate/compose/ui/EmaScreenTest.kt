@@ -14,7 +14,6 @@ import androidx.lifecycle.SavedStateHandle
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.android.savestate.SavedStateSupport
 import com.carmabs.emanate.compose.ActionsScreen
-import com.carmabs.emanate.compose.ClassicViewModel
 import com.carmabs.emanate.compose.CounterEvent
 import com.carmabs.emanate.compose.CounterScreen
 import com.carmabs.emanate.compose.CounterState
@@ -143,21 +142,6 @@ class EmaScreenTest {
     }
 
     @Test
-    fun `a ViewModel instance can be rendered with its own action dispatcher`() {
-        val viewModel = CounterViewModel()
-        composeRule.setContent {
-            EmaScreen(vm = viewModel, actions = viewModel, screenContent = SilentScreen(), onEvent = {})
-        }
-
-        composeRule.onNodeWithText("Silent 0").performClick()
-        composeRule.waitForIdle()
-
-        assertEquals(listOf("created", "started", "resumed"), viewModel.hooks)
-        pressBack()
-        assertTrue(composeRule.activity.isFinishing)
-    }
-
-    @Test
     fun `the save state manager is set up once`() {
         var setups = 0
         val support = SavedStateSupport(
@@ -195,19 +179,12 @@ class EmaScreenTest {
                     previewRenderState = CounterState(5)
                 )
                 EmaScreen(
-                    vm = ClassicViewModel(),
-                    actions = CounterViewModel(),
+                    vm = { error("The ViewModel is not created in previews") },
                     screenContent = SilentScreen(),
-                    onEvent = {},
+                    onEvent = { _: CounterEvent -> },
                     previewRenderState = CounterState(7)
                 )
                 EmaScreen(vm = { CounterViewModel() }, screenContent = SilentScreen(), onEvent = {})
-                EmaScreen(
-                    vm = ClassicViewModel(),
-                    actions = CounterViewModel(),
-                    screenContent = SilentScreen(),
-                    onEvent = {}
-                )
             }
         }
 

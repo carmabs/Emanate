@@ -1,4 +1,4 @@
-package com.carmabs.emanate.compose.navigation
+package com.carmabs.emanate.compose.nav2
 
 import android.os.Bundle
 import androidx.navigation.NavType

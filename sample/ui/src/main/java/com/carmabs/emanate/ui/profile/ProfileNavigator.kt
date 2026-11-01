@@ -4,9 +4,9 @@ import androidx.navigation.NavController
 import com.carmabs.domain.model.Role
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
-import com.carmabs.emanate.compose.extension.navigate
-import com.carmabs.emanate.compose.extension.navigateBack
-import com.carmabs.emanate.compose.extension.routeId
+import com.carmabs.emanate.compose.nav2.navigate
+import com.carmabs.emanate.compose.nav2.navigateBack
+import com.carmabs.emanate.compose.nav2.routeId
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationEvent
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationInitializer
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingEvent

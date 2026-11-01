@@ -1,14 +1,11 @@
-package com.carmabs.emanate.compose.extension
+package com.carmabs.emanate.compose.nav2
 
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.net.toUri
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -22,10 +19,7 @@ import com.carmabs.emanate.android.extension.findComponentActivity
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
-import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
-import com.carmabs.emanate.compose.navigation.EmaAnimTransition
-import com.carmabs.emanate.compose.navigation.EmaInitializerNavType
-import com.carmabs.emanate.compose.provider.EmaScreenProvider
+import com.carmabs.emanate.android.savestate.SavedStateSupport
 import com.carmabs.emanate.compose.ui.EmaScreen
 import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.core.action.EmaAction
@@ -34,6 +28,13 @@ import com.carmabs.emanate.core.savestate.EmaStateStore
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.viewmodel.EmaViewModelContract
+import kotlin.reflect.KClass
+
+/**
+ * Route of the destination of a screen: unique per screen content class.
+ */
+val <T : EmaScreenContent<*, *>> KClass<T>.routeId: String
+    get() = "screen/${this.java.name}"
 
 fun NavController.navigate(
     route: String,
@@ -127,38 +128,21 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaDestination(
     saveStateManager: EmaSaveStateManager<S, E>?,
     onEvent: (E) -> Unit
 ) {
-    // We use savedStateHandle of backEntry due to SavedStateHandled of viewmodel is attached to
-    // navController and is restarted on kill process.
-    // With backEntry.savedStateHandle data is rightly persisted
-    val androidVm = EmaScreenProvider.provideComposableViewModel(
-        key = EmaScreenProvider.viewModelKey(screenContent),
-        viewModel = viewModel,
-        backEntry.savedStateHandle
-    )
-
-    val vm = androidVm.emaViewModel
-
-    val vmActions = remember {
-        vm.asActionDispatcher<A>()
-    }
-
     val context = LocalContext.current
     val initializer = initializerSupport?.read(backEntry.arguments, context)
 
-    LaunchedEffect(key1 = Unit) {
-        saveStateManager?.onSaveStateHandling(
-            androidVm.viewModelScope,
-            androidVm.savedStateHandle,
-            androidVm.emaViewModel
-        )
-    }
-
     EmaScreen(
         initializer = initializer,
-        vm = vm,
-        actions = vmActions,
+        vm = viewModel,
         screenContent = screenContent,
-        onEvent = onEvent
+        onEvent = onEvent,
+        // We use the savedStateHandle of the backEntry because the one of the ViewModel is attached to the
+        // navController and is restarted when the process is killed. With the one of the backEntry the data is
+        // persisted correctly
+        saveStateSupport = SavedStateSupport(
+            backEntry.savedStateHandle,
+            saveStateManager ?: EmaSaveStateManager { _, _, _ -> }
+        )
     )
 }
 

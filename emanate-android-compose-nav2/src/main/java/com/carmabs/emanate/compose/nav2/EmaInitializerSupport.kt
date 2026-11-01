@@ -1,4 +1,4 @@
-package com.carmabs.emanate.compose.initializer
+package com.carmabs.emanate.compose.nav2
 
 import android.content.Context
 import android.os.Bundle
