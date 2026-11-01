@@ -20,16 +20,16 @@
 
 ### The targets of `emanate-core`
 
-`emanate-core` compiles every multiplatform target by default, which is needed to publish it but slow for daily work.
+`emanate-core` compiles its two kinds of targets, JVM (used by Android) and iOS, by default, which is needed to publish it but slow for daily work.
 Choose the targets with the `emanate.targets` property, in your `local.properties` (not versioned) or with
 `-Pemanate.targets=...`:
 
 ```properties
 # local.properties
-emanate.targets=jvm,js
+emanate.targets=jvm
 ```
 
-The valid values are `all`, `jvm`, `js`, `wasm`, `apple`, `linux`, `windows` and `androidNative`, separated by commas.
+The valid values are `all`, `jvm` and `ios` (`iosArm64` and `iosSimulatorArm64`), separated by commas.
 The JVM target is always compiled, because the Android modules use it.
 
 ## Tests

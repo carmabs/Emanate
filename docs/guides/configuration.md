@@ -27,7 +27,7 @@ Each property configures one thing. The ones that hold an object with several pa
 
 | Property             | Default `EmaConfiguration()`   | Parameters | What it configures |
 |----------------------|--------------------------------|------------|--------------------|
-| `dispatchers` | `EmaDispatchers()` | **`main`**: where ViewModels and `EmaSource` run, and so their reducers and side effects. Default `Dispatchers.Main`.<br>**`io`**: where [use cases](../utils/use-cases.md) run, for network, disk and blocking work. Default `Dispatchers.IO` (`Dispatchers.Default` on JS and Wasm).<br>**`default`**: CPU-intensive work, like processing images. Default `Dispatchers.Default`. | The coroutine dispatchers. See [Dispatchers](#dispatchers). |
+| `dispatchers` | `EmaDispatchers()` | **`main`**: where ViewModels and `EmaSource` run, and so their reducers and side effects. Default `Dispatchers.Main`.<br>**`io`**: where [use cases](../utils/use-cases.md) run, for network, disk and blocking work. Default `Dispatchers.IO`.<br>**`default`**: CPU-intensive work, like processing images. Default `Dispatchers.Default`. | The coroutine dispatchers. See [Dispatchers](#dispatchers). |
 | `errorPolicy` | `EmaErrorPolicy.Catch()` | **`Catch(onError)`**: the exception is caught and the screen keeps working. `onError` is optional and receives each `EmaError`, to send it to a crash reporter.<br>**`Throw`**: the exception is thrown again and the app fails at once. | What happens when a middleware, reducer or side effect throws an exception. See [Errors](#errors). |
 | `logger` | `EmaLogger.Println` | **`log(tag, message)`**: writes one line. The tag is the name of the ViewModel.<br>**`prefix`**: text added before every tag, to filter the logs of Emanate, like `EMA_HomeViewModel`. Set it with `EmaLogger(prefix) { tag, message -> ... }`. | Where the logs go. `null` disables them. See [Logs](#logs). |
 | `printer` | `EmaDataClassPrinter.ToString` | **`print(value)`**: returns the text of the state or the action. By default its `toString()`.<br>**`indent`** and **`wrappedLineWidth`**: only in `EmaAndroidDataClassPrinter`. The spaces of each nesting level (2) and the length from which a long `String` is split into lines (80). | How the states and actions are turned into text in the logs. See [Printing the state](#printing-the-state). |
@@ -79,7 +79,7 @@ Emanate.init(
 | Dispatcher | Default                                                   | Where it is applied |
 |------------|-----------------------------------------------------------|---------------------|
 | `main`     | `Dispatchers.Main`                                        | The scope of every `EmaViewModel` and `EmaSource`. Everything the ViewModel does runs there: its middlewares, its reducers, its side effects and the dispatch of its actions. |
-| `io`       | `Dispatchers.IO`, or `Dispatchers.Default` on JS and Wasm | The [use cases](../utils/use-cases.md): `EmaUseCase` and `EmaFlowUseCase` switch to it to run, so the side effect that calls them doesn't block `main`. |
+| `io`       | `Dispatchers.IO` | The [use cases](../utils/use-cases.md): `EmaUseCase` and `EmaFlowUseCase` switch to it to run, so the side effect that calls them doesn't block `main`. |
 | `default`  | `Dispatchers.Default`                                     | The CPU-intensive work of `emanate-android`: the extensions that create bitmaps from a `ByteArray` or a drawable resource (`toBitmap`, `getBitmapFromResource`, `getBitmapCropFromResource`), and the coroutines of `EmaJobService`. |
 
 **`main`** is the one you will change most. A side effect runs on `main`, so it can read the state and dispatch actions
@@ -97,8 +97,7 @@ sideEffects {
 }
 ```
 
-Platforms without a main thread (Linux, Windows, Android Native) have no `Dispatchers.Main`, so configure another one
-as `main`. In the tests, replace it with the dispatcher of the test, see [Testing](testing.md).
+In the tests, replace `main` with the dispatcher of the test, see [Testing](testing.md).
 
 **`io`** is read by the use case when it is created, from `Emanate.configuration`, not from the configuration of the
 ViewModel that calls it. To use another one, for example the `io` of a [library](#libraries-and-sdks), pass it to the
