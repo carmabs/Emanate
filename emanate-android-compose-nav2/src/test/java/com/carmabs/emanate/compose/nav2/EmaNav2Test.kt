@@ -1,4 +1,4 @@
-package com.carmabs.emanate.compose.navigation
+package com.carmabs.emanate.compose.nav2
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,21 +15,6 @@ import androidx.navigation.compose.rememberNavController
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
-import com.carmabs.emanate.compose.CounterEvent
-import com.carmabs.emanate.compose.CounterScreen
-import com.carmabs.emanate.compose.CounterState
-import com.carmabs.emanate.compose.CounterViewModel
-import com.carmabs.emanate.compose.RouteInitializer
-import com.carmabs.emanate.compose.RouteInitializerSerializer
-import com.carmabs.emanate.compose.SilentScreen
-import com.carmabs.emanate.compose.extension.emaDialog
-import com.carmabs.emanate.compose.extension.emaScreen
-import com.carmabs.emanate.compose.extension.navigate
-import com.carmabs.emanate.compose.extension.navigateBack
-import com.carmabs.emanate.compose.extension.navigateToExternalLink
-import com.carmabs.emanate.compose.extension.routeId
-import com.carmabs.emanate.compose.extension.routeWithInitializer
-import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -43,7 +28,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
-class EmaComposeNavigationTest {
+class EmaNav2Test {
 
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
@@ -150,9 +135,11 @@ class EmaComposeNavigationTest {
 
     @Test
     fun `the first screen of an activity reads the initializer of its intent`() {
-        composeRule.activity.intent.putExtras(Bundle().also {
-            strategy.save(RouteInitializer("intent"), it)
-        })
+        composeRule.activity.intent.putExtras(
+            Bundle().also {
+                strategy.save(RouteInitializer("intent"), it)
+            }
+        )
 
         setNavHost(
             initializerSupport = EmaInitializerSupport.fromIntent(RouteInitializerSerializer),

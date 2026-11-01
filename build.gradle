@@ -18,6 +18,7 @@ dependencies {
     kover project(':emanate-android')
     kover project(':emanate-android-view')
     kover project(':emanate-android-compose')
+    kover project(':emanate-android-compose-nav2')
     kover project(':emanate-test')
     kover project(':emanate-serialization')
 }

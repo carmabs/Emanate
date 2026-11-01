@@ -1,4 +1,4 @@
-package com.carmabs.emanate.compose.navigation
+package com.carmabs.emanate.compose.nav2
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition

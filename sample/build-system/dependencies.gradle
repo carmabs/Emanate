@@ -4,6 +4,7 @@ rootProject.ext {
             emanateAndroid       : ':emanate-android',
             emanateAndroidView   : ':emanate-android-view',
             emanateAndroidCompose: ':emanate-android-compose',
+            emanateAndroidComposeNav2: ':emanate-android-compose-nav2',
             emanateCore          : ':emanate-core',
             emanateTest          : ':emanate-test',
             emanateSerialization : ':emanate-serialization',

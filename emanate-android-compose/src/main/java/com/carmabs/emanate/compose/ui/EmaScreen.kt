@@ -27,39 +27,6 @@ import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.utils.EmaUtils
 import com.carmabs.emanate.core.viewmodel.EmaViewModelContract
 
-/**
- * Draws a view model created and kept by its caller, which also closes it. Used by the destinations of the navigation
- * graph, whose view model is kept by their back stack entry.
- */
-@Composable
-internal fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaScreen(
-    initializer: EmaInitializer? = null,
-    vm: EmaViewModelContract<S, E>,
-    actions: EmaActionDispatcher<A>,
-    screenContent: EmaScreenContent<S, A>,
-    onEvent: (E) -> Unit,
-    previewRenderState: S? = null
-) {
-    EmaUtils.Preview.Compose.skipForPreview(
-        previewComposable = {
-            previewRenderState?.also { previewState ->
-                screenContent.onState(
-                    state = previewState,
-                    actions = EmaActionDispatcher.EMPTY
-                )
-            }
-        }
-    ) {
-        RenderScreen(
-            initializer,
-            screenContent,
-            vm,
-            actions,
-            onEvent
-        )
-    }
-}
-
 @Composable
 fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaScreen(
     initializer: EmaInitializer? = null,
