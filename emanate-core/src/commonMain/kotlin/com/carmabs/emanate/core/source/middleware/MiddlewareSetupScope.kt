@@ -9,8 +9,8 @@ import kotlin.reflect.KClass
 /**
  * Created by Carlos Mateo Benito on 12/10/2026.
  *
- * Block of setup that adds the middlewares of the source: with [add], or with `+` for the ones already created. They
- * handle the actions in the order they are added, before the reducers.
+ * Block of setup that adds the middlewares of the source with [add]: the ones already created, alone or joined with `+`,
+ * or a new one for the actions of a type. They handle the actions in the order they are added, before the reducers.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -25,15 +25,24 @@ class MiddlewareSetupScope<S : EmaState, A : EmaAction> internal constructor(pri
         private set
 
     /**
-     * Adds a middleware already created.
+     * Joins two middlewares already created to add them together with [add].
      */
-    operator fun EmaMiddleware<S, A, *>.unaryPlus() {
-        include(this)
+    operator fun EmaMiddleware<S, A, *>.plus(other: EmaMiddleware<S, A, *>): List<EmaMiddleware<S, A, *>> =
+        listOf(this, other)
+
+    /**
+     * Adds middlewares already created, in the order they are given.
+     */
+    fun add(vararg middlewares: EmaMiddleware<S, A, *>) {
+        add(middlewares.asList())
     }
 
-    private fun include(middleware: EmaMiddleware<S, A, *>) {
+    /**
+     * Adds middlewares already created, in the order of the collection.
+     */
+    fun add(middlewares: Iterable<EmaMiddleware<S, A, *>>) {
         guard.checkNotBuilt()
-        middlewareList = middlewareList + middleware
+        middlewareList = middlewareList + middlewares
     }
 
     /**
@@ -41,7 +50,7 @@ class MiddlewareSetupScope<S : EmaState, A : EmaAction> internal constructor(pri
      */
     @PublishedApi
     internal fun <F : EmaAction> add(filter: KClass<F>, middlewareAction: MiddlewareScope<S, A>.(F) -> Unit) {
-        include(middlewareOf(filter, middlewareAction))
+        add(middlewareOf(filter, middlewareAction))
     }
 
     /**

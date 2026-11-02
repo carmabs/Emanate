@@ -148,7 +148,7 @@ private class TestViewModel(
                 received += "initializer $action"
                 next()
             }
-            +middlewareDelayOf(TestAction.Slow::class, 1.seconds)
+            add(middlewareDelayOf(TestAction.Slow::class, 1.seconds))
         }
         reducers {
             add<TestAction.Increment> { state.copy(count = state.count + 1) }
