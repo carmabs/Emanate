@@ -9,7 +9,7 @@ package com.carmabs.emanate.core.utils
 
 /**
  * Screen utilities. Use them through `EmaUtils.Screen.Android`, from emanate-android, and `EmaUtils.Screen.Compose`,
- * from emanate-android-compose.
+ * from emanate-compose-android.
  */
 object EmaScreenUtils
 
@@ -24,6 +24,6 @@ object EmaColorUtils
 object EmaViewUtils
 
 /**
- * Utilities of the previews. Use them through `EmaUtils.Preview.Compose`, from emanate-android-compose.
+ * Utilities of the previews. Use them through `EmaUtils.Preview.Compose`, from emanate-compose-android.
  */
 object EmaPreviewUtils

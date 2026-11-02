@@ -37,8 +37,11 @@ project(':emanate-android').projectDir = new File("../emanate-android")
 include(':emanate-android-view')
 project(':emanate-android-view').projectDir = new File("../emanate-android-view")
 
-include(':emanate-android-compose')
-project(':emanate-android-compose').projectDir = new File("../emanate-android-compose")
+include(':emanate-compose-android')
+project(':emanate-compose-android').projectDir = new File("../emanate-compose-android")
+
+include(':emanate-compose-android-nav2')
+project(':emanate-compose-android-nav2').projectDir = new File("../emanate-compose-android-nav2")
 
 include(':emanate-test')
 project(':emanate-test').projectDir = new File("../emanate-test")

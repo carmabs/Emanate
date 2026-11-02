@@ -10,7 +10,8 @@ rootProject.ext {
             groupId                : 'com.github.carmabs',
             artifactCoreId         : 'emanate-core',
             artifactAndroidId      : 'emanate-android',
-            artifactComposeId      : 'emanate-compose',
+            artifactComposeId      : 'emanate-compose-android',
+            artifactComposeNav2Id  : 'emanate-compose-android-nav2',
             artifactAndroidViewId  : 'emanate-android-view',
             artifactTestId         : 'emanate-test',
             javaVersion            : JavaVersion.VERSION_21,
@@ -19,6 +20,7 @@ rootProject.ext {
             resourceExclusions     : ['META-INF/kotlinx-io.kotlin_module', 'META-INF/emanate-android_debug.kotlin_module'],
             namespaceAndroid       : 'com.carmabs.emanate.android',
             namespaceCompose       : 'com.carmabs.emanate.compose',
+            namespaceComposeNav2   : 'com.carmabs.emanate.compose.nav2',
             namespaceAndroidView   : 'com.carmabs.emanate.android.view'
     ]
 }
