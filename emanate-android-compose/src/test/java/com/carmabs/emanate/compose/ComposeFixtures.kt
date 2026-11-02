@@ -1,14 +1,14 @@
 package com.carmabs.emanate.compose
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
-import com.carmabs.emanate.compose.ui.EmaComposableScreenContent
+import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.core.action.EmaAction
+import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.initializer.EmaInitializer
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
@@ -84,22 +84,12 @@ class ClassicViewModel : EmaViewModelClassic<CounterState, CounterEvent>(Counter
     override fun onStateCreated(initializer: EmaInitializer?) = Unit
 }
 
-class CounterScreen(private val backEnabled: Boolean = true) :
-    EmaComposableScreenContent<CounterState, CounterAction, CounterEvent> {
-    val events = mutableListOf<CounterEvent>()
-
-    override suspend fun onEvent(
-        context: Context,
-        event: CounterEvent,
-        actions: EmaImmutableActionDispatcher<CounterAction>
-    ) {
-        events += event
-    }
+class CounterScreen(private val backEnabled: Boolean = true) : EmaScreenContent<CounterState, CounterAction> {
 
     override fun onBack(state: CounterState) = if (backEnabled) CounterAction.Back else null
 
     @Composable
-    override fun onState(state: CounterState, actions: EmaImmutableActionDispatcher<CounterAction>) {
+    override fun onState(state: CounterState, actions: EmaActionDispatcher<CounterAction>) {
         Column {
             BasicText("Count ${state.count}")
             BasicText("Increment", Modifier.clickable { actions.dispatch(CounterAction.Increment) })
@@ -109,11 +99,32 @@ class CounterScreen(private val backEnabled: Boolean = true) :
 }
 
 /**
- * Screen that keeps the default event and back handling.
+ * Screen that keeps the default back handling.
  */
-class SilentScreen : EmaComposableScreenContent<CounterState, CounterAction, CounterEvent> {
+class SilentScreen : EmaScreenContent<CounterState, CounterAction> {
     @Composable
-    override fun onState(state: CounterState, actions: EmaImmutableActionDispatcher<CounterAction>) {
+    override fun onState(state: CounterState, actions: EmaActionDispatcher<CounterAction>) {
         BasicText("Silent ${state.count}", Modifier.clickable { actions.dispatch(CounterAction.Notify) })
     }
+}
+
+/**
+ * Screen whose button only receives the actions, to count how many times the button is composed.
+ */
+class ActionsScreen : EmaScreenContent<CounterState, CounterAction> {
+    var buttonCompositions = 0
+
+    @Composable
+    override fun onState(state: CounterState, actions: EmaActionDispatcher<CounterAction>) {
+        Column {
+            BasicText("Count ${state.count}")
+            IncrementButton(actions) { buttonCompositions++ }
+        }
+    }
+}
+
+@Composable
+private fun IncrementButton(actions: EmaActionDispatcher<CounterAction>, onComposed: () -> Unit) {
+    SideEffect { onComposed() }
+    BasicText("Increment", Modifier.clickable { actions.dispatch(CounterAction.Increment) })
 }

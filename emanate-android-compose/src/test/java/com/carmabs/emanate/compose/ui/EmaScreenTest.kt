@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.android.savestate.SavedStateSupport
+import com.carmabs.emanate.compose.ActionsScreen
 import com.carmabs.emanate.compose.ClassicViewModel
 import com.carmabs.emanate.compose.CounterEvent
 import com.carmabs.emanate.compose.CounterScreen
@@ -29,7 +30,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class EmaComposableScreenTest {
+class EmaScreenTest {
 
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
@@ -41,13 +42,12 @@ class EmaComposableScreenTest {
     @Test
     fun `the screen renders the states, dispatches the actions and receives the events`() {
         lateinit var viewModel: CounterViewModel
-        val screen = CounterScreen()
         val received = mutableListOf<CounterEvent>()
         composeRule.setContent {
-            EmaComposableScreen(
+            EmaScreen(
                 initializer = RouteInitializer("screen"),
                 vm = { CounterViewModel().also { viewModel = it } },
-                screenContent = screen,
+                screenContent = CounterScreen(),
                 onEvent = { received += it }
             )
         }
@@ -60,16 +60,29 @@ class EmaComposableScreenTest {
         composeRule.waitForIdle()
 
         assertEquals(listOf<CounterEvent>(CounterEvent.Notified), received)
-        assertEquals(listOf<CounterEvent>(CounterEvent.Notified), screen.events)
         assertEquals(listOf("created", "started", "resumed"), viewModel.hooks)
         assertEquals(RouteInitializer("screen"), viewModel.initializer)
+    }
+
+    @Test
+    fun `a composable that only receives the actions is not recomposed when the state changes`() {
+        val screen = ActionsScreen()
+        composeRule.setContent {
+            EmaScreen(vm = { CounterViewModel() }, screenContent = screen, onEvent = {})
+        }
+
+        composeRule.onNodeWithText("Increment").performClick()
+        composeRule.onNodeWithText("Increment").performClick()
+        composeRule.onNodeWithText("Count 2").assertIsDisplayed()
+
+        assertEquals(1, screen.buttonCompositions)
     }
 
     @Test
     fun `the lifecycle of the host reaches the ViewModel`() {
         lateinit var viewModel: CounterViewModel
         composeRule.setContent {
-            EmaComposableScreen(vm = {
+            EmaScreen(vm = {
                 CounterViewModel().also { viewModel = it }
             }, screenContent = CounterScreen(), onEvent = {})
         }
@@ -86,7 +99,7 @@ class EmaComposableScreenTest {
         val show = mutableStateOf(true)
         composeRule.setContent {
             if (show.value) {
-                EmaComposableScreen(vm = {
+                EmaScreen(vm = {
                     CounterViewModel().also { viewModel = it }
                 }, screenContent = CounterScreen(), onEvent = {})
             }
@@ -103,7 +116,7 @@ class EmaComposableScreenTest {
     fun `the back action of the screen is dispatched to the ViewModel`() {
         lateinit var viewModel: CounterViewModel
         composeRule.setContent {
-            EmaComposableScreen(vm = {
+            EmaScreen(vm = {
                 CounterViewModel().also { viewModel = it }
             }, screenContent = CounterScreen(), onEvent = {})
         }
@@ -118,7 +131,7 @@ class EmaComposableScreenTest {
     @Test
     fun `without back action the system handles the back press`() {
         composeRule.setContent {
-            EmaComposableScreen(vm = {
+            EmaScreen(vm = {
                 CounterViewModel()
             }, screenContent = CounterScreen(backEnabled = false), onEvent = {})
         }
@@ -133,7 +146,7 @@ class EmaComposableScreenTest {
     fun `a ViewModel instance can be rendered with its own action dispatcher`() {
         val viewModel = CounterViewModel()
         composeRule.setContent {
-            EmaComposableScreen(vm = viewModel, actions = viewModel, screenContent = SilentScreen(), onEvent = {})
+            EmaScreen(vm = viewModel, actions = viewModel, screenContent = SilentScreen(), onEvent = {})
         }
 
         composeRule.onNodeWithText("Silent 0").performClick()
@@ -153,7 +166,7 @@ class EmaComposableScreenTest {
         )
         val recomposition = mutableIntStateOf(0)
         composeRule.setContent {
-            EmaComposableScreen(
+            EmaScreen(
                 vm = { CounterViewModel() },
                 screenContent = CounterScreen(),
                 onEvent = {},
@@ -175,21 +188,21 @@ class EmaComposableScreenTest {
     fun `in a preview the screen renders the preview state without ViewModel`() {
         composeRule.setContent {
             CompositionLocalProvider(LocalInspectionMode provides true) {
-                EmaComposableScreen(
+                EmaScreen(
                     vm = { error("The ViewModel is not created in previews") },
                     screenContent = CounterScreen(),
-                    onEvent = {},
+                    onEvent = { _: CounterEvent -> },
                     previewRenderState = CounterState(5)
                 )
-                EmaComposableScreen(
+                EmaScreen(
                     vm = ClassicViewModel(),
                     actions = CounterViewModel(),
                     screenContent = SilentScreen(),
                     onEvent = {},
                     previewRenderState = CounterState(7)
                 )
-                EmaComposableScreen(vm = { CounterViewModel() }, screenContent = SilentScreen(), onEvent = {})
-                EmaComposableScreen(
+                EmaScreen(vm = { CounterViewModel() }, screenContent = SilentScreen(), onEvent = {})
+                EmaScreen(
                     vm = ClassicViewModel(),
                     actions = CounterViewModel(),
                     screenContent = SilentScreen(),

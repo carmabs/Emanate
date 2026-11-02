@@ -1,10 +1,9 @@
 package com.carmabs.emanate.ui.base.compose
 
 import androidx.compose.runtime.Composable
-import com.carmabs.emanate.compose.ui.EmaComposableScreenContent
+import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.core.action.EmaAction
 import com.carmabs.emanate.core.model.EmaText
-import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.compose.ErrorDialogComposable
@@ -16,8 +15,8 @@ import com.carmabs.emanate.ui.dialog.loading.LoadingDialogData
 import com.carmabs.emanate.ui.dialog.simple.SimpleDialogData
 import com.carmabs.emanate.ui.dialog.simple.SimpleDialogListener
 
-abstract class BaseScreenComposable<S : EmaState, A : EmaAction, E : EmaEvent> :
-    EmaComposableScreenContent<S, A, E> {
+abstract class BaseScreenComposable<S : EmaState, A : EmaAction> :
+    EmaScreenContent<S, A> {
 
     @Composable
     protected fun ShowDialog(data: SimpleDialogData, listener: SimpleDialogListener) {

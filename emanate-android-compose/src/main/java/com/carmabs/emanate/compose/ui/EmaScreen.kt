@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -14,8 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
 import com.carmabs.emanate.android.savestate.SavedStateSupport
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
-import com.carmabs.emanate.compose.action.toImmutable
 import com.carmabs.emanate.compose.extension.asActionDispatcher
 import com.carmabs.emanate.compose.provider.EmaScreenProvider
 import com.carmabs.emanate.compose.utils.Compose
@@ -30,12 +27,16 @@ import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.utils.EmaUtils
 import com.carmabs.emanate.core.viewmodel.EmaViewModelContract
 
+/**
+ * Draws a view model created and kept by its caller, which also closes it. Used by the destinations of the navigation
+ * graph, whose view model is kept by their back stack entry.
+ */
 @Composable
-fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaComposableScreen(
+internal fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaScreen(
     initializer: EmaInitializer? = null,
     vm: EmaViewModelContract<S, E>,
     actions: EmaActionDispatcher<A>,
-    screenContent: EmaComposableScreenContent<S, A, E>,
+    screenContent: EmaScreenContent<S, A>,
     onEvent: (E) -> Unit,
     previewRenderState: S? = null
 ) {
@@ -44,30 +45,26 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaComposableScreen(
             previewRenderState?.also { previewState ->
                 screenContent.onState(
                     state = previewState,
-                    actions = EmaImmutableActionDispatcher.EMPTY
+                    actions = EmaActionDispatcher.EMPTY
                 )
             }
         }
     ) {
-        val immutableActions = remember {
-            actions.toImmutable()
-        }
-
         RenderScreen(
             initializer,
             screenContent,
             vm,
-            immutableActions,
+            actions,
             onEvent
         )
     }
 }
 
 @Composable
-fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaComposableScreen(
+fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaScreen(
     initializer: EmaInitializer? = null,
     vm: (store: EmaStateStore) -> EmaViewModelContract<S, E>,
-    screenContent: EmaComposableScreenContent<S, A, E>,
+    screenContent: EmaScreenContent<S, A>,
     onEvent: (E) -> Unit,
     saveStateSupport: SavedStateSupport<S, E>? = null,
     previewRenderState: S? = null
@@ -77,7 +74,7 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaComposableScreen(
             previewRenderState?.also { previewState ->
                 screenContent.onState(
                     state = previewState,
-                    actions = EmaImmutableActionDispatcher.EMPTY
+                    actions = EmaActionDispatcher.EMPTY
                 )
             }
         }
@@ -90,8 +87,8 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaComposableScreen(
 
         val emaVm = androidVm.emaViewModel
 
-        val immutableActions = remember {
-            emaVm.asActionDispatcher<A>().toImmutable()
+        val actions = remember {
+            emaVm.asActionDispatcher<A>()
         }
 
         LaunchedEffect(androidVm) {
@@ -106,7 +103,7 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaComposableScreen(
             initializer,
             screenContent,
             emaVm,
-            immutableActions,
+            actions,
             onEvent
         )
     }
@@ -115,9 +112,9 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaComposableScreen(
 @Composable
 private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
     initializer: EmaInitializer?,
-    screenContent: EmaComposableScreenContent<S, A, E>,
+    screenContent: EmaScreenContent<S, A>,
     vm: EmaViewModelContract<S, E>,
-    immutableActions: EmaImmutableActionDispatcher<A>,
+    actions: EmaActionDispatcher<A>,
     onEvent: (E) -> Unit
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -171,13 +168,11 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
         .collectAsStateWithLifecycle(initialValue = vm.initialState, lifecycle = lifecycle).value
 
     val eventFlow = vm.eventFlow
-    val context = LocalContext.current
     LaunchedEffect(key1 = eventFlow, lifecycle) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             eventFlow.collect { events ->
                 events.forEach { event ->
                     onEvent(event)
-                    screenContent.onEvent(context, event, immutableActions)
                     (vm as? EmaEventConsumer<E>)?.consumeEvent(event)
                 }
             }
@@ -186,10 +181,10 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
 
     val backAction = screenContent.onBack(state)
     BackHandler(enabled = backAction != null) {
-        backAction?.also(immutableActions::dispatch)
+        backAction?.also(actions::dispatch)
     }
 
     if (vm.shouldRenderState) {
-        screenContent.onState(state, immutableActions)
+        screenContent.onState(state, actions)
     }
 }

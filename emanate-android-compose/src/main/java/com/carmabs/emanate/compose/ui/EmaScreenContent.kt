@@ -1,16 +1,16 @@
 package com.carmabs.emanate.compose.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.compose.runtime.Composable
-import com.carmabs.emanate.compose.action.EmaImmutableActionDispatcher
 import com.carmabs.emanate.core.action.EmaAction
-import com.carmabs.emanate.core.state.EmaEvent
+import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.state.EmaState
 
-interface EmaComposableScreenContent<S : EmaState, A : EmaAction, E : EmaEvent> {
-
-    suspend fun onEvent(context: Context, event: E, actions: EmaImmutableActionDispatcher<A>) = Unit
+/**
+ * Draws a screen: renders its state and reports what the user does as actions. The events of the screen are handled
+ * where it is created, with the onEvent of [EmaScreen] or emaScreen.
+ */
+interface EmaScreenContent<S : EmaState, A : EmaAction> {
 
     /**
      * Action to dispatch when back is pressed. The view model decides how to react to it.
@@ -21,5 +21,5 @@ interface EmaComposableScreenContent<S : EmaState, A : EmaAction, E : EmaEvent> 
 
     @Composable
     @SuppressLint("ComposableNaming")
-    fun onState(state: S, actions: EmaImmutableActionDispatcher<A>)
+    fun onState(state: S, actions: EmaActionDispatcher<A>)
 }
