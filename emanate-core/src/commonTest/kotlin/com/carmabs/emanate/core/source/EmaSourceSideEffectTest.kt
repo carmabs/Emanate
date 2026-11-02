@@ -6,6 +6,7 @@ import com.carmabs.emanate.core.model.EmaConfiguration
 import com.carmabs.emanate.core.source.sideeffect.SideEffect
 import com.carmabs.emanate.core.source.sideeffect.SideEffectConcurrency
 import com.carmabs.emanate.core.source.sideeffect.SideEffectScope
+import com.carmabs.emanate.core.source.sideeffect.SideEffectSetupScope
 import com.carmabs.emanate.core.source.sideeffect.sideEffectOf
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
@@ -76,7 +77,7 @@ class EmaSourceSideEffectTest {
                     dispatch(EffectAction.Loaded("loaded"))
                     publish(EffectEvent.LoadedMessage)
                 }
-                +SaveSideEffect()
+                add(SaveSideEffect())
                 add<EffectAction.Fetch>(
                     concurrency = SideEffectConcurrency.Latest,
                     timeout = 2.seconds,
@@ -360,14 +361,16 @@ class EmaSourceSideEffectTest {
             configurationOn(UnconfinedTestDispatcher(testScheduler))
         ) {
             sideEffects {
-                +submit
+                add(submit)
                 // Created inside the block, with the types of the source
-                +sideEffectOf(EffectAction.Fetch::class, timeout = 1.seconds, onTimeout = { action ->
-                    received += "timeout ${action.id}"
-                }) { action ->
-                    delay(action.duration)
-                    received += "fetch ${action.id}"
-                }
+                add(
+                    sideEffectOf(EffectAction.Fetch::class, timeout = 1.seconds, onTimeout = { action ->
+                        received += "timeout ${action.id}"
+                    }) { action ->
+                        delay(action.duration)
+                        received += "fetch ${action.id}"
+                    }
+                )
             }
         }
 
@@ -381,4 +384,42 @@ class EmaSourceSideEffectTest {
         assertEquals(listOf("fetch 3", "submit 1", "timeout 4"), received)
         source.close()
     }
+
+    private fun TestScope.orderAfterSave(
+        setup: SideEffectSetupScope<EffectState, EffectAction, EffectEvent>.() -> Unit
+    ): List<String> {
+        val source = EmaSource<EffectState, EffectAction, EffectEvent>(
+            EffectState(),
+            configurationOn(UnconfinedTestDispatcher(testScheduler))
+        ) {
+            sideEffects(setup)
+        }
+        source.dispatch(EffectAction.Save)
+        runCurrent()
+        source.close()
+        return received.toList().also { received.clear() }
+    }
+
+    @Test
+    fun `the side effects already created are added alone or joined with plus or from a collection in order`() =
+        runTest {
+            fun named(name: String) = sideEffectOf<EffectState, EffectAction, EffectEvent, EffectAction.Save>(
+                EffectAction.Save::class
+            ) { received += name }
+            val a = named("a")
+            val b = named("b")
+            val c = named("c")
+
+            assertEquals(listOf("a", "b"), orderAfterSave { add(a, b) })
+            assertEquals(listOf("b", "a"), orderAfterSave { add(b, a) })
+            assertEquals(listOf("a", "b", "c"), orderAfterSave { add(a + b + c) })
+            assertEquals(listOf("a", "b", "c"), orderAfterSave { add(listOf(a, b, c)) })
+            assertEquals(
+                listOf("a", "b", "c"),
+                orderAfterSave {
+                    add(a)
+                    add(b + c)
+                }
+            )
+        }
 }

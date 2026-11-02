@@ -161,7 +161,7 @@ private class TestViewModel(
             add<TestAction.Load> { state.copy(text = "loading") }
         }
         sideEffects {
-            +loadSideEffect
+            add(loadSideEffect)
         }
         broadcasts {
             listen<TextSent>()

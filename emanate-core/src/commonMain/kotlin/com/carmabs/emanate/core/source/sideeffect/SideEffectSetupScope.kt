@@ -11,8 +11,9 @@ import kotlin.time.Duration
 /**
  * Created by Carlos Mateo Benito on 12/10/2026.
  *
- * Block of setup that adds the side effects of the source: with [add], or with `+` for the ones already created. Each
- * one runs asynchronously after the reducers of the actions of its type.
+ * Block of setup that adds the side effects of the source with [add]: the ones already created, alone or joined with
+ * `+`, or a new one for the actions of a type. Each one runs asynchronously after the reducers of the actions of its
+ * type.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -32,15 +33,24 @@ class SideEffectSetupScope<S : EmaState, A : EmaAction, E : EmaEvent> internal c
         private set
 
     /**
-     * Adds a side effect already created.
+     * Joins two side effects already created to add them together with [add].
      */
-    operator fun SideEffect<S, A, E, *>.unaryPlus() {
-        include(this)
+    operator fun SideEffect<S, A, E, *>.plus(other: SideEffect<S, A, E, *>): List<SideEffect<S, A, E, *>> =
+        listOf(this, other)
+
+    /**
+     * Adds side effects already created, in the order they are given.
+     */
+    fun add(vararg sideEffects: SideEffect<S, A, E, *>) {
+        add(sideEffects.asList())
     }
 
-    private fun include(sideEffect: SideEffect<S, A, E, *>) {
+    /**
+     * Adds side effects already created, in the order of the collection.
+     */
+    fun add(sideEffects: Iterable<SideEffect<S, A, E, *>>) {
         guard.checkNotBuilt()
-        sideEffectList = sideEffectList + sideEffect
+        sideEffectList = sideEffectList + sideEffects
     }
 
     /**
@@ -56,7 +66,7 @@ class SideEffectSetupScope<S : EmaState, A : EmaAction, E : EmaEvent> internal c
         onTimeout: (SideEffectScope<S, A, E>.(F) -> Unit)?,
         sideEffect: suspend SideEffectScope<S, A, E>.(F) -> Unit
     ) {
-        include(sideEffectOf(filter, concurrency, timeout, survivesClose, name, onTimeout, sideEffect))
+        add(sideEffectOf(filter, concurrency, timeout, survivesClose, name, onTimeout, sideEffect))
     }
 
     /**
