@@ -121,7 +121,7 @@ private class FormViewModel(
         plugins {
             +backupOf(store) {
                 add("name", save = { name.takeIf { it.isNotEmpty() } }, restore = { copy(name = it) })
-                +ageSavedValue
+                add(ageSavedValue)
                 add("plan", PlanCodec, save = { plan }, restore = { copy(plan = it) })
             }
         }
@@ -346,6 +346,40 @@ class EmaViewModelSavedStateTest {
             backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) {
                 add("name", save = { name }, restore = { copy(name = it) })
                 add("name", save = { name }, restore = { copy(name = it) })
+            }
+        }
+    }
+
+    @Test
+    fun `the saved values already created are added alone or joined with plus or from a collection`() {
+        val nameValue = savedValueOf<FormState>("name", save = { name }, restore = { copy(name = it) })
+        val surnameValue = savedValueOf<FormState>("surname", save = { name }, restore = { copy(name = it) })
+        val ageValue = AgeSavedValue()
+
+        backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) { add(nameValue, surnameValue, ageValue) }
+        backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) { add(nameValue + surnameValue + ageValue) }
+        backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) { add(listOf(nameValue, surnameValue, ageValue)) }
+        backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) {
+            add(nameValue)
+            add(surnameValue + ageValue)
+        }
+    }
+
+    @Test
+    fun `a key can only be added once with the saved values already created`() {
+        val nameValue = savedValueOf<FormState>("name", save = { name }, restore = { copy(name = it) })
+        val sameNameValue = savedValueOf<FormState>("name", save = { name }, restore = { copy(name = it) })
+
+        assertFailsWith<IllegalArgumentException> {
+            backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) { add(nameValue, sameNameValue) }
+        }
+        assertFailsWith<IllegalArgumentException> {
+            backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) { add(nameValue + sameNameValue) }
+        }
+        assertFailsWith<IllegalArgumentException> {
+            backupOf<FormState>(MemoryStore(), restoreOn = Opened::class) {
+                add(nameValue)
+                add(listOf(sameNameValue))
             }
         }
     }
