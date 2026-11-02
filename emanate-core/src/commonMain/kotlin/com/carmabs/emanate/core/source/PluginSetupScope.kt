@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 /**
  * Created by Carlos Mateo Benito on 16/10/2026.
  *
- * Block of setup that installs the plugins of the source, with `+`. Each plugin adds its pieces to the
+ * Block of setup that installs the plugins of the source, with [add]. Each plugin adds its pieces to the
  * setup as soon as it is added, so they are kept in order with the ones added before and after the block. The type of
  * the actions of each plugin is taken from its type, so the source knows it receives them.
  *
@@ -25,23 +25,23 @@ class PluginSetupScope<S : EmaState> internal constructor(
 ) {
 
     /**
-     * Installs a plugin, a feature that the source doesn't know, like an EmaBackup. The source receives the actions
-     * of type [P] that it dispatches.
+     * Installs plugins, features that the source doesn't know, like an EmaBackup, in the order they are given. The
+     * source receives the actions of type [P] that they dispatch.
      */
-    inline operator fun <reified P : EmaAction> EmaSourcePlugin<S, P>.unaryPlus() {
-        include(this, P::class)
+    inline fun <reified P : EmaAction> add(vararg plugins: EmaSourcePlugin<S, P>) {
+        plugins.forEach { include(it, P::class) }
     }
 
     /**
-     * Installs a plugin that doesn't dispatch actions.
+     * Installs plugins that don't dispatch actions, in the order they are given.
      */
-    @JvmName("unaryPlusWithoutActions")
-    operator fun EmaSourcePlugin<S, Nothing>.unaryPlus() {
-        include(this, null)
+    @JvmName("addWithoutActions")
+    fun add(vararg plugins: EmaSourcePlugin<S, Nothing>) {
+        plugins.forEach { include(it, null) }
     }
 
     /**
-     * Implementation of the inline unaryPlus with the type of the actions of the plugin.
+     * Implementation of the inline add with the type of the actions of the plugin.
      */
     @PublishedApi
     internal fun <P : EmaAction> include(plugin: EmaSourcePlugin<S, P>, actionType: KClass<P>?) {

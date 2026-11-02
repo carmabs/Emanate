@@ -91,7 +91,7 @@ private class DiscountCartViewModel(private val withPlugin: Boolean) :
 
     override fun setup() = source {
         if (withPlugin) {
-            plugins { +DiscountPlugin() }
+            plugins { add(DiscountPlugin()) }
         }
         reducers {
             add<DiscountAction.Applied> { state }

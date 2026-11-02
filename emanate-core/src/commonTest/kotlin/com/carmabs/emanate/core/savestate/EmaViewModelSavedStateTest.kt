@@ -119,11 +119,13 @@ private class FormViewModel(
 
     override fun setup() = source {
         plugins {
-            +backupOf(store) {
-                add("name", save = { name.takeIf { it.isNotEmpty() } }, restore = { copy(name = it) })
-                add(ageSavedValue)
-                add("plan", PlanCodec, save = { plan }, restore = { copy(plan = it) })
-            }
+            add(
+                backupOf(store) {
+                    add("name", save = { name.takeIf { it.isNotEmpty() } }, restore = { copy(name = it) })
+                    add(ageSavedValue)
+                    add("plan", PlanCodec, save = { plan }, restore = { copy(plan = it) })
+                }
+            )
         }
         middlewares {
             add<EmaAction> { action ->
@@ -391,8 +393,8 @@ class EmaViewModelSavedStateTest {
         assertFailsWith<IllegalArgumentException> {
             EmaSource<FormState, FormAction, EmaEvent.EMPTY>(FormState(), configurationOn(testDispatcher())) {
                 plugins {
-                    +nameBackup(store)
-                    +nameBackup(store)
+                    add(nameBackup(store))
+                    add(nameBackup(store))
                 }
             }
         }
@@ -402,8 +404,8 @@ class EmaViewModelSavedStateTest {
     fun `the backups of a source can repeat keys in different stores`() = runTest {
         val source = EmaSource<FormState, FormAction, EmaEvent.EMPTY>(FormState(), configurationOn(testDispatcher())) {
             plugins {
-                +nameBackup(MemoryStore())
-                +nameBackup(MemoryStore())
+                add(nameBackup(MemoryStore()))
+                add(nameBackup(MemoryStore()))
             }
         }
 
@@ -488,7 +490,7 @@ class EmaViewModelSavedStateTest {
     fun `a backup installed before a middleware that delays an action saves its new state`() = runTest {
         val store = MemoryStore()
         val source = EmaSource<FormState, FormAction, EmaEvent.EMPTY>(FormState(), configurationOn(testDispatcher())) {
-            plugins { +nameBackup(store) }
+            plugins { add(nameBackup(store)) }
             middlewares {
                 add<FormAction.NameWritten> { nextAfter { delay(300.milliseconds) } }
             }
@@ -511,7 +513,7 @@ class EmaViewModelSavedStateTest {
     fun `the values aren't restored if a middleware stops the action that restores them`() = runTest {
         val store = MemoryStore(mapOf("name" to "Ana"))
         val source = EmaSource<FormState, FormAction, EmaEvent.EMPTY>(FormState(), configurationOn(testDispatcher())) {
-            plugins { +nameBackup(store) }
+            plugins { add(nameBackup(store)) }
             middlewares {
                 add<Opened> { }
             }
@@ -530,7 +532,7 @@ class EmaViewModelSavedStateTest {
     fun `the values not restored because a middleware stops the restore are saved from the state`() = runTest {
         val store = MemoryStore(mapOf("name" to "Ana"))
         val source = EmaSource<FormState, FormAction, EmaEvent.EMPTY>(FormState(), configurationOn(testDispatcher())) {
-            plugins { +nameBackup(store) }
+            plugins { add(nameBackup(store)) }
             middlewares {
                 add<EmaRestoreState> { }
             }
@@ -557,7 +559,7 @@ class EmaViewModelSavedStateTest {
             FormState(),
             configurationOn(StandardTestDispatcher(testScheduler))
         ) {
-            plugins { +nameBackup(store) }
+            plugins { add(nameBackup(store)) }
         }
 
         // Queued before the restore, which is dispatched when Opened is processed
@@ -572,7 +574,7 @@ class EmaViewModelSavedStateTest {
 
     private fun formSource(dispatcher: CoroutineDispatcher, backup: EmaBackup<FormState>) =
         EmaSource<FormState, FormAction, EmaEvent.EMPTY>(FormState(), configurationOn(dispatcher)) {
-            plugins { +backup }
+            plugins { add(backup) }
             reducers {
                 add<FormAction.NameWritten> { action -> state.copy(name = action.name) }
             }

@@ -14,14 +14,14 @@ class ProfileCreationViewModel(initialDataState: ProfileCreationState, private v
         // The form is restored after the system kills the process, for example while the user changes a permission
         // in the settings
         plugins {
-            +backupOf(stateStore) {
+            add(backupOf(stateStore) {
                 add(
                     key = "form",
                     codec = json(),
                     save = { ProfileCreationForm(name, surname) },
                     restore = { form -> copy(name = form.name, surname = form.surname) }
                 )
-            }
+            })
         }
 
         reducers {

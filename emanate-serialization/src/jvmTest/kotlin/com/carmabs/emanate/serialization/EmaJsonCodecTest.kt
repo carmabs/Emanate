@@ -48,20 +48,22 @@ private class LoginViewModel(private val store: EmaStateStore) :
 
     override fun setup() = source {
         plugins {
-            +backupOf(store) {
-                add(
-                    key = "form",
-                    codec = json(),
-                    save = { LoginForm(userName, rememberMe) },
-                    restore = { form -> copy(userName = form.userName, rememberMe = form.rememberMe) }
-                )
-                add(
-                    key = "recentUsers",
-                    codec = json(ListSerializer(String.serializer())),
-                    save = { recentUsers.takeIf { it.isNotEmpty() } },
-                    restore = { copy(recentUsers = it) }
-                )
-            }
+            add(
+                backupOf(store) {
+                    add(
+                        key = "form",
+                        codec = json(),
+                        save = { LoginForm(userName, rememberMe) },
+                        restore = { form -> copy(userName = form.userName, rememberMe = form.rememberMe) }
+                    )
+                    add(
+                        key = "recentUsers",
+                        codec = json(ListSerializer(String.serializer())),
+                        save = { recentUsers.takeIf { it.isNotEmpty() } },
+                        restore = { copy(recentUsers = it) }
+                    )
+                }
+            )
         }
         reducers {
             add<LoginAction> { action ->
