@@ -7,8 +7,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.carmabs.emanate.android.extension.getInitializer
-import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.android.savestate.EmaSaveStateManager
 import com.carmabs.emanate.compose.extension.asActionDispatcher
 import com.carmabs.emanate.compose.extension.emaScreen
@@ -25,7 +23,6 @@ import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingInit
 import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingViewModel
 import com.carmabs.emanate.ui.base.sampleViewModel
 import com.carmabs.emanate.ui.profile.creation.ProfileCreationScreenContent
-import com.carmabs.emanate.ui.profile.onboarding.ProfileOnBoardingNavigator
 import com.carmabs.emanate.ui.profile.onboarding.ProfileOnBoardingScreenContent
 import com.carmabs.emanate.ui.theme.EmaSampleTheme
 import kotlinx.coroutines.launch
@@ -39,7 +36,7 @@ class ProfileActivity : ComponentActivity() {
             EmaSampleTheme {
                 val navController = rememberNavController()
                 val navigator = remember {
-                    ProfileOnBoardingNavigator(this, navController)
+                    ProfileNavigator(navController)
                 }
 
                 NavHost(
@@ -47,14 +44,9 @@ class ProfileActivity : ComponentActivity() {
                     startDestination = ProfileOnBoardingScreenContent::class.routeId
                 ) {
                     emaScreen(
-                        initializerSupport = EmaInitializerSupport.kSerialization(
-                            ProfileOnBoardingInitializer.serializer(),
-                            getInitializer(
-                                BundleSerializerStrategy.kSerialization(
-                                    ProfileOnBoardingInitializer.serializer()
-                                ),
-                                savedInstanceState
-                            )
+                        // The home screen opens this activity with the initializer in its intent
+                        initializerSupport = EmaInitializerSupport.fromIntent(
+                            ProfileOnBoardingInitializer.serializer()
                         ),
                         screenContent = ProfileOnBoardingScreenContent(),
                         onEvent = {
@@ -80,7 +72,7 @@ class ProfileActivity : ComponentActivity() {
                         onEvent = {
                             navigator.handleProfileCreationEvent(it)
                         },
-                        initializerSupport = EmaInitializerSupport.kSerialization(
+                        initializerSupport = EmaInitializerSupport.fromRoute(
                             ProfileCreationInitializer.serializer()
                         ),
                         saveStateManager = EmaSaveStateManager<ProfileCreationState, ProfileCreationEvent> {

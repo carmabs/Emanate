@@ -1,6 +1,5 @@
 package com.carmabs.emanate.compose.navigation
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,8 +30,6 @@ import com.carmabs.emanate.compose.extension.navigateToExternalLink
 import com.carmabs.emanate.compose.extension.routeId
 import com.carmabs.emanate.compose.extension.routeWithInitializer
 import com.carmabs.emanate.compose.initializer.EmaInitializerSupport
-import com.carmabs.emanate.core.navigator.EmaNavigationNode
-import com.carmabs.emanate.core.state.EmaEvent
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -44,24 +41,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-
-sealed interface Destination : EmaEvent {
-    data object Home : Destination
-    data object Detail : Destination
-}
-
-class TestNodeNavigator(activity: Activity, navController: NavHostController) :
-    EmaComposableNodeNavigator<Destination>(activity, navController) {
-    val navigated = mutableListOf<Destination>()
-
-    override fun onNavigation(navigationEvent: Destination): Boolean {
-        navigated += navigationEvent
-        navController.navigate(if (navigationEvent == Destination.Home) "home" else "detail")
-        return true
-    }
-
-    val hostActivity get() = activity
-}
 
 @RunWith(RobolectricTestRunner::class)
 class EmaComposeNavigationTest {
@@ -78,10 +57,13 @@ class EmaComposeNavigationTest {
     private val received = mutableListOf<CounterEvent>()
     private var saveStateSetups = 0
 
-    private fun setNavHost(initializerSupport: EmaInitializerSupport? = EmaInitializerSupport(strategy)) {
+    private fun setNavHost(
+        initializerSupport: EmaInitializerSupport? = EmaInitializerSupport.fromRoute(RouteInitializerSerializer),
+        startDestination: String = "home"
+    ) {
         composeRule.setContent {
             navController = rememberNavController()
-            NavHost(navController, startDestination = "home") {
+            NavHost(navController, startDestination = startDestination) {
                 composable("home") { BasicText("Home") }
                 emaScreen(
                     screenContent = CounterScreen(),
@@ -130,8 +112,17 @@ class EmaComposeNavigationTest {
     }
 
     @Test
-    fun `the initializer support can override the initializer of the route`() {
-        setNavHost(EmaInitializerSupport.kSerialization(RouteInitializerSerializer, RouteInitializer("override")))
+    fun `the origin of the support is used when the route has no initializer`() {
+        setNavHost(EmaInitializerSupport.fromInitializer(RouteInitializerSerializer, RouteInitializer("backup")))
+
+        onMain { navController.navigate(CounterScreen::class.routeId, initializerBundle = noInitializer) }
+
+        assertEquals(RouteInitializer("backup"), viewModel?.initializer)
+    }
+
+    @Test
+    fun `the initializer of the route wins over the origin of the support`() {
+        setNavHost(EmaInitializerSupport.fromInitializer(RouteInitializerSerializer, RouteInitializer("backup")))
 
         onMain {
             navController.navigate(
@@ -140,7 +131,48 @@ class EmaComposeNavigationTest {
             )
         }
 
-        assertEquals(RouteInitializer("override"), viewModel?.initializer)
+        assertEquals(RouteInitializer("route"), viewModel?.initializer)
+    }
+
+    @Test
+    fun `an initializer without values in the route avoids the origin of the support`() {
+        setNavHost(EmaInitializerSupport.fromInitializer(RouteInitializerSerializer, RouteInitializer("backup")))
+
+        onMain {
+            navController.navigate(
+                CounterScreen::class.routeId,
+                EmaInitializerBundle(RouteInitializer(""), strategy)
+            )
+        }
+
+        assertEquals(RouteInitializer(""), viewModel?.initializer)
+    }
+
+    @Test
+    fun `the first screen of an activity reads the initializer of its intent`() {
+        composeRule.activity.intent.putExtras(
+            Bundle().also {
+                strategy.save(RouteInitializer("intent"), it)
+            }
+        )
+
+        setNavHost(
+            initializerSupport = EmaInitializerSupport.fromIntent(RouteInitializerSerializer),
+            startDestination = CounterScreen::class.routeId
+        )
+
+        composeRule.onNodeWithText("Count 0").assertIsDisplayed()
+        assertEquals(RouteInitializer("intent"), viewModel?.initializer)
+    }
+
+    @Test
+    fun `a screen reads the initializer of a bundle`() {
+        val bundle = Bundle().also { strategy.save(RouteInitializer("bundle"), it) }
+        setNavHost(EmaInitializerSupport.fromBundle(RouteInitializerSerializer, bundle))
+
+        onMain { navController.navigate(CounterScreen::class.routeId, initializerBundle = noInitializer) }
+
+        assertEquals(RouteInitializer("bundle"), viewModel?.initializer)
     }
 
     @Test
@@ -206,44 +238,6 @@ class EmaComposeNavigationTest {
     }
 
     @Test
-    fun `the node navigator navigates forward and back through the nodes`() {
-        lateinit var navigator: TestNodeNavigator
-        composeRule.setContent {
-            navController = rememberNavController()
-            navigator = rememberEmaNodeNavigator(navController) { activity, controller ->
-                TestNodeNavigator(activity, controller)
-            } as TestNodeNavigator
-            NavHost(navController, startDestination = "home") {
-                composable("home") { BasicText("Home") }
-                composable("detail") { BasicText("Detail") }
-            }
-        }
-        composeRule.waitForIdle()
-        val home = EmaNavigationNode<Destination>(Destination.Home)
-        val detail = home.next(Destination.Detail)
-        val notified = mutableListOf<Destination>()
-
-        onMain { navigator.navigate(detail) { notified += it } }
-        composeRule.onNodeWithText("Detail").assertIsDisplayed()
-
-        onMain { navigator.navigate(detail) }
-        assertEquals(listOf<Destination>(Destination.Detail), navigator.navigated)
-        assertEquals(listOf<Destination>(Destination.Detail), notified)
-
-        onMain { navigator.navigate(home) }
-        composeRule.onNodeWithText("Home").assertIsDisplayed()
-        assertEquals(listOf<Destination>(Destination.Detail), navigator.navigated)
-        assertSame(composeRule.activity, navigator.hostActivity)
-
-        var popped = true
-        onMain { popped = navigator.navigateBack(closeActivityWhenBackstackIsEmpty = false) }
-        assertFalse(popped)
-        assertFalse(composeRule.activity.isFinishing)
-        onMain { navigator.navigateBack() }
-        assertTrue(composeRule.activity.isFinishing)
-    }
-
-    @Test
     fun `the initializer nav type stores the initializer in the bundle and in the route`() {
         val navType = EmaInitializerNavType(strategy)
         val bundle = Bundle()
@@ -263,6 +257,6 @@ class EmaComposeNavigationTest {
         val transitions = EmaAnimTransition(enterTransition = { fadeIn() }, exitTransition = { null })
         assertSame(transitions.enterTransition, transitions.popEnterTransition)
         assertSame(transitions.exitTransition, transitions.popExitTransition)
-        assertNotNull(EmaInitializerSupport(strategy).serializerStrategy)
+        assertNotNull(EmaInitializerSupport.fromRoute(RouteInitializerSerializer).serializerStrategy)
     }
 }
