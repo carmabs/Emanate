@@ -110,7 +110,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaSource<S, A, E>.record(): Ema
 
 /**
  * Starts recording the view model. Call it before its first action to record everything. Create the view model after
- * [useTestDispatchers], so it runs on the dispatcher of the test.
+ * [useTestConfiguration], so it runs on the dispatcher of the test.
  */
 fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaViewModel<S, A, E>.record(): EmaRecorder<S, E> =
     EmaRecorder<S, E>().also { addObserver(it.observer) }
