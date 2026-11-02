@@ -4,8 +4,8 @@
 //
 // Targets to compile. All of them by default (needed to publish). For faster local builds set
 // emanate.targets in local.properties (not versioned), or pass -Pemanate.targets, with a comma separated list of:
-// all, jvm, js, wasm, apple, linux, windows, androidNative. JVM is always built because the Android modules use it.
-def emanateTargetGroups = ['jvm', 'js', 'wasm', 'apple', 'linux', 'windows', 'androidNative']
+// all, jvm, ios. JVM is always built because the Android modules use it.
+def emanateTargetGroups = ['jvm', 'ios']
 def emanateLocalProperties = new Properties()
 def emanateLocalPropertiesFile = file('../local.properties')
 if (emanateLocalPropertiesFile.exists()) {
@@ -31,47 +31,8 @@ kotlin {
             jvmTarget = emanateJvmTargetClass.fromTarget(rootProject.emanateVersioning.kotlinJvmTarget)
         }
     }
-    if ('js' in emanateTargets) {
-        js {
-            browser()
-            nodejs()
-        }
-    }
-    if ('wasm' in emanateTargets) {
-        wasmJs {
-            browser()
-            nodejs()
-        }
-        wasmWasi {
-            nodejs()
-        }
-    }
-    if ('apple' in emanateTargets) {
+    if ('ios' in emanateTargets) {
         iosArm64()
         iosSimulatorArm64()
-        iosX64()
-        macosArm64()
-        macosX64()
-        watchosArm32()
-        watchosArm64()
-        watchosDeviceArm64()
-        watchosSimulatorArm64()
-        watchosX64()
-        tvosArm64()
-        tvosSimulatorArm64()
-        tvosX64()
-    }
-    if ('linux' in emanateTargets) {
-        linuxX64()
-        linuxArm64()
-    }
-    if ('windows' in emanateTargets) {
-        mingwX64()
-    }
-    if ('androidNative' in emanateTargets) {
-        androidNativeArm32()
-        androidNativeArm64()
-        androidNativeX86()
-        androidNativeX64()
     }
 }
