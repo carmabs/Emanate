@@ -152,7 +152,7 @@ private class TestViewModel(
         }
         reducers {
             add<TestAction.Increment> { state.copy(count = state.count + 1) }
-            +decrementReducer
+            add(decrementReducer)
             add<TestAction.Slow> { state.copy(count = state.count + 1) }
             add<TestAction.Update> { action -> state.copy(text = action.text) }
             add<TestInitializer> { action -> state.copy(text = action.text) }
