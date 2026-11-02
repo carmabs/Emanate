@@ -29,7 +29,7 @@ internal interface EmaSourceObserver<in S : EmaState, in E : EmaEvent> {
     fun onState(state: S) = Unit
 
     /**
-     * An event has been posted.
+     * An event has been published.
      */
     fun onEvent(event: E) = Unit
 }

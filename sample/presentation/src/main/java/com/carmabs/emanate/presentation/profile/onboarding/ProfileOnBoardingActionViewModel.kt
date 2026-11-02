@@ -28,18 +28,18 @@ class ProfileOnBoardingActionViewModel(initialDataState: ProfileOnBoardingState)
         }
     }
     private fun onActionAdminClicked() {
-        postEvent(
+        publish(
             ProfileOnBoardingEvent.UserTypeSelected(Role.ADMIN)
         )
     }
 
     private fun onActionUserClicked() {
-        postEvent(
+        publish(
             ProfileOnBoardingEvent.UserTypeSelected(Role.BASIC)
         )
     }
 
     private fun onActionBackClicked() {
-        postEvent(ProfileOnBoardingEvent.OnBoardingCancelled)
+        publish(ProfileOnBoardingEvent.OnBoardingCancelled)
     }
 }

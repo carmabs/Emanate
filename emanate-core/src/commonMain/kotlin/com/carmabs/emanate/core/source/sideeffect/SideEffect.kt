@@ -11,7 +11,7 @@ import kotlin.time.Duration
  * Created by Carlos Mateo Benito on 11/10/2026.
  *
  * Business logic launched by the actions of type [F]: use cases, requests, navigation... It runs asynchronously
- * after the reducers of the action and reacts dispatching new actions or posting events. Unlike a middleware, it
+ * after the reducers of the action and reacts dispatching new actions or publishing events. Unlike a middleware, it
  * can't decide the path of the action.
  *
  * <p>

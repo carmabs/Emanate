@@ -23,7 +23,7 @@ class ProfileOnBoardingViewModel(initialDataState: ProfileOnBoardingState) :
                     ProfileOnBoardingActions.UserClicked -> ProfileOnBoardingEvent.UserTypeSelected(Role.BASIC)
                     ProfileOnBoardingActions.BackClicked -> ProfileOnBoardingEvent.OnBoardingCancelled
                 }
-                postEvent(event)
+                publish(event)
             }
         }
     }

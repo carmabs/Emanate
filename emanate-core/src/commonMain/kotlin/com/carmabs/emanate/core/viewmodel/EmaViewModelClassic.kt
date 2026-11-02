@@ -237,8 +237,8 @@ abstract class EmaViewModelClassic<S : EmaState, E : EmaEvent>(
      * @param event The event to be dispatched.
      * @param allowDuplicated If true, allows the same event to be dispatched multiple times before being consumed.
      */
-    protected fun postEvent(event: E, allowDuplicated: Boolean = false) {
-        eventDispatcher.postEvent(event, allowDuplicated)
+    protected fun publish(event: E, allowDuplicated: Boolean = false) {
+        eventDispatcher.publish(event, allowDuplicated)
     }
 
     /**

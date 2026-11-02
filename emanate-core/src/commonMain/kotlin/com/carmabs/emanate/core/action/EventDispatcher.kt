@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
 /**
  * Created by Carlos Mateo Benito on 03/08/2026.
  *
- * Keeps the events posted by a view model or a source until the view consumes them.
+ * Keeps the events published by a view model or a source until the view consumes them.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.update
 internal class EventDispatcher<E : EmaEvent> : EmaEventConsumer<E> {
 
     /**
-     * Every posted event gets a unique id, so an event equal to one already delivered is still a new event
+     * Every published event gets a unique id, so an event equal to one already delivered is still a new event
      */
     private data class PendingEvent<E>(val id: Long, val event: E)
 
@@ -46,7 +46,7 @@ internal class EventDispatcher<E : EmaEvent> : EmaEventConsumer<E> {
      * @param event The event to be dispatched.
      * @param allowDuplicated If true, allows the same event to be dispatched multiple times before being consumed.
      */
-    fun postEvent(event: E, allowDuplicated: Boolean) {
+    fun publish(event: E, allowDuplicated: Boolean) {
         val id = nextId.addAndFetch(1)
         pendingEvents.update { pending ->
             if (!allowDuplicated && pending.any { it.event == event }) {
@@ -57,7 +57,7 @@ internal class EventDispatcher<E : EmaEvent> : EmaEventConsumer<E> {
         }
     }
 
-    // Emits only when new events are posted, not when pending ones are consumed
+    // Emits only when new events are published, not when pending ones are consumed
     override val eventFlow: Flow<List<E>> =
         pendingEvents
             .distinctUntilChanged { old, new -> old.containsAll(new) }

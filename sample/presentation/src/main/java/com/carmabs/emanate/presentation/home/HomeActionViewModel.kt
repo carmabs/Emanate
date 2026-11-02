@@ -44,7 +44,7 @@ class HomeActionViewModel(private val getUserFriendsUseCase: GetUserFriendsUseCa
     }
 
     private fun onActionCreateProfileClicked() {
-        postEvent(HomeEvent.ProfileClicked(user))
+        publish(HomeEvent.ProfileClicked(user))
     }
 
     override fun onBroadcastListenerSetup() {

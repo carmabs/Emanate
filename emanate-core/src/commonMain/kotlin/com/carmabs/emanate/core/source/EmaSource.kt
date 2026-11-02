@@ -392,9 +392,9 @@ class EmaSource<S : EmaState, A : EmaAction, E : EmaEvent> internal constructor(
      * The event goes through the queue, so it arrives after the actions dispatched before it and the view sees
      * their state when it receives the event
      */
-    internal fun postEvent(event: E, allowDuplicated: Boolean) {
+    internal fun publish(event: E, allowDuplicated: Boolean) {
         queue.trySend {
-            eventDispatcher.postEvent(event, allowDuplicated)
+            eventDispatcher.publish(event, allowDuplicated)
             observers.forEach { it.onEvent(event) }
         }
     }

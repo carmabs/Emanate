@@ -53,7 +53,7 @@ private class SaveSideEffect : SideEffect<EffectState, EffectAction, EffectEvent
     override suspend fun SideEffectScope<EffectState, EffectAction, EffectEvent>.invoke(action: EffectAction.Save) {
         delay(1000)
         dispatch(EffectAction.Saved)
-        postEvent(EffectEvent.SavedMessage)
+        publish(EffectEvent.SavedMessage)
     }
 }
 
@@ -74,7 +74,7 @@ class EmaSourceSideEffectTest {
                     received += "effect sees ${state.text}"
                     delay(1000)
                     dispatch(EffectAction.Loaded("loaded"))
-                    postEvent(EffectEvent.LoadedMessage)
+                    publish(EffectEvent.LoadedMessage)
                 }
                 +SaveSideEffect()
                 add<EffectAction.Fetch>(
@@ -105,7 +105,7 @@ class EmaSourceSideEffectTest {
     }
 
     @Test
-    fun `side effects dispatch actions and post events`() = runTest {
+    fun `side effects dispatch actions and publish events`() = runTest {
         val source = testSource()
 
         source.dispatch(EffectAction.Load)

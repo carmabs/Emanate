@@ -8,7 +8,7 @@ import com.carmabs.emanate.core.state.EmaState
  * Created by Carlos Mateo Benito on 11/10/2026.
  *
  * Scope of a reducer. It only gives access to the current state, so reducers stay pure: they can't dispatch
- * actions, post events or launch side effects.
+ * actions, publish events or launch side effects.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.

@@ -32,7 +32,7 @@ class EmaRecorder<S : EmaState, E : EmaEvent> internal constructor() {
         get() = recordedStates.toList()
 
     /**
-     * Posted events.
+     * Published events.
      */
     val events: List<E>
         get() = recordedEvents.toList()
@@ -82,14 +82,14 @@ class EmaRecorder<S : EmaState, E : EmaEvent> internal constructor() {
     }
 
     /**
-     * Checks that the posted events are [expected], in order.
+     * Checks that the published events are [expected], in order.
      */
     fun assertEvents(vararg expected: E) {
         assertEqualLists("events", expected.toList(), events)
     }
 
     /**
-     * Checks that no event has been posted.
+     * Checks that no event has been published.
      */
     fun assertNoEvents() {
         assertEqualLists("events", emptyList(), events)

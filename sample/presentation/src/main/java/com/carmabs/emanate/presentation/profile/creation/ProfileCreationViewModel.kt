@@ -59,11 +59,11 @@ class ProfileCreationViewModel(initialDataState: ProfileCreationState, private v
             add<ProfileCreationAction.DialogConfirmClicked> {
                 val user = User(state.name, state.surname, state.role)
                 broadcast(ProfileCreationBroadcast.UserCreated(user), keepUntilReceived = true)
-                postEvent(ProfileCreationEvent.DialogConfirmationAccepted)
+                publish(ProfileCreationEvent.DialogConfirmationAccepted)
             }
 
             add<ProfileCreationAction.DialogBackConfirm> {
-                postEvent(ProfileCreationEvent.DialogConfirmationAccepted)
+                publish(ProfileCreationEvent.DialogConfirmationAccepted)
             }
         }
     }
