@@ -6,6 +6,7 @@ import com.carmabs.emanate.core.model.EmaConfiguration
 import com.carmabs.emanate.core.source.sideeffect.SideEffect
 import com.carmabs.emanate.core.source.sideeffect.SideEffectConcurrency
 import com.carmabs.emanate.core.source.sideeffect.SideEffectScope
+import com.carmabs.emanate.core.source.sideeffect.sideEffectOf
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import kotlin.test.Test
@@ -342,5 +343,42 @@ class EmaSourceSideEffectTest {
         runCurrent()
         assertTrue(closed.isCompleted)
         assertTrue(finished.isEmpty())
+    }
+
+    @Test
+    fun `a side effect created with sideEffectOf keeps its concurrency and timeout`() = runTest {
+        // Created outside the setup, like a property or a dependency
+        val submit = sideEffectOf<EffectState, EffectAction, EffectEvent, EffectAction.Submit>(
+            EffectAction.Submit::class,
+            concurrency = SideEffectConcurrency.Leading
+        ) { action ->
+            delay(1000)
+            received += "submit ${action.id}"
+        }
+        val source = EmaSource<EffectState, EffectAction, EffectEvent>(
+            EffectState(),
+            configurationOn(UnconfinedTestDispatcher(testScheduler))
+        ) {
+            sideEffects {
+                +submit
+                // Created inside the block, with the types of the source
+                +sideEffectOf(EffectAction.Fetch::class, timeout = 1.seconds, onTimeout = { action ->
+                    received += "timeout ${action.id}"
+                }) { action ->
+                    delay(action.duration)
+                    received += "fetch ${action.id}"
+                }
+            }
+        }
+
+        source.dispatch(EffectAction.Submit(1))
+        source.dispatch(EffectAction.Submit(2))
+        source.dispatch(EffectAction.Fetch(id = 3, duration = 500))
+        source.dispatch(EffectAction.Fetch(id = 4, duration = 2000))
+        advanceTimeBy(3000)
+        runCurrent()
+
+        assertEquals(listOf("fetch 3", "submit 1", "timeout 4"), received)
+        source.close()
     }
 }

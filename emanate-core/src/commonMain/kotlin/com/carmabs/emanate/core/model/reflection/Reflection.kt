@@ -13,5 +13,5 @@ package com.carmabs.emanate.core.model.reflection
 data class Reflection internal constructor(
     val containerClassName: String,
     val containerClassQualifiedName: String,
-    val methodName: String
+    val name: String
 )

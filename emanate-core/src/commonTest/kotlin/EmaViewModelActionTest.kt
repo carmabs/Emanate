@@ -7,9 +7,8 @@ import com.carmabs.emanate.core.initializer.EmaInitializer
 import com.carmabs.emanate.core.logging.EmaLogger
 import com.carmabs.emanate.core.model.EmaConfiguration
 import com.carmabs.emanate.core.model.reflection.Reflection
-import com.carmabs.emanate.core.model.reflection.ReflectionData
-import com.carmabs.emanate.core.sideeffect.EmaMethodNameResolver
 import com.carmabs.emanate.core.sideeffect.EmaSideEffectListener
+import com.carmabs.emanate.core.sideeffect.SideEffectOutput
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.viewmodel.EmaViewModelAction
@@ -22,6 +21,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Duration
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -271,7 +271,7 @@ class EmaViewModelActionTest {
     }
 
     @Test
-    fun `the side effect listener and the errors receive the reflection with the resolved method name`() = runTest {
+    fun `the side effect listener and the errors receive the reflection with the name`() = runTest {
         val successes = mutableListOf<Reflection>()
         val finishes = mutableListOf<Reflection>()
         val errors = mutableListOf<Throwable>()
@@ -279,17 +279,16 @@ class EmaViewModelActionTest {
         Emanate.init(
             EmaConfiguration(
                 sideEffectListener = object : EmaSideEffectListener {
-                    override fun onSuccess(data: ReflectionData) {
-                        successes.add(data.reflection)
+                    override fun onSuccess(reflection: Reflection, output: SideEffectOutput, duration: Duration) {
+                        successes.add(reflection)
                     }
 
-                    override fun onFinish(reflection: Reflection) {
+                    override fun onFinish(reflection: Reflection, duration: Duration) {
                         finishes.add(reflection)
                     }
                 },
                 errorPolicy = EmaErrorPolicy.Catch { errors.add(it.exception) },
-                logger = EmaLogger { tag, message -> logs += "$tag: $message" },
-                methodNameResolver = EmaMethodNameResolver { _, _ -> "resolved" }
+                logger = EmaLogger { tag, message -> logs += "$tag: $message" }
             )
         )
         val viewModel = createViewModel()
@@ -298,29 +297,29 @@ class EmaViewModelActionTest {
         viewModel.launch(logName = "login") { 1 }
         viewModel.launch<Int> { error("boom") }
 
-        assertEquals(listOf("resolved", "login"), successes.map { it.methodName })
-        assertEquals(listOf("resolved", "login", "resolved"), finishes.map { it.methodName })
+        assertEquals(listOf("sideEffect", "login"), successes.map { it.name })
+        assertEquals(listOf("sideEffect", "login", "sideEffect"), finishes.map { it.name })
         assertEquals("CounterViewModel", successes.first().containerClassName)
         assertEquals("CounterViewModel", successes.first().containerClassQualifiedName)
         assertEquals(1, errors.size)
         // The caught errors are also logged
-        assertTrue(logs.any { it.startsWith("CounterViewModel: resolved failed: ") && "boom" in it })
+        assertTrue(logs.any { it.startsWith("CounterViewModel: sideEffect failed: ") && "boom" in it })
     }
 
     @Test
     fun `the default method name names the container`() = runTest {
-        var methodName: String? = null
+        var name: String? = null
         Emanate.init(
             EmaConfiguration(
                 sideEffectListener = object : EmaSideEffectListener {
-                    override fun onFinish(reflection: Reflection) {
-                        methodName = reflection.methodName
+                    override fun onFinish(reflection: Reflection, duration: Duration) {
+                        name = reflection.name
                     }
                 }
             )
         )
         createViewModel().launch { 1 }
-        assertEquals("Method in CounterViewModel", methodName)
+        assertEquals("sideEffect", name)
     }
 
     @Test

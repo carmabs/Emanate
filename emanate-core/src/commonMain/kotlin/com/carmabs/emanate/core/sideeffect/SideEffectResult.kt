@@ -14,10 +14,10 @@ import com.carmabs.emanate.core.model.EmaResult
 import com.carmabs.emanate.core.model.onFailure
 import com.carmabs.emanate.core.model.onSuccess
 import com.carmabs.emanate.core.model.reflection.Reflection
-import com.carmabs.emanate.core.model.reflection.ReflectionData
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.TimeSource
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -39,10 +39,10 @@ import kotlinx.coroutines.launch
  * @param container class that launches the side effect. It is reported in [Reflection]
  * @param scope where the side effect is launched
  * @param dispatcher where the side effect runs
- * @param logName name reported as method name in [Reflection]. If it is null,
- * [EmaConfiguration.methodNameResolver] is used
+ * @param logName name reported in [Reflection]. If it is null, "sideEffect" is used
  * @param configuration configuration applied
  * @param throwException if true, the exceptions are thrown instead of being handled
+ * @param output what the action has launched, given to the side effect listener when it succeeds
  * @param action function launched
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
@@ -53,6 +53,7 @@ class SideEffectResult<T> internal constructor(
     logName: String? = null,
     configuration: EmaConfiguration = Emanate.configuration,
     throwException: Boolean = configuration.errorPolicy is EmaErrorPolicy.Throw,
+    output: (() -> SideEffectOutput)? = null,
     action: suspend CoroutineScope.() -> T
 ) : OnSuccessFinish<T>,
     OnErrorFinish {
@@ -72,23 +73,34 @@ class SideEffectResult<T> internal constructor(
             Reflection(
                 containerClassName = container::class.simpleName.toNonNull(),
                 containerClassQualifiedName = container::class.qualifiedNameOrSimpleName,
-                methodName = logName ?: configuration.methodNameResolver.resolve(container, action)
+                name = logName ?: "sideEffect"
             )
         }
+        val start = TimeSource.Monotonic.markNow()
         try {
             val data = action.invoke(this)
-            configuration.sideEffectListener?.onSuccess(ReflectionData(reflection, data))
+            configuration.sideEffectListener?.onSuccess(
+                reflection,
+                output?.invoke() ?: SideEffectOutput(),
+                start.elapsedNow()
+            )
             result = EmaResult.success(data)
         } catch (e: Throwable) {
             // A cancellation is not an error: it must be propagated to keep the coroutine cancellable
-            if (e is CancellationException || throwException) {
+            if (e is CancellationException) {
                 throw e
             }
 
-            configuration.reportError(EmaError(reflection, e))
+            val error = EmaError(reflection, e)
+            configuration.sideEffectListener?.onError(error, start.elapsedNow())
+            if (throwException) {
+                throw e
+            }
+
+            configuration.reportError(error)
             result = EmaResult.failure(e)
         } finally {
-            configuration.sideEffectListener?.onFinish(reflection)
+            configuration.sideEffectListener?.onFinish(reflection, start.elapsedNow())
             result?.apply {
                 onSuccess {
                     successListener?.invoke(it)
