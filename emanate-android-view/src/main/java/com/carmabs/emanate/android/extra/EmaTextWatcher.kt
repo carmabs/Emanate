@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.extra
 
 import android.text.Editable
@@ -15,6 +17,9 @@ import com.carmabs.emanate.core.constants.STRING_EMPTY
  * Date: 2019-11-08
  */
 
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 class EmaTextWatcher(private val editText: EditText, private val action: (String?) -> Unit) {
 
     private var previousText = STRING_EMPTY

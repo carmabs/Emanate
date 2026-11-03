@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.compose.extension
 
 import android.Manifest
@@ -244,16 +246,11 @@ class EmaComposeExtensionsTest {
     }
 
     @Test
-    fun `ViewModels are cast to their action types`() {
+    fun `ViewModels are cast to their action dispatcher`() {
         val viewModel = CounterViewModel()
-        assertSame<Any>(viewModel, viewModel.asViewModelAction<CounterState, CounterAction, CounterEvent>())
         assertSame<Any>(viewModel, viewModel.asActionDispatcher<CounterAction>())
-        assertIs<EmaViewModelAction<*, *, *>>(viewModel.asViewModelAction<CounterState, CounterAction, CounterEvent>())
 
         val classic = ClassicViewModel()
-        assertFailsWith<IllegalStateException> {
-            classic.asViewModelAction<CounterState, CounterAction, CounterEvent>()
-        }
         assertFailsWith<IllegalStateException> { classic.asActionDispatcher<CounterAction>() }
     }
 

@@ -36,7 +36,7 @@ import com.carmabs.domain.model.Role
 import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.model.EmaText
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationAction
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationOverlap
+import com.carmabs.emanate.presentation.profile.creation.ProfileCreationDialog
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationState
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.base.compose.BaseScreenComposable
@@ -50,7 +50,7 @@ class ProfileCreationScreenContent :
 
     // When a dialog is shown, it handles the back press itself
     override fun onBack(state: ProfileCreationState): ProfileCreationAction? =
-        if (state.overlap == null) ProfileCreationAction.OnBack else null
+        if (state.dialog == null) ProfileCreationAction.OnBack else null
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -141,8 +141,8 @@ class ProfileCreationScreenContent :
             }
         }
 
-        state.overlap?.also {
-            Overlap(it, actions)
+        state.dialog?.also {
+            StateDialog(it, actions)
         }
     }
 
@@ -172,9 +172,9 @@ class ProfileCreationScreenContent :
     }
 
     @Composable
-    private fun Overlap(overlap: ProfileCreationOverlap, actions: EmaActionDispatcher<ProfileCreationAction>) {
-        when (overlap) {
-            ProfileCreationOverlap.DialogBackConfirmation -> {
+    private fun StateDialog(dialog: ProfileCreationDialog, actions: EmaActionDispatcher<ProfileCreationAction>) {
+        when (dialog) {
+            ProfileCreationDialog.BackConfirmation -> {
                 ShowDialog(
                     data = SimpleDialogData(
                         title = EmaText.id(R.string.profile_creation_user_exit_title),
@@ -198,8 +198,8 @@ class ProfileCreationScreenContent :
                 )
             }
 
-            is ProfileCreationOverlap.DialogUserCreated -> {
-                val title = when (overlap.role) {
+            is ProfileCreationDialog.UserCreated -> {
+                val title = when (dialog.role) {
                     Role.ADMIN -> R.string.profile_creation_user_admin_title
                     Role.BASIC -> R.string.profile_creation_user_basic_title
                 }
@@ -208,7 +208,7 @@ class ProfileCreationScreenContent :
                         title = EmaText.id(title),
                         message = EmaText.id(R.string.profile_creation_user_message),
                         showCancel = true,
-                        image = overlap.role.icon
+                        image = dialog.role.icon
                     ),
                     listener = object : SimpleDialogListener {
                         override fun onCancelClicked() {
@@ -242,7 +242,7 @@ class ProfileCreationScreenContent :
 
     @Preview
     @Composable
-    private fun NormalPreview() {
+    private fun PreviewNormal() {
         EmaSampleTheme {
             onState(
                 state = ProfileCreationState(
@@ -257,14 +257,14 @@ class ProfileCreationScreenContent :
 
     @Preview
     @Composable
-    private fun OverlappedPreview() {
+    private fun PreviewDialog() {
         EmaSampleTheme {
             onState(
                 state = ProfileCreationState(
                     Role.ADMIN,
                     "Carlos",
                     "Mateo",
-                    ProfileCreationOverlap.DialogUserCreated(Role.ADMIN)
+                    ProfileCreationDialog.UserCreated(Role.ADMIN)
                 ),
                 actions = EmaActionDispatcher.EMPTY
             )

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.compose.nav2
 
 import androidx.compose.foundation.clickable

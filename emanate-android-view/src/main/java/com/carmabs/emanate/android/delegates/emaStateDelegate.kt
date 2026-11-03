@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.delegates
 
 import kotlin.reflect.KProperty
@@ -12,6 +14,9 @@ import kotlin.reflect.KProperty
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
 @Suppress("ClassName")
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 class emaStateDelegate<T>(private val initialStateCreation: () -> T) {
 
     private var state: T? = null

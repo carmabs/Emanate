@@ -50,7 +50,7 @@ fun ErrorDialogComposable(dialogData: ErrorDialogData, dialogListener: ErrorDial
 
 @Preview
 @Composable
-fun OnErrorPreview() {
+fun PreviewOnError() {
     EmaSampleTheme {
         ErrorDialogComposable(
             ErrorDialogData(

@@ -9,15 +9,6 @@
     <string name="role_basic">Basic</string>
 
     <!--IMPLEMENTATION CHOICE-->
-    <string name="choice_title">Choose the ViewModel</string>
-    <string name="choice_subtitle">Emanate offers two ways to write the ViewModels. The screens of the sample are the same with both: only the ViewModel behind them changes, so you can compare them.</string>
-    <string name="choice_recommended">Recommended</string>
-    <string name="choice_classic">Classic</string>
-    <string name="choice_ema_view_model_title">EmaViewModel</string>
-    <string name="choice_ema_view_model_description">Every action goes through middlewares, pure reducers and side effects declared in setup. The state only changes in the reducers, so the flow is predictable and easy to test with emanate-test. The results between screens are broadcast actions.</string>
-    <string name="choice_ema_view_model_action_title">EmaViewModelAction</string>
-    <string name="choice_ema_view_model_action_description">The imperative style: every action is handled in onAction, which updates the state and launches the asynchronous work directly. It is kept for compatibility and to migrate the existing screens step by step.</string>
-    <string name="choice_hint">Go back from the login to try the other option.</string>
 
     <!--LOGIN-->
     <string name="login_title">Welcome</string>

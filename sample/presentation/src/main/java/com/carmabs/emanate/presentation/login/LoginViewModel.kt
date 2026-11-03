@@ -5,11 +5,11 @@ import com.carmabs.emanate.core.constants.STRING_EMPTY
 import com.carmabs.emanate.core.model.onFailure
 import com.carmabs.emanate.core.model.onSuccess
 import com.carmabs.emanate.core.source.sideeffect.SideEffectConcurrency
-import com.carmabs.emanate.presentation.base.BaseViewModel
+import com.carmabs.emanate.core.viewmodel.EmaViewModel
 import com.carmabs.emanate.presentation.home.HomeBroadcast
 
 class LoginViewModel(private val loginUseCase: LoginUseCase, initialDataState: LoginState) :
-    BaseViewModel<LoginState, LoginAction, LoginEvent>(initialDataState) {
+    EmaViewModel<LoginState, LoginAction, LoginEvent>(initialDataState) {
 
     override fun setup() = source {
         reducers {
@@ -39,10 +39,10 @@ class LoginViewModel(private val loginUseCase: LoginUseCase, initialDataState: L
 
                     is LoginRequest.Succeeded -> state.copy(isLoading = false)
 
-                    LoginRequest.Failed -> state.copy(isLoading = false, overlap = LoginOverlap.ErrorBadCredentials)
+                    LoginRequest.Failed -> state.copy(isLoading = false, dialog = LoginDialog.ErrorBadCredentials)
 
                     LoginAction.Error.BadCredentialsAccepted,
-                    LoginAction.Error.BackPressed -> state.copy(overlap = null)
+                    LoginAction.Error.BackPressed -> state.copy(dialog = null)
                 }
             }
         }

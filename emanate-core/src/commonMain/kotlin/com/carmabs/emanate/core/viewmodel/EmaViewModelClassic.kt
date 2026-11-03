@@ -37,6 +37,9 @@ import kotlinx.coroutines.launch
  *
  * @author <a href="mailto:apps.carmabs@gmail.com">Carlos Mateo Benito</a>
  */
+@Deprecated(
+    "Use EmaViewModel instead: it declares the reducers, middlewares and side effects of each action in setup."
+)
 abstract class EmaViewModelClassic<S : EmaState, E : EmaEvent>(
     initialDataState: S,
     private val configuration: EmaConfiguration = Emanate.configuration

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.navigation
 
 import android.app.Activity
@@ -19,6 +21,9 @@ import com.google.gson.Gson
  *  Navigator to handle navigation through navController in a Fragment
  * Created by: Carlos Mateo Benito on 29/07/22.
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 abstract class EmaFragmentNavControllerNavigator<E : EmaEvent>(private val fragment: Fragment) :
     EmaNavControllerNavigator<E> {
 

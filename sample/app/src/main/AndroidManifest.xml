@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name="com.carmabs.emanate.ui.splash.SplashActivity"
+        <activity android:name="com.carmabs.emanate.ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

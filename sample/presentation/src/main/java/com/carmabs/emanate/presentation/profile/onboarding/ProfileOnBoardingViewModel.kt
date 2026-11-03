@@ -2,10 +2,10 @@ package com.carmabs.emanate.presentation.profile.onboarding
 
 import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
-import com.carmabs.emanate.presentation.base.BaseViewModel
+import com.carmabs.emanate.core.viewmodel.EmaViewModel
 
 class ProfileOnBoardingViewModel(initialDataState: ProfileOnBoardingState) :
-    BaseViewModel<ProfileOnBoardingState, ProfileOnBoardingActions, ProfileOnBoardingEvent>(initialDataState) {
+    EmaViewModel<ProfileOnBoardingState, ProfileOnBoardingActions, ProfileOnBoardingEvent>(initialDataState) {
 
     override fun setup() = source {
         reducers {

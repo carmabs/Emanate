@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 import com.carmabs.emanate.core.Emanate
 import com.carmabs.emanate.core.action.EmaAction
 import com.carmabs.emanate.core.broadcast.EmaActionBroadcaster

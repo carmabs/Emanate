@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.extension
 
 import android.animation.AnimatorSet

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.ui.recycler
 
 import android.view.LayoutInflater
@@ -13,6 +15,9 @@ import androidx.viewbinding.ViewBinding
  * @author <a href="mailto:apps.carmabs@gmail.com">Carlos Mateo Benito</a>
  */
 
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 abstract class EmaRecyclerAdapter<B : ViewBinding, I : Any>(
     diffCallback: DiffUtil.ItemCallback<I> = getDefaultDiffCallback()
 ) : EmaBaseRecyclerAdapter<I>(diffCallback) {

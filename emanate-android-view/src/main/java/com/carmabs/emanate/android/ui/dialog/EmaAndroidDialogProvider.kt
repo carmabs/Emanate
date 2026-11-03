@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.ui.dialog
 
 import android.util.Log
@@ -12,6 +14,9 @@ import com.carmabs.emanate.core.dialog.EmaDialogProvider
  *
  * @author <a href="mailto:apps.carmabs@gmail.com">Carlos Mateo Benito</a>
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 abstract class EmaAndroidDialogProvider(
     private val fragmentManager: FragmentManager,
     private val dialogTag: String? = null

@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * Contract between a view and its view model: the state and the events the view observes and the lifecycle it
- * notifies. It is implemented by [EmaViewModel], the recommended view model, and by the classic [EmaViewModelClassic]
- * and [EmaViewModelAction].
+ * notifies. It is implemented by [EmaViewModel] and by the deprecated [EmaViewModelClassic] and
+ * [EmaViewModelAction].
  *
  * @author <a href="mailto:apps.carmabs@gmail.com">Carlos Mateo Benito</a>
  */

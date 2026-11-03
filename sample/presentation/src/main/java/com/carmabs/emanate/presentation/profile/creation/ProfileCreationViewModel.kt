@@ -4,11 +4,11 @@ import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
 import com.carmabs.emanate.core.savestate.EmaStateStore
 import com.carmabs.emanate.core.savestate.backupOf
-import com.carmabs.emanate.presentation.base.BaseViewModel
+import com.carmabs.emanate.core.viewmodel.EmaViewModel
 import com.carmabs.emanate.serialization.json
 
 class ProfileCreationViewModel(initialDataState: ProfileCreationState, private val stateStore: EmaStateStore) :
-    BaseViewModel<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>(initialDataState) {
+    EmaViewModel<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>(initialDataState) {
 
     override fun setup() = source {
         // The form is restored after the system kills the process, for example while the user changes a permission
@@ -39,17 +39,17 @@ class ProfileCreationViewModel(initialDataState: ProfileCreationState, private v
                     is ProfileCreationAction.UserSurnameWritten -> state.copy(surname = action.surname)
 
                     ProfileCreationAction.CreateClicked -> if (state.canCreate) {
-                        state.copy(overlap = ProfileCreationOverlap.DialogUserCreated(state.role))
+                        state.copy(dialog = ProfileCreationDialog.UserCreated(state.role))
                     } else {
                         state
                     }
 
-                    ProfileCreationAction.OnBack -> state.copy(overlap = ProfileCreationOverlap.DialogBackConfirmation)
+                    ProfileCreationAction.OnBack -> state.copy(dialog = ProfileCreationDialog.BackConfirmation)
 
                     ProfileCreationAction.DialogConfirmClicked,
                     ProfileCreationAction.DialogCancelClicked,
                     ProfileCreationAction.DialogBackConfirm,
-                    ProfileCreationAction.DialogBackCancel -> state.copy(overlap = null)
+                    ProfileCreationAction.DialogBackCancel -> state.copy(dialog = null)
                 }
             }
         }

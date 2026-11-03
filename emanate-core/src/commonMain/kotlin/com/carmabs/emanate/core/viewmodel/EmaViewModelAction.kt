@@ -20,6 +20,10 @@ import com.carmabs.emanate.core.state.EmaState
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
+@Suppress("DEPRECATION")
+@Deprecated(
+    "Use EmaViewModel instead: it declares the reducers, middlewares and side effects of each action in setup."
+)
 abstract class EmaViewModelAction<S : EmaState, A : EmaAction, E : EmaEvent>(
     initialDataState: S,
     configuration: EmaConfiguration = Emanate.configuration

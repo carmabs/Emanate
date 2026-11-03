@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.ui.recycler.decorator
 
 import android.graphics.Rect
@@ -13,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com.com”>Carlos Mateo Benito</a>
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 class EmaVerticalSpaceDecoration(
     private val verticalSpaceHeight: Int,
     private val addSpaceBelowLastItem: Boolean = false

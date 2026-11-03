@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.navigation
 
 import androidx.fragment.app.Fragment

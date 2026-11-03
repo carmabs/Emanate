@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.core.viewmodel
 
 import com.carmabs.emanate.core.Emanate

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.utils
 
 import android.view.View
@@ -9,6 +11,9 @@ import com.carmabs.emanate.core.utils.EmaViewUtils
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 object EmaAndroidViewUtils {
 
     /**
