@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.navigation
 
 import com.carmabs.emanate.core.model.EmaBackHandlerStrategy
@@ -11,6 +13,9 @@ import com.carmabs.emanate.core.model.EmaBackHandlerStrategy
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 interface EmaActivityBackDelegate {
 
     val ownsBackDelegate: Boolean

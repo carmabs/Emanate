@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.extra
 
 import android.content.Context
@@ -14,6 +16,9 @@ import com.carmabs.emanate.core.utils.EmaUtils
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 class EmaEditText : EditText {
 
     private var emaTextWatcher: EmaTextWatcher? = null

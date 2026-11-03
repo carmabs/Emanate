@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.navigation
 
 import android.app.Activity
@@ -20,6 +22,9 @@ import com.google.gson.Gson
  * It acts like a fragment host that navigates only through its child fragments.
  * Created by: Carlos Mateo Benito on 29/07/22.
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 class EmaActivityNavControllerHost(activity: Activity, navHostId: Int, graphId: Int) :
     EmaActivityNavControllerNavigator<EmaEvent.EMPTY>(activity, navHostId, graphId) {
 

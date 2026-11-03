@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.navigation
 
 import android.app.Activity
@@ -19,6 +21,9 @@ import com.carmabs.emanate.core.state.EmaEvent
  * Navigator to handle navigation through navController with navigation back support and no target navigation
  * Created by: Carlos Mateo Benito on 20/1/19.
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 interface EmaNavControllerNavigator<E : EmaEvent> : EmaNavigator<E> {
 
     val navController: NavController

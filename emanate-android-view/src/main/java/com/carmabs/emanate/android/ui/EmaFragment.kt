@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.ui
 
 import android.os.Bundle
@@ -18,6 +20,9 @@ import com.carmabs.emanate.core.viewmodel.EmaViewModelContract
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo</a>
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 abstract class EmaFragment<B : ViewBinding, S : EmaState, VM : EmaViewModelContract<S, E>, E : EmaEvent> :
     EmaCoreFragment<S, VM, E>() {
 

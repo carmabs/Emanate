@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.base
 
 import android.content.Intent
@@ -37,6 +39,9 @@ import kotlinx.coroutines.Job
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo</a>
  */
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 abstract class EmaCoreFragment<S : EmaState, VM : EmaViewModelContract<S, E>, E : EmaEvent> :
     Fragment(),
     EmaAndroidView<S, VM, E> {

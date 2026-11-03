@@ -1,9 +1,14 @@
+@file:Suppress("DEPRECATION")
+
 package com.carmabs.emanate.android.ui.recycler.decorator
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
+@Deprecated(
+    "Emanate will work only with Compose and EmaViewModel. Build the screens with emanate-compose-android and EmaViewModel instead of Views."
+)
 class EmaGridSpacingItemDecoration(
     private val spanCount: Int,
     private val spacing: Int,
