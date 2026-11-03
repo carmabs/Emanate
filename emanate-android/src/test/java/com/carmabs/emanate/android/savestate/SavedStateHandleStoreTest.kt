@@ -37,9 +37,11 @@ private class NameViewModel(private val store: EmaStateStore) :
 
     override fun setup() = source {
         plugins {
-            +backupOf(store) {
-                add("name", save = { name.takeIf { it.isNotEmpty() } }, restore = { copy(name = it) })
-            }
+            add(
+                backupOf(store) {
+                    add("name", save = { name.takeIf { it.isNotEmpty() } }, restore = { copy(name = it) })
+                }
+            )
         }
         reducers {
             add<NameAction.Written> { action -> state.copy(name = action.name) }

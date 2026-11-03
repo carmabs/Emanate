@@ -58,9 +58,26 @@ class EmaSourcePluginTest {
     fun `the plugins add their pieces in the order they are added`() = runTest {
         val source = textSource {
             plugins {
-                +SuffixPlugin("a")
-                +SuffixPlugin("b")
-                +SuffixPlugin("c")
+                add(SuffixPlugin("a"))
+                add(SuffixPlugin("b"))
+                add(SuffixPlugin("c"))
+            }
+        }
+
+        source.dispatch(TextAction.Write)
+        runCurrent()
+
+        assertEquals("abc", source.state.text)
+        source.close()
+    }
+
+    @Test
+    fun `several plugins are added at once in the order they are given`() = runTest {
+        val source = textSource {
+            plugins {
+                add(SuffixPlugin("a"), SuffixPlugin("b"))
+                add(StampPlugin(), StampPlugin())
+                add(SuffixPlugin("c"))
             }
         }
 
@@ -78,7 +95,7 @@ class EmaSourcePluginTest {
                 add<TextAction.Write> { state.copy(text = state.text + "1") }
             }
             plugins {
-                +SuffixPlugin("a")
+                add(SuffixPlugin("a"))
             }
             reducers {
                 add<TextAction.Write> { state.copy(text = state.text + "2") }
@@ -96,7 +113,7 @@ class EmaSourcePluginTest {
     fun `the source receives the actions dispatched by a plugin`() = runTest {
         val source = textSource {
             plugins {
-                +StampPlugin()
+                add(StampPlugin())
             }
             reducers {
                 add<TextAction.Write> { state.copy(text = state.text + "a") }
@@ -115,8 +132,8 @@ class EmaSourcePluginTest {
     fun `the setup knows the type of the actions of each plugin`() {
         val setup = buildSourceSetup<TextState, TextAction, EmaEvent.EMPTY> {
             plugins {
-                +SuffixPlugin("a")
-                +StampPlugin()
+                add(SuffixPlugin("a"))
+                add(StampPlugin())
             }
         }
 
@@ -130,7 +147,7 @@ class EmaSourcePluginTest {
             plugins { scope = this }
         }
 
-        assertFailsWith<IllegalStateException> { with(scope) { +SuffixPlugin("a") } }
+        assertFailsWith<IllegalStateException> { with(scope) { add(SuffixPlugin("a")) } }
         source.close()
     }
 }

@@ -7,9 +7,9 @@ import com.carmabs.emanate.core.state.EmaState
 /**
  * Created by Carlos Mateo Benito on 14/10/2026.
  *
- * Adds the values of an [EmaBackup], created with backupOf: with add, or with `+` for the ones already created. Each
- * value is saved every time it changes and, after the death of the process, it is restored in the order they are
- * added.
+ * Adds the values of an [EmaBackup], created with backupOf, with [add]: the ones already created, alone or joined with
+ * `+`, or a new one with its key. Each value is saved every time it changes and, after the death of the process, it is
+ * restored in the order they are added.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -24,18 +24,33 @@ class BackupSetupScope<S : EmaState> internal constructor(private val guard: Set
         private set
 
     /**
-     * Adds a saved value already created.
-     *
-     * @throws IllegalArgumentException if its key is already saved
+     * Joins two saved values already created to add them together with [add].
      */
-    operator fun EmaBackupValue<S, *>.unaryPlus() {
-        include(this)
+    operator fun EmaBackupValue<S, *>.plus(other: EmaBackupValue<S, *>): List<EmaBackupValue<S, *>> =
+        listOf(this, other)
+
+    /**
+     * Adds saved values already created, in the order they are given.
+     *
+     * @throws IllegalArgumentException if the key of any is already saved
+     */
+    fun add(vararg savedValues: EmaBackupValue<S, *>) {
+        add(savedValues.asList())
     }
 
-    private fun include(savedValue: EmaBackupValue<S, *>) {
+    /**
+     * Adds saved values already created, in the order of the collection.
+     *
+     * @throws IllegalArgumentException if the key of any is already saved
+     */
+    fun add(savedValues: Iterable<EmaBackupValue<S, *>>) {
         guard.checkNotBuilt()
-        require(backupValueList.none { it.key == savedValue.key }) { "The key ${savedValue.key} is already saved" }
-        backupValueList = backupValueList + savedValue
+        var added = backupValueList
+        savedValues.forEach { savedValue ->
+            require(added.none { it.key == savedValue.key }) { "The key ${savedValue.key} is already saved" }
+            added = added + savedValue
+        }
+        backupValueList = added
     }
 
     /**
@@ -46,7 +61,7 @@ class BackupSetupScope<S : EmaState> internal constructor(private val guard: Set
      * @param restore returns the state with the saved text restored
      */
     fun add(key: String, save: S.() -> String?, restore: S.(value: String) -> S) {
-        include(savedValueOf(key, save, restore))
+        add(savedValueOf(key, save, restore))
     }
 
     /**
@@ -57,6 +72,6 @@ class BackupSetupScope<S : EmaState> internal constructor(private val guard: Set
      * @param restore returns the state with the saved value restored
      */
     fun <T> add(key: String, codec: EmaBackupCodec<T>, save: S.() -> T?, restore: S.(value: T) -> S) {
-        include(savedValueOf(key, codec, save, restore))
+        add(savedValueOf(key, codec, save, restore))
     }
 }

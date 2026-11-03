@@ -9,8 +9,8 @@ import kotlin.reflect.KClass
 /**
  * Created by Carlos Mateo Benito on 12/10/2026.
  *
- * Block of setup that adds the reducers of the source: with [add], or with `+` for the ones already created. Each one
- * only receives the actions of its type, in the order they are added.
+ * Block of setup that adds the reducers of the source with [add]: the ones already created, alone or joined with `+`,
+ * or a new one for the actions of a type. Each one only receives the actions of its type, in the order they are added.
  *
  * <p>
  * Copyright (c) 2026 by Carmabs. All rights reserved.
@@ -25,15 +25,23 @@ class ReducerSetupScope<S : EmaState> internal constructor(private val guard: Se
         private set
 
     /**
-     * Adds a reducer already created.
+     * Joins two reducers already created to add them together with [add].
      */
-    operator fun EmaReducer<S, *>.unaryPlus() {
-        include(this)
+    operator fun EmaReducer<S, *>.plus(other: EmaReducer<S, *>): List<EmaReducer<S, *>> = listOf(this, other)
+
+    /**
+     * Adds reducers already created, in the order they are given.
+     */
+    fun add(vararg reducers: EmaReducer<S, *>) {
+        add(reducers.asList())
     }
 
-    private fun include(reducer: EmaReducer<S, *>) {
+    /**
+     * Adds reducers already created, in the order of the collection.
+     */
+    fun add(reducers: Iterable<EmaReducer<S, *>>) {
         guard.checkNotBuilt()
-        reducerList = reducerList + reducer
+        reducerList = reducerList + reducers
     }
 
     /**
@@ -41,7 +49,7 @@ class ReducerSetupScope<S : EmaState> internal constructor(private val guard: Se
      */
     @PublishedApi
     internal fun <F : EmaAction> add(filter: KClass<F>, reduceAction: ReducerScope<S>.(F) -> S) {
-        include(reducerOf(filter, reduceAction))
+        add(reducerOf(filter, reduceAction))
     }
 
     /**

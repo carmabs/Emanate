@@ -32,9 +32,11 @@ private class SearchViewModel(private val store: EmaStateStore) :
     ) {
     override fun setup() = source {
         plugins {
-            +backupOf(store) {
-                add("query", save = { query }, restore = { copy(query = it) })
-            }
+            add(
+                backupOf(store) {
+                    add("query", save = { query }, restore = { copy(query = it) })
+                }
+            )
         }
         reducers {
             add<SearchAction.QueryWritten> { action -> state.copy(query = action.query) }

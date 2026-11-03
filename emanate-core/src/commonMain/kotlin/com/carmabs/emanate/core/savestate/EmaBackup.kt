@@ -88,8 +88,8 @@ class EmaBackup<S : EmaState> internal constructor(
             .takeIf { it.isNotEmpty() }
             ?.let { repeatedKeys -> throw IllegalArgumentException("The backups have repeated keys: $repeatedKeys") }
         installed = true
-        setup.reducers { +restoreReducer }
-        setup.middlewares(MiddlewarePosition.Last) { +backupMiddleware }
+        setup.reducers { add(restoreReducer) }
+        setup.middlewares(MiddlewarePosition.Last) { add(backupMiddleware) }
     }
 
     /**

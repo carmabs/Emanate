@@ -44,7 +44,7 @@ class EmaSourceTest {
         }
         // A second block adds its reducers after the ones of the first block
         reducers {
-            +reducerOf(CounterAction.Set::class) { action -> state.copy(count = action.count) }
+            add(reducerOf(CounterAction.Set::class) { action -> state.copy(count = action.count) })
         }
     }
 
@@ -71,6 +71,59 @@ class EmaSourceTest {
 
         assertEquals(CounterState(count = 10), source.state)
         source.close()
+    }
+
+    private fun TestScope.countAfterIncrement(setup: ReducerSetupScope<CounterState>.() -> Unit): Int {
+        val source = EmaSource<CounterState, CounterAction, CounterEvent>(
+            CounterState(),
+            configurationOn(UnconfinedTestDispatcher(testScheduler))
+        ) {
+            reducers(setup)
+        }
+        source.dispatch(CounterAction.Increment)
+        runCurrent()
+        val count = source.state.count
+        source.close()
+        return count
+    }
+
+    @Test
+    fun `the reducers already created are added alone or joined with plus or from a collection in order`() = runTest {
+        val double =
+            reducerOf<CounterState, CounterAction.Increment>(CounterAction.Increment::class) {
+                state.copy(
+                    count =
+                        state.count * 2
+                )
+            }
+        val addOne =
+            reducerOf<CounterState, CounterAction.Increment>(CounterAction.Increment::class) {
+                state.copy(
+                    count =
+                        state.count + 1
+                )
+            }
+        val addTen =
+            reducerOf<CounterState, CounterAction.Increment>(CounterAction.Increment::class) {
+                state.copy(
+                    count =
+                        state.count + 10
+                )
+            }
+
+        // (0 * 2) + 1 = 1, and the other way round (0 + 1) * 2 = 2
+        assertEquals(1, countAfterIncrement { add(double, addOne) })
+        assertEquals(2, countAfterIncrement { add(addOne, double) })
+        assertEquals(1, countAfterIncrement { add(double + addOne) })
+        assertEquals(11, countAfterIncrement { add(double + addOne + addTen) })
+        assertEquals(11, countAfterIncrement { add(listOf(double, addOne, addTen)) })
+        assertEquals(
+            11,
+            countAfterIncrement {
+                add(double)
+                add(addOne + addTen)
+            }
+        )
     }
 
     @Test

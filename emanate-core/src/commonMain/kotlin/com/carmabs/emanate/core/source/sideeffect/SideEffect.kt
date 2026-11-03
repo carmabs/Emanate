@@ -64,7 +64,7 @@ interface SideEffect<in S : EmaState, out A : EmaAction, out E : EmaEvent, F : E
 
 /**
  * Creates a side effect for the actions of type [actionType], to declare it as a property, share it between sources or
- * receive it in a constructor, and add it with `+` in the sideEffects block.
+ * receive it in a constructor, and add it with add in the sideEffects block.
  * @param concurrency what happens when an action launches it while it is still running
  * @param timeout if the side effect doesn't finish in this time, it is cancelled and [onTimeout] is called
  * @param survivesClose whether it can finish after the source is closed, up to its timeout or the closeTimeout of the

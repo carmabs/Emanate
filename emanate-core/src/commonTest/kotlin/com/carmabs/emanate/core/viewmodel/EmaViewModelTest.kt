@@ -148,11 +148,11 @@ private class TestViewModel(
                 received += "initializer $action"
                 next()
             }
-            +middlewareDelayOf(TestAction.Slow::class, 1.seconds)
+            add(middlewareDelayOf(TestAction.Slow::class, 1.seconds))
         }
         reducers {
             add<TestAction.Increment> { state.copy(count = state.count + 1) }
-            +decrementReducer
+            add(decrementReducer)
             add<TestAction.Slow> { state.copy(count = state.count + 1) }
             add<TestAction.Update> { action -> state.copy(text = action.text) }
             add<TestInitializer> { action -> state.copy(text = action.text) }
@@ -161,7 +161,7 @@ private class TestViewModel(
             add<TestAction.Load> { state.copy(text = "loading") }
         }
         sideEffects {
-            +loadSideEffect
+            add(loadSideEffect)
         }
         broadcasts {
             listen<TextSent>()

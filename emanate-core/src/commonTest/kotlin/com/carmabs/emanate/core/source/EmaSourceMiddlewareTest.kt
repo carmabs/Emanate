@@ -2,7 +2,9 @@ package com.carmabs.emanate.core.source
 
 import com.carmabs.emanate.core.action.EmaAction
 import com.carmabs.emanate.core.configurationOn
+import com.carmabs.emanate.core.source.middleware.MiddlewareSetupScope
 import com.carmabs.emanate.core.source.middleware.middlewareDelayOf
+import com.carmabs.emanate.core.source.middleware.middlewareOf
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import kotlin.test.Test
@@ -40,6 +42,46 @@ class EmaSourceMiddlewareTest {
 
     private val received = mutableListOf<String>()
 
+    private fun TestScope.orderAfterIncrement(
+        setup: MiddlewareSetupScope<TestState, TestAction>.() -> Unit
+    ): List<String> {
+        val source = EmaSource<TestState, TestAction, TestEvent>(
+            TestState(),
+            configurationOn(UnconfinedTestDispatcher(testScheduler))
+        ) {
+            middlewares { setup() }
+        }
+        source.dispatch(TestAction.Increment)
+        runCurrent()
+        source.close()
+        return received.toList().also { received.clear() }
+    }
+
+    @Test
+    fun `the middlewares already created are added alone or joined with plus or from a collection in order`() =
+        runTest {
+            fun named(name: String) =
+                middlewareOf<TestState, TestAction, TestAction.Increment>(TestAction.Increment::class) {
+                    received += name
+                    next()
+                }
+            val a = named("a")
+            val b = named("b")
+            val c = named("c")
+
+            assertEquals(listOf("a", "b"), orderAfterIncrement { add(a, b) })
+            assertEquals(listOf("b", "a"), orderAfterIncrement { add(b, a) })
+            assertEquals(listOf("a", "b", "c"), orderAfterIncrement { add(a + b + c) })
+            assertEquals(listOf("a", "b", "c"), orderAfterIncrement { add(listOf(a, b, c)) })
+            assertEquals(
+                listOf("a", "b", "c"),
+                orderAfterIncrement {
+                    add(a)
+                    add(b + c)
+                }
+            )
+        }
+
     private fun TestScope.testSource() = EmaSource<TestState, TestAction, TestEvent>(
         TestState(),
         configurationOn(UnconfinedTestDispatcher(testScheduler))
@@ -47,7 +89,7 @@ class EmaSourceMiddlewareTest {
         middlewares {
             add<TestAction.Blocked> { received += "blocked" }
             add<TestAction.Replaced> { next(TestAction.Update("replaced")) }
-            +middlewareDelayOf(TestAction.Slow::class, 1.seconds)
+            add(middlewareDelayOf(TestAction.Slow::class, 1.seconds))
             add<TestAction.NextTwice> {
                 next()
                 received += runCatching { next() }.exceptionOrNull()?.message.orEmpty()
