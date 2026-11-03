@@ -4,11 +4,11 @@ import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
 import com.carmabs.emanate.core.savestate.EmaStateStore
 import com.carmabs.emanate.core.savestate.backupOf
-import com.carmabs.emanate.presentation.base.BaseViewModel
+import com.carmabs.emanate.core.viewmodel.EmaViewModel
 import com.carmabs.emanate.serialization.json
 
 class ProfileCreationViewModel(initialDataState: ProfileCreationState, private val stateStore: EmaStateStore) :
-    BaseViewModel<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>(initialDataState) {
+    EmaViewModel<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>(initialDataState) {
 
     override fun setup() = source {
         // The form is restored after the system kills the process, for example while the user changes a permission

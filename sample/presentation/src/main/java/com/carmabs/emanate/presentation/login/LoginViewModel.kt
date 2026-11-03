@@ -5,11 +5,11 @@ import com.carmabs.emanate.core.constants.STRING_EMPTY
 import com.carmabs.emanate.core.model.onFailure
 import com.carmabs.emanate.core.model.onSuccess
 import com.carmabs.emanate.core.source.sideeffect.SideEffectConcurrency
-import com.carmabs.emanate.presentation.base.BaseViewModel
+import com.carmabs.emanate.core.viewmodel.EmaViewModel
 import com.carmabs.emanate.presentation.home.HomeBroadcast
 
 class LoginViewModel(private val loginUseCase: LoginUseCase, initialDataState: LoginState) :
-    BaseViewModel<LoginState, LoginAction, LoginEvent>(initialDataState) {
+    EmaViewModel<LoginState, LoginAction, LoginEvent>(initialDataState) {
 
     override fun setup() = source {
         reducers {

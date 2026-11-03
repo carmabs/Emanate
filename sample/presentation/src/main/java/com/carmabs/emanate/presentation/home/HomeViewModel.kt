@@ -2,11 +2,11 @@ package com.carmabs.emanate.presentation.home
 
 import com.carmabs.domain.model.User
 import com.carmabs.domain.usecase.GetUserFriendsUseCase
-import com.carmabs.emanate.presentation.base.BaseViewModel
+import com.carmabs.emanate.core.viewmodel.EmaViewModel
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationBroadcast
 
 class HomeViewModel(private val getUserFriendsUseCase: GetUserFriendsUseCase, initialDataState: HomeState) :
-    BaseViewModel<HomeState, HomeAction, HomeEvent>(initialDataState) {
+    EmaViewModel<HomeState, HomeAction, HomeEvent>(initialDataState) {
 
     override fun setup() = source {
         reducers {
