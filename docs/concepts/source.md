@@ -119,7 +119,7 @@ them, add `loggerMiddleware` as its last middleware:
 ```kotlin
 fun cartSource() = EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState()) {
     middlewares(MiddlewarePosition.Last) {
-        +loggerMiddleware(tag = "Cart", logger = EmaLogger.Println)
+        add(loggerMiddleware(tag = "Cart", logger = EmaLogger.Println))
     }
     // ...
 }

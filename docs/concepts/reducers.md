@@ -88,7 +88,7 @@ reducers {
 ## Reducers as values
 
 A reducer can also be created with `reducerOf`, to declare it as a property, share it or receive it in the
-constructor, and added with `+`:
+constructor, and added with `add`:
 
 ```kotlin
 class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
@@ -98,7 +98,7 @@ class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()
     }
 
     override fun setup() = source {
-        reducers { +queryReducer }
+        reducers { add(queryReducer) }
     }
 }
 ```

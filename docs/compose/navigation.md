@@ -129,7 +129,7 @@ The initializer reaches the ViewModel as an action, the first time the screen is
 |--------------------------------------------|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
 | `fromRoute(serializer)`                    | The route of the destination.                                                           | Most screens: the ones you reach with `navigate(route, initializerBundle)`.    |
 | `fromIntent(serializer)`                   | The route and, if it has none, the intent of the activity.                              | The first screen of an activity that is opened with an initializer.            |
-| `fromBundle(serializer, bundle)`           | The route and, if it has none, the `Bundle` that you give it.                           | A graph inside a `ComposeView` of a fragment, with the arguments of the fragment. |
+| `fromBundle(serializer, bundle)`           | The route and, if it has none, the `Bundle` that you give it.                           | A graph that receives its arguments in a `Bundle`.                             |
 | `fromInitializer(serializer, initializer)` | The route and, if it has none, the initializer that you give it.                        | An initializer that you already have, like the one of a deep link, or a test.  |
 
 In all of them **the route wins**: if it carries an initializer, the screen uses it. The origin of the function is

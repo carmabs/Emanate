@@ -16,14 +16,14 @@ class ProfileCreationViewModel(
 
     override fun setup() = source {
         plugins {
-            +backupOf(stateStore) {
+            add(backupOf(stateStore) {
                 add(
                     key = "form",
                     codec = json(),
                     save = { ProfileCreationForm(name, surname) },
                     restore = { form -> copy(name = form.name, surname = form.surname) }
                 )
-            }
+            })
         }
         reducers { /* ... */ }
     }
@@ -93,7 +93,7 @@ Each value has a unique key, a function that reads it from the state and another
 |---------------------------------------------|------------------------------------------------------------------------|
 | `add(key, save, restore)`                   | A `String`.                                                            |
 | `add(key, codec, save, restore)`            | A value of any type, converted to text with an `EmaBackupCodec`.       |
-| `+value`                                    | A value already created.                                               |
+| `add(value)`                                | A value already created. It accepts several, or a collection.         |
 
 `save` returns `null` to save nothing. The values are restored in the order they are added.
 
@@ -121,13 +121,13 @@ restored: the screen keeps its initial state.
 The simplest case: one `String` and no codec. `save` reads it from the state and `restore` puts it back.
 
 ```kotlin
-+backupOf(stateStore) {
+add(backupOf(stateStore) {
     add(
         key = "search",
         save = { query },                       // what is saved every time the state changes
         restore = { saved -> copy(query = saved) } // how the state is rebuilt with it
     )
-}
+})
 ```
 
 ### 2. Save several fields as one value
@@ -138,14 +138,14 @@ Group the fields in a `@Serializable` class and use `json()`. One key, one value
 @Serializable
 data class SignUpForm(val email: String, val acceptedTerms: Boolean)
 
-+backupOf(stateStore) {
+add(backupOf(stateStore) {
     add(
         key = "form",
         codec = json(),
         save = { SignUpForm(email, acceptedTerms) },
         restore = { form -> copy(email = form.email, acceptedTerms = form.acceptedTerms) }
     )
-}
+})
 ```
 
 ### 3. Save several independent values
@@ -153,10 +153,10 @@ data class SignUpForm(val email: String, val acceptedTerms: Boolean)
 Add one value for each thing, with its own key. They are restored in the order they are added.
 
 ```kotlin
-+backupOf(stateStore) {
+add(backupOf(stateStore) {
     add(key = "name", save = { name }, restore = { copy(name = it) })
     add(key = "surname", save = { surname }, restore = { copy(surname = it) })
-}
+})
 ```
 
 ### 4. Save nothing in some cases
@@ -194,9 +194,9 @@ By default the values are restored after the [initializer](initializers.md). If 
 action, tell the backup with `restoreOn`:
 
 ```kotlin
-+backupOf(stateStore, restoreOn = ScreenOpened::class) {
+add(backupOf(stateStore, restoreOn = ScreenOpened::class) {
     add(key = "name", save = { name }, restore = { copy(name = it) })
-}
+})
 ```
 
 ### 7. Put it all together
@@ -211,14 +211,14 @@ class SignUpViewModel(
 
     override fun setup() = source {
         plugins {
-            +backupOf(stateStore) {
+            add(backupOf(stateStore) {
                 add(
                     key = "form",
                     codec = json(),
                     save = { SignUpForm(email, acceptedTerms) },
                     restore = { form -> copy(email = form.email, acceptedTerms = form.acceptedTerms) }
                 )
-            }
+            })
         }
         reducers {
             add<SignUpAction.EmailWritten> { state.copy(email = action.email) }

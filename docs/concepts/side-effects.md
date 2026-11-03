@@ -132,7 +132,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
     }
 
     override fun setup() = source {
-        sideEffects { +openFriend }
+        sideEffects { add(openFriend) }
     }
 }
 ```

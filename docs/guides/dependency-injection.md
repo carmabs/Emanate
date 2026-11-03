@@ -114,7 +114,7 @@ class LiveFriends(private val getFriendsUseCase: GetFriendsUseCase) : FriendsEff
 }
 ```
 
-The ViewModel receives it and installs it with `+`. Middlewares can be received the same way:
+The ViewModel receives it and installs it with `add`. Middlewares can be received the same way:
 
 ```kotlin
 class HomeViewModel(
@@ -126,7 +126,7 @@ class HomeViewModel(
     override fun setup() = source {
         // Before anything else, so they see every action first
         middlewares(MiddlewarePosition.First) {
-            tuning.forEach { +it }
+            tuning.forEach { add(it) }
         }
         reducers {
             add<HomeAction> { action ->
@@ -139,7 +139,7 @@ class HomeViewModel(
             }
         }
         sideEffects {
-            +loadFriends
+            add(loadFriends)
             add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
         }
     }
@@ -288,7 +288,7 @@ class HomeViewModel(
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
 
     override fun setup() = source {
-        reducers { +userReducer }
+        reducers { add(userReducer) }
     }
 }
 

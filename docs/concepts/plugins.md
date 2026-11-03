@@ -11,12 +11,12 @@ copied in every ViewModel, or hidden in a base class that every screen must exte
 
 ## Installing a plugin
 
-Plugins are installed in the `plugins` block of the `setup`, with `+`:
+Plugins are installed in the `plugins` block of the `setup`, with `add`:
 
 ```kotlin
 override fun setup() = source {
     plugins {
-        +ScreenAnalytics<HomeState>(tracker, screen = "Home")
+        add(ScreenAnalytics<HomeState>(tracker, screen = "Home"))
     }
     reducers { /* ... */ }
 }
@@ -92,7 +92,7 @@ The screen installs it and reacts to its action like to any other:
 ```kotlin
 override fun setup() = source {
     plugins {
-        +SessionGuard<HomeState>(session)
+        add(SessionGuard<HomeState>(session))
     }
     sideEffects {
         add<SessionAction.Expired> { publish(HomeEvent.SessionExpired) }
@@ -113,7 +113,7 @@ override fun setup() = source {
         add<HomeAction> { /* reducer 1 */ }
     }
     plugins {
-        +MyPlugin()  // Its reducer and its side effect go here
+        add(MyPlugin())  // Its reducer and its side effect go here
     }
     reducers {
         add<HomeAction> { /* reducer 3 */ }
@@ -135,8 +135,8 @@ override fun setup() = source {
         add<HomeAction> { /* middleware of the screen */ }
     }
     plugins {
-        +SessionGuard<HomeState>(session)  // Its middleware is First
-        +backup                            // Its middleware is Last
+        add(SessionGuard<HomeState>(session))  // Its middleware is First
+        add(backup)                            // Its middleware is Last
     }
 }
 ```

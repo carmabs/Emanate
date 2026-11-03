@@ -64,7 +64,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
 - The **side effects** run the business logic and report it with actions (`HomeAction.EffectQueryResult`) or events.
 
 The same pieces can also be declared as properties of the ViewModel, with `middlewareOf`, `reducerOf` and
-`sideEffectOf`, and installed with `+`. Then each one can be reused, received in the constructor to
+`sideEffectOf`, and installed with `add`. Then each one can be reused, received in the constructor to
 [change it by environment](guides/dependency-injection.md), or tested on its own:
 
 ```kotlin
@@ -97,11 +97,10 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
     }
 
     override fun setup() = source {
-        middlewares { +searchDebounce }
-        reducers { +homeReducer }
+        middlewares { add(searchDebounce) }
+        reducers { add(homeReducer) }
         sideEffects {
-            +searchFriends
-            +openFriend
+            add(searchFriends, openFriend)
         }
     }
 }

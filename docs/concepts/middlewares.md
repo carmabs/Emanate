@@ -85,7 +85,7 @@ For a fixed delay, `middlewareDelayOf` creates the middleware for you:
 middlewares {
     // Every refresh waits two seconds.
     // This can be useful, for example, to see the loading state in a test build
-    +middlewareDelayOf(HomeAction.RefreshRequested::class, 2.seconds)
+    add(middlewareDelayOf(HomeAction.RefreshRequested::class, 2.seconds))
 }
 ```
 
@@ -200,7 +200,7 @@ class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()
     }
 
     override fun setup() = source {
-        middlewares { +blankQueryAsClear }
+        middlewares { add(blankQueryAsClear) }
         // ...
     }
 }
@@ -214,7 +214,7 @@ class HomeViewModel(
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
 
     override fun setup() = source {
-        middlewares(MiddlewarePosition.First) { tuning.forEach { +it } }
+        middlewares(MiddlewarePosition.First) { tuning.forEach { add(it) } }
         // ...
     }
 }

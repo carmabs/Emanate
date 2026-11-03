@@ -32,7 +32,7 @@ class HomeViewModel(private val loadFriends: FriendsEffect) :
     override fun setup() = source {
         reducers { /* ... */ }
         sideEffects {
-            +loadFriends
+            add(loadFriends)
         }
     }
 }
@@ -100,7 +100,7 @@ And any screen installs it:
 ```kotlin
 override fun setup() = source {
     plugins {
-        +ScreenAnalytics<HomeState>(tracker, screen = "Home")
+        add(ScreenAnalytics<HomeState>(tracker, screen = "Home"))
     }
     reducers { /* ... */ }
 }
@@ -185,9 +185,9 @@ restores them when the screen comes back, with no platform code in the ViewModel
 
 ```kotlin
 plugins {
-    +backupOf(stateStore) {
+    add(backupOf(stateStore) {
         add("search", save = { query }, restore = { saved -> copy(query = saved) })
-    }
+    })
 }
 ```
 

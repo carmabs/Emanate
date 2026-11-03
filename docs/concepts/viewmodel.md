@@ -109,8 +109,9 @@ This ViewModel has no middlewares, so each action goes straight on, as if a midd
 
 A few rules apply to all of them:
 
-- **`add<Type> { }` creates a piece** for the actions of that type, and **`+` installs a piece that already exists**,
-  like a property of the ViewModel or a plugin.
+- **`add<Type> { }` creates a piece** for the actions of that type, and **`add(piece)` installs a piece that already exists**,
+  like a property of the ViewModel or a plugin. `add` accepts several pieces, `add(first, second)`, or a collection,
+  `add(pieces)`. Two pieces of the same kind can also be joined with `first + second`, which gives a list that `add` accepts.
 - **The pieces of the same kind run in the order they are added.** A block can be used more than once: its pieces go
   after the ones of the previous blocks of the same kind.
 - **`setup` runs once**, the first time the ViewModel is used, not in its constructor. So it can use the properties of
@@ -119,7 +120,7 @@ A few rules apply to all of them:
 ### Pieces are values
 
 A piece doesn't have to be written inside `setup`. It can be a property of the ViewModel, declared with `reducerOf` or
-`sideEffectOf`, and installed with `+`:
+`sideEffectOf`, and installed with `add`:
 
 ```kotlin
 class HomeViewModel(
@@ -153,10 +154,9 @@ class HomeViewModel(
     }
 
     override fun setup() = source {
-        reducers { +homeReducer }
+        reducers { add(homeReducer) }
         sideEffects {
-            +refresh
-            +openFriend
+            add(refresh, openFriend)
         }
     }
 }
