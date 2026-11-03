@@ -61,7 +61,7 @@ fun SimpleDialogComposable(dialogData: SimpleDialogData, dialogListener: SimpleD
 
 @Preview
 @Composable
-fun OnDialogPreview() {
+fun PreviewOnDialog() {
     EmaSampleTheme {
         SimpleDialogComposable(
             SimpleDialogData(

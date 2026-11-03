@@ -242,7 +242,7 @@ class ProfileCreationScreenContent :
 
     @Preview
     @Composable
-    private fun NormalPreview() {
+    private fun PreviewNormal() {
         EmaSampleTheme {
             onState(
                 state = ProfileCreationState(
@@ -257,7 +257,7 @@ class ProfileCreationScreenContent :
 
     @Preview
     @Composable
-    private fun DialogPreview() {
+    private fun PreviewDialog() {
         EmaSampleTheme {
             onState(
                 state = ProfileCreationState(

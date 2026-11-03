@@ -93,7 +93,7 @@ class SplashScreenContent : BaseScreenComposable<EmaState.EMPTY, EmaAction.EMPTY
 
     @Preview
     @Composable
-    private fun NormalPreview() {
+    private fun PreviewNormal() {
         EmaSampleTheme {
             onState(state = EmaState.EMPTY, actions = EmaActionDispatcher.EMPTY)
         }

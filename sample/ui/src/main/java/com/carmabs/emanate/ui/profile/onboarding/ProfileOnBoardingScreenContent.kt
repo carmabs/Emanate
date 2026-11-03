@@ -177,7 +177,7 @@ class ProfileOnBoardingScreenContent :
 
     @Preview
     @Composable
-    private fun NormalPreview() {
+    private fun PreviewNormal() {
         EmaSampleTheme {
             onState(
                 state = ProfileOnBoardingState(

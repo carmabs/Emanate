@@ -56,7 +56,7 @@ fun LoadingDialogComposable(dialogData: LoadingDialogData) {
 
 @Preview
 @Composable
-fun LoadingDialogPreview() {
+fun PreviewLoadingDialog() {
     EmaSampleTheme {
         LoadingDialogComposable(
             LoadingDialogData(

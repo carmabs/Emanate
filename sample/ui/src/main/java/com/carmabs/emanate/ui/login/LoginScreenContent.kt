@@ -242,7 +242,7 @@ class LoginScreenContent : BaseScreenComposable<LoginState, LoginAction>() {
 
     @Preview
     @Composable
-    private fun NormalPreview() {
+    private fun PreviewNormal() {
         EmaSampleTheme {
             onState(state = LoginState.DEFAULT, actions = EmaActionDispatcher.EMPTY)
         }

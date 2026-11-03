@@ -272,7 +272,7 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
 
     @Preview
     @Composable
-    private fun AdminPreview() {
+    private fun PreviewAdmin() {
         EmaSampleTheme {
             onState(
                 state = HomeState(
@@ -286,7 +286,7 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
 
     @Preview
     @Composable
-    private fun EmptyPreview() {
+    private fun PreviewEmpty() {
         EmaSampleTheme {
             onState(
                 state = HomeState(HomeState.UserData("Carlos", "Mateo", Role.BASIC), emptyList()),

@@ -32,7 +32,7 @@ fun AppButton(
 
 @Preview
 @Composable
-fun AppButtonPreview() {
+fun PreviewAppButton() {
     EmaSampleTheme {
         AppButton(text = "Test") {
         }
