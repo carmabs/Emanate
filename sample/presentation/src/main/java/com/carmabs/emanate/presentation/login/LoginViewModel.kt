@@ -39,10 +39,10 @@ class LoginViewModel(private val loginUseCase: LoginUseCase, initialDataState: L
 
                     is LoginRequest.Succeeded -> state.copy(isLoading = false)
 
-                    LoginRequest.Failed -> state.copy(isLoading = false, overlap = LoginOverlap.ErrorBadCredentials)
+                    LoginRequest.Failed -> state.copy(isLoading = false, dialog = LoginDialog.ErrorBadCredentials)
 
                     LoginAction.Error.BadCredentialsAccepted,
-                    LoginAction.Error.BackPressed -> state.copy(overlap = null)
+                    LoginAction.Error.BackPressed -> state.copy(dialog = null)
                 }
             }
         }

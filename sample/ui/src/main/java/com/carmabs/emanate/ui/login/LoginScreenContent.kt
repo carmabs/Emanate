@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.model.EmaText
 import com.carmabs.emanate.presentation.login.LoginAction
-import com.carmabs.emanate.presentation.login.LoginOverlap
+import com.carmabs.emanate.presentation.login.LoginDialog
 import com.carmabs.emanate.presentation.login.LoginState
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.base.compose.BaseScreenComposable
@@ -99,7 +99,7 @@ class LoginScreenContent : BaseScreenComposable<LoginState, LoginAction>() {
                 DemoCard()
             }
         }
-        state.overlap?.also { Overlap(it, actions) }
+        state.dialog?.also { StateDialog(it, actions) }
     }
 
     @Composable
@@ -220,9 +220,9 @@ class LoginScreenContent : BaseScreenComposable<LoginState, LoginAction>() {
     }
 
     @Composable
-    private fun Overlap(overlap: LoginOverlap, actions: EmaActionDispatcher<LoginAction>) {
-        when (overlap) {
-            LoginOverlap.ErrorBadCredentials -> ShowError(
+    private fun StateDialog(dialog: LoginDialog, actions: EmaActionDispatcher<LoginAction>) {
+        when (dialog) {
+            LoginDialog.ErrorBadCredentials -> ShowError(
                 data = ErrorDialogData(
                     EmaText.id(R.string.login_error_fail_title),
                     EmaText.id(R.string.login_error_fail)

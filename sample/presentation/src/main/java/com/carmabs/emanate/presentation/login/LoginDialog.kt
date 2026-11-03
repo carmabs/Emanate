@@ -9,6 +9,6 @@ package com.carmabs.emanate.presentation.login
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
-sealed interface LoginOverlap {
-    data object ErrorBadCredentials : LoginOverlap
+sealed interface LoginDialog {
+    data object ErrorBadCredentials : LoginDialog
 }

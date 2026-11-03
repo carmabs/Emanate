@@ -9,7 +9,7 @@ data class LoginState(
     val isLoading: Boolean,
     val userNameError: Boolean,
     val passwordError: Boolean,
-    val overlap: LoginOverlap?
+    val dialog: LoginDialog?
 ) : EmaState {
 
     companion object {
@@ -19,7 +19,7 @@ data class LoginState(
             isLoading = false,
             userNameError = false,
             passwordError = false,
-            overlap = null
+            dialog = null
         )
     }
 }

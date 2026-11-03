@@ -8,7 +8,7 @@ data class ProfileCreationState(
     val role: Role,
     val name: String,
     val surname: String,
-    val overlap: ProfileCreationOverlap? = null
+    val dialog: ProfileCreationDialog? = null
 ) : EmaState {
 
     companion object {

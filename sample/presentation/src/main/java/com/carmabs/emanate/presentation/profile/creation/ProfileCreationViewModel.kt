@@ -39,17 +39,17 @@ class ProfileCreationViewModel(initialDataState: ProfileCreationState, private v
                     is ProfileCreationAction.UserSurnameWritten -> state.copy(surname = action.surname)
 
                     ProfileCreationAction.CreateClicked -> if (state.canCreate) {
-                        state.copy(overlap = ProfileCreationOverlap.DialogUserCreated(state.role))
+                        state.copy(dialog = ProfileCreationDialog.UserCreated(state.role))
                     } else {
                         state
                     }
 
-                    ProfileCreationAction.OnBack -> state.copy(overlap = ProfileCreationOverlap.DialogBackConfirmation)
+                    ProfileCreationAction.OnBack -> state.copy(dialog = ProfileCreationDialog.BackConfirmation)
 
                     ProfileCreationAction.DialogConfirmClicked,
                     ProfileCreationAction.DialogCancelClicked,
                     ProfileCreationAction.DialogBackConfirm,
-                    ProfileCreationAction.DialogBackCancel -> state.copy(overlap = null)
+                    ProfileCreationAction.DialogBackCancel -> state.copy(dialog = null)
                 }
             }
         }

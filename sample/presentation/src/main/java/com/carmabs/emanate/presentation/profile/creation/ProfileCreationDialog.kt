@@ -11,9 +11,9 @@ import com.carmabs.domain.model.Role
  *
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
-sealed interface ProfileCreationOverlap {
+sealed interface ProfileCreationDialog {
 
-    data object DialogBackConfirmation : ProfileCreationOverlap
+    data object BackConfirmation : ProfileCreationDialog
 
-    data class DialogUserCreated(val role: Role) : ProfileCreationOverlap
+    data class UserCreated(val role: Role) : ProfileCreationDialog
 }

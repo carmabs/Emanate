@@ -91,7 +91,7 @@ class LoginViewModelTest {
         viewModel.dispatch(LoginAction.Login)
         advanceUntilIdle()
 
-        recorder.assertState { !it.isLoading && it.overlap == null }
+        recorder.assertState { !it.isLoading && it.dialog == null }
         recorder.assertEvents(LoginEvent.Message(admin.name), LoginEvent.LoginSuccess(admin))
         viewModel.close()
     }
@@ -105,11 +105,11 @@ class LoginViewModelTest {
         viewModel.dispatch(LoginAction.PasswordWritten("0000"))
         viewModel.dispatch(LoginAction.Login)
         advanceUntilIdle()
-        recorder.assertState { it.overlap == LoginOverlap.ErrorBadCredentials }
+        recorder.assertState { it.dialog == LoginDialog.ErrorBadCredentials }
 
         viewModel.dispatch(LoginAction.Error.BadCredentialsAccepted)
         advanceUntilIdle()
-        recorder.assertState { it.overlap == null }
+        recorder.assertState { it.dialog == null }
     }
 
     @Test
