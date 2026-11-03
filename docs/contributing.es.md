@@ -2,14 +2,15 @@
 
 ## Estructura del proyecto
 
-| Módulo                    | Contenido                                                                                                   |
-|---------------------------|-------------------------------------------------------------------------------------------------------------|
-| `emanate-core`            | Kotlin Multiplatform. Todo el código está en `commonMain`.                                                  |
-| `emanate-android`         | Librería Android compartida por las dos tecnologías de UI.                                                  |
-| `emanate-android-compose` | Soporte de Compose, publicado como `emanate-compose`.                                                       |
-| `emanate-android-view`    | Soporte del sistema de vistas de Android.                                                                   |
-| `emanate-test`            | Utilidades JVM para testear los ViewModels y las sources, friend module de `emanate-core`.                  |
-| `sample`                  | Un build de Gradle independiente con la app de ejemplo. Incluye los módulos de la librería del repositorio. |
+| Módulo                         | Contenido                                                                                                   |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `emanate-core`                 | Kotlin Multiplatform. Todo el código está en `commonMain`.                                                  |
+| `emanate-android`              | Integración con Android: configuración, inicializadores, permisos y el almacén del estado guardado.         |
+| `emanate-compose-android`      | Soporte de Compose. No depende de ninguna librería de navegación.                                           |
+| `emanate-compose-android-nav2` | Soporte de Navigation Compose (`emaScreen`, `emaDialog`).                                                   |
+| `emanate-serialization`        | Kotlin Multiplatform. Guarda valores serializables del estado con kotlinx.serialization.                    |
+| `emanate-test`                 | Utilidades JVM para testear `EmaViewModel` y `EmaSource`, friend module de `emanate-core`.                  |
+| `sample`                       | Un build de Gradle independiente con la app de ejemplo. Incluye los módulos de la librería del repositorio. |
 
 ## Compilar
 
@@ -19,33 +20,34 @@
 
 ### Los targets de `emanate-core`
 
-`emanate-core` compila por defecto todos los targets multiplataforma, algo necesario para publicarlo pero lento para el día
-a día. Elige los targets con la propiedad `emanate.targets`, en tu `local.properties` (no versionado) o con
+`emanate-core` compila por defecto sus dos tipos de targets, JVM (lo usa Android) e iOS, algo necesario para publicarlo
+pero lento para el día a día. Elige los targets con la propiedad `emanate.targets`, en tu `local.properties` (no versionado) o con
 `-Pemanate.targets=...`:
 
 ```properties
 # local.properties
-emanate.targets=jvm,js
+emanate.targets=jvm
 ```
 
-Los valores válidos son `all`, `jvm`, `js`, `wasm`, `apple`, `linux`, `windows` y `androidNative`, separados por comas.
+Los valores válidos son `all`, `jvm` e `ios` (`iosArm64` e `iosSimulatorArm64`), separados por comas.
 El target JVM se compila siempre, porque lo usan los módulos de Android.
 
 ## Tests
 
-| Módulo                    | Tests                                      | Comando                                                |
-|---------------------------|--------------------------------------------|--------------------------------------------------------|
-| `emanate-core`            | `commonTest`, en todos los targets activos | `./gradlew :emanate-core:allTests`                     |
-| `emanate-android`         | Robolectric                                | `./gradlew :emanate-android:testDebugUnitTest`         |
-| `emanate-android-view`    | Robolectric                                | `./gradlew :emanate-android-view:testDebugUnitTest`    |
-| `emanate-android-compose` | Tests de UI de Compose sobre Robolectric   | `./gradlew :emanate-android-compose:testDebugUnitTest` |
-| `emanate-test`            | JUnit                                      | `./gradlew :emanate-test:test`                         |
+| Módulo                         | Tests                                      | Comando                                                     |
+|--------------------------------|--------------------------------------------|-------------------------------------------------------------|
+| `emanate-core`                 | `commonTest`, en todos los targets activos | `./gradlew :emanate-core:allTests`                          |
+| `emanate-android`              | Robolectric                                | `./gradlew :emanate-android:testDebugUnitTest`              |
+| `emanate-serialization`        | Tests JVM                                  | `./gradlew :emanate-serialization:jvmTest`                  |
+| `emanate-compose-android`      | Tests de UI de Compose sobre Robolectric   | `./gradlew :emanate-compose-android:testDebugUnitTest`      |
+| `emanate-compose-android-nav2` | Tests de navegación sobre Robolectric      | `./gradlew :emanate-compose-android-nav2:testDebugUnitTest` |
+| `emanate-test`                 | JUnit                                      | `./gradlew :emanate-test:test`                              |
 
 Los recursos que solo necesitan los tests están en `src/test/res`, así que no se publican.
 
 ### Cobertura
 
-[Kover](https://github.com/Kotlin/kotlinx-kover) agrega la cobertura de los cuatro módulos:
+[Kover](https://github.com/Kotlin/kotlinx-kover) agrega la cobertura de los módulos:
 
 ```bash
 ./gradlew koverHtmlReport

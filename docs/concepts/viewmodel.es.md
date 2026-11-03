@@ -1,236 +1,302 @@
 # ViewModel
 
-Un ViewModel de Emanate es una clase de Kotlin normal, sin dependencias de Android. Hay dos formas de escribirlo:
+Un `EmaViewModel` es **la lógica de una pantalla**. La vista solo pinta y cuenta lo que hace el usuario; el ViewModel
+decide todo lo demás. Ahí se juntan todas las piezas descritas en las páginas anteriores: el [estado](state.md), las
+[acciones](actions.md), los [eventos](events.md), y los [reducers](reducers.md), [side effects](side-effects.md),
+[middlewares](middlewares.md), [broadcasts](broadcasts.md) y [plugins](plugins.md) que los gestionan.
 
-| Clase                         | Estilo                                                                                  |
-|-------------------------------|-----------------------------------------------------------------------------------------|
-| `EmaViewModel<S, A, E>`       | Declarativo: reducers, middlewares y side effects para cada tipo de acción. **Recomendado.** |
-| `EmaViewModelAction<S, A, E>` | Clásico, imperativo: cada acción se gestiona en `onAction`, que actualiza el estado directamente. |
+![Una pantalla envía acciones a su ViewModel, y recibe el estado y los eventos](../assets/viewmodel-screen.svg)
 
-`EmaViewModel` es la opción recomendada. Su estado lo guarda una [`EmaSource`](source.es.md): cada acción pasa por
-los middlewares, los reducers y los side effects de su tipo, y el estado solo cambia en los reducers, que son funciones
-puras. El flujo de todas las pantallas es el mismo y predecible, la lógica de negocio se reparte en piezas pequeñas
-declaradas en un solo sitio, y el ViewModel completo se puede testear grabando sus acciones, estados y eventos con
-[emanate-test](../guides/testing.es.md).
+La conversación entre los dos siempre tiene la misma forma:
 
-Los ViewModels clásicos, `EmaViewModelAction` y `EmaViewModelClassic`, se mantienen por compatibilidad y para migrar poco
-a poco las pantallas existentes. Los dos tipos pueden convivir en la misma app: las vistas solo dependen de
-`EmaViewModelContract`.
+- **La vista envía acciones**: lo que hace el usuario, como escribir en el campo de búsqueda o tirar para refrescar, y el
+  ciclo de vida de la pantalla.
+- **El ViewModel devuelve el estado**: todo lo que pinta la pantalla. Cada vez que cambia, la vista lo pinta de nuevo.
+- **Y los eventos**: lo que ocurre una vez, como navegar al detalle de un amigo.
 
-## EmaViewModel
+Cada pantalla tiene su propio ViewModel. **Es una clase Kotlin normal**, sin código de plataforma, así que se puede
+testear y compartir entre plataformas.
 
-Extiende `EmaViewModel<State, Action, Event>`, pasa el estado inicial y declara en `setup` cómo se gestionan las
-acciones. `source { }` crea el setup con los tipos del ViewModel, así que no hay que volver a escribirlos:
+## Tu primer ViewModel, en tres pasos
+
+**1. Extiende `EmaViewModel`** con los tres tipos de la pantalla, y pasa el estado inicial:
 
 ```kotlin
-class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
-    initialDataState: LoginState
-) : EmaViewModel<LoginState, LoginAction, LoginEvent>(initialDataState) {
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState)
+```
+
+**2. Declara sus piezas en `setup`.** Devuelve `source { }`, donde cada tipo de pieza tiene su propio bloque:
+
+```kotlin
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
 
     override fun setup() = source {
         reducers {
-            add<LoginAction> { action ->
+            add<HomeAction> { action ->
                 when (action) {
-                    is LoginAction.UserNameWritten -> state.copy(userName = action.user, userNameError = false)
-                    LoginAction.Login -> state.copy(userNameError = state.userName.isBlank())
-                    // ...
+                    is HomeAction.QueryWritten -> state.copy(query = action.query)
+                    is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
+                    is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    is HomeAction.RefreshRequested,
+                    is HomeAction.FriendClicked -> state
                 }
             }
         }
         sideEffects {
-            add<LoginAction.Login>(concurrency = SideEffectConcurrency.Leading) {
-                if (state.userNameError) return@add
-                dispatch(LoginRequest.Started)
-                loginUseCase(LoginUseCase.Input(state.userName, state.userPassword))
-                    .onSuccess { user -> dispatch(LoginRequest.Succeeded(user)) }
-                    .onFailure { dispatch(LoginRequest.Failed) }
+            add<HomeAction.RefreshRequested>(concurrency = SideEffectConcurrency.Leading) {
+                dispatch(HomeAction.EffectQueryResult.Started)
+                getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+                    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+                    .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
             }
-            add<LoginRequest.Succeeded> { action -> postEvent(LoginEvent.LoginSuccess(action.user)) }
-        }
-    }
-}
-```
-
-| En `source { }`                    | Para qué                                                                   |
-|------------------------------------|----------------------------------------------------------------------------|
-| `reducers { add<Tipo> { } }`       | Devuelve el siguiente estado para las acciones de ese tipo. Puro: solo lee `state`. |
-| `middlewares { add<Tipo> { } }`    | Decide el camino de las acciones de ese tipo antes de los reducers: `next()`, `nextAfter { }`... |
-| `sideEffects { add<Tipo> { } }`    | Lógica de negocio que se ejecuta después de los reducers: casos de uso, `dispatch`, `postEvent`. |
-| `broadcasts { listen<Tipo>() }`    | Recibe las acciones de ese tipo emitidas por otros ViewModels. Consulta [Resultados entre pantallas](../guides/results-between-screens.es.md). |
-
-Dentro de cada bloque, `+` añade una pieza ya creada, como `+middlewareDelayOf(...)` o un reducer declarado como
-propiedad.
-
-Todo sobre reducers, middlewares y side effects está en [Source](source.es.md).
-
-Además del estado inicial, el constructor recibe:
-
-- `dispatcher`: dónde se ejecuta el ViewModel. Por defecto, el dispatcher `main` de la
-  [configuración](../guides/configuration.es.md).
-- `logger`: el `EmaLogger` que registra cada acción con el estado antes y después de ella, con el nombre del
-  ViewModel como tag. Por defecto, el `logger` de la [configuración](../guides/configuration.es.md#logs), que es
-  `EmaLogger.Println` si no se cambia; pasa `null` para desactivar los logs de este ViewModel.
-
-`setup` se llama la primera vez que se usa el ViewModel, no en el constructor, así que puede usar las propiedades de tu
-clase, como sus casos de uso.
-
-### Acciones internas
-
-Los side effects comunican sus resultados con acciones, para que los reducers los apliquen. Cuando una acción solo la
-despacha el ViewModel, declárala `internal` en el mismo módulo, junto a las acciones de la pantalla, para que la vista
-no pueda enviarla:
-
-```kotlin
-internal sealed interface LoginRequest : LoginAction {
-    data object Started : LoginRequest
-    data class Succeeded(val user: User) : LoginRequest
-    data object Failed : LoginRequest
-}
-```
-
-### El ciclo de vida como acciones
-
-`EmaViewModel` no tiene ganchos del ciclo de vida: el ciclo de vida de la vista llega como acciones, que los
-middlewares, los reducers y los side effects gestionan como cualquier otra.
-
-| Acción                            | Cuándo                                                                   |
-|-----------------------------------|--------------------------------------------------------------------------|
-| `EmaAction.Initializer`           | **Una vez**, la primera vez que se crea la pantalla: su [inicializador](../guides/initializers.es.md), o `Initializer.EMPTY`. |
-| `EmaAction.Lifecycle.Started`     | La pantalla se hace visible.                                             |
-| `EmaAction.Lifecycle.Resumed`     | La pantalla está en primer plano.                                        |
-| `EmaAction.Lifecycle.Paused`      | La pantalla deja de estar completamente visible.                         |
-| `EmaAction.Lifecycle.Stopped`     | La pantalla pasa a segundo plano.                                        |
-| `EmaAction.Lifecycle.Destroyed`   | Se destruye el ViewModel. Después se cancela su trabajo, salvo sus side effects. |
-
-`Destroyed` es la última acción. El resto del trabajo del ViewModel se cancela después de ella, pero sus side effects
-pueden terminar, hasta su `timeout` o el `destroyedTimeout` de la
-[configuración](../guides/configuration.es.md), 5 segundos por defecto, por ejemplo para enviar un resultado a la
-pantalla anterior:
-
-```kotlin
-sideEffects {
-    add<EmaAction.Lifecycle.Destroyed> {
-        broadcast(EditorBroadcast.DraftClosed(state.draft))
-    }
-}
-```
-
-Pueden emitir acciones y leer el estado. Las acciones que despachan y los eventos que publican se ignoran, porque el
-ViewModel ya está cerrado.
-
-Cargar los datos iniciales es un side effect del inicializador:
-
-```kotlin
-sideEffects {
-    add<HomeInitializer> { initializer ->
-        when (initializer) {
-            is HomeInitializer.HomeUser -> {
-                val friends = getUserFriendsUseCase(GetUserFriendsUseCase.Input(initializer.user))
-                dispatch(HomeFriendsLoaded(friends))
+            add<HomeAction.FriendClicked> { action ->
+                publish(HomeEvent.FriendSelected(action.friend))
             }
         }
     }
 }
 ```
 
-## ViewModels clásicos
-
-`EmaViewModelAction<S, A, E>` recibe las acciones en `onAction` y cambia el estado de forma imperativa con
-`updateState`. `EmaViewModelClassic<S, E>` no declara acciones: la vista llama a funciones públicas del ViewModel, como en
-el MVVM clásico. Entre los dos, mejor `EmaViewModelAction`: su único punto de entrada, `dispatch`, y las acciones
-`sealed` hacen el código más fácil de seguir.
-
-Los dos reciben el estado inicial en el constructor y, opcionalmente, el `CoroutineDispatcher` donde se ejecuta su
-trabajo (por defecto el dispatcher principal de la [configuración](../guides/configuration.es.md)). Crean su propio scope
-con él y lo cancelan cuando se destruyen.
+**3. Dáselo a la pantalla.** La pantalla lo crea una vez, y lo conserva mientras existe la pantalla:
 
 ```kotlin
-class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
-    initialDataState: LoginState
-) : EmaViewModelAction<LoginState, LoginAction, LoginEvent>(initialDataState) {
-
-    override fun onStateCreated(initializer: EmaAction.Initializer?) = Unit
-
-    override fun onAction(action: LoginAction) { /* ... */ }
-}
+emaScreen(
+    screenContent = HomeScreenContent(),
+    viewModel = { HomeViewModel(getFriendsUseCase) },
+    onEvent = { event -> /* navegación */ }
+)
 ```
 
-### Qué puedes usar dentro
+Eso es todo: la pantalla pinta el estado, envía las acciones y gestiona los eventos. Mira
+[Pantallas en Compose](../compose/screens.md) e [Inyección de dependencias](../guides/dependency-injection.md).
 
-| Miembro                                       | Para qué                                                                 |
-|-----------------------------------------------|--------------------------------------------------------------------------|
-| `state`                                       | El estado actual (solo lectura).                                         |
-| `updateState { copy(...) }`                   | Reemplaza el estado y avisa a la vista.                                  |
-| `postEvent(event, allowDuplicated)`           | Envía un evento de un solo uso. Consulta [Eventos](events.es.md).        |
-| `sideEffect { }` / `singleSideEffect(id) { }` | Ejecuta trabajo suspendido. Consulta [Trabajo asíncrono y errores](../guides/async-and-errors.es.md). |
-| `broadcast(action, keepUntilReceived)`        | Emite una acción, por ejemplo un resultado para la pantalla anterior. Consulta [Resultados entre pantallas](../guides/results-between-screens.es.md). |
-| `registerBroadcastListener<A> { }`            | Recibe las acciones emitidas de tipo `A`.                                |
-| `scope`                                       | El `CoroutineScope` del ViewModel.                                       |
+## Qué pasa cuando el usuario hace algo
 
-### Ganchos del ciclo de vida
+Cada acción sigue el mismo camino: **middlewares, reducers, side effects**. Los reducers devuelven el nuevo estado, y la
+vista lo pinta. Cuando un side effect envía una acción, esa acción empieza el camino otra vez desde el principio.
 
-El ViewModel sigue el ciclo de vida de su pantalla, y los ganchos le permiten reaccionar a cada etapa sin saber nada de
-Android:
+Este es un refresco en el ViewModel anterior. Cada fila es una acción:
 
-- **Creación**, para preparar la pantalla: leer el inicializador, cargar los datos iniciales y registrar los listeners de
-  resultados. Ocurre una sola vez, así que una rotación no vuelve a cargar los datos.
-- **Visibilidad**, para ejecutar trabajo solo mientras el usuario ve la pantalla: arrancar las actualizaciones de
-  ubicación, un temporizador o un refresco periódico cuando se hace visible, y pararlos cuando pasa a segundo plano.
-- **Destrucción**, para liberar lo que tenga el ViewModel cuando su pantalla se cierra definitivamente.
+![El refresco, acción a acción](../assets/viewmodel-trace.svg)
 
-`onStateCreated` es obligatorio; sobrescribe los demás solo cuando los necesites.
+1. La vista envía `RefreshRequested`. Los reducers dejan el estado como está, y el side effect `loadFriends` empieza.
+2. El side effect envía `Started`. Pasa por los middlewares, y un reducer devuelve `isLoading = true`: la vista muestra
+   el indicador de carga.
+3. El side effect llama al caso de uso y espera. Mientras tanto la pantalla sigue funcionando.
+4. Cuando llegan los amigos, envía `Loaded(friends)`. Mismo camino: un reducer los pone en el estado, y la vista pinta la
+   lista.
 
-| Gancho                        | Cuándo                                                                   |
-|-------------------------------|--------------------------------------------------------------------------|
-| `onStateCreated(initializer)` | **Una vez**, la primera vez que se crea la pantalla. Recibe el [inicializador](../guides/initializers.es.md). |
-| `onBroadcastListenerSetup()`  | Justo después, para registrar los [listeners de resultados](../guides/results-between-screens.es.md). |
-| `onViewStarted()`             | La pantalla se hace visible.                                             |
-| `onViewResumed()`             | La pantalla está en primer plano.                                        |
-| `onViewPaused()`              | La pantalla deja de estar completamente visible.                         |
-| `onViewStopped()`             | La pantalla pasa a segundo plano.                                        |
-| `onDestroy()`                 | Se destruye el ViewModel. El scope ya está cancelado.                    |
+Este ViewModel no tiene middlewares, así que cada acción sigue directamente, como si un middleware llamara a `next()`.
 
-`onStateCreated` es el sitio adecuado para empezar a cargar datos. Se ejecuta una vez, no en cada rotación:
+## El setup
+
+`setup` es donde el ViewModel declara sus piezas. Cada tipo tiene su propio bloque:
+
+| Bloque                         | Añade                                                                              |
+|--------------------------------|------------------------------------------------------------------------------------|
+| `middlewares { }`              | [Middlewares](middlewares.md): deciden el camino de una acción antes que nada.     |
+| `reducers { }`                 | [Reducers](reducers.md): devuelven el siguiente estado.                            |
+| `sideEffects { }`              | [Side effects](side-effects.md): ejecutan el trabajo que inicia una acción.        |
+| `broadcasts { listen<T>() }`   | [Broadcasts](broadcasts.md): las acciones de otras pantallas que recibe.           |
+| `plugins { }`                  | [Plugins](plugins.md): grupos de piezas reutilizados en muchas pantallas.          |
+
+Unas pocas reglas se aplican a todos ellos:
+
+- **`add<Tipo> { }` crea una pieza** para las acciones de ese tipo, y **`add(pieza)` instala una pieza que ya existe**, como una
+  propiedad del ViewModel o un plugin. `add` acepta varias piezas, `add(primera, segunda)`, o una colección,
+  `add(piezas)`. Dos piezas del mismo tipo también se pueden unir con `primera + segunda`, que da una lista que `add` acepta.
+- **Las piezas del mismo tipo se ejecutan en el orden en que se añaden.** Un bloque se puede usar más de una vez: sus
+  piezas van después de las de los bloques anteriores del mismo tipo.
+- **`setup` se ejecuta una vez**, la primera vez que se usa el ViewModel, no en su constructor. Así puede usar las
+  propiedades de la clase, como sus casos de uso.
+
+### Las piezas son valores
+
+Una pieza no tiene por qué escribirse dentro de `setup`. Puede ser una propiedad del ViewModel, declarada con
+`reducerOf` o `sideEffectOf`, e instalada con `add`:
 
 ```kotlin
-override fun onStateCreated(initializer: EmaAction.Initializer?) {
-    val homeUser = (initializer as HomeInitializer.HomeUser).user
-    sideEffect {
-        val friends = getUserFriendsUseCase(GetUserFriendsUseCase.Input(homeUser))
-        updateState { copy(userList = friends) }
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
+
+    private val homeReducer = reducerOf(HomeAction::class) { action ->
+        when (action) {
+            is HomeAction.QueryWritten -> state.copy(query = action.query)
+            is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
+            is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
+            is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+            is HomeAction.RefreshRequested,
+            is HomeAction.FriendClicked -> state
+        }
+    }
+
+    private val refresh = sideEffectOf(
+        HomeAction.RefreshRequested::class,
+        concurrency = SideEffectConcurrency.Leading
+    ) {
+        dispatch(HomeAction.EffectQueryResult.Started)
+        getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+    }
+
+    private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
+        publish(HomeEvent.FriendSelected(action.friend))
+    }
+
+    override fun setup() = source {
+        reducers { add(homeReducer) }
+        sideEffects {
+            add(refresh, openFriend)
+        }
     }
 }
 ```
 
-## El contrato con la vista
+El `setup` solo las instala. Eso es lo que permite a un ViewModel recibir una pieza en su constructor, sin saber qué
+implementación le llega: la misma pantalla puede llamar al backend real en producción, usar un mock en una build de demo
+y un fake en los tests. Mira [Inyección de dependencias y entornos](../guides/dependency-injection.md#inyectar-piezas).
 
-Las vistas no dependen de la implementación del ViewModel, sino de `EmaViewModelContract<S, E>`: el estado inicial,
-`stateFlow`, `eventFlow`, `consumeEvent` y las llamadas del ciclo de vida (`onCreated`, `onStartView`, `onResumeView`,
-`onPauseView`, `onStopView` y `onCleared`). `EmaViewModel`, `EmaViewModelAction` y `EmaViewModelClassic` lo implementan, y
-`EmaViewModelContract.EMPTY` es el ViewModel de una pantalla sin estado, acciones ni eventos.
+## El ciclo de vida como acciones
 
-## Cómo se conserva el ViewModel
+El `EmaViewModel` también recibe los estados del ciclo de vida y los datos de inicialización como **acciones**. Las
+mismas piezas que gestionan las acciones del usuario pueden gestionar estas.
 
-En Android, Emanate guarda tu ViewModel dentro de un `ViewModel` de Android (`EmaAndroidViewModel`), así que vive tanto
-como su pantalla y sobrevive a los cambios de configuración:
+![El ciclo de vida de una pantalla como acciones](../assets/lifecycle.svg)
 
-1. La primera vez que se abre una pantalla, Emanate llama a la función que le has dado (`viewModel` en Compose,
-   `provideViewModel(store)` en las vistas) y guarda esa instancia.
-2. Mientras la pantalla existe, después de una rotación o al volver desde el back stack, Emanate reutiliza la instancia
-   que guarda. Tu función no se vuelve a llamar.
-3. Cuando se cierra la pantalla, el ViewModel se destruye. Si se vuelve a abrir, se crea uno nuevo.
+| Acción                       | Cuándo                                                                   |
+|------------------------------|--------------------------------------------------------------------------|
+| `EmaInitializer`             | **Una vez**, la primera vez que se crea la pantalla: su [inicializador](../guides/initializers.md), o `EmaInitializer.EMPTY`. |
+| `EmaLifecycle.Started`       | La pantalla se hace visible.                                             |
+| `EmaLifecycle.Resumed`       | La pantalla está en primer plano.                                        |
+| `EmaLifecycle.Paused`        | La pantalla deja de ser totalmente visible.                              |
+| `EmaLifecycle.Stopped`       | La pantalla pasa a segundo plano.                                        |
+| `EmaLifecycle.Destroyed`     | La última acción, justo antes de cerrar el ViewModel.                    |
 
-Así, cada pantalla tiene su propio ViewModel, creado una sola vez. Consulta
-[Inyección de dependencias](../guides/dependency-injection.es.md).
+El [inicializador](../guides/initializers.md) llega **una vez**, así que recrear la pantalla no lo recibe de nuevo. Un
+reducer puede cambiar el estado cuando llegan estas acciones, y un side effect puede reaccionar a ellas:
 
-El ViewModel se identifica por el nombre de su clase (`id`). Cuando se destruye el `ViewModel` de Android, llama a
-`onCleared`: un `EmaViewModel` procesa las acciones pendientes y `EmaAction.Lifecycle.Destroyed`, y después cancela su
-trabajo, salvo los side effects de `Destroyed`; un ViewModel clásico cancela su `scope`.
+```kotlin
+override fun setup() = source {
+    reducers {
+        // El inicializador da a la pantalla su primer estado
+        add<HomeInitializer> { initializer ->
+            when (initializer) {
+                is HomeInitializer.HomeUser -> state.copy(user = initializer.user)
+            }
+        }
+        // El diálogo se cierra cuando el usuario sale de la pantalla
+        add<EmaLifecycle.Stopped> { state.copy(dialog = null) }
+    }
+    sideEffects {
+        // Los amigos se cargan una vez, cuando se crea la pantalla
+        add<HomeInitializer> { dispatch(HomeAction.RefreshRequested) }
+        // Y se refrescan cada vez que el usuario vuelve a la pantalla
+        add<EmaLifecycle.Resumed> { dispatch(HomeAction.RefreshRequested) }
+    }
+}
+```
 
-## Pintar antes de la primera actualización
+Por ejemplo, el trabajo que solo tiene sentido mientras el usuario ve la pantalla, como un temporizador o las
+actualizaciones de ubicación, empieza con `Started` y se detiene con `Stopped`.
 
-`updateOnInitialization` (protegido, `true` por defecto) decide si una pantalla Compose pinta el estado inicial
-directamente. Sobrescríbelo con `false` para pintar solo después de la primera actualización del estado: en un
-`EmaViewModel`, después de la primera acción de la pantalla o del primer inicializador distinto de `Initializer.EMPTY`.
+### Cuando se cierra el ViewModel
+
+Tras `Destroyed`, el ViewModel se cierra y el trabajo que sigue en marcha se cancela, a menos que se le permita
+terminar. Mira [Cuando se cierra la pantalla](side-effects.md#cuando-se-cierra-la-pantalla).
+
+## El ViewModel y su pantalla
+
+**Un ViewModel por pantalla.** La pantalla lo crea la primera vez que se abre, con la función `viewModel` que le das, y
+lo conserva mientras existe la pantalla. Recrear la vista o volver a la pantalla lo reutiliza. Cuando la pantalla se
+cierra definitivamente, el ViewModel recibe `Destroyed` y se cierra. Abrir la pantalla otra vez crea uno nuevo.
+
+```kotlin
+emaScreen(
+    screenContent = HomeScreenContent(),
+    // Se llama una vez, la primera vez que se abre la pantalla
+    viewModel = { HomeViewModel(getFriendsUseCase) },
+    onEvent = { event -> /* navegación */ }
+)
+```
+
+## Pintar antes del primer cambio
+
+Por defecto la pantalla pinta el estado inicial al instante. Para evitar un parpadeo de contenido vacío, sobrescribe
+`updateOnInitialization` con `false`: la pantalla espera hasta que el ViewModel recibe su primera acción de la pantalla,
+o un inicializador distinto de `EmaInitializer.EMPTY`.
+
+```kotlin
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
+
+    override val updateOnInitialization = false
+
+    // ...
+}
+```
+
+## Configuración
+
+El constructor también recibe la `configuration` del ViewModel: por defecto la establecida con `Emanate.init`. Decide
+dónde se ejecuta el ViewModel y qué pasa con sus errores. Mira [Configuración](../guides/configuration.md).
+
+```kotlin
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(
+    initialState,
+    configuration = EmaConfiguration.Android(debug = BuildConfig.DEBUG)
+) {
+
+    // ...
+}
+```
+
+## Logs
+
+Cada `EmaViewModel` registra cada acción que recibe, con el estado antes y después. Por defecto los logs van a la salida
+estándar, con el nombre del ViewModel como tag. Para cada acción se muestra un bloque como este (abreviado):
+
+```
+EMA_HomeViewModel: ********************** STARTING EMA ACTION LOGGING **********************
+EMA_HomeViewModel: | Dispatched action
+EMA_HomeViewModel: | QueryWritten(query=ana)
+EMA_HomeViewModel: | State before apply action
+EMA_HomeViewModel: | HomeState(query=, isLoading=false, friends=[])
+EMA_HomeViewModel: | State after apply action
+EMA_HomeViewModel: | HomeState(query=ana, isLoading=false, friends=[])
+EMA_HomeViewModel: ********************** FINISHED EMA ACTION LOGGING **********************
+```
+
+El `logger` de la [configuración](../guides/configuration.md#qué-se-puede-configurar) decide adónde van los logs. Para
+enviarlos a tu propio logger, implementa `EmaLogger` en la configuración:
+
+```kotlin
+Emanate.init(
+    EmaConfiguration.Android(debug = BuildConfig.DEBUG).copy(
+        logger = EmaLogger { tag, message -> Timber.tag(tag).d(message) }
+    )
+)
+```
+
+## Bajo el capó: EmaSource
+
+Dentro de cada `EmaViewModel` hay un `EmaSource`: el motor que ejecuta las piezas. El `source { }` de `setup` es lo que
+lo construye. El ViewModel añade por encima lo que necesita una pantalla: el ciclo de vida y el inicializador como
+acciones, los logs, y una vida ligada a su pantalla.
+
+No necesitas saber más para escribir pantallas. Si necesitas el mismo motor sin una pantalla, por ejemplo para un estado
+compartido por varias pantallas, mira [EmaSource](source.md).
