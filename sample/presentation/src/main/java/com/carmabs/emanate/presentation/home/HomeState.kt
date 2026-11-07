@@ -4,7 +4,11 @@ import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
 import com.carmabs.emanate.core.state.EmaState
 
-data class HomeState(val userData: UserData?, val userList: List<User>) : EmaState {
+data class HomeState(
+    val userData: UserData?,
+    val userList: List<User>,
+    val friendsLoaded: Boolean = false
+) : EmaState {
 
     companion object {
         val DEFAULT = HomeState(
@@ -18,9 +22,12 @@ data class HomeState(val userData: UserData?, val userList: List<User>) : EmaSta
     val showCreateButton
         get() = userData?.role == Role.ADMIN
 
+    val showDeleteButtons
+        get() = userData?.role == Role.ADMIN
+
     val showUserList
         get() = userData != null
 
     val showEmptyList
-        get() = showUserList && userList.isEmpty()
+        get() = showUserList && friendsLoaded && userList.isEmpty()
 }

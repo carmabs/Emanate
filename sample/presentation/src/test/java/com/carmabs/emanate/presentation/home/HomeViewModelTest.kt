@@ -1,0 +1,151 @@
+package com.carmabs.emanate.presentation.home
+
+import com.carmabs.domain.model.Role
+import com.carmabs.domain.model.User
+import com.carmabs.domain.usecase.AddFriendUseCase
+import com.carmabs.domain.usecase.DeleteFriendUseCase
+import com.carmabs.domain.usecase.GetFriendsUseCase
+import com.carmabs.emanate.core.savestate.EmaStateStore
+import com.carmabs.emanate.presentation.FakeFriendsRepository
+import com.carmabs.emanate.presentation.profile.creation.ProfileCreationAction
+import com.carmabs.emanate.presentation.profile.creation.ProfileCreationState
+import com.carmabs.emanate.presentation.profile.creation.ProfileCreationViewModel
+import com.carmabs.emanate.test.assertSetup
+import com.carmabs.emanate.test.record
+import com.carmabs.emanate.test.resetTestConfiguration
+import com.carmabs.emanate.test.useTestConfiguration
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+
+private val admin = User("Carmabs", "Ema Creator", Role.ADMIN)
+private val ana = User("Ana", "López", Role.BASIC, "1")
+private val luis = User("Luis", "Pérez", Role.BASIC, "2")
+
+class HomeViewModelTest {
+
+    private val repository = FakeFriendsRepository(listOf(ana, luis))
+
+    @BeforeTest
+    fun setUp() {
+        useTestConfiguration()
+    }
+
+    @AfterTest
+    fun tearDown() {
+        resetTestConfiguration()
+    }
+
+    private fun homeViewModel() =
+        HomeViewModel(GetFriendsUseCase(repository), DeleteFriendUseCase(repository), HomeState.DEFAULT)
+
+    @Test
+    fun `the stored friends are listed when the screen is created`() = runTest {
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+
+        viewModel.onCreated(HomeInitializer.HomeUser(admin))
+        advanceUntilIdle()
+
+        recorder.assertState { it.userList == listOf(ana, luis) && it.friendsLoaded && !it.showEmptyList }
+        viewModel.close()
+    }
+
+    @Test
+    fun `an empty list is shown when nobody has been created`() = runTest {
+        val viewModel = HomeViewModel(
+            GetFriendsUseCase(FakeFriendsRepository()),
+            DeleteFriendUseCase(repository),
+            HomeState.DEFAULT
+        )
+        val recorder = viewModel.record()
+
+        viewModel.onCreated(HomeInitializer.HomeUser(User("User", "Testing", Role.BASIC)))
+        advanceUntilIdle()
+
+        recorder.assertState { it.showEmptyList && !it.showCreateButton && !it.showDeleteButtons }
+        viewModel.close()
+    }
+
+    @Test
+    fun `the admin can create and delete users, the basic user can't`() = runTest {
+        val adminViewModel = homeViewModel()
+        val adminRecorder = adminViewModel.record()
+        adminViewModel.onCreated(HomeInitializer.HomeUser(admin))
+        advanceUntilIdle()
+        adminRecorder.assertState { it.showCreateButton && it.showDeleteButtons }
+        adminViewModel.close()
+
+        val basicViewModel = homeViewModel()
+        val basicRecorder = basicViewModel.record()
+        basicViewModel.onCreated(HomeInitializer.HomeUser(User("User", "Testing", Role.BASIC)))
+        advanceUntilIdle()
+        basicRecorder.assertState { !it.showCreateButton && !it.showDeleteButtons }
+        basicViewModel.close()
+    }
+
+    @Test
+    fun `a deleted user disappears from the list and from the storage`() = runTest {
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+        viewModel.onCreated(HomeInitializer.HomeUser(admin))
+        advanceUntilIdle()
+
+        viewModel.dispatch(HomeAction.DeleteClicked(ana))
+        advanceUntilIdle()
+
+        recorder.assertState { it.userList == listOf(luis) }
+        assertEquals(listOf(luis), repository.getFriends())
+        viewModel.close()
+    }
+
+    @Test
+    fun `the buttons of the corners publish their events`() = runTest {
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+
+        viewModel.dispatch(HomeAction.CreateClicked)
+        viewModel.dispatch(HomeAction.CloseClicked)
+        advanceUntilIdle()
+
+        recorder.assertEvents(HomeEvent.CreateClicked, HomeEvent.CloseClicked)
+        viewModel.close()
+    }
+
+    @Test
+    fun `the user created in the profile screen is stored, listed and notified`() = runTest {
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+        viewModel.onCreated(HomeInitializer.HomeUser(admin))
+        val profileCreationViewModel = ProfileCreationViewModel(
+            AddFriendUseCase(repository),
+            ProfileCreationState.DEFAULT,
+            EmaStateStore.None
+        )
+        profileCreationViewModel.onCreated()
+
+        profileCreationViewModel.dispatch(ProfileCreationAction.UserNameWritten("Marta"))
+        profileCreationViewModel.dispatch(ProfileCreationAction.CreateClicked)
+        profileCreationViewModel.dispatch(ProfileCreationAction.DialogConfirmClicked)
+        advanceUntilIdle()
+
+        val marta = User("Marta", "", Role.BASIC, "3")
+        recorder.assertState { it.userList == listOf(ana, luis, marta) }
+        recorder.assertEvents(HomeEvent.UserCreated(marta))
+        profileCreationViewModel.close()
+        viewModel.close()
+    }
+
+    @Test
+    fun `the view models listen to the broadcast actions they handle`() {
+        homeViewModel().assertSetup()
+        ProfileCreationViewModel(
+            AddFriendUseCase(repository),
+            ProfileCreationState.DEFAULT,
+            EmaStateStore.None
+        ).assertSetup()
+    }
+}

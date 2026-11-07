@@ -4,18 +4,9 @@ import com.carmabs.domain.exception.LoginException
 import com.carmabs.domain.model.LoginRequest
 import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
-import com.carmabs.domain.repository.Repository
-import com.carmabs.domain.usecase.GetUserFriendsUseCase
+import com.carmabs.domain.repository.LoginRepository
 import com.carmabs.domain.usecase.LoginUseCase
 import com.carmabs.emanate.core.model.EmaResult
-import com.carmabs.emanate.core.savestate.EmaStateStore
-import com.carmabs.emanate.presentation.home.HomeInitializer
-import com.carmabs.emanate.presentation.home.HomeState
-import com.carmabs.emanate.presentation.home.HomeViewModel
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationAction
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationInitializer
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationState
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationViewModel
 import com.carmabs.emanate.test.assertSetup
 import com.carmabs.emanate.test.record
 import com.carmabs.emanate.test.resetTestConfiguration
@@ -33,7 +24,7 @@ private val admin = User("Carmabs", "Ema Creator", Role.ADMIN)
 /**
  * Accepts the user Admin with the password 1234
  */
-private class FakeRepository : Repository {
+private class FakeLoginRepository : LoginRepository {
 
     var logins = 0
 
@@ -46,8 +37,6 @@ private class FakeRepository : Repository {
             EmaResult.failure(LoginException())
         }
     }
-
-    override suspend fun getFriendsList(user: User): List<User> = emptyList()
 }
 
 /**
@@ -55,7 +44,7 @@ private class FakeRepository : Repository {
  */
 class LoginViewModelTest {
 
-    private val repository = FakeRepository()
+    private val repository = FakeLoginRepository()
 
     @BeforeTest
     fun setUp() {
@@ -126,32 +115,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `the users created in the profile screen are notified`() = runTest {
-        val viewModel = loginViewModel()
-        val recorder = viewModel.record()
-        val homeViewModel = HomeViewModel(GetUserFriendsUseCase(repository), HomeState.DEFAULT)
-        homeViewModel.onCreated(HomeInitializer.HomeUser(admin))
-        val profileCreationViewModel = ProfileCreationViewModel(ProfileCreationState.DEFAULT, EmaStateStore.None)
-        profileCreationViewModel.onCreated(ProfileCreationInitializer.UserBasic)
-
-        profileCreationViewModel.dispatch(ProfileCreationAction.UserNameWritten("Ana"))
-        profileCreationViewModel.dispatch(ProfileCreationAction.CreateClicked)
-        profileCreationViewModel.dispatch(ProfileCreationAction.DialogConfirmClicked)
-        advanceUntilIdle()
-
-        val friend = User("Ana", "", Role.BASIC)
-        // The profile screen broadcasts the user to the home screen, which broadcasts it to the login screen
-        assertEquals(listOf(friend), homeViewModel.stateFlow.value.userList)
-        recorder.assertEvents(LoginEvent.LastUserAdded(friend))
-        profileCreationViewModel.close()
-        homeViewModel.close()
-        viewModel.close()
-    }
-
-    @Test
-    fun `the view models listen to the broadcast actions they handle`() {
+    fun `the view model listens to the broadcast actions it handles`() {
         loginViewModel().assertSetup()
-        HomeViewModel(GetUserFriendsUseCase(repository), HomeState.DEFAULT).assertSetup()
-        ProfileCreationViewModel(ProfileCreationState.DEFAULT, EmaStateStore.None).assertSetup()
     }
 }

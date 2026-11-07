@@ -1,6 +1,8 @@
 package com.carmabs.emanate.presentation.profile.creation
 
-import com.carmabs.domain.model.Role
+import com.carmabs.domain.usecase.AddFriendUseCase
+import com.carmabs.emanate.presentation.FakeFriendsRepository
+import com.carmabs.emanate.core.initializer.EmaInitializer
 import com.carmabs.emanate.test.record
 import com.carmabs.emanate.test.resetTestConfiguration
 import com.carmabs.emanate.test.restoreStateOf
@@ -27,26 +29,43 @@ class ProfileCreationViewModelTest {
     @Test
     fun `the form is restored after the death of the process`() = runTest {
         val store = testStateStore()
-        val viewModel = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
-        viewModel.onCreated(ProfileCreationInitializer.Admin)
+        val viewModel = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, store)
+        viewModel.onCreated()
         viewModel.dispatch(ProfileCreationAction.UserNameWritten("Ana"))
         viewModel.dispatch(ProfileCreationAction.UserSurnameWritten("García"))
         viewModel.dispatch(ProfileCreationAction.OnBack)
         advanceUntilIdle()
         viewModel.close()
 
-        // The system kills the process: the screen is created again with the same initializer and the saved values
-        val restoredViewModel = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
+        // The system kills the process: the screen is created again with the saved values
+        val restoredViewModel = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, store)
         val recorder = restoredViewModel.record()
-        restoredViewModel.onCreated(ProfileCreationInitializer.Admin)
+        restoredViewModel.onCreated()
         advanceUntilIdle()
 
         recorder.assertActions(
-            ProfileCreationInitializer.Admin,
+            EmaInitializer.EMPTY,
             restoreStateOf("form" to """{"name":"Ana","surname":"García"}""")
         )
         // The dialog isn't saved, so it is closed
-        recorder.assertState(ProfileCreationState(Role.ADMIN, "Ana", "García"))
+        recorder.assertState(ProfileCreationState("Ana", "García"))
         restoredViewModel.close()
+    }
+
+    @Test
+    fun `the back press asks for confirmation only when there is no dialog`() = runTest {
+        val viewModel = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, testStateStore())
+        val recorder = viewModel.record()
+        viewModel.onCreated()
+
+        viewModel.dispatch(ProfileCreationAction.OnBack)
+        advanceUntilIdle()
+        recorder.assertState(ProfileCreationState.DEFAULT.copy(dialog = ProfileCreationDialog.BackConfirmation))
+
+        // A second back press, with the dialog shown, changes nothing
+        viewModel.dispatch(ProfileCreationAction.OnBack)
+        advanceUntilIdle()
+        recorder.assertState(ProfileCreationState.DEFAULT.copy(dialog = ProfileCreationDialog.BackConfirmation))
+        viewModel.close()
     }
 }

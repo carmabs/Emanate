@@ -1,48 +1,87 @@
 package com.carmabs.emanate.presentation.home
 
-import com.carmabs.domain.model.User
-import com.carmabs.domain.usecase.GetUserFriendsUseCase
-import com.carmabs.emanate.core.viewmodel.EmaViewModel
+import com.carmabs.domain.usecase.DeleteFriendUseCase
+import com.carmabs.domain.usecase.GetFriendsUseCase
+import com.carmabs.emanate.core.source.reducer.reducerOf
+import com.carmabs.emanate.core.source.sideeffect.sideEffectOf
+import com.carmabs.emanate.presentation.base.BaseViewModel
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationBroadcast
 
-class HomeViewModel(private val getUserFriendsUseCase: GetUserFriendsUseCase, initialDataState: HomeState) :
-    EmaViewModel<HomeState, HomeAction, HomeEvent>(initialDataState) {
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
+    private val deleteFriendUseCase: DeleteFriendUseCase,
+    initialDataState: HomeState
+) : BaseViewModel<HomeState, HomeAction, HomeEvent>(initialDataState) {
+
+    private val reducerInitializer = reducerOf(HomeInitializer::class) { initializer ->
+        when (initializer) {
+            is HomeInitializer.HomeUser -> state.copy(
+                userData = HomeState.UserData(
+                    name = initializer.user.name,
+                    surname = initializer.user.surname,
+                    role = initializer.user.role
+                )
+            )
+        }
+    }
+
+    private val reducerAction = reducerOf(HomeAction::class) { action ->
+        when (action) {
+            // The user disappears from the list at once, the side effect deletes it from the storage
+            is HomeAction.DeleteClicked -> state.copy(userList = state.userList.filterNot { it.id == action.user.id })
+
+            HomeAction.CreateClicked,
+            HomeAction.CloseClicked -> state
+
+            // They are reduced by reducerSideEffects
+            is HomeAction.SideEffects -> state
+        }
+    }
+
+    private val reducerSideEffects = reducerOf(HomeAction.SideEffects::class) { action ->
+        when (action) {
+            is HomeAction.SideEffects.FriendsLoaded -> state.copy(userList = action.friends, friendsLoaded = true)
+        }
+    }
+
+    // The friends are read when the screen is created
+    private val sideEffectLoadFriends = sideEffectOf(HomeInitializer::class) { initializer ->
+        when (initializer) {
+            is HomeInitializer.HomeUser -> dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
+        }
+    }
+
+    private val sideEffectOpenCreation = sideEffectOf(HomeAction.CreateClicked::class) {
+        publish(HomeEvent.CreateClicked)
+    }
+
+    private val sideEffectDeleteFriend = sideEffectOf(HomeAction.DeleteClicked::class) { action ->
+        deleteFriendUseCase(DeleteFriendUseCase.Input(action.user))
+    }
+
+    private val sideEffectClose = sideEffectOf(HomeAction.CloseClicked::class) {
+        publish(HomeEvent.CloseClicked)
+    }
+
+    // The screen of the profile creation is in another activity, so the list is read again from the storage
+    private val sideEffectReloadFriends = sideEffectOf(ProfileCreationBroadcast.UserCreated::class) { action ->
+        dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
+        publish(HomeEvent.UserCreated(action.user))
+    }
 
     override fun setup() = source {
         reducers {
-            add<HomeInitializer> { initializer ->
-                when (initializer) {
-                    is HomeInitializer.HomeUser -> state.copy(
-                        userData = HomeState.UserData(
-                            name = initializer.user.name,
-                            surname = initializer.user.surname,
-                            role = initializer.user.role
-                        )
-                    )
-                }
-            }
-            add<HomeFriendsLoaded> { action -> state.copy(userList = state.userList + action.friends) }
-            add<ProfileCreationBroadcast.UserCreated> { action ->
-                state.copy(userList = state.userList + action.user)
-            }
+            add(reducerInitializer, reducerAction, reducerSideEffects)
         }
 
         sideEffects {
-            add<HomeInitializer> { initializer ->
-                when (initializer) {
-                    is HomeInitializer.HomeUser -> {
-                        val friends = getUserFriendsUseCase(GetUserFriendsUseCase.Input(initializer.user))
-                        dispatch(HomeFriendsLoaded(friends))
-                    }
-                }
-            }
-            add<HomeAction.ProfileClicked> {
-                state.userData?.also { publish(HomeEvent.ProfileClicked(User(it.name, it.surname, it.role))) }
-            }
-            // The login screen shows the last user added
-            add<ProfileCreationBroadcast.UserCreated> { action ->
-                broadcast(HomeBroadcast.UserAdded(action.user), keepUntilReceived = true)
-            }
+            add(
+                sideEffectLoadFriends,
+                sideEffectOpenCreation,
+                sideEffectDeleteFriend,
+                sideEffectClose,
+                sideEffectReloadFriends
+            )
         }
 
         broadcasts {
