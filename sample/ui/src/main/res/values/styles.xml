@@ -32,4 +32,12 @@
 
     <style name="AppTheme.NoActionBar" parent="AppTheme" />
 
+    <!--Shown by the system while the app starts. Its icon is in the same place and has the same size as the logo
+    of the splash screen, so the system splash turns into it without a jump-->
+    <style name="AppTheme.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/palette_surface</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_logo</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
+    </style>
+
 </resources>
