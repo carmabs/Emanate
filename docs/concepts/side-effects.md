@@ -11,7 +11,7 @@ these three functions, depending on what has to happen with it:
 
 | Use it to                                              | Call                 | Example                                                                             | Result                                              |
 |--------------------------------------------------------|----------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------|
-| **Save the result in the state**                       | `dispatch(action)`   | The friends were loaded: `dispatch(HomeAction.EffectQueryResult.Loaded(friends))`  | A reducer puts them in the state and the list shows them. |
+| **Save the result in the state**                       | `dispatch(action)`   | The friends were loaded: `dispatch(HomeAction.SideEffects.QueryLoaded(friends))`  | A reducer puts them in the state and the list shows them. |
 | **Trigger a one-time UI action**, like navigating or showing a message | `publish(event)` | The user clicked a friend: `publish(HomeEvent.FriendSelected(friend))` | The profile of the friend is opened.                |
 | **Notify other ViewModels**                            | `broadcast(action)`  | A friend was created: `broadcast(ProfileBroadcast.FriendCreated(friend))`           | The ViewModels that listen to it receive it. See [Broadcasts](broadcasts.md). |
 
@@ -26,10 +26,10 @@ can call use cases directly:
 ```kotlin
 sideEffects {
     add<HomeAction.RefreshRequested> {
-        dispatch(HomeAction.EffectQueryResult.Started)
+        dispatch(HomeAction.SideEffects.QueryStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
     }
 }
 ```
@@ -84,7 +84,7 @@ With `timeout`, a side effect that takes too long is cancelled, and `onTimeout` 
 sideEffects {
     add<HomeAction.RefreshRequested>(
         timeout = 10.seconds,
-        onTimeout = { dispatch(HomeAction.EffectQueryResult.Failed) }
+        onTimeout = { dispatch(HomeAction.SideEffects.QueryFailed) }
     ) {
         // ...
     }

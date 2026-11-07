@@ -41,9 +41,9 @@ class HomeViewModel(
             add<HomeAction> { action ->
                 when (action) {
                     is HomeAction.QueryWritten -> state.copy(query = action.query)
-                    is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
-                    is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
-                    is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+                    is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
                     is HomeAction.RefreshRequested,
                     is HomeAction.FriendClicked -> state
                 }
@@ -51,10 +51,10 @@ class HomeViewModel(
         }
         sideEffects {
             add<HomeAction.RefreshRequested>(concurrency = SideEffectConcurrency.Leading) {
-                dispatch(HomeAction.EffectQueryResult.Started)
+                dispatch(HomeAction.SideEffects.QueryStarted)
                 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-                    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-                    .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+                    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+                    .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
             }
             add<HomeAction.FriendClicked> { action ->
                 publish(HomeEvent.FriendSelected(action.friend))
@@ -131,9 +131,9 @@ class HomeViewModel(
     private val homeReducer = reducerOf(HomeAction::class) { action ->
         when (action) {
             is HomeAction.QueryWritten -> state.copy(query = action.query)
-            is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
-            is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
-            is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+            is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+            is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+            is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
             is HomeAction.RefreshRequested,
             is HomeAction.FriendClicked -> state
         }
@@ -143,10 +143,10 @@ class HomeViewModel(
         HomeAction.RefreshRequested::class,
         concurrency = SideEffectConcurrency.Leading
     ) {
-        dispatch(HomeAction.EffectQueryResult.Started)
+        dispatch(HomeAction.SideEffects.QueryStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
     }
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->

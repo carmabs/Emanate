@@ -136,23 +136,23 @@ ViewModel abriría un segundo diálogo sobre el primero. Devolver `null` en ese 
 
 ## Ejemplo 2: un atrás que simplemente vuelve
 
-No todas las pantallas necesitan una confirmación. En la pantalla de onboarding, atrás simplemente sale. Aun así, es
+No todas las pantallas necesitan una confirmación. En la pantalla home, atrás simplemente vuelve al login, igual que su botón de cerrar. Aun así, es
 mejor enviar una acción que dejar que lo haga el sistema, para que haya **un único camino por el ViewModel** tanto para
 la flecha como para el atrás del sistema:
 
 ```kotlin
 // Contenido de la pantalla: la flecha y el atrás del sistema envían la misma acción
-override fun onBack(state: ProfileOnBoardingState) = ProfileOnBoardingActions.BackClicked
+override fun onBack(state: HomeState) = HomeAction.CloseClicked
 
 // ViewModel
 sideEffects {
-    add<ProfileOnBoardingActions.BackClicked> { publish(ProfileOnBoardingEvent.OnBoardingCancelled) }
+    add<HomeAction.CloseClicked> { publish(HomeEvent.CloseClicked) }
 }
 ```
 
-El navigator convierte `OnBoardingCancelled` en `navigateBack()`. Tener un único camino tiene dos ventajas: puedes
+El navigator convierte `CloseClicked` en `navigateBack()`. Tener un único camino tiene dos ventajas: puedes
 añadir lógica más tarde (analíticas, guardar un borrador...) en un solo sitio, y un [test](../guides/testing.md) puede
-comprobar el comportamiento sin dibujar la pantalla: envía `BackClicked` y comprueba el evento.
+comprobar el comportamiento sin dibujar la pantalla: envía `CloseClicked` y comprueba el evento.
 
 ## ¿Cuál necesito?
 

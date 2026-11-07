@@ -17,7 +17,7 @@ Events are published from the side effects of the ViewModel, with `publish`:
 
 ```kotlin
 sideEffects {
-    add<HomeAction.EffectQueryResult.Loaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
+    add<HomeAction.SideEffects.QueryLoaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
     add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
 }
 ```
@@ -68,8 +68,8 @@ move it to a function of the navigator. See [Compose screens](../compose/screens
 | Prefer                 | Avoid                 | Why                                                               |
 |------------------------|-----------------------|-------------------------------------------------------------------|
 | `FriendSelected(user)` | `OpenProfile(user)`   | The ViewModel does not know that selecting means navigating.      |
-| `UserTypeSelected(role)`| `GoToProfileCreation`| Which screen follows is the navigator's decision.                 |
-| `OnBoardingCancelled`  | `CloseScreen`         | The view could also just hide a pane.                             |
+| `LoginSuccess(user)`   | `GoToHome`            | Which screen follows is the navigator's decision.                 |
+| `CloseClicked`         | `CloseScreen`         | The view could also just hide a pane.                             |
 | `FriendAdded(user)`    | `ShowToast(user)`     | It could be a toast, a snackbar or nothing at all.                |
 
 A good test: the name still makes sense if you replace the screen's UI completely.

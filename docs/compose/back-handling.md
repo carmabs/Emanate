@@ -135,23 +135,23 @@ ViewModel would open a second dialog over the first one. Returning `null` in tha
 
 ## Example 2: back that just goes back
 
-Not every screen needs a confirmation. On the onboarding screen, back simply leaves. Even so, it is better to
+Not every screen needs a confirmation. On the home screen, back simply returns to the login, like its close button. Even so, it is better to
 send an action than to leave the system do it, so there is **a single path through the ViewModel** for both the
 arrow and the system back:
 
 ```kotlin
 // Screen content: the arrow and the system back send the same action
-override fun onBack(state: ProfileOnBoardingState) = ProfileOnBoardingActions.BackClicked
+override fun onBack(state: HomeState) = HomeAction.CloseClicked
 
 // ViewModel
 sideEffects {
-    add<ProfileOnBoardingActions.BackClicked> { publish(ProfileOnBoardingEvent.OnBoardingCancelled) }
+    add<HomeAction.CloseClicked> { publish(HomeEvent.CloseClicked) }
 }
 ```
 
-The navigator turns `OnBoardingCancelled` into `navigateBack()`. Having a single path has two advantages: you can
+The navigator turns `CloseClicked` into `navigateBack()`. Having a single path has two advantages: you can
 add logic later (analytics, saving a draft...) in one place, and a [test](../guides/testing.md) can check the
-behavior without drawing the screen: dispatch `BackClicked` and assert the event.
+behavior without drawing the screen: dispatch `CloseClicked` and assert the event.
 
 ## Which one do I need?
 

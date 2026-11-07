@@ -89,10 +89,10 @@ safely, and the work that blocks is delegated to a use case, which switches to `
 sideEffects {
     add<HomeAction.RefreshRequested> {
         // Runs on main
-        dispatch(HomeAction.EffectQueryResult.Started)
+        dispatch(HomeAction.SideEffects.QueryStarted)
         // The use case switches to io, and comes back to main with the result
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
     }
 }
 ```

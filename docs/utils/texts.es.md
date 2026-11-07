@@ -28,13 +28,7 @@ Eso tiene tres problemas:
 - La **vista** escribe: al pintar, convierte la descripción en un `String` con el sistema de localización de su
   plataforma.
 
-```mermaid
-flowchart LR
-    VM["ViewModel<br/>(reducer)"] -- "EmaText.id(HOME_TITLE, 'Ana')" --> S["Estado"]
-    S -- "EmaText" --> V["Vista<br/>lo resuelve"]
-    L[("Localización<br/>de la plataforma")] -- "'Hola, %s'" --> V
-    V -- "'Hola, Ana'" --> U(["Usuario"])
-```
+![El ViewModel pone un EmaText en el estado y la vista lo convierte en un texto con la localización de la plataforma](../assets/texts.svg)
 
 El mismo estado da un texto distinto para cada idioma, y el ViewModel nunca lo sabe:
 
@@ -63,7 +57,7 @@ reducers {
     add<HomeInitializer.HomeUser> { initializer ->
         state.copy(title = EmaText.id(HOME_TITLE, initializer.user.name))
     }
-    add<HomeAction.EffectQueryResult.Failed> {
+    add<HomeAction.SideEffects.QueryFailed> {
         state.copy(error = EmaText.id(HOME_LOAD_ERROR))
     }
 }

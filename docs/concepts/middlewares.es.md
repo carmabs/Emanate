@@ -97,7 +97,7 @@ middlewares {
     add<HomeAction.RefreshRequested> {
         nextAfter(
             timeout = 1.seconds,
-            onTimeout = { dispatch(HomeAction.EffectQueryResult.Failed) }
+            onTimeout = { dispatch(HomeAction.SideEffects.QueryFailed) }
         ) {
             // Una tarea que tarda más de 1 segundo
         }

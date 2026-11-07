@@ -106,10 +106,10 @@ class LiveFriends(private val getFriendsUseCase: GetFriendsUseCase) : FriendsEff
     override val concurrency = SideEffectConcurrency.Leading
 
     override suspend fun SideEffectScope<HomeState, HomeAction, HomeEvent>.invoke(action: HomeAction.RefreshRequested) {
-        dispatch(HomeAction.EffectQueryResult.Started)
+        dispatch(HomeAction.SideEffects.QueryStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
     }
 }
 ```
@@ -131,9 +131,9 @@ class HomeViewModel(
         reducers {
             add<HomeAction> { action ->
                 when (action) {
-                    is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
-                    is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
-                    is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+                    is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
                     // ...
                 }
             }
@@ -159,9 +159,9 @@ class MockFriends(
     override val concurrency = SideEffectConcurrency.Leading
 
     override suspend fun SideEffectScope<HomeState, HomeAction, HomeEvent>.invoke(action: HomeAction.RefreshRequested) {
-        dispatch(HomeAction.EffectQueryResult.Started)
+        dispatch(HomeAction.SideEffects.QueryStarted)
         delay(latency)
-        dispatch(if (friends != null) HomeAction.EffectQueryResult.Loaded(friends) else HomeAction.EffectQueryResult.Failed)
+        dispatch(if (friends != null) HomeAction.SideEffects.QueryLoaded(friends) else HomeAction.SideEffects.QueryFailed)
     }
 }
 ```
@@ -260,7 +260,7 @@ diálogo de error en una build que habla con el backend real:
 
 ```kotlin
 val failingRefresh = middlewareOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction.RefreshRequested::class) {
-    next(HomeAction.EffectQueryResult.Failed)
+    next(HomeAction.SideEffects.QueryFailed)
 }
 ```
 

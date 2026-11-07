@@ -4,18 +4,18 @@ Una pantalla de Emanate reparte el trabajo entre tres piezas, para que cada una 
 
 | Pieza | Tarea | Ejemplo |
 |-------|-------|---------|
-| El **ViewModel** | Guarda el [estado](../concepts/state.md) y decide qué pasa cuando el usuario hace algo. No sabe nada de Compose. | `ProfileOnBoardingViewModel` |
-| El **contenido de la pantalla** (`EmaScreenContent`) | Pinta el estado con Compose y comunica lo que hace el usuario. No guarda datos propios. | `ProfileOnBoardingScreenContent` |
+| El **ViewModel** | Guarda el [estado](../concepts/state.md) y decide qué pasa cuando el usuario hace algo. No sabe nada de Compose. | `HomeViewModel` |
+| El **contenido de la pantalla** (`EmaScreenContent`) | Pinta el estado con Compose y comunica lo que hace el usuario. No guarda datos propios. | `HomeScreenContent` |
 | El **registro** (`emaScreen`) | El pegamento. Crea el ViewModel, lo conecta con el contenido y con el ciclo de vida, coloca la pantalla en tu grafo de navegación y recibe sus eventos. | El bloque del `NavHost` |
 
-La información siempre viaja igual. En la pantalla de onboarding del sample, el usuario indica si es administrador o
+La información siempre viaja igual. En la pantalla home del sample, el administrador toca el botón para crear un
 usuario:
 
 ![Las piezas de una pantalla Compose y cómo se comunican](../assets/compose-screen.svg)
 
-1. El usuario toca **Admin**, y el contenido de la pantalla envía la acción `AdminClicked`.
+1. El usuario toca **Create**, y el contenido de la pantalla envía la acción `CreateClicked`.
 2. El ViewModel decide qué significa eso. Cada vez que cambia su estado, el contenido de la pantalla lo pinta de nuevo.
-3. Aquí la respuesta es algo puntual: el ViewModel publica el evento `UserTypeSelected(ADMIN)`, y el `onEvent` de
+3. Aquí la respuesta es algo puntual: el ViewModel publica el evento `CreateClicked`, y el `onEvent` de
    `emaScreen` abre la siguiente pantalla.
 
 La pantalla **nunca cambia el estado por sí misma**: solo envía [acciones](../concepts/actions.md) y pinta el estado que
@@ -35,12 +35,12 @@ cambias nada: envías una acción con `actions.dispatch(...)`, y el ViewModel re
 `onState` se ejecute de nuevo.
 
 ```kotlin
-class ProfileOnBoardingScreenContent : EmaScreenContent<ProfileOnBoardingState, ProfileOnBoardingActions> {
+class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
 
     @Composable
     override fun onState(
-        state: ProfileOnBoardingState,
-        actions: EmaActionDispatcher<ProfileOnBoardingActions>
+        state: HomeState,
+        actions: EmaActionDispatcher<HomeAction>
     ) {
         // Pinta el estado. Envía lo que haga el usuario con actions.dispatch(...)
     }
@@ -71,12 +71,12 @@ la pantalla con [`EmaScreen`](#usar-una-pantalla-sin-grafo-de-navegación), que 
 ```kotlin
 NavHost(
     navController = navController,
-    startDestination = ProfileOnBoardingScreenContent::class.routeId
+    startDestination = HomeScreenContent::class.routeId
 ) {
     emaScreen(
-        screenContent = ProfileOnBoardingScreenContent(),
-        viewModel = { get<ProfileOnBoardingViewModel>() },
-        onEvent = { navigator.handleProfileOnBoardingEvent(it) }
+        screenContent = HomeScreenContent(),
+        viewModel = { get<HomeViewModel>() },
+        onEvent = { navigator.handleHomeEvent(it) { /* mostrar el mensaje */ } }
     )
 }
 ```
@@ -157,7 +157,7 @@ NavHost(navController, startDestination = ProfileCreationScreenContent::class.ro
 
 Como todos los eventos llegan al mismo `when`, el compilador te avisa cuando un evento nuevo no está gestionado. Cuando
 el `when` crece, muévelo a una función de tu navigator, como hace el sample con
-`navigator.handleProfileCreationEvent(it)`.
+`navigator.handleHomeEvent(it)`.
 
 `onEvent` debe terminar rápido: los siguientes eventos esperan por él. Navegar o mostrar un toast es inmediato. Para algo
 que tarda, como un snackbar, lánzalo en un scope de corrutinas tuyo:
@@ -219,7 +219,7 @@ vacío:
 private fun PreviewNormal() {
     EmaSampleTheme {
         ProfileCreationScreenContent().onState(
-            state = ProfileCreationState(Role.ADMIN, "Carlos", "Mateo"),
+            state = ProfileCreationState("Carlos", "Mateo"),
             actions = EmaActionDispatcher.EMPTY
         )
     }

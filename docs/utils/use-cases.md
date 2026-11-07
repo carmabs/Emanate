@@ -45,8 +45,8 @@ class GetFriendsUseCase(private val repository: FriendsRepository) :
 
 // In a side effect
 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-    .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+    .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
 ```
 
 If the operation can't fail in a way the caller cares about, return the model directly, and don't wrap it for the sake

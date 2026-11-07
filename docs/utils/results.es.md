@@ -24,8 +24,8 @@ obligatorio: el resultado también se puede consumir en cualquier otro sitio.
 
 ```kotlin
 getFriendsUseCase(input)
-    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-    .onFailure { error -> dispatch(HomeAction.EffectQueryResult.Failed(error)) }
+    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+    .onFailure { error -> dispatch(HomeAction.SideEffects.QueryFailed(error)) }
 ```
 
 ## Funciones

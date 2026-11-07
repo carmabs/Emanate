@@ -158,17 +158,17 @@ conexión:
 fun SourceSetupScope<HomeState, HomeAction, HomeEvent>.suggestCheckingConnection() {
     reducers {
         // Cuenta los fallos seguidos, y empieza de nuevo cuando una carga funciona
-        add<HomeAction.EffectQueryResult> { action ->
+        add<HomeAction.SideEffects> { action ->
             when (action) {
-                is HomeAction.EffectQueryResult.Failed -> state.copy(failures = state.failures + 1)
-                is HomeAction.EffectQueryResult.Loaded -> state.copy(failures = 0)
-                is HomeAction.EffectQueryResult.Started -> state
+                is HomeAction.SideEffects.QueryFailed -> state.copy(failures = state.failures + 1)
+                is HomeAction.SideEffects.QueryLoaded -> state.copy(failures = 0)
+                is HomeAction.SideEffects.QueryStarted -> state
             }
         }
     }
     sideEffects {
         // El reducer ya ha contado este fallo
-        add<HomeAction.EffectQueryResult.Failed> {
+        add<HomeAction.SideEffects.QueryFailed> {
             if (state.failures == 3) publish(HomeEvent.CheckConnection)
         }
     }

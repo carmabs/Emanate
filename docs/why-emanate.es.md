@@ -59,7 +59,7 @@ middlewareDelayOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction
 
 // Todos los refrescos fallan, para comprobar el diálogo de error con el backend real
 middlewareOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction.RefreshRequested::class) {
-    next(HomeAction.EffectQueryResult.Failed)
+    next(HomeAction.SideEffects.QueryFailed)
 }
 ```
 

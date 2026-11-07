@@ -37,9 +37,9 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
             add<HomeAction> { action ->
                 when (action) {
                     is HomeAction.QueryWritten -> state.copy(query = action.query)
-                    is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
-                    is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
-                    is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+                    is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
                     is HomeAction.FriendClicked -> state
                 }
             }
@@ -47,10 +47,10 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
         sideEffects {
             // Searches with the new query, cancelling the previous search if it is still running
             add<HomeAction.QueryWritten>(concurrency = SideEffectConcurrency.Latest) {
-                dispatch(HomeAction.EffectQueryResult.Started)
+                dispatch(HomeAction.SideEffects.QueryStarted)
                 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-                    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-                    .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+                    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+                    .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
             }
             // Tells the view to open the profile
             add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
@@ -61,7 +61,7 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
 
 - The **middleware** waits until the user stops typing before the query continues.
 - The **reducer** returns the next state for each action, so the view always draws a valid state.
-- The **side effects** run the business logic and report it with actions (`HomeAction.EffectQueryResult`) or events.
+- The **side effects** run the business logic and report it with actions (`HomeAction.SideEffects`) or events.
 
 The same pieces can also be declared as properties of the ViewModel, with `middlewareOf`, `reducerOf` and
 `sideEffectOf`, and installed with `add`. Then each one can be reused, received in the constructor to
@@ -78,18 +78,18 @@ class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
     private val homeReducer = reducerOf(HomeAction::class) { action ->
         when (action) {
             is HomeAction.QueryWritten -> state.copy(query = action.query)
-            is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
-            is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
-            is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+            is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+            is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+            is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
             is HomeAction.FriendClicked -> state
         }
     }
 
     private val searchFriends = sideEffectOf(HomeAction.QueryWritten::class, SideEffectConcurrency.Latest) {
-        dispatch(HomeAction.EffectQueryResult.Started)
+        dispatch(HomeAction.SideEffects.QueryStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-            .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
     }
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->

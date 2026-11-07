@@ -10,6 +10,7 @@ plataforma solo le da el almacén donde se guardan los valores.
 
 ```kotlin
 class ProfileCreationViewModel(
+    private val addFriendUseCase: AddFriendUseCase,
     initialDataState: ProfileCreationState,
     private val stateStore: EmaStateStore
 ) : EmaViewModel<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>(initialDataState) {
@@ -44,7 +45,7 @@ ViewModel.
 ```kotlin
 emaScreen(
     screenContent = ProfileCreationScreenContent(),
-    viewModel = { store -> ProfileCreationViewModel(ProfileCreationState.DEFAULT, store) },
+    viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
     onEvent = { /* ... */ }
 )
 ```
@@ -247,12 +248,12 @@ el nuevo restaura lo que guardó el primero.
 @Test
 fun `the form survives the death of the process`() = runTest {
     val store = testStateStore()
-    val first = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
-    first.onCreated(ProfileCreationInitializer.Admin)
+    val first = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, store)
+    first.onCreated()
     first.dispatch(ProfileCreationAction.UserNameWritten("Ana"))
 
-    val restored = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
-    restored.onCreated(ProfileCreationInitializer.Admin)
+    val restored = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, store)
+    restored.onCreated()
 
     assertEquals("Ana", restored.stateFlow.value.name)
 }

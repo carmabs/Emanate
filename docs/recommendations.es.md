@@ -24,7 +24,7 @@ El sample tiene seis módulos:
 | `presentation`  | Estado, acciones, eventos, inicializadores y ViewModels.               | **Kotlin puro**  | `domain`                                                      |
 | `domain`        | Modelos, casos de uso e interfaces de los repositorios.                | **Kotlin puro**  | `emanate-core`                                                |
 | `data`          | Implementaciones de los repositorios, red y almacenamiento.            | Librería Android | `domain`, `android-utils`                                     |
-| `android-utils` | Ayudas de Android compartidas por varios módulos.                      | Librería Android | `domain`                                                      |
+| `android-utils` | Ayudas de Android compartidas por varios módulos, como leer y guardar JSON en `SharedPreferences`. | Librería Android | `domain`                                                      |
 
 ![Módulos de una app Emanate y las dependencias entre ellos](assets/modules.svg)
 
@@ -113,10 +113,10 @@ pantalla Home como ejemplo:
 | Estado           | `<Pantalla>State`                       | `HomeState`                      |
 | Estado por defecto | `companion object { val DEFAULT }`    | `HomeState.DEFAULT`              |
 | Acción           | `<Pantalla>Action`, con el nombre de **lo que hizo el usuario** | `QueryWritten`, `FriendClicked` |
-| Evento           | `<Pantalla>Event`, con el nombre de **lo que pasó** | `FriendSelected`, `OnBoardingCancelled` |
+| Evento           | `<Pantalla>Event`, con el nombre de **lo que pasó** | `FriendSelected`, `CloseClicked` |
 | ViewModel        | `<Pantalla>ViewModel`                   | `HomeViewModel`                  |
 | Diálogos en el estado | `<Pantalla>Dialog`                 | `HomeDialog.LoadError`           |
-| Resultados de los side effects | `<Pantalla>Action.Effect<Qué>Result` | `HomeAction.EffectQueryResult.Loaded` |
+| Resultados de los side effects | `<Pantalla>Action.SideEffects.<Qué>` | `HomeAction.SideEffects.QueryLoaded` |
 | Contenido de Compose | `<Pantalla>ScreenContent`           | `HomeScreenContent`              |
 | Inicializador    | `<Pantalla>Initializer`                 | `HomeInitializer.HomeUser`       |
 | Preview          | `Preview<Qué>`, con el prefijo para que las previews queden juntas | `PreviewAdmin`, `PreviewLoading` |
@@ -211,7 +211,7 @@ Un ViewModel no debe usar un context, una vista ni recursos.
 
     // Bien: el reducer solo cambia el estado, el side effect hace el trabajo
     reducers    { add<LoginAction.LoginClicked> { state.copy(isLoading = true) } }
-    sideEffects { add<LoginAction.LoginClicked> { dispatch(LoginAction.EffectLoginResult(loginUseCase(...))) } }
+    sideEffects { add<LoginAction.LoginClicked> { dispatch(LoginAction.SideEffects.LoginResult(loginUseCase(...))) } }
     ```
 
 ### La vista solo informa y pinta

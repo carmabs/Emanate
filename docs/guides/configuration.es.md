@@ -93,10 +93,10 @@ con seguridad, y el trabajo que bloquea se delega a un caso de uso, que cambia s
 sideEffects {
     add<HomeAction.RefreshRequested> {
         // Se ejecuta en main
-        dispatch(HomeAction.EffectQueryResult.Started)
+        dispatch(HomeAction.SideEffects.QueryStarted)
         // El caso de uso cambia a io, y vuelve a main con el resultado
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
     }
 }
 ```

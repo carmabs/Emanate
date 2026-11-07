@@ -35,10 +35,7 @@ override fun setup() = source {
     sideEffects {
         add<HomeInitializer> { initializer ->
             when (initializer) {
-                is HomeInitializer.HomeUser -> {
-                    val friends = getUserFriendsUseCase(GetUserFriendsUseCase.Input(initializer.user))
-                    dispatch(HomeFriendsLoaded(friends))
-                }
+                is HomeInitializer.HomeUser -> dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
             }
         }
     }
@@ -59,19 +56,19 @@ The initializer travels as text inside the route, serialized with kotlinx.serial
 ```kotlin
 // Send
 navController.navigate(
-    route = ProfileCreationScreenContent::class.routeId,
+    route = HomeScreenContent::class.routeId,
     initializerBundle = EmaInitializerBundle(
-        ProfileCreationInitializer.Admin,
-        BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
+        HomeInitializer.HomeUser(user),
+        BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
     )
 )
 
 // Receive
 emaScreen(
-    screenContent = ProfileCreationScreenContent(),
-    viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
-    initializerSupport = EmaInitializerSupport.fromRoute(ProfileCreationInitializer.serializer()),
-    onEvent = { navigator.handleProfileCreationEvent(it) }
+    screenContent = HomeScreenContent(),
+    viewModel = { get<HomeViewModel>() },
+    initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()),
+    onEvent = { navigator.handleHomeEvent(it) { /* show the message */ } }
 )
 ```
 

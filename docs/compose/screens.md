@@ -4,18 +4,18 @@ An Emanate screen splits the work between three pieces, so that each one has a s
 
 | Piece | Job | Example |
 |-------|-----|---------|
-| The **ViewModel** | Holds the [state](../concepts/state.md) and decides what happens when the user does something. It knows nothing about Compose. | `ProfileOnBoardingViewModel` |
-| The **screen content** (`EmaScreenContent`) | Draws the state with Compose and reports what the user does. It keeps no data of its own. | `ProfileOnBoardingScreenContent` |
+| The **ViewModel** | Holds the [state](../concepts/state.md) and decides what happens when the user does something. It knows nothing about Compose. | `HomeViewModel` |
+| The **screen content** (`EmaScreenContent`) | Draws the state with Compose and reports what the user does. It keeps no data of its own. | `HomeScreenContent` |
 | The **registration** (`emaScreen`) | The glue. It creates the ViewModel, connects it to the content and to the lifecycle, puts the screen in your navigation graph and receives its events. | The `NavHost` block |
 
-The information always travels the same way. In the onboarding screen of the sample, the user says whether they are
-an admin or a user:
+The information always travels the same way. In the home screen of the sample, the admin taps the button to create a
+user:
 
 ![The pieces of a Compose screen and how they talk to each other](../assets/compose-screen.svg)
 
-1. The user taps **Admin**, and the screen content sends the action `AdminClicked`.
+1. The user taps **Create**, and the screen content sends the action `CreateClicked`.
 2. The ViewModel decides what that means. Whenever its state changes, the screen content draws it again.
-3. Here the answer is a one-off: the ViewModel publishes the event `UserTypeSelected(ADMIN)`, and the `onEvent` of
+3. Here the answer is a one-off: the ViewModel publishes the event `CreateClicked`, and the `onEvent` of
    `emaScreen` opens the next screen.
 
 The screen **never changes the state itself**: it only sends [actions](../concepts/actions.md) and draws whatever
@@ -34,12 +34,12 @@ presses a button, you do not change anything: you send an action with `actions.d
 answers with a new state that makes `onState` run again.
 
 ```kotlin
-class ProfileOnBoardingScreenContent : EmaScreenContent<ProfileOnBoardingState, ProfileOnBoardingActions> {
+class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
 
     @Composable
     override fun onState(
-        state: ProfileOnBoardingState,
-        actions: EmaActionDispatcher<ProfileOnBoardingActions>
+        state: HomeState,
+        actions: EmaActionDispatcher<HomeAction>
     ) {
         // Draw the state. Send user input with actions.dispatch(...)
     }
@@ -71,12 +71,12 @@ decide what happens when the ViewModel sends an event, such as navigating to ano
 ```kotlin
 NavHost(
     navController = navController,
-    startDestination = ProfileOnBoardingScreenContent::class.routeId
+    startDestination = HomeScreenContent::class.routeId
 ) {
     emaScreen(
-        screenContent = ProfileOnBoardingScreenContent(),
-        viewModel = { get<ProfileOnBoardingViewModel>() },
-        onEvent = { navigator.handleProfileOnBoardingEvent(it) }
+        screenContent = HomeScreenContent(),
+        viewModel = { get<HomeViewModel>() },
+        onEvent = { navigator.handleHomeEvent(it) { /* show the message */ } }
     )
 }
 ```
@@ -156,7 +156,7 @@ NavHost(navController, startDestination = ProfileCreationScreenContent::class.ro
 ```
 
 As every event arrives at the same `when`, the compiler warns you when a new event is not handled. When the `when`
-grows, move it to a function of your navigator, as the sample does with `navigator.handleProfileCreationEvent(it)`.
+grows, move it to a function of your navigator, as the sample does with `navigator.handleHomeEvent(it)`.
 
 `onEvent` must return quickly: the next events wait for it. Navigating or showing a toast is immediate. For something
 that takes time, like a snackbar, launch it in a coroutine scope of yours:
@@ -218,7 +218,7 @@ Inside the IDE preview there is no ViewModel, so call `onState` directly with a 
 private fun PreviewNormal() {
     EmaSampleTheme {
         ProfileCreationScreenContent().onState(
-            state = ProfileCreationState(Role.ADMIN, "Carlos", "Mateo"),
+            state = ProfileCreationState("Carlos", "Mateo"),
             actions = EmaActionDispatcher.EMPTY
         )
     }

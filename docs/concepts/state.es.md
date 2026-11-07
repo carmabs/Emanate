@@ -76,15 +76,15 @@ sealed interface HomeDialog {
 }
 
 // Reducers
-is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // mostrar
+is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // mostrar
 is HomeAction.ErrorAccepted -> state.copy(dialog = null)                                    // ocultar
 ```
 
 **Carga**: un booleano, activado por la acción que inicia el trabajo y desactivado por la que comunica su resultado.
 
 ```kotlin
-is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
-is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
+is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
 ```
 
 **Errores de campo**: un booleano (o un mensaje) por campo, con el prefijo `error`. Actívalo cuando la entrada no sea

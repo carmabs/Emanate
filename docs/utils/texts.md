@@ -28,13 +28,7 @@ That has three problems:
 - The **view** writes: when it draws, it turns the description into a `String` with the localization system of its
   platform.
 
-```mermaid
-flowchart LR
-    VM["ViewModel<br/>(reducer)"] -- "EmaText.id(HOME_TITLE, 'Ana')" --> S["State"]
-    S -- "EmaText" --> V["View<br/>resolves it"]
-    L[("Localization<br/>of the platform")] -- "'Hello, %s'" --> V
-    V -- "'Hello, Ana'" --> U(["User"])
-```
+![The ViewModel puts an EmaText in the state and the view turns it into a text with the localization of the platform](../assets/texts.svg)
 
 The same state gives a different text for each language, and the ViewModel never knows about it:
 
@@ -63,7 +57,7 @@ reducers {
     add<HomeInitializer.HomeUser> { initializer ->
         state.copy(title = EmaText.id(HOME_TITLE, initializer.user.name))
     }
-    add<HomeAction.EffectQueryResult.Failed> {
+    add<HomeAction.SideEffects.QueryFailed> {
         state.copy(error = EmaText.id(HOME_LOAD_ERROR))
     }
 }

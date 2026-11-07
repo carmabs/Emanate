@@ -144,7 +144,7 @@ fun `the refresh is processed when the test advances`() = runTest {
     recorder.assertActions()                                   // todavía esperando en la cola
 
     advanceUntilIdle()
-    recorder.assertActions(HomeAction.RefreshRequested, HomeAction.EffectQueryResult.Loaded(listOf(ana)))
+    recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))
 }
 ```
 
@@ -260,7 +260,7 @@ y el mensaje muestra ambas listas. No escribes los bucles ni las comparaciones.
 
 | Función | Comprueba | Ejemplo |
 |---------|-----------|---------|
-| `assertActions(...)` | Las acciones que entraron, en orden, incluidas las enviadas por side effects y las que bloqueó un middleware. | `recorder.assertActions(HomeAction.RefreshRequested, HomeAction.EffectQueryResult.Loaded(listOf(ana)))` |
+| `assertActions(...)` | Las acciones que entraron, en orden, incluidas las enviadas por side effects y las que bloqueó un middleware. | `recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))` |
 | `assertStates(...)` | Los estados que devolvieron los reducers, uno por cada acción reducida. | `recorder.assertStates(HomeState(isLoading = true), HomeState(friends = listOf(ana)))` |
 | `assertState(state)` | El último estado es exactamente ese. | `recorder.assertState(HomeState(friends = listOf(ana)))` |
 | `assertState { }` | El último estado cumple una condición, sin escribir el estado completo. | `recorder.assertState { !it.isLoading && it.friends.size == 1 }` |
@@ -389,20 +389,20 @@ recibe el nuevo ViewModel después.
 fun `the form survives the death of the process`() = runTest {
     // 1. El primer ViewModel guarda en el store
     val store = testStateStore()
-    val first = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
-    first.onCreated(ProfileCreationInitializer.Admin)
+    val first = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, store)
+    first.onCreated()
     first.dispatch(ProfileCreationAction.UserNameWritten("Ana"))
 
     assertEquals("""{"name":"Ana","surname":""}""", store.values["form"])    // lo que se guardó
 
     // 2. El proceso muere: un nuevo ViewModel recibe el mismo store
-    val restored = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
+    val restored = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, store)
     val recorder = restored.record()
-    restored.onCreated(ProfileCreationInitializer.Admin)
+    restored.onCreated()
 
     // 3. La restauración llega justo después del inicializador, con los valores guardados
     recorder.assertActions(
-        ProfileCreationInitializer.Admin,
+        EmaInitializer.EMPTY,
         restoreStateOf("form" to """{"name":"Ana","surname":""}""")
     )
     assertEquals("Ana", restored.stateFlow.value.name)
@@ -445,7 +445,7 @@ fun `a second refresh while loading is ignored`() = runTest {
     advanceUntilIdle()
 
     recorder.assertActions(
-        HomeAction.RefreshRequested, HomeAction.EffectQueryResult.Started, HomeAction.RefreshRequested, HomeAction.EffectQueryResult.Loaded(listOf(ana))
+        HomeAction.RefreshRequested, HomeAction.SideEffects.QueryStarted, HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana))
     )
 }
 ```

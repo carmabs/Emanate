@@ -76,15 +76,15 @@ sealed interface HomeDialog {
 }
 
 // Reducers
-is HomeAction.EffectQueryResult.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // show
+is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // show
 is HomeAction.ErrorAccepted -> state.copy(dialog = null)                                    // hide
 ```
 
 **Loading**: a boolean, set by the action that starts the work and cleared by the one that reports its result.
 
 ```kotlin
-is HomeAction.EffectQueryResult.Started -> state.copy(isLoading = true)
-is HomeAction.EffectQueryResult.Loaded -> state.copy(isLoading = false, friends = action.friends)
+is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
 ```
 
 **Field errors**: one boolean (or a message) per field, named with the prefix `error`. Set it when the input is not

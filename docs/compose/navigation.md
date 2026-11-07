@@ -6,22 +6,21 @@
 In Emanate a **ViewModel never navigates**. Navigating is the job of the navigation graph that contains the screen,
 usually the `NavHost`: it is the one that knows which screens exist and holds the `NavController` to move between them.
 
-The ViewModel only publishes an [event](../concepts/events.md) that says **what happened**, like "the user chose to be an
-admin". Someone outside the screens has to receive those events and decide **where to go**: the **navigator**, a class
+The ViewModel only publishes an [event](../concepts/events.md) that says **what happened**, like "the login succeeded". Someone outside the screens has to receive those events and decide **where to go**: the **navigator**, a class
 that lives next to the `NavHost` and holds its `NavController`. It is not a class of Emanate: it is a plain class of
 yours, and it is a good pattern to handle all the navigation of your app this way.
 
-This is the profile flow of the sample, with two screens:
+This is the main flow of the sample, with two of its screens, the login and the home:
 
 ![Each screen of the NavHost sends its events to the navigator, which decides where to go](../assets/compose-navigation.svg)
 
 1. Each destination of the `NavHost` is an `emaScreen`, with its screen content, its ViewModel and its `onEvent`.
-2. When the user taps **Admin**, the ViewModel of `ProfileOnBoarding` publishes `UserTypeSelected(ADMIN)`. It doesn't
-   know which screen comes next.
+2. When the credentials are right, the ViewModel of `Login` publishes `LoginSuccess(user)`. It doesn't know which
+   screen comes next.
 3. The `onEvent` of that screen hands the event to the navigator, to its function for that screen:
-   `handleProfileOnBoardingEvent`.
-4. The navigator decides for each event: `UserTypeSelected` opens `ProfileCreation`, and `OnBoardingCancelled` goes
-   back. It does it with the `navController`, which changes the destination shown by the `NavHost`.
+   `handleLoginEvent`.
+4. The navigator decides for each event: `LoginSuccess` opens `Home`, and the `CloseClicked` of `Home` goes back to the
+   login. It does it with the `navController`, which changes the destination shown by the `NavHost`.
 
 Keeping the navigation out of the ViewModel has two advantages. The ViewModel can be tested without Android, and the
 same event can lead to different places in different apps or graphs: on a phone it may open a new screen and on a
@@ -37,7 +36,7 @@ Every screen registered with `emaScreen` or `emaDialog` has a route. By default 
 unique per class:
 
 ```kotlin
-navController.navigate(ProfileCreationScreenContent::class.routeId)
+navController.navigate(HomeScreenContent::class.routeId)
 ```
 
 ## The navigator
@@ -48,25 +47,32 @@ receives the events of that screen and decides where to go. Emanate doesn't requ
 any class with this shape works. Create it once, with `remember`, next to the `NavHost`:
 
 ```kotlin
-class ProfileNavigator(private val navController: NavController) {
+class MainNavigator(private val navController: NavController, private val context: Context) {
 
-    fun handleProfileOnBoardingEvent(event: ProfileOnBoardingEvent) {
+    fun handleLoginEvent(event: LoginEvent, onMessage: (LoginEvent) -> Unit) {
         when (event) {
-            is ProfileOnBoardingEvent.UserTypeSelected -> navController.navigate(
-                route = ProfileCreationScreenContent::class.routeId,
+            is LoginEvent.LoginSuccess -> navController.navigate(
+                route = HomeScreenContent::class.routeId,
                 initializerBundle = EmaInitializerBundle(
-                    mapToCreationInitializer(event.role),
-                    BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
+                    HomeInitializer.HomeUser(event.user),
+                    BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
                 )
             )
 
-            is ProfileOnBoardingEvent.OnBoardingCancelled -> navController.navigateBack()
+            // A message is not navigation: whoever shows messages handles it
+            is LoginEvent.Message -> onMessage(event)
         }
     }
 
-    fun handleProfileCreationEvent(event: ProfileCreationEvent) {
+    fun handleHomeEvent(event: HomeEvent, onMessage: (HomeEvent) -> Unit) {
         when (event) {
-            ProfileCreationEvent.DialogConfirmationAccepted -> navController.navigateBack()
+            // The profile creation is in its own activity
+            HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))
+
+            // The login is the screen below the home
+            HomeEvent.CloseClicked -> navController.navigateBack()
+
+            is HomeEvent.UserCreated -> onMessage(event)
         }
     }
 }
@@ -75,13 +81,13 @@ class ProfileNavigator(private val navController: NavController) {
 ```kotlin
 setContent {
     val navController = rememberNavController()
-    val navigator = remember { ProfileNavigator(navController) }
+    val navigator = remember { MainNavigator(navController, context) }
 
-    NavHost(navController, startDestination = ProfileOnBoardingScreenContent::class.routeId) {
+    NavHost(navController, startDestination = LoginScreenContent::class.routeId) {
         emaScreen(
-            screenContent = ProfileOnBoardingScreenContent(),
-            viewModel = { get<ProfileOnBoardingViewModel>() },
-            onEvent = { navigator.handleProfileOnBoardingEvent(it) }
+            screenContent = LoginScreenContent(),
+            viewModel = { get<LoginViewModel>() },
+            onEvent = { navigator.handleLoginEvent(it) { /* show the message */ } }
         )
     }
 }
@@ -96,10 +102,10 @@ Send the [initializer](../guides/initializers.md) with the `navigate` extension 
 
 ```kotlin
 navController.navigate(
-    route = ProfileCreationScreenContent::class.routeId,
+    route = HomeScreenContent::class.routeId,
     initializerBundle = EmaInitializerBundle(
-        ProfileCreationInitializer.Admin,
-        BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
+        HomeInitializer.HomeUser(user),
+        BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
     )
 )
 ```
@@ -112,10 +118,10 @@ only work with Bundles, can't be used in a route.
 
 ```kotlin
 emaScreen(
-    screenContent = ProfileCreationScreenContent(),
-    viewModel = { get<ProfileCreationViewModel>() },
-    initializerSupport = EmaInitializerSupport.fromRoute(ProfileCreationInitializer.serializer()),
-    onEvent = { navigator.handleProfileCreationEvent(it) }
+    screenContent = HomeScreenContent(),
+    viewModel = { get<HomeViewModel>() },
+    initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()),
+    onEvent = { navigator.handleHomeEvent(it) { /* show the message */ } }
 )
 ```
 
@@ -142,9 +148,10 @@ The initializer of a screen normally travels in its **route**: the navigator put
 `startDestination`, is not reached with `navigate`: it is shown as soon as the `NavHost` is created, so its route has no
 initializer.
 
-If that screen needs one, it can come from the **intent of the activity**. In the sample, the home screen starts
-`ProfileActivity` and puts a `ProfileOnBoardingInitializer.Default("Carlos")` in the intent, so that the onboarding
-screen can greet that user. It takes two steps, one in each activity:
+If that screen needs one, it can come from the **intent of the activity**. The sample doesn't need it, because the
+profile creation has no data to receive, but imagine that the home screen starts `ProfileActivity` and puts a
+`ProfileCreationInitializer.Default("Carlos")` in the intent, so that the creation screen can say who creates the
+user. It takes two steps, one in each activity:
 
 ![The initializer of the first screen comes from the intent of the activity and the one of the other screens from the route](../assets/compose-initializer.svg)
 
@@ -153,8 +160,8 @@ with the serializer of the initializer, and start the activity:
 
 ```kotlin
 val intent = Intent(context, ProfileActivity::class.java).setInitializer(
-    ProfileOnBoardingInitializer.Default("Carlos"),
-    BundleSerializerStrategy.kSerialization(ProfileOnBoardingInitializer.serializer())
+    ProfileCreationInitializer.Default("Carlos"),
+    BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
 )
 context.startActivity(intent)
 ```
@@ -167,13 +174,13 @@ EmaInitializerBundle(...))` puts it there for you, and you only have to use the 
 contains the `NavHost`, using the same serializer:
 
 ```kotlin
-NavHost(navController, startDestination = ProfileOnBoardingScreenContent::class.routeId) {
+NavHost(navController, startDestination = ProfileCreationScreenContent::class.routeId) {
     emaScreen(
-        screenContent = ProfileOnBoardingScreenContent(),
-        viewModel = { get<ProfileOnBoardingViewModel>() },
+        screenContent = ProfileCreationScreenContent(),
+        viewModel = { get<ProfileCreationViewModel>() },
         // The initializer that the home screen put in the intent of the activity
-        initializerSupport = EmaInitializerSupport.fromIntent(ProfileOnBoardingInitializer.serializer()),
-        onEvent = { navigator.handleProfileOnBoardingEvent(it) }
+        initializerSupport = EmaInitializerSupport.fromIntent(ProfileCreationInitializer.serializer()),
+        onEvent = { navigator.handleProfileCreationEvent(it) }
     )
 }
 ```
@@ -197,16 +204,16 @@ of the type that the screen expects, with empty values:
 
 ```kotlin
 navController.navigate(
-    route = ProfileOnBoardingScreenContent::class.routeId,
+    route = ProfileCreationScreenContent::class.routeId,
     initializerBundle = EmaInitializerBundle(
-        ProfileOnBoardingInitializer.Default(admin = ""),
-        BundleSerializerStrategy.kSerialization(ProfileOnBoardingInitializer.serializer())
+        ProfileCreationInitializer.Default(admin = ""),
+        BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
     )
 )
 ```
 
-The screen then receives that initializer, and it is the reducer of `ProfileOnBoardingInitializer` that decides what it
-means: for example, that there is no user to greet.
+The screen then receives that initializer, and it is the reducer of `ProfileCreationInitializer` that decides what it
+means: for example, that there is no creator to show.
 
 Going back to the first screen with the back button doesn't open it again: the original screen, with its ViewModel,
 comes back and doesn't read the initializer again.

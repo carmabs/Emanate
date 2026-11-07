@@ -17,7 +17,7 @@ Los eventos se publican desde los side effects del ViewModel, con `publish`:
 
 ```kotlin
 sideEffects {
-    add<HomeAction.EffectQueryResult.Loaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
+    add<HomeAction.SideEffects.QueryLoaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
     add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
 }
 ```
@@ -68,8 +68,8 @@ Como todos los eventos llegan al mismo `when`, el compilador te avisa cuando un 
 | Prefiere                | Evita                 | Por qué                                                           |
 |-------------------------|-----------------------|-------------------------------------------------------------------|
 | `FriendSelected(user)`  | `OpenProfile(user)`   | El ViewModel no sabe que seleccionar significa navegar.           |
-| `UserTypeSelected(role)`| `GoToProfileCreation` | Qué pantalla sigue es decisión del navigator.                     |
-| `OnBoardingCancelled`   | `CloseScreen`         | La vista también podría simplemente ocultar un panel.             |
+| `LoginSuccess(user)`    | `GoToHome`            | Qué pantalla sigue es decisión del navigator.                     |
+| `CloseClicked`          | `CloseScreen`         | La vista también podría simplemente ocultar un panel.             |
 | `FriendAdded(user)`     | `ShowToast(user)`     | Podría ser un toast, un snackbar o nada en absoluto.              |
 
 Una buena prueba: el nombre sigue teniendo sentido si cambias por completo la UI de la pantalla.

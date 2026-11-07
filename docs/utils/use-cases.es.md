@@ -46,8 +46,8 @@ class GetFriendsUseCase(private val repository: FriendsRepository) :
 
 // En un side effect
 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-    .onSuccess { friends -> dispatch(HomeAction.EffectQueryResult.Loaded(friends)) }
-    .onFailure { dispatch(HomeAction.EffectQueryResult.Failed) }
+    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+    .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
 ```
 
 Si la operación no puede fallar de un modo que le importe a quien llama, devuelve el modelo directamente y no lo

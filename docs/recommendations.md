@@ -23,7 +23,7 @@ The sample has six modules:
 | `presentation`  | State, actions, events, initializers and ViewModels.                  | **Pure Kotlin** | `domain`                                                      |
 | `domain`        | Models, use cases and repository interfaces.                          | **Pure Kotlin** | `emanate-core`                                                |
 | `data`          | Repository implementations, network and storage.                      | Android library | `domain`, `android-utils`                                     |
-| `android-utils` | Android helpers shared by several modules.                            | Android library | `domain`                                                      |
+| `android-utils` | Android helpers shared by several modules, like reading and saving JSON in `SharedPreferences`. | Android library | `domain`                                                      |
 
 ![Modules of an Emanate app and the dependencies between them](assets/modules.svg)
 
@@ -111,10 +111,10 @@ as an example:
 | State            | `<Screen>State`                         | `HomeState`                      |
 | Default state    | `companion object { val DEFAULT }`      | `HomeState.DEFAULT`              |
 | Action           | `<Screen>Action`, named after **what the user did** | `QueryWritten`, `FriendClicked` |
-| Event            | `<Screen>Event`, named after **what happened** | `FriendSelected`, `OnBoardingCancelled` |
+| Event            | `<Screen>Event`, named after **what happened** | `FriendSelected`, `CloseClicked` |
 | ViewModel        | `<Screen>ViewModel`                     | `HomeViewModel`                  |
 | Dialogs in state | `<Screen>Dialog`                        | `HomeDialog.LoadError`           |
-| Results of side effects | `<Screen>Action.Effect<What>Result` | `HomeAction.EffectQueryResult.Loaded` |
+| Results of side effects | `<Screen>Action.SideEffects.<What>` | `HomeAction.SideEffects.QueryLoaded` |
 | Compose content  | `<Screen>ScreenContent`                 | `HomeScreenContent`              |
 | Initializer      | `<Screen>Initializer`                   | `HomeInitializer.HomeUser`       |
 | Preview          | `Preview<What>`, with the prefix so the previews are together | `PreviewAdmin`, `PreviewLoading` |
@@ -208,7 +208,7 @@ A ViewModel must not use a context, a view or resources.
 
     // Good: the reducer only changes the state, the side effect does the work
     reducers    { add<LoginAction.LoginClicked> { state.copy(isLoading = true) } }
-    sideEffects { add<LoginAction.LoginClicked> { dispatch(LoginAction.EffectLoginResult(loginUseCase(...))) } }
+    sideEffects { add<LoginAction.LoginClicked> { dispatch(LoginAction.SideEffects.LoginResult(loginUseCase(...))) } }
     ```
 
 ### The view only reports and draws

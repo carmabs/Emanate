@@ -49,18 +49,18 @@ through actions and cannot call arbitrary functions of the ViewModel.
 ## Actions are also results
 
 The side effects report what happened with actions too, so the reducers can apply it. Group them in a sealed type
-inside the actions of the screen, named after the side effect that dispatches them, so it is clear that only the
-ViewModel sends them:
+inside the actions of the screen, called `SideEffects`, so it is clear that only the ViewModel sends them. Name each
+action after what happened (`QueryLoaded`):
 
 ```kotlin
 sealed interface HomeAction : EmaAction {
     // ...
 
     // The results of the search, dispatched by its side effect
-    sealed interface EffectQueryResult : HomeAction {
-        data object Started : EffectQueryResult
-        data class Loaded(val friends: List<User>) : EffectQueryResult
-        data object Failed : EffectQueryResult
+    sealed interface SideEffects : HomeAction {
+        data object QueryStarted : SideEffects
+        data class QueryLoaded(val friends: List<User>) : SideEffects
+        data object QueryFailed : SideEffects
     }
 }
 ```

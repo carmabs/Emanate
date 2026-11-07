@@ -59,7 +59,7 @@ middlewareDelayOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction
 
 // Every refresh fails, to check the error dialog against the real backend
 middlewareOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction.RefreshRequested::class) {
-    next(HomeAction.EffectQueryResult.Failed)
+    next(HomeAction.SideEffects.QueryFailed)
 }
 ```
 
