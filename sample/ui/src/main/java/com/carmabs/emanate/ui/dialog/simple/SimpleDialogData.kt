@@ -1,24 +1,12 @@
 package com.carmabs.emanate.ui.dialog.simple
 
-import com.carmabs.emanate.core.dialog.EmaDialogData
 import com.carmabs.emanate.core.model.EmaText
 
 /**
- *  *<p>
- * Copyright (c) 2020, Carmabs. All rights reserved.
- * </p>
- *
- *
- * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo</a>
+ * What a simple dialog shows: a title, a message and, optionally, an image above them.
  */
-
 data class SimpleDialogData(
     val title: EmaText,
     val message: EmaText,
-    val showCross: Boolean = false,
-    val showCancel: Boolean = false,
-    val image: Int? = null,
-    override val proportionWidth: Float? = 0.85f,
-    override val proportionHeight: Float? = null,
-    override val isModal: Boolean = true
-) : EmaDialogData
+    val image: Int? = null
+)

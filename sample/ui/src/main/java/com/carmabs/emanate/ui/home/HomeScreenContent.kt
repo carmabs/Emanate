@@ -20,6 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -33,7 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.carmabs.domain.model.Role
@@ -46,13 +47,16 @@ import com.carmabs.emanate.presentation.extension.initialsOf
 import com.carmabs.emanate.presentation.home.HomeAction
 import com.carmabs.emanate.presentation.home.HomeState
 import com.carmabs.emanate.sample.ui.R
-import com.carmabs.emanate.ui.base.compose.BaseScreenComposable
-import com.carmabs.emanate.ui.theme.EmaSampleTheme
+import com.carmabs.emanate.compose.ui.EmaScreenContent
+import com.carmabs.emanate.ui.utils.RenderPreview
 
 /**
  * Home of the sample: the profile of the user and the list of users, different for each role
  */
-class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
+class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
+
+    // The system back and the close button take the same path through the view model
+    override fun onBack(state: HomeState): HomeAction = HomeAction.CloseClicked
 
     @Composable
     override fun onState(state: HomeState, actions: EmaActionDispatcher<HomeAction>) {
@@ -68,7 +72,7 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
                                 contentDescription = null
                             )
                         },
-                        onClick = { actions.dispatch(HomeAction.ProfileClicked) }
+                        onClick = { actions.dispatch(HomeAction.CreateClicked) }
                     )
                 }
             }
@@ -76,22 +80,37 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
             val userData = state.userData
             Box(modifier = Modifier.fillMaxSize().padding(padding)) {
                 if (userData != null) {
-                    Content(state, userData)
+                    Content(state, userData, actions)
                 }
             }
         }
     }
 
     @Composable
-    private fun Content(state: HomeState, userData: HomeState.UserData) {
+    private fun Content(
+        state: HomeState,
+        userData: HomeState.UserData,
+        actions: EmaActionDispatcher<HomeAction>
+    ) {
         val isAdmin = userData.role == Role.ADMIN
         val screenPadding = dimensionResource(id = R.dimen.screen_padding)
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(
-                modifier = Modifier.padding(start = screenPadding, end = screenPadding, top = 24.dp),
-                text = stringResource(id = R.string.home_greeting, userData.name),
-                style = MaterialTheme.typography.headlineMedium
-            )
+            Row(
+                modifier = Modifier.padding(start = screenPadding, end = 4.dp, top = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = stringResource(id = R.string.home_greeting, userData.name),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                IconButton(onClick = { actions.dispatch(HomeAction.CloseClicked) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_close),
+                        contentDescription = stringResource(id = R.string.home_close)
+                    )
+                }
+            }
             Text(
                 modifier = Modifier.padding(start = screenPadding, end = screenPadding, top = 4.dp),
                 text = stringResource(
@@ -109,7 +128,7 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
                 style = MaterialTheme.typography.titleMedium
             )
             if (state.showEmptyList) {
-                EmptyList()
+                EmptyList(isAdmin)
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -121,7 +140,16 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
                     ),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(state.userList) { UserItem(it) }
+                    items(state.userList, key = { it.id.ifEmpty { it.fullName } }) { user ->
+                        UserItem(
+                            // The removed user fades out while the ones below slide up to its place
+                            modifier = Modifier.animateItem(),
+                            user = user,
+                            showDelete = state.showDeleteButtons
+                        ) {
+                            actions.dispatch(HomeAction.DeleteClicked(user))
+                        }
+                    }
                 }
             }
         }
@@ -169,7 +197,7 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
     }
 
     @Composable
-    private fun UserItem(user: User) {
+    private fun UserItem(modifier: Modifier, user: User, showDelete: Boolean, onDelete: () -> Unit) {
         val isAdmin = user.role == Role.ADMIN
         val container = if (isAdmin) {
             MaterialTheme.colorScheme.primaryContainer
@@ -182,7 +210,7 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
             MaterialTheme.colorScheme.onSecondaryContainer
         }
         Card(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest)
         ) {
@@ -205,6 +233,15 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
                     container = container,
                     content = content
                 )
+                if (showDelete) {
+                    IconButton(onClick = onDelete) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_delete),
+                            contentDescription = stringResource(id = R.string.home_delete),
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                }
             }
         }
     }
@@ -233,7 +270,7 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
     }
 
     @Composable
-    private fun EmptyList() {
+    private fun EmptyList(isAdmin: Boolean) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -262,7 +299,9 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
             )
             Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = stringResource(id = R.string.home_empty_message),
+                text = stringResource(
+                    id = if (isAdmin) R.string.home_empty_message_admin else R.string.home_empty_message_basic
+                ),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -270,26 +309,38 @@ class HomeScreenContent : BaseScreenComposable<HomeState, HomeAction>() {
         }
     }
 
-    @Preview
+    @PreviewLightDark
     @Composable
     private fun PreviewAdmin() {
-        EmaSampleTheme {
+        RenderPreview {
             onState(
                 state = HomeState(
                     userData = HomeState.UserData("Carlos", "Mateo", Role.ADMIN),
-                    userList = listOf(User("Ana", "López", Role.ADMIN), User("Luis", "Pérez", Role.BASIC))
+                    userList = listOf(User("Ana", "López", Role.BASIC, "1"), User("Luis", "Pérez", Role.BASIC, "2")),
+                    friendsLoaded = true
                 ),
                 actions = EmaActionDispatcher.EMPTY
             )
         }
     }
 
-    @Preview
+    @PreviewLightDark
     @Composable
     private fun PreviewEmpty() {
-        EmaSampleTheme {
+        RenderPreview {
             onState(
-                state = HomeState(HomeState.UserData("Carlos", "Mateo", Role.BASIC), emptyList()),
+                state = HomeState(HomeState.UserData("Carlos", "Mateo", Role.BASIC), emptyList(), true),
+                actions = EmaActionDispatcher.EMPTY
+            )
+        }
+    }
+
+    @PreviewLightDark
+    @Composable
+    private fun PreviewEmptyAdmin() {
+        RenderPreview {
+            onState(
+                state = HomeState(HomeState.UserData("Carlos", "Mateo", Role.ADMIN), emptyList(), true),
                 actions = EmaActionDispatcher.EMPTY
             )
         }

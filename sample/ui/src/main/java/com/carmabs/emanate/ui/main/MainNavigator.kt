@@ -5,13 +5,12 @@ import android.content.Intent
 import androidx.navigation.NavController
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
-import com.carmabs.emanate.android.extension.setInitializer
 import com.carmabs.emanate.compose.nav2.navigate
+import com.carmabs.emanate.compose.nav2.navigateBack
 import com.carmabs.emanate.compose.nav2.routeId
 import com.carmabs.emanate.presentation.home.HomeEvent
 import com.carmabs.emanate.presentation.home.HomeInitializer
 import com.carmabs.emanate.presentation.login.LoginEvent
-import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingInitializer
 import com.carmabs.emanate.presentation.splash.SplashEvent
 import com.carmabs.emanate.ui.home.HomeScreenContent
 import com.carmabs.emanate.ui.login.LoginScreenContent
@@ -44,20 +43,22 @@ class MainNavigator(private val navController: NavController, private val contex
                 )
             )
 
-            is LoginEvent.Message,
-            is LoginEvent.LastUserAdded -> onMessage(event)
+            is LoginEvent.Message -> onMessage(event)
         }
     }
 
-    fun handleHomeEvent(event: HomeEvent) {
+    /**
+     * The messages are not navigation: they are shown by [onMessage]
+     */
+    fun handleHomeEvent(event: HomeEvent, onMessage: (HomeEvent) -> Unit) {
         when (event) {
-            // The profile screens are in their own activity, which reads the initializer from its intent
-            is HomeEvent.ProfileClicked -> context.startActivity(
-                Intent(context, ProfileActivity::class.java).setInitializer(
-                    ProfileOnBoardingInitializer.Default(event.user.name),
-                    BundleSerializerStrategy.kSerialization(ProfileOnBoardingInitializer.serializer())
-                )
-            )
+            // The profile creation is in its own activity
+            HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))
+
+            // The login is the screen below the home
+            HomeEvent.CloseClicked -> navController.navigateBack()
+
+            is HomeEvent.UserCreated -> onMessage(event)
         }
     }
 }

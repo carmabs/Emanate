@@ -1,7 +1,11 @@
 package com.carmabs.app.di
 
-import com.carmabs.data.repository.MockRepository
-import com.carmabs.domain.repository.Repository
+import android.content.Context
+import com.carmabs.data.repository.MapFriendsRepository
+import com.carmabs.data.repository.MockLoginRepository
+import com.carmabs.domain.repository.FriendsRepository
+import com.carmabs.domain.repository.LoginRepository
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 /**
@@ -16,7 +20,13 @@ import org.koin.dsl.module
 
 val dataModule = module {
 
-    single<Repository> {
-        MockRepository()
+    single<LoginRepository> {
+        MockLoginRepository()
+    }
+
+    single<FriendsRepository> {
+        MapFriendsRepository(
+            androidContext().getSharedPreferences(MapFriendsRepository.PREFERENCES_NAME, Context.MODE_PRIVATE)
+        )
     }
 }
