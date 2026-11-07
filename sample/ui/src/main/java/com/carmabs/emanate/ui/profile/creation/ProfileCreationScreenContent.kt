@@ -168,10 +168,7 @@ class ProfileCreationScreenContent : EmaScreenContent<ProfileCreationState, Prof
     private fun PreviewNormal() {
         RenderPreview {
             onState(
-                state = ProfileCreationState(
-                    "Carlos",
-                    "Mateo"
-                ),
+                state = ProfileCreationState.DEFAULT.copy(name = "Carlos", surname = "Mateo"),
                 actions = EmaActionDispatcher.EMPTY
             )
         }
@@ -182,10 +179,10 @@ class ProfileCreationScreenContent : EmaScreenContent<ProfileCreationState, Prof
     private fun PreviewDialog() {
         RenderPreview {
             onState(
-                state = ProfileCreationState(
-                    "Carlos",
-                    "Mateo",
-                    ProfileCreationDialog.CreateConfirmation
+                state = ProfileCreationState.DEFAULT.copy(
+                    name = "Carlos",
+                    surname = "Mateo",
+                    dialog = ProfileCreationDialog.CreateConfirmation
                 ),
                 actions = EmaActionDispatcher.EMPTY
             )

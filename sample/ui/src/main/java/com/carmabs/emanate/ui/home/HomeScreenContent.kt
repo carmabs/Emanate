@@ -314,7 +314,7 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
     private fun PreviewAdmin() {
         RenderPreview {
             onState(
-                state = HomeState(
+                state = HomeState.DEFAULT.copy(
                     userData = HomeState.UserData("Carlos", "Mateo", Role.ADMIN),
                     userList = listOf(User("Ana", "López", Role.BASIC, "1"), User("Luis", "Pérez", Role.BASIC, "2")),
                     friendsLoaded = true
@@ -329,7 +329,10 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
     private fun PreviewEmpty() {
         RenderPreview {
             onState(
-                state = HomeState(HomeState.UserData("Carlos", "Mateo", Role.BASIC), emptyList(), true),
+                state = HomeState.DEFAULT.copy(
+                    userData = HomeState.UserData("Carlos", "Mateo", Role.BASIC),
+                    friendsLoaded = true
+                ),
                 actions = EmaActionDispatcher.EMPTY
             )
         }
@@ -340,7 +343,10 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
     private fun PreviewEmptyAdmin() {
         RenderPreview {
             onState(
-                state = HomeState(HomeState.UserData("Carlos", "Mateo", Role.ADMIN), emptyList(), true),
+                state = HomeState.DEFAULT.copy(
+                    userData = HomeState.UserData("Carlos", "Mateo", Role.ADMIN),
+                    friendsLoaded = true
+                ),
                 actions = EmaActionDispatcher.EMPTY
             )
         }
