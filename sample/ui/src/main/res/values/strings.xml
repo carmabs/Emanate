@@ -1,7 +1,7 @@
 <resources>
 
     <!--GENERAL-->
-    <string name="app_name">Ema Sample</string>
+    <string name="app_name">Emanate</string>
     <string name="ema_name">EMANATE</string>
     <string name="ema_by">by Carmabs</string>
     <string name="ema_sample_name">Emanate Sample</string>

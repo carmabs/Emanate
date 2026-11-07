@@ -93,6 +93,11 @@ class LoginScreenContent(private val environment: AppEnvironment) : EmaScreenCon
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
+                    // Below the name, like in the splash. The padding is part of the label, so the real build has no gap
+                    EnvironmentLabel(
+                        modifier = Modifier.padding(top = 8.dp),
+                        environment = environment
+                    )
                     Spacer(modifier = Modifier.height(32.dp))
                     Text(
                         text = stringResource(id = R.string.login_title),
@@ -114,11 +119,6 @@ class LoginScreenContent(private val environment: AppEnvironment) : EmaScreenCon
                 Spacer(modifier = Modifier.height(32.dp))
                 DemoCard()
             }
-            // Only the login tells the environment
-            EnvironmentLabel(
-                modifier = Modifier.align(Alignment.BottomEnd),
-                environment = environment
-            )
         }
         state.dialog?.also { StateDialog(it, actions) }
     }

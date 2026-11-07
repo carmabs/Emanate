@@ -32,7 +32,7 @@ fun EnvironmentLabel(environment: AppEnvironment, modifier: Modifier = Modifier)
         EnvironmentTone.Invisible -> return
     }
     Surface(
-        modifier = modifier.padding(end = 16.dp, bottom = 8.dp),
+        modifier = modifier,
         shape = MaterialTheme.shapes.extraLarge,
         color = colors.first,
         contentColor = colors.second

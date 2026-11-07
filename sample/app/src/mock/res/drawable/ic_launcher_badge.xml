@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Environment ribbon of the launcher icon: a diagonal band in the bottom right corner with the name of the flavor -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:rotation="-45"
+        android:pivotX="76"
+        android:pivotY="76">
+        <path
+            android:fillColor="#92400E"
+            android:pathData="M0,66h152v20h-152z" />
+        <path
+            android:pathData="M55.5,81V71L59.5,77L63.5,71V81M66.5,76a4,5 0 1 0 8,0a4,5 0 1 0 -8,0M85.5,71H79.5Q77.5,71 77.5,73V79Q77.5,81 79.5,81H85.5M88.5,71V81M96.5,71L88.5,77M91.5,75L96.5,81"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="2.2"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

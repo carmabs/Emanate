@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                             startDestination = SplashScreenContent::class.routeId
                         ) {
                             emaScreen(
-                                screenContent = SplashScreenContent(onLogoDrawn = {
+                                screenContent = SplashScreenContent(environment, onLogoDrawn = {
                                     logoDrawn = true
                                     removeSystemSplash()
                                 }),
