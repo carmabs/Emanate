@@ -1,0 +1,2163 @@
+
+<!doctype html>
+<html lang="es" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform">
+      
+      
+      
+      
+        <link rel="prev" href="../initializers/">
+      
+      
+        <link rel="next" href="../dependency-injection/">
+      
+      
+        
+          <link rel="alternate" href="../../../guides/process-death/" hreflang="en">
+        
+          <link rel="alternate" href="./" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../../../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Sobrevivir a la muerte del proceso - Emanate</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#sobrevivir-a-la-muerte-del-proceso" class="md-skip">
+          Saltar a contenido
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabecera">
+    <a href="../../" title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
+      
+  <img src="../../../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Emanate
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Sobrevivir a la muerte del proceso
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Seleccionar idioma">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="../../../guides/process-death/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Búsqueda" placeholder="Búsqueda" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Buscar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpiar" aria-label="Limpiar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando búsqueda
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carmabs/Ema
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navegación" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../" title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
+      
+  <img src="../../../assets/logo.svg" alt="logo">
+
+    </a>
+    Emanate
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carmabs/Ema
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Primeros pasos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why-emanate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Por qué Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conceptos
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Conceptos
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Arquitectura
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Acciones
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Eventos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/viewmodel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ViewModel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EmaSource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilidades
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilidades
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Casos de uso
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resultados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Textos en el estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guías
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guías
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuración
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../initializers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inicializadores
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sobrevivir a la muerte del proceso
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sobrevivir a la muerte del proceso
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#el-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El store
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cuándo-se-restauran-los-valores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuándo se restauran los valores
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cuándo se restauran los valores">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#restoreon-la-acción-que-dispara-la-restauración" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        restoreOn: la acción que dispara la restauración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#emarestorestate-la-acción-con-los-valores-guardados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EmaRestoreState: la acción con los valores guardados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#los-valores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Los valores
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Los valores">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#codecs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Codecs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejemplos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejemplos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-guardar-un-solo-texto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Guardar un solo texto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-guardar-varios-campos-como-un-solo-valor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Guardar varios campos como un solo valor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-guardar-varios-valores-independientes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Guardar varios valores independientes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-no-guardar-nada-en-algunos-casos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. No guardar nada en algunos casos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-guardar-un-tipo-con-tu-propio-codec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Guardar un tipo con tu propio codec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-restaurar-con-otra-acción" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Restaurar con otra acción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-juntarlo-todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Juntarlo todo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testearlo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testearlo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consejos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consejos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dependency-injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Inyección de dependencias y entornos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compose
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Compose
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compose/screens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pantallas
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compose/navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navegación
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compose/back-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Botón atrás
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compose/dialogs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diálogos
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../compose/permissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permisos (Android)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../recommendations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recomendaciones
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contribuir
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Tabla de contenidos">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Tabla de contenidos
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#el-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        El store
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cuándo-se-restauran-los-valores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuándo se restauran los valores
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cuándo se restauran los valores">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#restoreon-la-acción-que-dispara-la-restauración" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        restoreOn: la acción que dispara la restauración
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#emarestorestate-la-acción-con-los-valores-guardados" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EmaRestoreState: la acción con los valores guardados
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#los-valores" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Los valores
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Los valores">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#codecs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Codecs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ejemplos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ejemplos
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Ejemplos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-guardar-un-solo-texto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Guardar un solo texto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-guardar-varios-campos-como-un-solo-valor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Guardar varios campos como un solo valor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-guardar-varios-valores-independientes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Guardar varios valores independientes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-no-guardar-nada-en-algunos-casos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. No guardar nada en algunos casos
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-guardar-un-tipo-con-tu-propio-codec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Guardar un tipo con tu propio codec
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-restaurar-con-otra-acción" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Restaurar con otra acción
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-juntarlo-todo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Juntarlo todo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testearlo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testearlo
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consejos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consejos
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="sobrevivir-a-la-muerte-del-proceso">Sobrevivir a la muerte del proceso<a class="headerlink" href="#sobrevivir-a-la-muerte-del-proceso" title="Permanent link">&para;</a></h1>
+<p>En algunas plataformas, como Android, el sistema puede matar tu app mientras está en segundo plano, por ejemplo mientras
+el usuario va a los ajustes a conceder un permiso. Cuando el usuario vuelve, la pantalla se crea de nuevo con su
+<a href="../initializers/">inicializador</a>, pero lo que el usuario había escrito se pierde.</p>
+<p>Emanate lo resuelve con un <strong>backup</strong>: un <a href="../../concepts/plugins/">plugin</a> que guarda las partes del estado que elijas
+cada vez que cambian, y las restaura cuando la pantalla se crea de nuevo. El ViewModel sigue siendo Kotlin puro: la
+plataforma solo le da el almacén donde se guardan los valores.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">ProfileCreationViewModel</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">addFriendUseCase</span><span class="p">:</span><span class="w"> </span><span class="n">AddFriendUseCase</span><span class="p">,</span>
+<span class="w">    </span><span class="n">initialDataState</span><span class="p">:</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">stateStore</span><span class="p">:</span><span class="w"> </span><span class="n">EmaStateStore</span>
+<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">ProfileCreationState</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileCreationAction</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileCreationEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialDataState</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">plugins</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">add</span><span class="p">(</span><span class="n">backupOf</span><span class="p">(</span><span class="n">stateStore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">add</span><span class="p">(</span>
+<span class="w">                    </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"form"</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">codec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json</span><span class="p">(),</span>
+<span class="w">                    </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ProfileCreationForm</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">surname</span><span class="p">)</span><span class="w"> </span><span class="p">},</span>
+<span class="w">                    </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">form</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">form</span><span class="p">.</span><span class="na">name</span><span class="p">,</span><span class="w"> </span><span class="n">surname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">form</span><span class="p">.</span><span class="na">surname</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">reducers</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nd">@Serializable</span>
+<span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">ProfileCreationForm</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">name</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">surname</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span>
+</code></pre></div>
+<p>Eso es todo. No hay callbacks de guardado, ni <code>SavedStateHandle</code>, ni código Android en el ViewModel.</p>
+<h2 id="el-store">El store<a class="headerlink" href="#el-store" title="Permanent link">&para;</a></h2>
+<p><code>EmaStateStore</code> guarda los valores como texto. Cada plataforma decide dónde: en Android, Emanate da a cada pantalla un
+store sobre el <code>SavedStateHandle</code> de su destino, y la función <code>viewModel</code> de la pantalla lo recibe, así que pásaselo al
+ViewModel.</p>
+<div class="highlight"><pre><span></span><code><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">store</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">parametersOf</span><span class="p">(</span><span class="n">store</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Con Koin, pásalo como parámetro. Mira <a href="../dependency-injection/#el-store-de-un-backup">Inyección de dependencias</a>. Donde
+no hay nada que guardar, por ejemplo en plataformas que no matan el proceso, pasa <code>EmaStateStore.None</code>.</p>
+<h2 id="cuándo-se-restauran-los-valores">Cuándo se restauran los valores<a class="headerlink" href="#cuándo-se-restauran-los-valores" title="Permanent link">&para;</a></h2>
+<p>Dos piezas lo deciden: <code>restoreOn</code>, <strong>cuándo</strong> restaura el backup, y <code>EmaRestoreState</code>, <strong>cómo</strong> llegan los valores.</p>
+<p><img alt="Cómo restaura y guarda el estado un backup" src="../../../assets/backup.svg" /></p>
+<h3 id="restoreon-la-acción-que-dispara-la-restauración"><code>restoreOn</code>: la acción que dispara la restauración<a class="headerlink" href="#restoreon-la-acción-que-dispara-la-restauración" title="Permanent link">&para;</a></h3>
+<p>El backup restaura los valores justo después de la primera acción de tipo <code>restoreOn</code>. Por defecto es el
+<a href="../initializers/">inicializador</a>, que el ViewModel siempre recibe cuando se crea su pantalla. Así el inicializador no
+puede sobrescribir lo que escribió el usuario: se aplica primero, y los valores guardados encima.</p>
+<div class="admonition note">
+<p class="admonition-title">Cámbialo solo si tu pantalla no está lista tras el inicializador</p>
+<p>Pasa otro tipo de acción al backup: <code>backupOf(stateStore, restoreOn = ScreenOpened::class)</code>. Hasta que llega esa
+acción el backup ni restaura ni guarda: espera para que el estado inicial no pueda sobrescribir los valores
+guardados. Una pantalla que nunca la recibe nunca se restaura, y su estado nunca se guarda.</p>
+</div>
+<h3 id="emarestorestate-la-acción-con-los-valores-guardados"><code>EmaRestoreState</code>: la acción con los valores guardados<a class="headerlink" href="#emarestorestate-la-acción-con-los-valores-guardados" title="Permanent link">&para;</a></h3>
+<p>Los valores llegan como una acción <code>EmaRestoreState</code>, que pasa por los middlewares y reducers como cualquier otra. No
+tienes que gestionarla: cada función <code>restore</code> ya ha puesto su valor en el estado. Gestiónala solo si el estado
+restaurado necesita algo más, por ejemplo validar de nuevo el formulario:</p>
+<div class="highlight"><pre><span></span><code><span class="n">reducers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">EmaRestoreState</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">canCreate</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">name</span><span class="p">.</span><span class="na">isNotBlank</span><span class="p">())</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Instala el backup antes de esos reducers</p>
+<p>El backup debe haber restaurado sus valores cuando se ejecutan los reducers de <code>EmaRestoreState</code>, así que escribe
+<code>plugins { }</code> antes de <code>reducers { }</code>.</p>
+</div>
+<h2 id="los-valores">Los valores<a class="headerlink" href="#los-valores" title="Permanent link">&para;</a></h2>
+<p>Cada valor tiene una clave única, una función que lo lee del estado y otra que lo devuelve a él:</p>
+<table>
+<thead>
+<tr>
+<th>En <code>backupOf { }</code></th>
+<th>Guarda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>add(key, save, restore)</code></td>
+<td>Un <code>String</code>.</td>
+</tr>
+<tr>
+<td><code>add(key, codec, save, restore)</code></td>
+<td>Un valor de cualquier tipo, convertido a texto con un <code>EmaBackupCodec</code>.</td>
+</tr>
+<tr>
+<td><code>add(value)</code></td>
+<td>Un valor ya creado. Acepta varios, o una colección.</td>
+</tr>
+</tbody>
+</table>
+<p><code>save</code> devuelve <code>null</code> para no guardar nada. Los valores se restauran en el orden en que se añaden.</p>
+<h3 id="codecs">Codecs<a class="headerlink" href="#codecs" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Codec</th>
+<th>Módulo</th>
+<th>Guarda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EmaBackupCodec.Text</code></td>
+<td><code>emanate-core</code></td>
+<td>Texto tal cual.</td>
+</tr>
+<tr>
+<td><code>json()</code></td>
+<td><code>emanate-serialization</code></td>
+<td>Cualquier clase <code>@Serializable</code> o tipo básico, en JSON. Dentro de <code>add</code>, el tipo se toma de <code>save</code>; en otros sitios escríbelo: <code>json&lt;ProfileCreationForm&gt;()</code>.</td>
+</tr>
+<tr>
+<td>Tu propio <code>EmaBackupCodec</code></td>
+<td>Tu código</td>
+<td>Cualquier cosa, por ejemplo un enum por su nombre.</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="n">dependencies</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">"com.github.carmabs.ema:emanate-serialization:</span><span class="si">$</span><span class="n">emanateVersion</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Un valor que no se puede decodificar, por ejemplo uno guardado por una versión anterior de la app con otros campos, no
+se restaura: la pantalla mantiene su estado inicial.</p>
+<h2 id="ejemplos">Ejemplos<a class="headerlink" href="#ejemplos" title="Permanent link">&para;</a></h2>
+<h3 id="1-guardar-un-solo-texto">1. Guardar un solo texto<a class="headerlink" href="#1-guardar-un-solo-texto" title="Permanent link">&para;</a></h3>
+<p>El caso más sencillo: un <code>String</code> y ningún codec. <code>save</code> lo lee del estado y <code>restore</code> lo devuelve a él.</p>
+<div class="highlight"><pre><span></span><code><span class="n">add</span><span class="p">(</span><span class="n">backupOf</span><span class="p">(</span><span class="n">stateStore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="p">(</span>
+<span class="w">        </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"search"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="p">},</span><span class="w">                       </span><span class="c1">// lo que se guarda cada vez que cambia el estado</span>
+<span class="w">        </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">saved</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// cómo se reconstruye el estado con él</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="2-guardar-varios-campos-como-un-solo-valor">2. Guardar varios campos como un solo valor<a class="headerlink" href="#2-guardar-varios-campos-como-un-solo-valor" title="Permanent link">&para;</a></h3>
+<p>Agrupa los campos en una clase <code>@Serializable</code> y usa <code>json()</code>. Una clave, un valor, sin importar cuántos campos haya.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Serializable</span>
+<span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">SignUpForm</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">email</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">acceptedTerms</span><span class="p">:</span><span class="w"> </span><span class="kt">Boolean</span><span class="p">)</span>
+
+<span class="n">add</span><span class="p">(</span><span class="n">backupOf</span><span class="p">(</span><span class="n">stateStore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="p">(</span>
+<span class="w">        </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"form"</span><span class="p">,</span>
+<span class="w">        </span><span class="n">codec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SignUpForm</span><span class="p">(</span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">acceptedTerms</span><span class="p">)</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">form</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">form</span><span class="p">.</span><span class="na">email</span><span class="p">,</span><span class="w"> </span><span class="n">acceptedTerms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">form</span><span class="p">.</span><span class="na">acceptedTerms</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="3-guardar-varios-valores-independientes">3. Guardar varios valores independientes<a class="headerlink" href="#3-guardar-varios-valores-independientes" title="Permanent link">&para;</a></h3>
+<p>Añade un valor por cada cosa, con su propia clave. Se restauran en el orden en que se añaden.</p>
+<div class="highlight"><pre><span></span><code><span class="n">add</span><span class="p">(</span><span class="n">backupOf</span><span class="p">(</span><span class="n">stateStore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"name"</span><span class="p">,</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"surname"</span><span class="p">,</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">surname</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">surname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="4-no-guardar-nada-en-algunos-casos">4. No guardar nada en algunos casos<a class="headerlink" href="#4-no-guardar-nada-en-algunos-casos" title="Permanent link">&para;</a></h3>
+<p><code>save</code> devuelve <code>null</code> para no guardar nada: el valor se elimina del store, así que no hay nada que restaurar. Aquí el
+email se guarda solo cuando el usuario ha escrito algo.</p>
+<div class="highlight"><pre><span></span><code><span class="n">add</span><span class="p">(</span>
+<span class="w">    </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"email"</span><span class="p">,</span>
+<span class="w">    </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">email</span><span class="p">.</span><span class="na">takeIf</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">isNotBlank</span><span class="p">()</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">saved</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="5-guardar-un-tipo-con-tu-propio-codec">5. Guardar un tipo con tu propio codec<a class="headerlink" href="#5-guardar-un-tipo-con-tu-propio-codec" title="Permanent link">&para;</a></h3>
+<p>Para cualquier cosa que no sea texto ni <code>@Serializable</code>, escribe un <code>EmaBackupCodec</code>: <code>encode</code> convierte el valor en
+texto y <code>decode</code> lo convierte de vuelta, devolviendo <code>null</code> si el texto no es válido.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">enum</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">Tab</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Home</span><span class="p">,</span><span class="w"> </span><span class="n">Settings</span><span class="w"> </span><span class="p">}</span>
+
+<span class="kd">val</span><span class="w"> </span><span class="nv">tabCodec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">object</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nc">EmaBackupCodec</span><span class="o">&lt;</span><span class="n">Tab</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="n">value</span><span class="p">:</span><span class="w"> </span><span class="n">Tab</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value</span><span class="p">.</span><span class="na">name</span>
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">decode</span><span class="p">(</span><span class="n">value</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Tab</span><span class="p">.</span><span class="na">entries</span><span class="p">.</span><span class="na">firstOrNull</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">name</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"tab"</span><span class="p">,</span><span class="w"> </span><span class="n">codec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tabCodec</span><span class="p">,</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">tab</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">tab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+</code></pre></div>
+<h3 id="6-restaurar-con-otra-acción">6. Restaurar con otra acción<a class="headerlink" href="#6-restaurar-con-otra-acción" title="Permanent link">&para;</a></h3>
+<p>Por defecto los valores se restauran después del <a href="../initializers/">inicializador</a>. Si tu pantalla está lista tras otra
+acción, díselo al backup con <code>restoreOn</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">add</span><span class="p">(</span><span class="n">backupOf</span><span class="p">(</span><span class="n">stateStore</span><span class="p">,</span><span class="w"> </span><span class="n">restoreOn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ScreenOpened</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="p">(</span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"name"</span><span class="p">,</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+<span class="p">})</span>
+</code></pre></div>
+<h3 id="7-juntarlo-todo">7. Juntarlo todo<a class="headerlink" href="#7-juntarlo-todo" title="Permanent link">&para;</a></h3>
+<p>Una pantalla completa: el ViewModel instala el backup, y la pantalla le pasa el store.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">SignUpViewModel</span><span class="p">(</span>
+<span class="w">    </span><span class="n">initialDataState</span><span class="p">:</span><span class="w"> </span><span class="n">SignUpState</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">stateStore</span><span class="p">:</span><span class="w"> </span><span class="n">EmaStateStore</span>
+<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">SignUpState</span><span class="p">,</span><span class="w"> </span><span class="n">SignUpAction</span><span class="p">,</span><span class="w"> </span><span class="n">SignUpEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialDataState</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">plugins</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">add</span><span class="p">(</span><span class="n">backupOf</span><span class="p">(</span><span class="n">stateStore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">add</span><span class="p">(</span>
+<span class="w">                    </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"form"</span><span class="p">,</span>
+<span class="w">                    </span><span class="n">codec</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">json</span><span class="p">(),</span>
+<span class="w">                    </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SignUpForm</span><span class="p">(</span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">acceptedTerms</span><span class="p">)</span><span class="w"> </span><span class="p">},</span>
+<span class="w">                    </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">form</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">form</span><span class="p">.</span><span class="na">email</span><span class="p">,</span><span class="w"> </span><span class="n">acceptedTerms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">form</span><span class="p">.</span><span class="na">acceptedTerms</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">reducers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">add</span><span class="o">&lt;</span><span class="n">SignUpAction</span><span class="p">.</span><span class="na">EmailWritten</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">action</span><span class="p">.</span><span class="na">email</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="n">add</span><span class="o">&lt;</span><span class="n">SignUpAction</span><span class="p">.</span><span class="na">TermsToggled</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">acceptedTerms</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">state</span><span class="p">.</span><span class="na">acceptedTerms</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// En la pantalla (Android)</span>
+<span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SignUpScreenContent</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">store</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">SignUpViewModel</span><span class="p">(</span><span class="n">SignUpState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">)</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>El flujo es: el usuario escribe el email, el backup guarda el formulario; el sistema mata el proceso; el usuario vuelve,
+la pantalla se crea y llega el inicializador; el backup restaura el formulario encima. El usuario ve el email de nuevo.</p>
+<h2 id="testearlo">Testearlo<a class="headerlink" href="#testearlo" title="Permanent link">&para;</a></h2>
+<p><code>emanate-test</code> tiene un store en memoria. Pásalo a un ViewModel y luego a uno nuevo, para simular la muerte del proceso:
+el nuevo restaura lo que guardó el primero.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`the form survives the death of the process`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">testStateStore</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationViewModel</span><span class="p">(</span><span class="n">AddFriendUseCase</span><span class="p">(</span><span class="n">FakeFriendsRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">)</span>
+<span class="w">    </span><span class="n">first</span><span class="p">.</span><span class="na">onCreated</span><span class="p">()</span>
+<span class="w">    </span><span class="n">first</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">ProfileCreationAction</span><span class="p">.</span><span class="na">UserNameWritten</span><span class="p">(</span><span class="s">"Ana"</span><span class="p">))</span>
+
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">restored</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationViewModel</span><span class="p">(</span><span class="n">AddFriendUseCase</span><span class="p">(</span><span class="n">FakeFriendsRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">)</span>
+<span class="w">    </span><span class="n">restored</span><span class="p">.</span><span class="na">onCreated</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">"Ana"</span><span class="p">,</span><span class="w"> </span><span class="n">restored</span><span class="p">.</span><span class="na">stateFlow</span><span class="p">.</span><span class="na">value</span><span class="p">.</span><span class="na">name</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>store.values</code> muestra lo que está guardado, y <code>restoreStateOf("form" to "...")</code> crea el <code>EmaRestoreState</code> para
+comprobarlo con <code>assertActions</code>.</p>
+<h2 id="consejos">Consejos<a class="headerlink" href="#consejos" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Guarda solo lo que el usuario perdería</strong>: campos de formularios, elementos seleccionados, el paso actual. La
+  plataforma limita el tamaño de los valores guardados.</li>
+<li><strong>No guardes lo que puedes volver a cargar</strong>, como las listas de la red: cárgalas de nuevo desde el inicializador.</li>
+<li><strong>Un backup por ViewModel o <code>EmaSource</code>.</strong> Un backup no se puede instalar en dos ViewModels: crea uno en cada uno.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Volver al principio
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Pie" >
+        
+          
+          <a href="../initializers/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Inicializadores">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              <div class="md-ellipsis">
+                Inicializadores
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../dependency-injection/" class="md-footer__link md-footer__link--next" aria-label="Siguiente: Inyección de dependencias y entornos">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Siguiente
+              </span>
+              <div class="md-ellipsis">
+                Inyección de dependencias y entornos
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copiado al portapapeles", "clipboard.copy": "Copiar al portapapeles", "search.result.more.one": "1 m\u00e1s en esta p\u00e1gina", "search.result.more.other": "# m\u00e1s en esta p\u00e1gina", "search.result.none": "No se encontraron documentos", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Teclee para comenzar b\u00fasqueda", "search.result.term.missing": "Falta", "select.version": "Seleccionar versi\u00f3n"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>

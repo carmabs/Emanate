@@ -6,15 +6,15 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels and Android Views">
+        <meta name="description" content="A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels">
       
       
       
       
-        <link rel="prev" href="../permissions/">
+        <link rel="prev" href="../dependency-injection/">
       
       
-        <link rel="next" href="../multiplatform/">
+        <link rel="next" href="../../compose/screens/">
       
       
         
@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -55,6 +55,8 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +73,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -102,8 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -133,20 +134,20 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
       </label>
     
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
       </label>
     
   
@@ -264,8 +265,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     Emanate
@@ -345,6 +345,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../why-emanate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -359,10 +386,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -380,8 +407,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -510,6 +537,146 @@
   
   
     <li class="md-nav__item">
+      <a href="../../concepts/reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../concepts/viewmodel/" class="md-nav__link">
         
   
@@ -545,7 +712,150 @@
   <span class="md-ellipsis">
     
   
-    Source
+    EmaSource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utils
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use cases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Texts in the state
   
 
     
@@ -588,10 +898,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -609,8 +919,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -683,42 +993,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../results-between-screens/" class="md-nav__link">
+      <a href="../process-death/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Results between screens
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../async-and-errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Async work and errors
+    Surviving process death
   
 
     
@@ -746,35 +1028,7 @@
   <span class="md-ellipsis">
     
   
-    Dependency injection
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permissions
+    Dependency injection and environments
   
 
     
@@ -855,6 +1109,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#what-to-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#testing-an-emaviewmodel-with-emanate-test" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -863,8 +1128,30 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Testing an EmaViewModel with emanate-test">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-test-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the test configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Install the test configuration">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advanced-choosing-when-the-work-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: choosing when the work runs
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#without-changing-the-configuration-of-emanate" class="md-nav__link">
@@ -877,7 +1164,34 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recording-a-viewmodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recording a ViewModel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-what-was-recorded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking what was recorded
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#checking-the-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -887,29 +1201,46 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#testing-the-classic-viewmodels" class="md-nav__link">
+  <a href="#process-death-testing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing the classic ViewModels
+        Process death testing
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Testing the classic ViewModels">
+    <nav class="md-nav" aria-label="Process death testing">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#things-to-know" class="md-nav__link">
+  <a href="#teststatestore" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Things to know
+        testStateStore()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restorestateof" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        restoreStateOf(...)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-them-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using them together
       
     </span>
   </a>
@@ -922,24 +1253,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-to-test" class="md-nav__link">
+  <a href="#swapping-pieces-in-the-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What to test
+        Swapping pieces in the tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Swapping pieces in the tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-is-virtual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time is virtual
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-screens" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#testing-a-broadcast-between-viewmodels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing screens
+        Testing a broadcast between ViewModels
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -947,62 +1295,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multiplatform/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kotlin Multiplatform
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1035,10 +1327,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   
@@ -1056,8 +1348,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1186,34 +1478,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../compose/save-state/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Saving state
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../compose/permissions/" class="md-nav__link">
         
   
@@ -1221,290 +1485,7 @@
   <span class="md-ellipsis">
     
   
-    Permissions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../compose/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Android Views
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Android Views
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/screens/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fragments and Activities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/navigation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Navigation and back handling
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/dialogs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Dialogs
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/lists/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lists
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permissions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilities
+    Permissions (Android)
   
 
     
@@ -1606,6 +1587,17 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#what-to-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What to test
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#testing-an-emaviewmodel-with-emanate-test" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1614,8 +1606,30 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Testing an EmaViewModel with emanate-test">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#install-the-test-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install the test configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Install the test configuration">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#advanced-choosing-when-the-work-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced: choosing when the work runs
+      
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#without-changing-the-configuration-of-emanate" class="md-nav__link">
@@ -1628,7 +1642,34 @@
   
 </li>
         
-          <li class="md-nav__item">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recording-a-viewmodel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recording a ViewModel
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checking-what-was-recorded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking what was recorded
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#checking-the-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1638,29 +1679,46 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#testing-the-classic-viewmodels" class="md-nav__link">
+  <a href="#process-death-testing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing the classic ViewModels
+        Process death testing
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Testing the classic ViewModels">
+    <nav class="md-nav" aria-label="Process death testing">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#things-to-know" class="md-nav__link">
+  <a href="#teststatestore" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Things to know
+        testStateStore()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restorestateof" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        restoreStateOf(...)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-them-together" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Using them together
       
     </span>
   </a>
@@ -1673,24 +1731,41 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-to-test" class="md-nav__link">
+  <a href="#swapping-pieces-in-the-tests" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What to test
+        Swapping pieces in the tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Swapping pieces in the tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-is-virtual" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Time is virtual
       
     </span>
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#testing-screens" class="md-nav__link">
+        
+          <li class="md-nav__item">
+  <a href="#testing-a-broadcast-between-viewmodels" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Testing screens
+        Testing a broadcast between ViewModels
       
     </span>
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1715,211 +1790,31 @@
 
 
 <h1 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h1>
-<p>Because a ViewModel has no Android dependencies, you test it as plain Kotlin: no emulator, no Robolectric.
-If your ViewModels live in a multiplatform module, the same tests run on every target from <code>commonTest</code>.
-The whole state/event contract is observable:</p>
-<ul>
-<li><code>dispatch(action)</code> is the input.</li>
-<li><code>stateFlow.value</code> is the state.</li>
-<li><code>eventFlow</code> holds the pending events.</li>
-</ul>
-<h2 id="testing-an-emaviewmodel-with-emanate-test">Testing an EmaViewModel with emanate-test<a class="headerlink" href="#testing-an-emaviewmodel-with-emanate-test" title="Permanent link">&para;</a></h2>
-<p><code>emanate-test</code> has the utilities to test the ViewModels built with <code>EmaViewModel</code> and the
-<a href="../../concepts/source/">sources</a>. It is a JVM library, so add it to the tests of a JVM or Android module:</p>
-<div class="highlight"><pre><span></span><code><span class="n">dependencies</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">"com.github.carmabs.ema:emanate-test:</span><span class="si">$</span><span class="n">emanateVersion</span><span class="s">"</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>It brings <code>kotlinx-coroutines-test</code> and requires the same version of <code>emanate-core</code> it was built with.</p>
+<p>An <code>EmaViewModel</code> has no platform dependencies, so you test it as plain Kotlin, with no device and no emulator. And because
+every change goes through its <code>EmaSource</code>, a test can see <strong>everything</strong> the screen did, in order: each action, each state
+and each event.</p>
 <table>
 <thead>
 <tr>
-<th>Utility</th>
-<th>Purpose</th>
+<th>You control</th>
+<th>You check</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>useTestDispatchers()</code></td>
-<td>Runs the ViewModels, sources and use cases created after it on the dispatcher of the test, also as <code>Dispatchers.Main</code>. Call it before each test.</td>
+<td>The actions, with <code>dispatch</code> and <code>onCreated</code></td>
+<td>The states returned by the reducers, in order</td>
 </tr>
 <tr>
-<td><code>resetTestDispatchers()</code></td>
-<td>Restores the dispatchers and the configuration of Emanate. Call it after each test.</td>
+<td>The pieces it receives: fakes, mocks, delays</td>
+<td>The events published, in order</td>
 </tr>
 <tr>
-<td><code>testConfiguration(dispatcher)</code></td>
-<td>A configuration that runs on the dispatcher of the test, to pass it to the ViewModels instead of calling <code>useTestDispatchers()</code>. See <a href="#without-changing-the-configuration-of-emanate">Without changing the configuration of Emanate</a>.</td>
-</tr>
-<tr>
-<td><code>viewModel.record()</code></td>
-<td>Records in order the actions, states and events of a ViewModel or a source.</td>
-</tr>
-<tr>
-<td><code>assertActions(...)</code></td>
-<td>The recorded actions, including the ones blocked by a middleware.</td>
-</tr>
-<tr>
-<td><code>assertStates(...)</code></td>
-<td>Every state returned by the reducers.</td>
-</tr>
-<tr>
-<td><code>assertState(state)</code> / <code>assertState { }</code></td>
-<td>The last state, or a condition on it.</td>
-</tr>
-<tr>
-<td><code>assertEvents(...)</code> / <code>assertNoEvents()</code></td>
-<td>The posted events.</td>
-</tr>
-<tr>
-<td><code>viewModel.assertSetup()</code></td>
-<td>Fails if a middleware, reducer or side effect never runs, like the ones of a broadcast action that isn't listened to. See <a href="#checking-the-setup">Checking the setup</a>.</td>
+<td>The time, with the virtual clock of <code>runTest</code></td>
+<td>The actions, including the ones a middleware stopped</td>
 </tr>
 </tbody>
 </table>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">LoginViewModelTest</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">    </span><span class="nd">@BeforeTest</span>
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setUp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">useTestDispatchers</span><span class="p">()</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nd">@AfterTest</span>
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">tearDown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">resetTestDispatchers</span><span class="p">()</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nd">@Test</span>
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">`the right credentials log in the user`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoginViewModel</span><span class="p">(</span><span class="n">LoginUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">LoginState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">)</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
-
-<span class="w">        </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">LoginAction</span><span class="p">.</span><span class="na">UserNameWritten</span><span class="p">(</span><span class="s">"Admin"</span><span class="p">))</span>
-<span class="w">        </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">LoginAction</span><span class="p">.</span><span class="na">PasswordWritten</span><span class="p">(</span><span class="s">"1234"</span><span class="p">))</span>
-<span class="w">        </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">LoginAction</span><span class="p">.</span><span class="na">Login</span><span class="p">)</span>
-<span class="w">        </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
-
-<span class="w">        </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="nb">it</span><span class="p">.</span><span class="na">isLoading</span><span class="w"> </span><span class="p">}</span>
-<span class="w">        </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertEvents</span><span class="p">(</span><span class="n">LoginEvent</span><span class="p">.</span><span class="na">Message</span><span class="p">(</span><span class="s">"Carmabs"</span><span class="p">),</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">.</span><span class="na">LoginSuccess</span><span class="p">(</span><span class="n">admin</span><span class="p">))</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<ul>
-<li><strong>Create the ViewModel after <code>useTestDispatchers</code></strong>, so it runs on the dispatcher of the test. By default it is an
-  <code>UnconfinedTestDispatcher</code>, which processes the actions as soon as they are dispatched; pass a
-  <code>StandardTestDispatcher</code> to process them when the test advances.</li>
-<li><strong>Record before the first action</strong> to record everything.</li>
-<li><strong><code>advanceUntilIdle()</code></strong> runs the side effects, delays included, because <code>runTest</code> uses the scheduler of the test
-  dispatcher.</li>
-<li><strong>Several ViewModels</strong> can be tested together, for example the results broadcast between screens: the
-  <code>LoginViewModelTest</code> of the sample creates the profile creation, home and login ViewModels and checks the user
-  created in the first one reaches the last one.</li>
-</ul>
-<h3 id="without-changing-the-configuration-of-emanate">Without changing the configuration of Emanate<a class="headerlink" href="#without-changing-the-configuration-of-emanate" title="Permanent link">&para;</a></h3>
-<p><code>useTestDispatchers()</code> changes the configuration of Emanate and <code>Dispatchers.Main</code>, which are shared by the whole
-process, so the tests that use it can't run in parallel in the same JVM. If your ViewModels receive the configuration in
-the constructor (see <a href="../configuration/#explicit-configuration">Explicit configuration</a>), pass them
-<code>testConfiguration(dispatcher)</code> instead: it doesn't change anything shared, so there is nothing to reset.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">LoginViewModel</span><span class="p">(</span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">loginUseCase</span><span class="p">:</span><span class="w"> </span><span class="n">LoginUseCase</span><span class="p">,</span>
-<span class="w">    </span><span class="n">initialState</span><span class="p">:</span><span class="w"> </span><span class="n">LoginState</span><span class="p">,</span>
-<span class="w">    </span><span class="n">configuration</span><span class="p">:</span><span class="w"> </span><span class="n">EmaConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Emanate</span><span class="p">.</span><span class="na">configuration</span>
-<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">LoginState</span><span class="p">,</span><span class="w"> </span><span class="n">LoginAction</span><span class="p">,</span><span class="w"> </span><span class="n">LoginEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialState</span><span class="p">,</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span>
-
-<span class="kd">class</span><span class="w"> </span><span class="nc">LoginViewModelTest</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">    </span><span class="nd">@Test</span>
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">`the right credentials log in the user`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoginViewModel</span><span class="p">(</span>
-<span class="w">            </span><span class="n">LoginUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span>
-<span class="w">            </span><span class="n">LoginState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span>
-<span class="w">            </span><span class="n">testConfiguration</span><span class="p">(</span><span class="n">UnconfinedTestDispatcher</span><span class="p">(</span><span class="n">testScheduler</span><span class="p">))</span>
-<span class="w">        </span><span class="p">)</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
-<span class="w">        </span><span class="c1">// ...</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<ul>
-<li><strong>Create the dispatcher with <code>testScheduler</code></strong>, the scheduler of <code>runTest</code>, so <code>advanceUntilIdle()</code> runs the work of
-  the ViewModel. <code>Dispatchers.Main</code> isn't replaced, so <code>runTest</code> doesn't take it from there.</li>
-<li>The rest of the configuration is the default <code>EmaConfiguration()</code>, not the one of Emanate. Pass another one as the
-  second parameter to change it: <code>testConfiguration(dispatcher, EmaConfiguration(logger = null))</code>.</li>
-<li>The <a href="../utilities/#use-cases">use cases</a> run on the <code>io</code> dispatcher of the configuration of Emanate unless they receive
-  another one in the constructor: fake them, or pass them the dispatcher of the test.</li>
-<li><strong>Each <code>testConfiguration</code> has its own broadcaster</strong>, so the actions broadcast in a test don't reach the others. The
-  ViewModels of a test that send results to each other must receive the same configuration: create it once.</li>
-</ul>
-<h3 id="checking-the-setup">Checking the setup<a class="headerlink" href="#checking-the-setup" title="Permanent link">&para;</a></h3>
-<p>A reducer, middleware or side effect for an action that the ViewModel never receives doesn't fail: it never runs. It
-happens when a broadcast action is handled but <code>listen&lt;Type&gt;()</code> is missing in the <code>broadcasts</code> block. <code>assertSetup()</code>
-checks that every piece can receive actions of its type: actions of the screen, initializers, lifecycle actions or
-broadcast actions it listens to.</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
-<span class="kd">fun</span><span class="w"> </span><span class="nf">`the setup is complete`</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetUserFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">).</span><span class="na">assertSetup</span><span class="p">()</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>It fails with every piece that never runs:</p>
-<div class="highlight"><pre><span></span><code>The reducer of UserCreated never runs: HomeViewModel doesn't receive UserCreated. If it is broadcast by another
-source, add listen&lt;UserCreated&gt;() in the broadcasts block.
-</code></pre></div>
-<p>Only the types that the ViewModel can't receive for sure are reported. An interface can be implemented by an action of
-the screen, so a piece for an interface that isn't related to the actions of the screen is not reported.</p>
-<h2 id="testing-the-classic-viewmodels">Testing the classic ViewModels<a class="headerlink" href="#testing-the-classic-viewmodels" title="Permanent link">&para;</a></h2>
-<p>Add <code>kotlinx-coroutines-test</code> to your test dependencies:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CounterViewModelTest</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="n">TestScope</span><span class="p">.</span><span class="nf">createViewModel</span><span class="p">()</span><span class="w"> </span><span class="o">=</span>
-<span class="w">        </span><span class="n">CounterViewModel</span><span class="p">(</span><span class="n">UnconfinedTestDispatcher</span><span class="p">(</span><span class="n">testScheduler</span><span class="p">)).</span><span class="na">apply</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="n">onCreated</span><span class="p">()</span>
-<span class="w">        </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nd">@Test</span>
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">`increment action updates the state`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createViewModel</span><span class="p">()</span>
-
-<span class="w">        </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">CounterAction</span><span class="p">.</span><span class="na">Increment</span><span class="p">)</span>
-
-<span class="w">        </span><span class="n">assertEquals</span><span class="p">(</span><span class="n">CounterState</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">),</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">stateFlow</span><span class="p">.</span><span class="na">value</span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nd">@Test</span>
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">`reaching the limit posts an event`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">createViewModel</span><span class="p">()</span>
-
-<span class="w">        </span><span class="n">repeat</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">CounterAction</span><span class="p">.</span><span class="na">Increment</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
-
-<span class="w">        </span><span class="n">assertEquals</span><span class="p">(</span>
-<span class="w">            </span><span class="n">listOf</span><span class="o">&lt;</span><span class="n">CounterEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">CounterEvent</span><span class="p">.</span><span class="na">LimitReached</span><span class="p">(</span><span class="m">10</span><span class="p">)),</span>
-<span class="w">            </span><span class="n">viewModel</span><span class="p">.</span><span class="na">eventFlow</span><span class="p">.</span><span class="na">first</span><span class="p">()</span>
-<span class="w">        </span><span class="p">)</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div>
-<p>The tests of the library itself, in <code>emanate-core/src/commonTest</code>, have more examples: side effects, events,
-results between screens and the view lifecycle.</p>
-<h3 id="things-to-know">Things to know<a class="headerlink" href="#things-to-know" title="Permanent link">&para;</a></h3>
-<ol>
-<li><strong>Pass your own dispatcher.</strong> The <code>dispatcher</code> parameter of <code>EmaViewModelClassic</code> / <code>EmaViewModelAction</code> is the
-   <code>CoroutineDispatcher</code> where the ViewModel runs; it creates its own scope with it. Expose it in the constructor of
-   your ViewModels, with a default value, so tests can replace it. The default one is the <code>main</code> dispatcher of the
-   configuration, <code>Dispatchers.Main</code>, which does not exist in unit tests. With an <code>UnconfinedTestDispatcher</code> the work
-   runs immediately; with a <code>StandardTestDispatcher</code>, call <code>advanceUntilIdle()</code> to run it.</li>
-</ol>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CounterViewModel</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">:</span><span class="w"> </span><span class="n">CoroutineDispatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Emanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">.</span><span class="na">dispatchers</span><span class="p">.</span><span class="na">main</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="n">EmaViewModelAction</span><span class="o">&lt;</span><span class="n">CounterState</span><span class="p">,</span><span class="w"> </span><span class="n">CounterAction</span><span class="p">,</span><span class="w"> </span><span class="n">CounterEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">CounterState</span><span class="p">(),</span><span class="w"> </span><span class="n">dispatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">)</span>
-</code></pre></div>
-<p>The second parameter is the <a href="../configuration/#explicit-configuration">configuration</a>, so pass the dispatcher by
-   name, or expose the whole configuration instead.
-2. <strong>No configuration is needed.</strong> If <code>Emanate.init</code> is not called, the default configuration is used. Do not call
-   <code>Emanate.init</code> in tests: it can be called only once per process.
-3. <strong>Call <code>onCreated()</code></strong> to run <code>onStateCreated(initializer)</code>. Pass an initializer if the screen needs one:
-   <code>viewModel.onCreated(MyInitializer.Default("x"))</code>.
-4. <strong>Fake the use cases.</strong> They are ordinary classes: pass a fake implementation, or mock them with your mocking library.
-5. <strong>Events are consumed by the view.</strong> In a test, read them with <code>eventFlow.first()</code> and call <code>consumeEvent(event)</code>
-   to simulate the view having handled them.
-6. <strong>Time.</strong> <code>delay</code> inside a <code>sideEffect</code> is skipped by the test dispatcher, so debounces and timeouts run instantly.</p>
 <h2 id="what-to-test">What to test<a class="headerlink" href="#what-to-test" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1931,19 +1826,27 @@ results between screens and the view lifecycle.</p>
 <tbody>
 <tr>
 <td>An action changes the state</td>
-<td><code>dispatch</code>, then assert <code>stateFlow.value</code>.</td>
+<td><code>dispatch</code>, then <code>assertStates</code> or <code>assertState</code>.</td>
 </tr>
 <tr>
-<td>An action posts an event</td>
-<td><code>dispatch</code>, then assert <code>eventFlow.first()</code>.</td>
+<td>An action publishes an event</td>
+<td><code>dispatch</code>, then <code>assertEvents</code>.</td>
 </tr>
 <tr>
 <td>A failure shows the right dialog / error</td>
-<td>Fake use case that fails, assert the field of the state.</td>
+<td>Inject a mock that fails, assert the field of the state.</td>
+</tr>
+<tr>
+<td>A slow response keeps the loading state</td>
+<td>Inject a mock with latency, <code>advanceTimeBy</code>, assert the state.</td>
 </tr>
 <tr>
 <td>The initializer is applied</td>
 <td><code>onCreated(initializer)</code>, assert the state.</td>
+</tr>
+<tr>
+<td>Every piece can run</td>
+<td><code>assertSetup()</code>.</td>
 </tr>
 <tr>
 <td>The state's derived properties</td>
@@ -1951,9 +1854,542 @@ results between screens and the view lifecycle.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="testing-screens">Testing screens<a class="headerlink" href="#testing-screens" title="Permanent link">&para;</a></h2>
-<p>Compose screen contents are stateless: <code>onState(state, actions)</code> only draws what it receives. Draw it with any state
-(see <a href="../../compose/screens/#previews">Previews</a>) and verify it with Compose UI tests or screenshot tests, without a ViewModel.</p>
+<h2 id="testing-an-emaviewmodel-with-emanate-test">Testing an EmaViewModel with emanate-test<a class="headerlink" href="#testing-an-emaviewmodel-with-emanate-test" title="Permanent link">&para;</a></h2>
+<p><code>emanate-test</code> has the utilities to test <code>EmaViewModel</code> and
+<a href="../../concepts/source/"><code>EmaSource</code></a>. Add it to the unit tests of the module of your ViewModels (for now it is published for
+the JVM test source sets):</p>
+<div class="highlight"><pre><span></span><code><span class="n">dependencies</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">"com.github.carmabs.ema:emanate-test:</span><span class="si">$</span><span class="n">emanateVersion</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>It brings <code>kotlinx-coroutines-test</code> and requires the same version of <code>emanate-core</code> it was built with.</p>
+<p>These are all the utilities of <code>emanate-test</code>. Each one is explained below, with an example, why it matters and what
+happens if you don't use it.</p>
+<table>
+<thead>
+<tr>
+<th>Utility</th>
+<th>In one line</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="#install-the-test-configuration"><code>useTestConfiguration()</code></a></td>
+<td>Installs in Emanate a configuration that runs the ViewModels, <code>EmaSource</code> and use cases on the dispatcher of the test.</td>
+</tr>
+<tr>
+<td><a href="#install-the-test-configuration"><code>resetTestConfiguration()</code></a></td>
+<td>Undoes the previous one, so a test doesn't affect the next.</td>
+</tr>
+<tr>
+<td><a href="#without-changing-the-configuration-of-emanate"><code>testConfiguration(dispatcher)</code></a></td>
+<td>The same, but passed to the ViewModel instead of changing what is shared.</td>
+</tr>
+<tr>
+<td><a href="#recording-a-viewmodel"><code>viewModel.record()</code></a></td>
+<td>Starts recording the actions, states and events.</td>
+</tr>
+<tr>
+<td><a href="#checking-what-was-recorded"><code>assertActions(...)</code></a></td>
+<td>The recorded actions, including the ones blocked by a middleware.</td>
+</tr>
+<tr>
+<td><a href="#checking-what-was-recorded"><code>assertStates(...)</code></a></td>
+<td>Every state returned by the reducers, in order.</td>
+</tr>
+<tr>
+<td><a href="#checking-what-was-recorded"><code>assertState(state)</code> / <code>assertState { }</code></a></td>
+<td>The last state, or a condition on it.</td>
+</tr>
+<tr>
+<td><a href="#checking-what-was-recorded"><code>assertEvents(...)</code> / <code>assertNoEvents()</code></a></td>
+<td>The published events.</td>
+</tr>
+<tr>
+<td><a href="#checking-the-setup"><code>viewModel.assertSetup()</code></a></td>
+<td>Fails if a middleware, reducer or side effect never runs.</td>
+</tr>
+<tr>
+<td><a href="#process-death-testing"><code>testStateStore()</code> / <code>restoreStateOf(...)</code></a></td>
+<td>A store in memory to test what a ViewModel saves and restores.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="install-the-test-configuration">Install the test configuration<a class="headerlink" href="#install-the-test-configuration" title="Permanent link">&para;</a></h2>
+<p><code>useTestConfiguration()</code> and <code>resetTestConfiguration()</code> go together: one before each test, the other after it.</p>
+<p><strong>What <code>useTestConfiguration()</code> does.</strong> It changes <code>Emanate.configuration</code>, shared by the whole process, so the
+ViewModels, <code>EmaSource</code> and use cases created after it run on the dispatcher of the test, a <code>TestDispatcher</code> from
+<code>kotlinx-coroutines-test</code>. It keeps the rest of the current configuration (logger, error policy...) and only replaces the
+dispatchers. It also replaces <code>Dispatchers.Main</code> with it (<code>Dispatchers.setMain</code>), because in the unit tests there is no
+real <code>Main</code>, and so <code>runTest</code> uses the same scheduler. By default it is an <code>UnconfinedTestDispatcher</code>, which processes
+each action as soon as it is dispatched. It returns the dispatcher.</p>
+<p><strong>Why it matters.</strong> The work of a ViewModel (reducers, side effects, delays, use cases) is asynchronous. On the test
+dispatcher it runs under the virtual clock of <code>runTest</code>: <code>advanceUntilIdle()</code> finishes it, and a <code>delay(3.seconds)</code> takes
+no time. The test is deterministic and fast.</p>
+<p><strong>What happens without it.</strong></p>
+<ul>
+<li>A ViewModel uses <code>Dispatchers.Main</code>, which doesn't exist in the unit tests of the JVM, so it fails with
+  <code>Module with the Main dispatcher had failed to initialize</code>.</li>
+<li>Even if you replace <code>Main</code> yourself, the side effects and use cases would run on the real <code>io</code> dispatcher, in other
+  threads. <code>runTest</code> doesn't wait for them, so the assertions run before the work ends and the test passes or fails
+  at random. A real <code>delay</code> makes it as slow as the delay.</li>
+</ul>
+<p><strong>What <code>resetTestConfiguration()</code> does.</strong> It restores <code>Dispatchers.Main</code> and the configuration of Emanate, and removes the
+actions broadcast with <code>keepUntilReceived</code> that nobody received.</p>
+<p><strong>What happens without it.</strong> The next tests start with the <code>Main</code> and the configuration of this one, and with its
+pending broadcast actions: a test can receive an action that another test sent. The failures depend on the order of the
+tests, which is the hardest kind to find.</p>
+<p><strong>How to use it.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">HomeViewModelTest</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@BeforeTest</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setUp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">useTestConfiguration</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@AfterTest</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">tearDown</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">resetTestConfiguration</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">`a search shows the matching friends`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">())</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+
+<span class="w">        </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">QueryWritten</span><span class="p">(</span><span class="s">"An"</span><span class="p">))</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="w">        </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
+
+<span class="w">        </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="o">!</span><span class="nb">it</span><span class="p">.</span><span class="na">isLoading</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">friends</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertEvents</span><span class="p">(</span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">FriendsUpdated</span><span class="p">(</span><span class="m">1</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>Create the ViewModel after <code>useTestConfiguration()</code></strong>, because it reads the configuration when it is created.</li>
+<li><strong><code>advanceUntilIdle()</code></strong> runs the side effects, delays included, because <code>runTest</code> uses the scheduler of the test
+  dispatcher.</li>
+</ul>
+<h3 id="advanced-choosing-when-the-work-runs">Advanced: choosing when the work runs<a class="headerlink" href="#advanced-choosing-when-the-work-runs" title="Permanent link">&para;</a></h3>
+<p>You don't need this to write your first tests. <code>useTestConfiguration()</code> and <code>testConfiguration()</code> accept any
+<code>TestDispatcher</code>, and the two you can choose differ in <strong>when the work that is launched runs</strong>:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>UnconfinedTestDispatcher</code> (default)</th>
+<th><code>StandardTestDispatcher</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>When the work runs</td>
+<td>As soon as it is launched</td>
+<td>When the test advances: <code>advanceUntilIdle()</code>, <code>advanceTimeBy()</code> or <code>runCurrent()</code></td>
+</tr>
+<tr>
+<td>After <code>dispatch(action)</code></td>
+<td>The reducer has already run, and the side effect too if it doesn't wait</td>
+<td>Nothing has run: the action is in a queue</td>
+</tr>
+<tr>
+<td>Two <code>dispatch</code> in a row</td>
+<td>The first one is finished before the second one starts</td>
+<td>Both are queued and processed together when the test advances</td>
+</tr>
+<tr>
+<td>Use it for</td>
+<td>Most tests: dispatch, advance and check the result</td>
+<td>Checking what happens <strong>between</strong> the action and its result, or the order of several actions</td>
+</tr>
+</tbody>
+</table>
+<p>With <code>StandardTestDispatcher</code> the test controls the moment, so you can check that something has <strong>not</strong> happened yet:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@BeforeTest</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">setUp</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">useTestConfiguration</span><span class="p">(</span><span class="n">StandardTestDispatcher</span><span class="p">())</span>
+<span class="p">}</span>
+
+<span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`the refresh is processed when the test advances`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">())</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">()</span><span class="w">                                   </span><span class="c1">// still waiting in the queue</span>
+
+<span class="w">    </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryLoaded</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)))</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>Why not always <code>StandardTestDispatcher</code>?</strong> Because every test would need to advance after each action, even the
+  ones that don't care about the order. <code>UnconfinedTestDispatcher</code> is the default to keep the common test short.</li>
+<li><strong>Why use it?</strong> It is closer to production, where <code>Dispatchers.Main</code> doesn't run the work at once but queues it. A
+  test with two actions in a row can fail with it and pass with the unconfined one, because the unconfined one hides
+  an order problem.</li>
+<li>With <code>testConfiguration</code>, create it with the scheduler of the test:
+  <code>testConfiguration(StandardTestDispatcher(testScheduler))</code>.</li>
+</ul>
+<h3 id="without-changing-the-configuration-of-emanate">Without changing the configuration of Emanate<a class="headerlink" href="#without-changing-the-configuration-of-emanate" title="Permanent link">&para;</a></h3>
+<p><code>useTestConfiguration()</code> changes the configuration of Emanate and <code>Dispatchers.Main</code>, which are shared by the whole
+process, so the tests that use it can't run in parallel in the same process. If your ViewModels receive the configuration in
+the constructor (see <a href="../configuration/#explicit-configuration">Explicit configuration</a>), pass them
+<code>testConfiguration(dispatcher)</code> instead: it doesn't change anything shared, so there is nothing to reset.</p>
+<p><strong>What it does.</strong> It returns an <code>EmaConfiguration</code> whose <code>main</code>, <code>io</code> and <code>default</code> dispatchers are the one you give it.
+The rest is the default <code>EmaConfiguration()</code>, not the one of Emanate, so the test doesn't depend on <code>Emanate.init</code>. It
+also gives the configuration its own broadcaster.</p>
+<p><strong>Why it matters.</strong> Nothing shared changes, so the tests can run in parallel and there is no <code>@AfterTest</code>. Each test
+owns its dispatcher and its broadcaster.</p>
+<p><strong>What happens without it.</strong> If you use neither this nor <code>useTestConfiguration()</code>, the ViewModel gets
+<code>Emanate.configuration</code> and runs with the real dispatchers, with the problems explained above. If you share the broadcaster
+of Emanate between tests that run in parallel, the actions broadcast in one reach the ViewModels of the others.</p>
+<p><strong>How to use it.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">GetUnreadCountUseCase</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">repository</span><span class="p">:</span><span class="w"> </span><span class="n">MessagesRepository</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dispatcher</span><span class="p">:</span><span class="w"> </span><span class="n">CoroutineDispatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Emanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">.</span><span class="na">dispatchers</span><span class="p">.</span><span class="na">io</span>
+<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaUseCase</span><span class="o">&lt;</span><span class="kt">Unit</span><span class="p">,</span><span class="w"> </span><span class="kt">Int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">suspend</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">useCaseFunction</span><span class="p">(</span><span class="n">input</span><span class="p">:</span><span class="w"> </span><span class="kt">Unit</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="na">getUnread</span><span class="p">().</span><span class="na">size</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">InboxViewModel</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">getUnreadCountUseCase</span><span class="p">:</span><span class="w"> </span><span class="n">GetUnreadCountUseCase</span><span class="p">,</span>
+<span class="w">    </span><span class="n">initialState</span><span class="p">:</span><span class="w"> </span><span class="n">InboxState</span><span class="p">,</span>
+<span class="w">    </span><span class="n">configuration</span><span class="p">:</span><span class="w"> </span><span class="n">EmaConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Emanate</span><span class="p">.</span><span class="na">configuration</span>
+<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">InboxState</span><span class="p">,</span><span class="w"> </span><span class="n">InboxAction</span><span class="p">,</span><span class="w"> </span><span class="n">InboxEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialState</span><span class="p">,</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// ...</span>
+<span class="p">}</span>
+
+<span class="kd">class</span><span class="w"> </span><span class="nc">InboxViewModelTest</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="nd">@Test</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">`refreshing shows the unread count`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">dispatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UnconfinedTestDispatcher</span><span class="p">(</span><span class="n">testScheduler</span><span class="p">)</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">InboxViewModel</span><span class="p">(</span>
+<span class="w">            </span><span class="n">GetUnreadCountUseCase</span><span class="p">(</span><span class="n">FakeMessagesRepository</span><span class="p">(),</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">),</span>
+<span class="w">            </span><span class="n">InboxState</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">testConfiguration</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">)</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+<span class="w">        </span><span class="c1">// ...</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>Create the dispatcher with <code>testScheduler</code></strong>, the scheduler of <code>runTest</code>, so <code>advanceUntilIdle()</code> runs the work of
+  the ViewModel and the use cases. <code>Dispatchers.Main</code> isn't replaced, so <code>runTest</code> doesn't take it from there.</li>
+<li>Pass another configuration as the second parameter to change the rest: <code>testConfiguration(dispatcher, EmaConfiguration(logger = null))</code>.</li>
+<li>The <a href="../../utils/use-cases/">use cases</a> run on the <code>io</code> dispatcher of the configuration of Emanate unless they receive
+  another one in the constructor, as <code>GetUnreadCountUseCase</code> does: pass them the same dispatcher as the configuration,
+  or fake them. Otherwise they run on the real <code>io</code> dispatcher, out of the control of the test.</li>
+<li><strong>Each <code>testConfiguration</code> has its own broadcaster</strong>, so the actions broadcast in a test don't reach the others. The
+  ViewModels of a test that send results to each other must receive the same configuration: create it once.</li>
+</ul>
+<h2 id="recording-a-viewmodel">Recording a ViewModel<a class="headerlink" href="#recording-a-viewmodel" title="Permanent link">&para;</a></h2>
+<p><code>viewModel.record()</code> (and <code>emaSource.record()</code> for an <a href="../../concepts/source/"><code>EmaSource</code></a>) starts recording and returns
+an <code>EmaRecorder</code>.</p>
+<p><strong>What it does.</strong> From that moment, it keeps in order every action that enters the <code>EmaSource</code>, every state returned by a
+reducer and every event published. The recorder exposes them as lists: <code>recorder.actions</code>, <code>recorder.states</code> and
+<code>recorder.events</code>.</p>
+<p><strong>Why it matters.</strong> The ViewModel only exposes its <strong>current</strong> state. A test that reads it can't see that the screen
+went through <code>isLoading = true</code> before showing the friends, that an event was published, or that a middleware blocked an
+action. The recorder is what lets you check the behavior, not only the final result.</p>
+<p><strong>What happens without it.</strong> You can only read the last state with <code>viewModel.stateFlow.value</code>. A bug that shows a
+spinner that never disappears at the right moment, a duplicated event or a missing one, goes unnoticed.</p>
+<p><strong>How to use it.</strong></p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">())</span>
+<span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span><span class="w">           </span><span class="c1">// before the first action</span>
+
+<span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="n">advanceUntilIdle</span><span class="p">()</span>
+
+<span class="n">println</span><span class="p">(</span><span class="n">recorder</span><span class="p">.</span><span class="na">actions</span><span class="p">)</span><span class="w">   </span><span class="c1">// [RefreshRequested, Loaded([Ana])]</span>
+<span class="n">println</span><span class="p">(</span><span class="n">recorder</span><span class="p">.</span><span class="na">states</span><span class="p">)</span><span class="w">    </span><span class="c1">// [HomeState(isLoading=true), HomeState(friends=[Ana])]</span>
+<span class="n">println</span><span class="p">(</span><span class="n">recorder</span><span class="p">.</span><span class="na">events</span><span class="p">)</span><span class="w">    </span><span class="c1">// [FriendsUpdated(1)]</span>
+</code></pre></div>
+<ul>
+<li><strong>Record before the first action.</strong> What happened before <code>record()</code> is not recorded.</li>
+<li><strong><code>states</code> doesn't include the initial state</strong>, only the ones returned by the reducers.</li>
+</ul>
+<h2 id="checking-what-was-recorded">Checking what was recorded<a class="headerlink" href="#checking-what-was-recorded" title="Permanent link">&para;</a></h2>
+<p>The recorder compares <strong>the whole list, in order</strong>. If there is an extra, a missing or a misplaced element, the test
+fails and the message shows both lists. You don't write the loops and the comparisons.</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Checks</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>assertActions(...)</code></td>
+<td>The actions that entered, in order, including the ones dispatched by side effects and the ones a middleware blocked.</td>
+<td><code>recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))</code></td>
+</tr>
+<tr>
+<td><code>assertStates(...)</code></td>
+<td>The states returned by the reducers, one for each reduced action.</td>
+<td><code>recorder.assertStates(HomeState(isLoading = true), HomeState(friends = listOf(ana)))</code></td>
+</tr>
+<tr>
+<td><code>assertState(state)</code></td>
+<td>The last state is exactly that one.</td>
+<td><code>recorder.assertState(HomeState(friends = listOf(ana)))</code></td>
+</tr>
+<tr>
+<td><code>assertState { }</code></td>
+<td>The last state fulfils a condition, without writing the whole state.</td>
+<td><code>recorder.assertState { !it.isLoading &amp;&amp; it.friends.size == 1 }</code></td>
+</tr>
+<tr>
+<td><code>assertEvents(...)</code></td>
+<td>The published events, in order.</td>
+<td><code>recorder.assertEvents(HomeEvent.FriendsUpdated(1))</code></td>
+</tr>
+<tr>
+<td><code>assertNoEvents()</code></td>
+<td>No event was published.</td>
+<td><code>recorder.assertNoEvents()</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Why it matters.</strong></p>
+<ul>
+<li><code>assertActions</code> is the only way to know that a middleware <strong>blocked</strong> an action, because a blocked action doesn't
+  change the state.</li>
+<li><code>assertStates</code> checks the <strong>path</strong>, not only the destination: loading first, the result later.</li>
+<li><code>assertState { }</code> keeps the test short and robust, because it doesn't break when an unrelated field of the state
+  changes.</li>
+<li><code>assertNoEvents()</code> is the check that something <strong>didn't</strong> happen: a failed load must not publish
+  the success event.</li>
+</ul>
+<p><strong>What happens without them.</strong> You compare <code>recorder.states</code> and <code>recorder.events</code> by hand. It works, but every test
+repeats the same code, and a test that forgets to check the events passes when a wrong one is published. A check also
+fails with a clear message:</p>
+<div class="highlight"><pre><span></span><code>Expected actions &lt;[Loaded(name=Ema)]&gt; but were &lt;[Load]&gt;
+The last state &lt;ProfileState(name=, loading=true)&gt; doesn't fulfil the condition
+No state has been recorded
+</code></pre></div>
+<p>The last one means that no reducer ran: the action was never dispatched, was blocked, or the test didn't advance with <code>advanceUntilIdle()</code>.</p>
+<p>The ViewModel can receive actions from outside too: the lifecycle, the initializer and the results of other screens are
+actions, so a test sends them the same way as the screen does.</p>
+<div class="highlight"><pre><span></span><code><span class="n">viewModel</span><span class="p">.</span><span class="na">onCreated</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">ana</span><span class="p">))</span><span class="w">   </span><span class="c1">// EmaInitializer</span>
+<span class="n">viewModel</span><span class="p">.</span><span class="na">onResumeView</span><span class="p">()</span><span class="w">                             </span><span class="c1">// EmaLifecycle.Resumed</span>
+</code></pre></div>
+<h2 id="checking-the-setup">Checking the setup<a class="headerlink" href="#checking-the-setup" title="Permanent link">&para;</a></h2>
+<p><code>viewModel.assertSetup()</code> checks that every middleware, reducer and side effect of the ViewModel can receive actions of
+its type: actions of the screen, initializers, lifecycle actions, the actions of its plugins or broadcast actions it
+listens to.</p>
+<p><strong>Why it matters.</strong> A reducer, middleware or side effect for an action that the ViewModel never receives doesn't fail:
+it never runs. It happens when a broadcast action is handled but <code>listen&lt;Type&gt;()</code> is missing in the <code>broadcasts</code> block.</p>
+<p><strong>What happens without it.</strong> Nothing fails, at compile time or at runtime. The user creates a friend in another screen
+and the list never updates, and no test notices, because the tests of the ViewModel dispatch their actions directly.</p>
+<p><strong>How to use it.</strong> Call it on the ViewModel, in a test of its own. It needs no actions, no recorder and no
+<code>advanceUntilIdle()</code>: it only reads how the ViewModel is declared.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`the setup is complete`</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">()).</span><span class="na">assertSetup</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If every piece can receive its action, the test passes. To see what it catches, take a <code>HomeViewModel</code> that handles the
+<code>FriendCreated</code> broadcast of the profile screen (see <a href="../../concepts/broadcasts/">Broadcasts</a>) but forgot to listen to it:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">HomeViewModel</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">,</span><span class="w"> </span><span class="n">HomeEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="cm">/* ... */</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// broadcasts { listen&lt;ProfileBroadcast.FriendCreated&gt;() }   &lt;- missing</span>
+
+<span class="w">        </span><span class="n">reducers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">add</span><span class="o">&lt;</span><span class="n">ProfileBroadcast</span><span class="p">.</span><span class="na">FriendCreated</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">action</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">friends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">friends</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">action</span><span class="p">.</span><span class="na">friend</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The reducer is declared, but <code>HomeViewModel</code> never receives <code>FriendCreated</code>, so it never runs and the home list never
+shows the new friend. Nothing fails when the app runs, but <code>assertSetup()</code> does, and it says which piece and how to fix it:</p>
+<div class="highlight"><pre><span></span><code>The reducer of FriendCreated never runs: HomeViewModel doesn't receive FriendCreated. If it is broadcast by another
+source, add listen&lt;FriendCreated&gt;() in the broadcasts block.
+</code></pre></div>
+<p>Adding <code>listen&lt;ProfileBroadcast.FriendCreated&gt;()</code> to the <code>broadcasts</code> block makes the test pass.</p>
+<p>Only the types that the ViewModel can't receive for sure are reported. An interface can be implemented by an action of
+the screen, so a piece for an interface that isn't related to the actions of the screen is not reported.</p>
+<h2 id="process-death-testing">Process death testing<a class="headerlink" href="#process-death-testing" title="Permanent link">&para;</a></h2>
+<p><code>testStateStore()</code> and <code>restoreStateOf(...)</code> are for the ViewModels with a <a href="../process-death/">backup</a> of their state.</p>
+<h3 id="teststatestore"><code>testStateStore()</code><a class="headerlink" href="#teststatestore" title="Permanent link">&para;</a></h3>
+<p><strong>What it does.</strong> It creates an <code>EmaStateStore</code> in memory. It lives longer than the ViewModels that use it, like the
+store of the platform survives the death of the process. <code>store.values</code> shows what has been saved, by key.</p>
+<p><strong>Why it matters.</strong> To test that the form survives, you pass the same store to two ViewModels: the first one saves, the
+second one, created after it, restores. That is the death of the process, without a device.</p>
+<p><strong>What happens without it.</strong> You would have to write your own <code>EmaStateStore</code>, or test it on Android with a real
+<code>SavedStateHandle</code> and an instrumented test. A ViewModel that saves the wrong key, or never restores, goes
+unnoticed until a user loses what they typed.</p>
+<h3 id="restorestateof"><code>restoreStateOf(...)</code><a class="headerlink" href="#restorestateof" title="Permanent link">&para;</a></h3>
+<p><strong>What it does.</strong> It creates the <code>EmaRestoreState</code> action with the saved texts, by key, to compare it with
+<code>assertActions</code>. The values are the texts as they are in the store.</p>
+<p><strong>Why it matters.</strong> The restore is an action that goes through the middlewares and reducers. With it you check that it
+arrives, and when: right after the initializer, which is applied first.</p>
+<p><strong>What happens without it.</strong> You would build the <code>EmaRestoreState</code> by hand, or you would only check the final state,
+and the test couldn't tell whether the restore ran or the initializer already left that value.</p>
+<h3 id="using-them-together">Using them together<a class="headerlink" href="#using-them-together" title="Permanent link">&para;</a></h3>
+<p>The two work as a pair: <code>testStateStore()</code> simulates the death of the process and <code>restoreStateOf(...)</code> checks what the
+new ViewModel receives after it.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`the form survives the death of the process`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// 1. The first ViewModel saves in the store</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">store</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">testStateStore</span><span class="p">()</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">first</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationViewModel</span><span class="p">(</span><span class="n">AddFriendUseCase</span><span class="p">(</span><span class="n">FakeFriendsRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">)</span>
+<span class="w">    </span><span class="n">first</span><span class="p">.</span><span class="na">onCreated</span><span class="p">()</span>
+<span class="w">    </span><span class="n">first</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">ProfileCreationAction</span><span class="p">.</span><span class="na">UserNameWritten</span><span class="p">(</span><span class="s">"Ana"</span><span class="p">))</span>
+
+<span class="w">    </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">"""{"name":"Ana","surname":""}"""</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">.</span><span class="na">values</span><span class="o">[</span><span class="s">"form"</span><span class="o">]</span><span class="p">)</span><span class="w">    </span><span class="c1">// what was saved</span>
+
+<span class="w">    </span><span class="c1">// 2. The process dies: a new ViewModel receives the same store</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">restored</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationViewModel</span><span class="p">(</span><span class="n">AddFriendUseCase</span><span class="p">(</span><span class="n">FakeFriendsRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">store</span><span class="p">)</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">restored</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+<span class="w">    </span><span class="n">restored</span><span class="p">.</span><span class="na">onCreated</span><span class="p">()</span>
+
+<span class="w">    </span><span class="c1">// 3. The restore arrives right after the initializer, with the saved values</span>
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">(</span>
+<span class="w">        </span><span class="n">EmaInitializer</span><span class="p">.</span><span class="na">EMPTY</span><span class="p">,</span>
+<span class="w">        </span><span class="n">restoreStateOf</span><span class="p">(</span><span class="s">"form"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="s">"""{"name":"Ana","surname":""}"""</span><span class="p">)</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="n">assertEquals</span><span class="p">(</span><span class="s">"Ana"</span><span class="p">,</span><span class="w"> </span><span class="n">restored</span><span class="p">.</span><span class="na">stateFlow</span><span class="p">.</span><span class="na">value</span><span class="p">.</span><span class="na">name</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="swapping-pieces-in-the-tests">Swapping pieces in the tests<a class="headerlink" href="#swapping-pieces-in-the-tests" title="Permanent link">&para;</a></h2>
+<p>A ViewModel that <a href="../dependency-injection/#injecting-pieces">receives its pieces</a> in the constructor, like the side effect
+that loads the friends, is tested with the version of that piece the test needs: one that answers at once, one that
+fails, one that takes a while.</p>
+<ul>
+<li><strong>No mocking library is needed.</strong> The mock is a normal class that implements the same piece, like <code>MockFriends</code> in
+  <a href="../dependency-injection/#injecting-pieces">Dependency injection</a>. You don't configure it with <code>every { ... } returns</code>
+  or <code>when(...).thenReturn</code>: you create it with the data you want, <code>MockFriends(friends = null)</code>.</li>
+<li><strong>Only the piece you swap is fake.</strong> The reducers, the middlewares and the events of the ViewModel are the real ones,
+  the same as in production. The mock dispatches the same actions as the real piece, so the test checks that the
+  screen reacts correctly to them.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`a failed load shows the error dialog`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">loadFriends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MockFriends</span><span class="p">(</span><span class="n">friends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">))</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="w">    </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">dialog</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">HomeDialog</span><span class="p">.</span><span class="na">LoadError</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="nb">it</span><span class="p">.</span><span class="na">isLoading</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertNoEvents</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`a second refresh while loading is ignored`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">loadFriends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MockFriends</span><span class="p">(</span><span class="n">friends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">),</span><span class="w"> </span><span class="n">latency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1.</span><span class="n">seconds</span><span class="p">))</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="w">    </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">(</span>
+<span class="w">        </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryStarted</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryLoaded</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">))</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="time-is-virtual">Time is virtual<a class="headerlink" href="#time-is-virtual" title="Permanent link">&para;</a></h3>
+<p>Many screens wait on purpose: a search that waits 300 ms after the last key (a debounce), a request that gives up after
+10 seconds (a timeout), a loading state that lasts as long as the request. In a test you don't want to wait for any of
+that.</p>
+<p><strong>What it means.</strong> <code>runTest</code> has a <strong>virtual clock</strong>: <code>delay(3.seconds)</code> doesn't make the test wait three seconds. The
+test dispatcher records that the work has to resume 3 seconds from now, and the clock only moves when the test moves
+it. So a test that covers a three-second request takes milliseconds.</p>
+<p><strong>What makes it work.</strong> The side effects and middlewares run on the dispatcher of the test (see
+<a href="#install-the-test-configuration">Install the test configuration</a>), so their <code>delay</code>s use the clock of <code>runTest</code>. If
+they ran on a real dispatcher, each <code>delay</code> would be real.</p>
+<p><strong>How you move the clock:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>advanceTimeBy(duration)</code></td>
+<td>Moves the clock forward and runs what was due <strong>before</strong> that moment. Work due exactly at that moment doesn't run yet.</td>
+</tr>
+<tr>
+<td><code>runCurrent()</code></td>
+<td>Runs what is due at the current moment, without moving the clock.</td>
+</tr>
+<tr>
+<td><code>advanceUntilIdle()</code></td>
+<td>Moves the clock as far as needed until there is no work left. It is the one to use when you only want the final result.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Checking a debounce.</strong> Take a side effect for <code>QueryWritten</code> with <code>Latest</code> concurrency that waits 300 ms before
+searching. Each new key cancels the previous wait and starts it again, so only the last query is searched:</p>
+<div class="highlight"><pre><span></span><code><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">QueryWritten</span><span class="p">(</span><span class="s">"an"</span><span class="p">))</span>
+<span class="n">advanceTimeBy</span><span class="p">(</span><span class="m">200.</span><span class="n">milliseconds</span><span class="p">)</span>
+<span class="n">recorder</span><span class="p">.</span><span class="na">assertNoEvents</span><span class="p">()</span><span class="w">          </span><span class="c1">// 200 ms: still waiting, nothing searched</span>
+
+<span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">QueryWritten</span><span class="p">(</span><span class="s">"ana"</span><span class="p">))</span><span class="w">   </span><span class="c1">// cancels the wait of "an" and starts a new one</span>
+<span class="n">advanceTimeBy</span><span class="p">(</span><span class="m">200.</span><span class="n">milliseconds</span><span class="p">)</span>
+<span class="n">recorder</span><span class="p">.</span><span class="na">assertNoEvents</span><span class="p">()</span><span class="w">          </span><span class="c1">// 400 ms since "an", but only 200 ms since "ana": still waiting</span>
+
+<span class="n">advanceUntilIdle</span><span class="p">()</span><span class="w">                 </span><span class="c1">// the 300 ms of "ana" pass</span>
+<span class="n">recorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">friends</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">query</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">"ana"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>Without the virtual clock this test would need real <code>Thread.sleep</code>s, would last a second and would fail on a slow machine.</p>
+<p><strong>Checking a loading state.</strong> The same goes for a mock with latency: <code>advanceTimeBy</code> stops the request halfway, so you
+can check the loading state of a slow request:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`a slow load keeps the loading state until it finishes`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">loadFriends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MockFriends</span><span class="p">(</span><span class="n">friends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">),</span><span class="w"> </span><span class="n">latency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3.</span><span class="n">seconds</span><span class="p">))</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="w">    </span><span class="n">advanceTimeBy</span><span class="p">(</span><span class="m">2.</span><span class="n">seconds</span><span class="p">)</span><span class="w">                               </span><span class="c1">// 2 s of 3 s: the request is still running</span>
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">isLoading</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">advanceUntilIdle</span><span class="p">()</span><span class="w">                                     </span><span class="c1">// the last second passes</span>
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">friends</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Checking a timeout.</strong> With <code>timeout = 10.seconds</code> and a mock that never answers, <code>advanceTimeBy(11.seconds)</code> is
+enough to check that <code>onTimeout</code> ran and the state shows the error, without waiting ten seconds.</p>
+<h3 id="testing-a-broadcast-between-viewmodels">Testing a broadcast between ViewModels<a class="headerlink" href="#testing-a-broadcast-between-viewmodels" title="Permanent link">&para;</a></h3>
+<p>A <a href="../../concepts/broadcasts/">broadcast</a> goes from one ViewModel to others, so to test it you create <strong>both</strong> and check
+that what one sends reaches the other. For example, the profile screen creates a friend and the home list must show it.</p>
+<p>The key is the configuration: the broadcast travels through the <code>broadcaster</code> of the configuration, so the ViewModels
+that talk to each other must receive <strong>the same</strong> one. With <code>testConfiguration</code> create it once and pass it to both:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">`a friend created in the profile reaches the home list`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">testConfiguration</span><span class="p">(</span><span class="n">UnconfinedTestDispatcher</span><span class="p">(</span><span class="n">testScheduler</span><span class="p">))</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">home</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">(),</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w">   </span><span class="c1">// listens to FriendCreated</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileViewModel</span><span class="p">(</span><span class="n">ProfileState</span><span class="p">(</span><span class="n">friend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ana</span><span class="p">),</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w">                    </span><span class="c1">// sends FriendCreated</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">homeRecorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">home</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">profile</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">ProfileAction</span><span class="p">.</span><span class="na">SaveClicked</span><span class="p">)</span><span class="w">       </span><span class="c1">// its side effect broadcasts FriendCreated(ana)</span>
+<span class="w">    </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
+
+<span class="w">    </span><span class="n">homeRecorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">(</span><span class="n">ProfileBroadcast</span><span class="p">.</span><span class="na">FriendCreated</span><span class="p">(</span><span class="n">ana</span><span class="p">))</span>
+<span class="w">    </span><span class="n">homeRecorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">friends</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<ul>
+<li><strong>Create the receiver before sending.</strong> A broadcast is delivered to the ViewModels that listen at that moment, unless
+  the sender uses <code>keepUntilReceived</code>.</li>
+<li><strong>Record the receiver</strong>, not the sender: the test checks what arrives and how the receiver reacts.</li>
+<li><strong>If the two ViewModels got different configurations,</strong> each one would have its own broadcaster and the action would
+  never arrive. The test would fail with an empty list of actions, not with an error that says why.</li>
+<li>With <code>useTestConfiguration()</code> the ViewModels already share the configuration of Emanate, so you don't need to pass it.</li>
+<li>To check that the receiver declared <code>listen&lt;FriendCreated&gt;()</code> without creating the sender, use
+  <a href="#checking-the-setup"><code>assertSetup()</code></a>.</li>
+</ul>
 
 
 
@@ -1989,7 +2425,7 @@ results between screens and the view lifecycle.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../permissions/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Permissions">
+          <a href="../dependency-injection/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Dependency injection and environments">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1999,20 +2435,20 @@ results between screens and the view lifecycle.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Permissions
+                Dependency injection and environments
               </div>
             </div>
           </a>
         
         
           
-          <a href="../multiplatform/" class="md-footer__link md-footer__link--next" aria-label="Next: Kotlin Multiplatform">
+          <a href="../../compose/screens/" class="md-footer__link md-footer__link--next" aria-label="Next: Screens">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Kotlin Multiplatform
+                Screens
               </div>
             </div>
             <div class="md-footer__button md-icon">

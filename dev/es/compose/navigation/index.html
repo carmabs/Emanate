@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android">
+        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform">
       
       
       
@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -55,6 +55,8 @@
       
     
     
+      <link rel="stylesheet" href="../../../assets/extra.css">
+    
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +73,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -102,8 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Cabecera">
     <a href="../../" title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -133,20 +134,20 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
       </label>
     
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
       </label>
     
   
@@ -264,8 +265,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../" title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../../assets/logo.svg" alt="logo">
 
     </a>
     Emanate
@@ -345,6 +345,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../why-emanate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Por qué Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -359,10 +386,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -380,8 +407,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -510,6 +537,146 @@
   
   
     <li class="md-nav__item">
+      <a href="../../concepts/reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../concepts/viewmodel/" class="md-nav__link">
         
   
@@ -545,7 +712,7 @@
   <span class="md-ellipsis">
     
   
-    Fuente
+    EmaSource
   
 
     
@@ -586,10 +753,153 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilidades
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilidades
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Casos de uso
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resultados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Textos en el estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -607,8 +917,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -681,42 +991,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/results-between-screens/" class="md-nav__link">
+      <a href="../../guides/process-death/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Resultados entre pantallas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/async-and-errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Trabajo asíncrono y errores
+    Sobrevivir a la muerte del proceso
   
 
     
@@ -744,35 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Inyección de dependencias
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
+    Inyección de dependencias y entornos
   
 
     
@@ -801,62 +1055,6 @@
     
   
     Testing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/multiplatform/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kotlin Multiplatform
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
   
 
     
@@ -899,10 +1097,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   
@@ -920,8 +1118,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1060,10 +1258,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#de-dónde-viene-el-inicializador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        De dónde viene el inicializador
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#la-primera-pantalla-de-una-activity" class="md-nav__link">
     <span class="md-ellipsis">
       
         La primera pantalla de una activity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="La primera pantalla de una activity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cuando-la-primera-pantalla-se-abre-de-nuevo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuando la primera pantalla se abre de nuevo
       
     </span>
   </a>
@@ -1074,15 +1295,9 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#nodos-de-navegación" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Nodos de navegación
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1158,34 +1373,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../save-state/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Guardar el estado
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../permissions/" class="md-nav__link">
         
   
@@ -1193,290 +1380,7 @@
   <span class="md-ellipsis">
     
   
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Vistas de Android
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Vistas de Android
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Introducción
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/screens/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fragments y Activities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/navigation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Navegación y botón atrás
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/dialogs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Diálogos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/lists/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Listas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
+    Permisos (Android)
   
 
     
@@ -1612,10 +1516,33 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#de-dónde-viene-el-inicializador" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        De dónde viene el inicializador
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#la-primera-pantalla-de-una-activity" class="md-nav__link">
     <span class="md-ellipsis">
       
         La primera pantalla de una activity
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="La primera pantalla de una activity">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cuando-la-primera-pantalla-se-abre-de-nuevo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cuando la primera pantalla se abre de nuevo
       
     </span>
   </a>
@@ -1626,15 +1553,9 @@
     </nav>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#nodos-de-navegación" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Nodos de navegación
-      
-    </span>
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1659,119 +1580,220 @@
 
 
 <h1 id="navegación-en-compose">Navegación en Compose<a class="headerlink" href="#navegación-en-compose" title="Permanent link">&para;</a></h1>
-<p>En Emanate <strong>el ViewModel nunca navega</strong>. Publica un <a href="../../concepts/events/">evento</a> que dice lo que ha pasado, y la
-lambda <code>onEvent</code> del destino se lo pasa a un <strong>navigator</strong>, que sabe cómo moverse.</p>
-<pre class="mermaid"><code>sequenceDiagram
-    participant VM as ViewModel
-    participant G as createComposableScreen
-    participant N as Navigator
-    participant NC as NavController
-    VM-&gt;&gt;G: postEvent(UserTypeSelected)
-    G-&gt;&gt;N: onEvent(event)
-    N-&gt;&gt;NC: navigate(route, initializer)</code></pre>
+<blockquote>
+<p>Esta página trata de Navigation Compose, y necesita el artefacto <code>emanate-compose-android-nav2</code>. El resto de
+artefactos de Compose no dependen de ninguna librería de navegación, así que se puede usar otra navegación con
+<code>EmaScreen</code>.</p>
+</blockquote>
+<p>En Emanate un <strong>ViewModel nunca navega</strong>. Navegar es tarea del grafo de navegación que contiene la pantalla,
+normalmente el <code>NavHost</code>: es el que sabe qué pantallas existen y tiene el <code>NavController</code> para moverse entre ellas.</p>
+<p>El ViewModel solo publica un <a href="../../concepts/events/">evento</a> que dice <strong>lo que ha pasado</strong>, como "el login ha sido
+correcto". Alguien fuera de las pantallas tiene que recibir esos eventos y decidir <strong>adónde ir</strong>: el
+<strong>navigator</strong>, una clase que vive junto al <code>NavHost</code> y tiene su <code>NavController</code>. No es una clase de Emanate: es una
+clase normal tuya, y es un buen patrón gestionar así toda la navegación de tu app.</p>
+<p>Este es el flujo principal del sample, con dos de sus pantallas, el login y la home:</p>
+<p><img alt="Cada pantalla del NavHost envía sus eventos al navigator, que decide adónde ir" src="../../../assets/compose-navigation.svg" /></p>
+<ol>
+<li>Cada destino del <code>NavHost</code> es un <code>emaScreen</code>, con su contenido de pantalla, su ViewModel y su <code>onEvent</code>.</li>
+<li>Cuando las credenciales son correctas, el ViewModel de <code>Login</code> publica <code>LoginSuccess(user)</code>. No sabe qué pantalla
+   viene después.</li>
+<li>El <code>onEvent</code> de esa pantalla entrega el evento al navigator, a su función para esa pantalla: <code>handleLoginEvent</code>.</li>
+<li>El navigator decide para cada evento: <code>LoginSuccess</code> abre <code>Home</code>, y el <code>CloseClicked</code> de <code>Home</code> vuelve al login. Lo
+   hace con el <code>navController</code>, que cambia el destino que muestra el <code>NavHost</code>.</li>
+</ol>
+<p>Mantener la navegación fuera del ViewModel tiene dos ventajas. El ViewModel se puede testear sin Android, y el mismo
+evento puede llevar a sitios distintos en apps o grafos distintos: en un móvil puede abrir una pantalla nueva y en una
+tablet actualizar un panel lateral.</p>
+<p>La decisión de adónde ir podría escribirse directamente en cada lambda <code>onEvent</code>, pero recomendamos que toda navegación
+pase por un navigator: el grafo solo declara las pantallas, y toda la navegación de un flujo vive en un único sitio fácil
+de leer y de cambiar. Mira <a href="#el-navigator">El navigator</a>.</p>
 <h2 id="rutas">Rutas<a class="headerlink" href="#rutas" title="Permanent link">&para;</a></h2>
-<p>Cada pantalla registrada con <code>createComposableScreen</code> tiene una ruta. Por defecto es <code>ScreenContent::class.routeId</code>,
+<p>Cada pantalla registrada con <code>emaScreen</code> o <code>emaDialog</code> tiene una ruta. Por defecto es <code>ScreenContent::class.routeId</code>,
 única por clase:</p>
-<div class="highlight"><pre><span></span><code><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="el-navigator">El navigator<a class="headerlink" href="#el-navigator" title="Permanent link">&para;</a></h2>
-<p>La navegación vive en una clase normal que envuelve el <code>NavController</code>. Hereda de <code>EmaComposableNavigator</code> y créalo una
-vez, con <code>remember</code>, junto al <code>NavHost</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">ProfileOnBoardingNavigator</span><span class="p">(</span>
-<span class="w">    </span><span class="n">activity</span><span class="p">:</span><span class="w"> </span><span class="n">ComponentActivity</span><span class="p">,</span>
-<span class="w">    </span><span class="n">navController</span><span class="p">:</span><span class="w"> </span><span class="n">NavController</span>
-<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaComposableNavigator</span><span class="p">(</span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">activity</span><span class="p">,</span><span class="w"> </span><span class="n">navController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">navController</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<p>Crea <strong>un navigator por grafo de navegación</strong>, no uno por pantalla, y deja que gestione la navegación de todas las
+pantallas del grafo. Es una clase normal que recibe el <code>NavController</code> y tiene una función por pantalla: cada función
+recibe los eventos de esa pantalla y decide adónde ir. Emanate no exige una clase base ni una interfaz para él: sirve
+cualquier clase con esta forma. Créalo una vez, con <code>remember</code>, junto al <code>NavHost</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">MainNavigator</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">navController</span><span class="p">:</span><span class="w"> </span><span class="n">NavController</span><span class="p">,</span><span class="w"> </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">context</span><span class="p">:</span><span class="w"> </span><span class="n">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleProfileOnBoardingEvent</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">ProfileOnBoardingEvent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleLoginEvent</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">,</span><span class="w"> </span><span class="n">onMessage</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">LoginEvent</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">Unit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">ProfileOnBoardingEvent</span><span class="p">.</span><span class="na">UserTypeSelected</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
-<span class="w">                </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
+<span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">.</span><span class="na">LoginSuccess</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
+<span class="w">                </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
 <span class="w">                </span><span class="n">initializerBundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerBundle</span><span class="p">(</span>
-<span class="w">                    </span><span class="n">mapToCreationInitializer</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">role</span><span class="p">),</span>
-<span class="w">                    </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
+<span class="w">                    </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">user</span><span class="p">),</span>
+<span class="w">                    </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
 <span class="w">                </span><span class="p">)</span>
 <span class="w">            </span><span class="p">)</span>
 
-<span class="w">            </span><span class="n">ProfileOnBoardingEvent</span><span class="p">.</span><span class="na">OnBoardingCancelled</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navigateBack</span><span class="p">()</span>
+<span class="w">            </span><span class="c1">// Un mensaje no es navegación: lo gestiona quien muestra los mensajes</span>
+<span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">.</span><span class="na">Message</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">onMessage</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleHomeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">,</span><span class="w"> </span><span class="n">onMessage</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">HomeEvent</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">Unit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// La creación de perfil está en su propia activity</span>
+<span class="w">            </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CreateClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="na">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileActivity</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">java</span><span class="p">))</span>
+
+<span class="w">            </span><span class="c1">// El login es la pantalla que hay debajo de la home</span>
+<span class="w">            </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CloseClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="p">()</span>
+
+<span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">UserCreated</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">onMessage</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="n">setContent</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">navController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rememberNavController</span><span class="p">()</span>
-<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">navigator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remember</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">ProfileOnBoardingNavigator</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="n">navController</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">navigator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remember</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">MainNavigator</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileOnBoardingScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">createComposableScreen</span><span class="p">(</span>
-<span class="w">            </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileOnBoardingScreenContent</span><span class="p">(),</span>
-<span class="w">            </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileOnBoardingViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
-<span class="w">            </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileOnBoardingEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoginScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">            </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoginScreenContent</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">LoginViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleLoginEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* mostrar el mensaje */</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
 <span class="w">        </span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><code>navigateBack(closeActivityWhenBackstackIsEmpty = true)</code> saca la pantalla del back stack y cierra la activity cuando no
-queda nada. La misma función está disponible en cualquier <code>NavController</code>, y <code>NavController.navigateToExternalLink(url)</code>
-abre un enlace en otra app.</p>
+<p><code>NavController.navigateBack(closeActivityWhenBackstackIsEmpty = true)</code> saca una pantalla de la pila y cierra la activity
+cuando no queda nada, y <code>NavController.navigateToExternalLink(url)</code> abre un enlace en otra app.</p>
 <h2 id="pasar-un-inicializador">Pasar un inicializador<a class="headerlink" href="#pasar-un-inicializador" title="Permanent link">&para;</a></h2>
 <p>Envía el <a href="../../guides/initializers/">inicializador</a> con la extensión <code>navigate</code> que recibe un <code>EmaInitializerBundle</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
-<span class="w">    </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
+<span class="w">    </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
 <span class="w">    </span><span class="n">initializerBundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerBundle</span><span class="p">(</span>
-<span class="w">        </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">Admin</span><span class="p">,</span>
-<span class="w">        </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
+<span class="w">        </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
+<span class="w">        </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div>
 <p>Otra sobrecarga recibe una lambda <code>NavOptionsBuilder</code>, como <code>navigate(route) { launchSingleTop = true }</code>.</p>
-<p>El destino declara cómo leerlo con <code>initializerSupport</code>. El inicializador viaja en la ruta como texto, así que la
-navegación de Compose lo lee con kotlinx.serialization: <code>EmaInitializerSupport</code> solo acepta la estrategia
-<code>kSerialization</code>, y las estrategias <code>parcelable</code> y <code>serializable</code>, que solo funcionan con Bundles, fallan si se usan en
-una ruta:</p>
-<div class="highlight"><pre><span></span><code><span class="n">createComposableScreen</span><span class="p">(</span>
-<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()),</span>
-<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreationEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<p>El destino declara de dónde leerlo con <code>initializerSupport</code>. El inicializador viaja en la ruta como texto, así que la
+navegación de Compose lo lee con kotlinx.serialization: las estrategias <code>parcelable</code> y <code>serializable</code>, que solo
+funcionan con Bundles, no se pueden usar en una ruta.</p>
+<div class="highlight"><pre><span></span><code><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">HomeViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">fromRoute</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()),</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleHomeEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* mostrar el mensaje */</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>El inicializador llega a <code>onStateCreated</code> del ViewModel.</p>
+<p>El inicializador llega al ViewModel como una acción, la primera vez que se crea la pantalla. Mira
+<a href="../../guides/initializers/">Inicializadores</a>.</p>
+<h3 id="de-dónde-viene-el-inicializador">De dónde viene el inicializador<a class="headerlink" href="#de-dónde-viene-el-inicializador" title="Permanent link">&para;</a></h3>
+<p><code>EmaInitializerSupport</code> tiene una función por origen. El nombre dice de dónde se lee el inicializador:</p>
+<table>
+<thead>
+<tr>
+<th>Función</th>
+<th>De dónde lee el inicializador</th>
+<th>Cuándo usarla</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fromRoute(serializer)</code></td>
+<td>La ruta del destino.</td>
+<td>La mayoría de pantallas: a las que llegas con <code>navigate(route, initializerBundle)</code>.</td>
+</tr>
+<tr>
+<td><code>fromIntent(serializer)</code></td>
+<td>La ruta y, si no tiene, el intent de la activity.</td>
+<td>La primera pantalla de una activity que se abre con un inicializador.</td>
+</tr>
+<tr>
+<td><code>fromBundle(serializer, bundle)</code></td>
+<td>La ruta y, si no tiene, el <code>Bundle</code> que le des.</td>
+<td>Un grafo que recibe sus argumentos en un <code>Bundle</code>.</td>
+</tr>
+<tr>
+<td><code>fromInitializer(serializer, initializer)</code></td>
+<td>La ruta y, si no tiene, el inicializador que le des.</td>
+<td>Un inicializador que ya tienes, como el de un deep link, o un test.</td>
+</tr>
+</tbody>
+</table>
+<p>En todas <strong>gana la ruta</strong>: si lleva un inicializador, la pantalla lo usa. El origen de la función es solo el respaldo
+para cuando la ruta no tiene ninguno.</p>
 <h3 id="la-primera-pantalla-de-una-activity">La primera pantalla de una activity<a class="headerlink" href="#la-primera-pantalla-de-una-activity" title="Permanent link">&para;</a></h3>
-<p>Al destino inicial no se llega con <code>navigate</code>, así que su ruta no tiene inicializador. Cuando la activity se abre con un
-inicializador en su intent, léelo y pásalo como <code>overrideInitializer</code>, que sustituye al de la ruta:</p>
-<div class="highlight"><pre><span></span><code><span class="n">createComposableScreen</span><span class="p">(</span>
-<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileOnBoardingScreenContent</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileOnBoardingViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
-<span class="w">    </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span>
-<span class="w">        </span><span class="n">ProfileOnBoardingInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">(),</span>
-<span class="w">        </span><span class="n">getInitializer</span><span class="p">(</span>
-<span class="w">            </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileOnBoardingInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()),</span>
-<span class="w">            </span><span class="n">savedInstanceState</span>
-<span class="w">        </span><span class="p">)</span>
-<span class="w">    </span><span class="p">),</span>
-<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileOnBoardingEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<p>El inicializador de una pantalla normalmente viaja en su <strong>ruta</strong>: el navigator lo pone ahí con
+<code>navigate(route, initializerBundle)</code>, y <code>fromRoute</code> lo lee de vuelta. Pero la <strong>primera pantalla</strong> de un <code>NavHost</code>, su
+<code>startDestination</code>, no se alcanza con <code>navigate</code>: se muestra en cuanto se crea el <code>NavHost</code>, así que su ruta no tiene
+inicializador.</p>
+<p>Si esa pantalla necesita uno, puede venir del <strong>intent de la activity</strong>. El sample no lo necesita, porque la
+creación de perfil no recibe datos, pero imagina que la home lanza <code>ProfileActivity</code> y pone un
+<code>ProfileCreationInitializer.Default("Carlos")</code> en el intent, para que la pantalla de creación pueda decir quién crea
+el usuario. Requiere dos pasos, uno en cada activity:</p>
+<p><img alt="El inicializador de la primera pantalla viene del intent de la activity y el de las demás pantallas de la ruta" src="../../../assets/compose-initializer.svg" /></p>
+<p><strong>1. Pon el inicializador en el intent de la activity que abre el grafo.</strong> Usa <code>setInitializer</code> del <code>Intent</code>, con el
+serializer del inicializador, e inicia la activity:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Intent</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileActivity</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">java</span><span class="p">).</span><span class="na">setInitializer</span><span class="p">(</span>
+<span class="w">    </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">Default</span><span class="p">(</span><span class="s">"Carlos"</span><span class="p">),</span>
+<span class="w">    </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
+<span class="p">)</span>
+<span class="n">context</span><span class="p">.</span><span class="na">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
+</code></pre></div>
+<p>El inicializador viaja en los extras del intent, bajo la clave que lee Emanate. Si abres la activity con un grafo de
+navegación de Android, como hace el sample con una acción que va a una activity, <code>navController.navigate(id,
+EmaInitializerBundle(...))</code> lo pone ahí por ti, y solo tienes que usar el mismo serializer cuando lo leas.</p>
+<p><strong>2. Declara la primera pantalla con <code>fromIntent</code>.</strong> Lee el inicializador del intent de la activity que contiene el
+<code>NavHost</code>, usando el mismo serializer:</p>
+<div class="highlight"><pre><span></span><code><span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="c1">// El inicializador que la pantalla de inicio puso en el intent de la activity</span>
+<span class="w">        </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">fromIntent</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()),</span>
+<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreationEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>No tienes que leer el intent tú mismo. El resto de pantallas del grafo se declaran con <code>fromRoute</code>, así que nunca leen
+el intent.</p>
+<h4 id="cuando-la-primera-pantalla-se-abre-de-nuevo">Cuando la primera pantalla se abre de nuevo<a class="headerlink" href="#cuando-la-primera-pantalla-se-abre-de-nuevo" title="Permanent link">&para;</a></h4>
+<p>El intent es un <strong>respaldo</strong>: gana la ruta. Si la primera pantalla se abre de nuevo más tarde con <code>navigate</code>, recibe:</p>
+<table>
+<thead>
+<tr>
+<th>Cómo se abre</th>
+<th>La pantalla recibe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>navigate(route, EmaInitializerBundle(Default("Ana"), ...))</code></td>
+<td><code>Default("Ana")</code>, el de la ruta.</td>
+</tr>
+<tr>
+<td><code>navigate(route)</code>, sin inicializador</td>
+<td><code>Default("Carlos")</code>, el del intent, como la primera vez.</td>
+</tr>
+<tr>
+<td><code>navigate(route, EmaInitializerBundle(Default(""), ...))</code></td>
+<td><code>Default("")</code>, el de la ruta.</td>
+</tr>
+</tbody>
+</table>
+<p>La última fila es la forma de <strong>evitar el respaldo</strong>. Si la nueva pantalla no debe usar el inicializador del intent,
+navega con un inicializador de la pantalla <strong>sin valores</strong>, para que la ruta lo tenga y gane. Es un inicializador normal,
+del tipo que espera la pantalla, con valores vacíos:</p>
+<div class="highlight"><pre><span></span><code><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
+<span class="w">    </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
+<span class="w">    </span><span class="n">initializerBundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerBundle</span><span class="p">(</span>
+<span class="w">        </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">Default</span><span class="p">(</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">),</span>
+<span class="w">        </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
+<span class="w">    </span><span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div>
-<h2 id="nodos-de-navegación">Nodos de navegación<a class="headerlink" href="#nodos-de-navegación" title="Permanent link">&para;</a></h2>
-<p>Para flujos en los que el ViewModel guarda el <em>historial</em> de la navegación, <code>EmaNavigationNode&lt;T&gt;</code> lo modela como una
-lista enlazada: <code>next(destination, singleTop)</code> añade un nodo y <code>back()</code> devuelve el anterior.</p>
-<p><code>EmaComposableNodeNavigator</code> navega a un nodo: hacia delante, llamando a <code>onNavigation(event)</code>, o hacia atrás, cuando el
-nodo ya está en el historial. Navegar dos veces al mismo nodo no hace nada.</p>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">ProfileNodeNavigator</span><span class="p">(</span><span class="n">activity</span><span class="p">:</span><span class="w"> </span><span class="n">Activity</span><span class="p">,</span><span class="w"> </span><span class="n">navController</span><span class="p">:</span><span class="w"> </span><span class="n">NavHostController</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="n">EmaComposableNodeNavigator</span><span class="o">&lt;</span><span class="n">ProfileDestination</span><span class="o">&gt;</span><span class="p">(</span><span class="n">activity</span><span class="p">,</span><span class="w"> </span><span class="n">navController</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-
-<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onNavigation</span><span class="p">(</span><span class="n">navigationEvent</span><span class="p">:</span><span class="w"> </span><span class="n">ProfileDestination</span><span class="p">):</span><span class="w"> </span><span class="kt">Boolean</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span><span class="n">navigationEvent</span><span class="p">.</span><span class="na">route</span><span class="p">)</span>
-<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-
-<span class="kd">val</span><span class="w"> </span><span class="nv">navigator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rememberEmaNodeNavigator</span><span class="p">(</span><span class="n">navController</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">activity</span><span class="p">,</span><span class="w"> </span><span class="n">controller</span><span class="w"> </span><span class="o">-&gt;</span>
-<span class="w">    </span><span class="n">ProfileNodeNavigator</span><span class="p">(</span><span class="n">activity</span><span class="p">,</span><span class="w"> </span><span class="n">controller</span><span class="p">)</span>
-<span class="p">}</span>
-<span class="n">navigator</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">navigationNode</span><span class="p">)</span>
-</code></pre></div>
-<p>Es una opción avanzada; la mayoría de apps no la necesitan.</p>
+<p>La pantalla recibe entonces ese inicializador, y es el reducer de <code>ProfileCreationInitializer</code> el que decide qué
+significa: por ejemplo, que no hay ningún creador que mostrar.</p>
+<p>Volver a la primera pantalla con el botón atrás no la abre de nuevo: vuelve la pantalla original, con su ViewModel, y no
+lee el inicializador otra vez.</p>
 
 
 

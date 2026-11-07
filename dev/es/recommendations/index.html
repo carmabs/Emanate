@@ -6,12 +6,12 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android">
+        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform">
       
       
       
       
-        <link rel="prev" href="../android-view/utilities/">
+        <link rel="prev" href="../compose/permissions/">
       
       
         <link rel="next" href="../contributing/">
@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -55,6 +55,8 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +73,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -102,8 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Cabecera">
     <a href="../" title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -133,20 +134,20 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
       </label>
     
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
       </label>
     
   
@@ -264,8 +265,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../" title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     Emanate
@@ -345,6 +345,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../why-emanate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Por qué Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -359,10 +386,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -380,8 +407,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -510,6 +537,146 @@
   
   
     <li class="md-nav__item">
+      <a href="../concepts/reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../concepts/viewmodel/" class="md-nav__link">
         
   
@@ -545,7 +712,7 @@
   <span class="md-ellipsis">
     
   
-    Fuente
+    EmaSource
   
 
     
@@ -586,10 +753,153 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilidades
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilidades
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Casos de uso
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resultados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Textos en el estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -607,8 +917,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -681,42 +991,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../guides/results-between-screens/" class="md-nav__link">
+      <a href="../guides/process-death/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Resultados entre pantallas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../guides/async-and-errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Trabajo asíncrono y errores
+    Sobrevivir a la muerte del proceso
   
 
     
@@ -744,35 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Inyección de dependencias
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../guides/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
+    Inyección de dependencias y entornos
   
 
     
@@ -814,62 +1068,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../guides/multiplatform/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kotlin Multiplatform
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../guides/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -897,10 +1095,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   
@@ -918,8 +1116,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1048,34 +1246,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../compose/save-state/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Guardar el estado
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../compose/permissions/" class="md-nav__link">
         
   
@@ -1083,290 +1253,7 @@
   <span class="md-ellipsis">
     
   
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../compose/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Vistas de Android
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Vistas de Android
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../android-view/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Introducción
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../android-view/screens/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fragments y Activities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../android-view/navigation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Navegación y botón atrás
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../android-view/dialogs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Diálogos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../android-view/lists/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Listas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../android-view/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../android-view/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
+    Permisos (Android)
   
 
     
@@ -1462,6 +1349,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Divide la app en módulos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-o-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿api o implementation?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-qué-presentation-y-domain-son-kotlin-puro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por qué presentation y domain son Kotlin puro
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qué-va-dónde" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué va dónde?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1506,16 +1432,55 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#comparte-una-paleta" class="md-nav__link">
+    <nav class="md-nav" aria-label="Mantén limpio el ViewModel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nada-de-tipos-de-la-plataforma" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparte una paleta
+        Nada de tipos de la plataforma
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cada-pieza-tiene-un-único-trabajo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cada pieza tiene un único trabajo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-vista-solo-informa-y-pinta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La vista solo informa y pinta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-crees-tus-dependencias-recíbelas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No crees tus dependencias, recíbelas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1600,6 +1565,45 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Divide la app en módulos">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#api-o-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿api o implementation?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#por-qué-presentation-y-domain-son-kotlin-puro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Por qué presentation y domain son Kotlin puro
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#qué-va-dónde" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ¿Qué va dónde?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1644,16 +1648,55 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#comparte-una-paleta" class="md-nav__link">
+    <nav class="md-nav" aria-label="Mantén limpio el ViewModel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#nada-de-tipos-de-la-plataforma" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comparte una paleta
+        Nada de tipos de la plataforma
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cada-pieza-tiene-un-único-trabajo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cada pieza tiene un único trabajo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#la-vista-solo-informa-y-pinta" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        La vista solo informa y pinta
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#no-crees-tus-dependencias-recíbelas" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        No crees tus dependencias, recíbelas
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1689,13 +1732,25 @@
 
 
 <h1 id="recomendaciones">Recomendaciones<a class="headerlink" href="#recomendaciones" title="Permanent link">&para;</a></h1>
-<p>Nada de esto lo exige Emanate, pero así está organizada la app <code>sample/</code> y funciona bien.</p>
+<p>Emanate no te obliga a seguir ninguna estructura de proyecto: puedes meterlo todo en un único módulo y llamar a tus
+clases como quieras. Esta página recoge cómo está organizada la app <code>sample</code>, y <strong>por qué</strong>. Quédate con lo que te
+sirva.</p>
+<div class="admonition tip">
+<p class="admonition-title">Por dónde empezar</p>
+<p>Si solo estás probando Emanate, olvídate de los módulos y empieza con uno. Los tres hábitos que merece la pena
+adoptar desde el primer día son <a href="#organiza-por-funcionalidad">organizar por funcionalidad</a>,
+<a href="#nombres">usar los mismos nombres en todas partes</a> y <a href="#mantén-limpio-el-viewmodel">mantener limpio el ViewModel</a>.
+Dividir en módulos puede esperar a que la app crezca.</p>
+</div>
 <h2 id="divide-la-app-en-módulos">Divide la app en módulos<a class="headerlink" href="#divide-la-app-en-módulos" title="Permanent link">&para;</a></h2>
+<p>Un módulo es una parte del proyecto que se compila por separado y solo puede usar lo que declara como dependencia.
+Ese límite es justo lo que queremos: <strong>si un módulo no puede ver algo, nadie puede usarlo ahí por error.</strong></p>
+<p>El sample tiene seis módulos:</p>
 <table>
 <thead>
 <tr>
 <th>Módulo</th>
-<th>Contiene</th>
+<th>Qué vive aquí</th>
 <th>Tipo</th>
 <th>Depende de</th>
 </tr>
@@ -1709,9 +1764,9 @@
 </tr>
 <tr>
 <td><code>ui</code></td>
-<td>Composables, fragments, activities, navigators, adapters, diálogos, tema y recursos.</td>
+<td>Contenidos de pantalla, navigators, diálogos, tema y recursos.</td>
 <td>Librería Android</td>
-<td><code>presentation</code>, <code>android-utils</code>, <code>emanate-compose</code>, <code>emanate-android-view</code></td>
+<td><code>presentation</code>, <code>domain</code>, <code>android-utils</code>, <code>emanate-compose-android</code></td>
 </tr>
 <tr>
 <td><code>presentation</code></td>
@@ -1733,40 +1788,108 @@
 </tr>
 <tr>
 <td><code>android-utils</code></td>
-<td>Ayudas de Android compartidas por varios módulos.</td>
+<td>Ayudas de Android compartidas por varios módulos, como leer y guardar JSON en <code>SharedPreferences</code>.</td>
 <td>Librería Android</td>
-<td></td>
+<td><code>domain</code></td>
 </tr>
 </tbody>
 </table>
-<pre class="mermaid"><code>%%{init: {"flowchart": {"curve": "step"}}}%%
-flowchart LR
-    app --&gt; ui
-    app --&gt; data
-    ui --&gt; presentation
-    presentation --&gt; domain
-    data --&gt; domain
-    domain --&gt; emanate-core</code></pre>
-<p>El diagrama no incluye <code>android-utils</code>, que usan <code>ui</code> y <code>data</code>.</p>
-<p>Mantener <code>presentation</code> sin Android tiene dos ventajas:</p>
+<p><img alt="Módulos de una app Emanate y las dependencias entre ellos" src="../../assets/modules.svg" /></p>
+<p>Lee las flechas como <em>"puede ver"</em>: <code>ui</code> puede ver <code>presentation</code>, pero <code>presentation</code> no puede ver <code>ui</code>. Tres detalles:</p>
 <ul>
-<li><strong>El compilador hace cumplir la arquitectura.</strong> Un ViewModel no puede usar <code>Context</code>, recursos ni vistas por error,
-  porque el módulo no los tiene.</li>
-<li><strong>Está preparado para Kotlin Multiplatform.</strong> <code>emanate-core</code> es multiplataforma, así que <code>presentation</code> y <code>domain</code> pueden
-  convertirse en módulos multiplataforma y compartir los ViewModels con otras plataformas. Consulta
-  <a href="../guides/multiplatform/">Kotlin Multiplatform</a>.</li>
+<li><strong><code>app</code> ve todos los módulos</strong>, porque crea todas las piezas con la inyección de dependencias.</li>
+<li><strong><code>api</code> expone una dependencia a los módulos de arriba.</strong> <code>presentation</code> declara <code>domain</code> con <code>api</code>, y <code>domain</code> declara
+  <code>emanate-core</code> con <code>api</code>. Así <code>ui</code> puede usar los modelos de <code>domain</code> que aparecen en el estado, y todos los módulos
+  pueden usar <code>emanate-core</code>. Con <code>implementation</code>, un módulo se guarda sus dependencias para sí.</li>
+<li><strong><code>android-utils</code> también depende de <code>domain</code></strong>, para trabajar con sus modelos.</li>
 </ul>
-<h2 id="organiza-por-funcionalidad">Organiza por funcionalidad<a class="headerlink" href="#organiza-por-funcionalidad" title="Permanent link">&para;</a></h2>
-<p>Cada pantalla es un paquete en <code>presentation</code> y otro en <code>ui</code>, con el mismo nombre:</p>
-<div class="highlight"><pre><span></span><code>presentation/…/presentation/login/        ui/…/ui/login/
-├── LoginState.kt                          ├── LoginScreenContent.kt (o LoginFragment.kt)
-├── LoginAction.kt                         └── LoginNavigator.kt
-├── LoginEvent.kt
-├── LoginOverlap.kt
-├── LoginViewModel.kt
-└── LoginInitializer.kt   (solo si la pantalla recibe datos)
+<h3 id="api-o-implementation">¿<code>api</code> o <code>implementation</code>?<a class="headerlink" href="#api-o-implementation" title="Permanent link">&para;</a></h3>
+<p>Las dos declaran una dependencia. La diferencia es quién más puede verla:</p>
+<table>
+<thead>
+<tr>
+<th>Declaración</th>
+<th>Quién ve la dependencia</th>
+<th>Úsala cuando</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>implementation</code></td>
+<td>Solo el módulo que la declara.</td>
+<td>La dependencia es un detalle interno. Es la opción por defecto.</td>
+</tr>
+<tr>
+<td><code>api</code></td>
+<td>El módulo <strong>y</strong> todos los que dependen de él.</td>
+<td>Sus tipos aparecen en tu código público: estados, acciones, firmas de funciones o superclases.</td>
+</tr>
+</tbody>
+</table>
+<p>Imagina el estado de una pantalla de inicio que contiene una lista de usuarios y el rol de cada uno:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">HomeState</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">users</span><span class="p">:</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">role</span><span class="p">:</span><span class="w"> </span><span class="n">Role</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="w">   </span><span class="c1">// User y Role viven en domain</span>
 </code></pre></div>
+<p><code>presentation</code> usa <code>api</code> para <code>domain</code> porque <code>User</code> y <code>Role</code> son modelos de <code>domain</code> y aparecen en el estado, así que quien
+lo pinte necesita conocerlos. <code>domain</code> usa <code>api</code> para <code>emanate-core</code> porque sus casos de uso extienden <code>EmaUseCase</code>. <code>data</code>,
+en cambio, usa <code>implementation</code> para <code>domain</code>: nadie por encima necesita verlo a través de <code>data</code>.</p>
+<p>No marques todo con <code>api</code>: los módulos verían demasiado, y un cambio en uno obligaría a recompilar los otros. Y si <code>ui</code> usa
+los modelos de <code>domain</code> directamente, declara también <code>implementation project(':domain')</code> en <code>ui</code>, para que no dependa de que
+<code>presentation</code> mantenga su <code>api</code>.</p>
+<h3 id="por-qué-presentation-y-domain-son-kotlin-puro">Por qué <code>presentation</code> y <code>domain</code> son Kotlin puro<a class="headerlink" href="#por-qué-presentation-y-domain-son-kotlin-puro" title="Permanent link">&para;</a></h3>
+<p><em>Kotlin puro</em> significa que el módulo no tiene nada de Android: ni <code>Context</code>, ni <code>View</code>, ni <code>R.string</code>. Esto tiene dos
+ventajas:</p>
+<ul>
+<li><strong>El compilador hace cumplir la arquitectura.</strong> Un ViewModel no puede usar un <code>Context</code> ni un recurso por error,
+  porque el módulo no los tiene. No hace falta recordar una norma ni cazarla en una revisión.</li>
+<li><strong>Está preparado para Kotlin Multiplatform.</strong> <code>emanate-core</code> es multiplataforma, así que <code>presentation</code> y <code>domain</code>
+  pueden convertirse en módulos multiplataforma y compartir los ViewModels con otras plataformas.</li>
+</ul>
+<p>Además, sus tests se ejecutan en milisegundos en tu ordenador, sin emulador (consulta <a href="../guides/testing/">Testing</a>).</p>
+<h3 id="qué-va-dónde">¿Qué va dónde?<a class="headerlink" href="#qué-va-dónde" title="Permanent link">&para;</a></h3>
+<p>Cuando no sepas dónde va una clase, hazte esta pregunta:</p>
+<table>
+<thead>
+<tr>
+<th>Si la clase...</th>
+<th>Va en</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pinta algo o necesita Android para funcionar (un composable, un navigator, un <code>Toast</code>)</td>
+<td><code>ui</code></td>
+</tr>
+<tr>
+<td>Decide <strong>qué muestra la pantalla</strong> (estado, acciones, eventos, ViewModel)</td>
+<td><code>presentation</code></td>
+</tr>
+<tr>
+<td>Es un concepto de negocio o un caso de uso (<code>User</code>, <code>GetFriendsUseCase</code>), o la <strong>interfaz</strong> de un repositorio (<code>FriendsRepository</code>)</td>
+<td><code>domain</code></td>
+</tr>
+<tr>
+<td><strong>Implementa</strong> esas interfaces de repositorio, hablando con la API REST o la base de datos (<code>FriendsRepositoryImpl</code>)</td>
+<td><code>data</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>domain</code> dice <strong>qué</strong> datos necesita (la interfaz), y <code>data</code> decide <strong>cómo</strong> conseguirlos (la implementación).</p>
+<h2 id="organiza-por-funcionalidad">Organiza por funcionalidad<a class="headerlink" href="#organiza-por-funcionalidad" title="Permanent link">&para;</a></h2>
+<p>Agrupa los archivos <strong>por pantalla</strong>, no por tipo. No crees un paquete <code>states/</code> con todos los estados de la app y otro
+<code>viewmodels/</code> con todos los ViewModels: al cambiar la pantalla Home tendrías que saltar entre cinco paquetes.</p>
+<p>En su lugar, cada pantalla es un paquete en <code>presentation</code> y otro en <code>ui</code>, con el mismo nombre:</p>
+<div class="highlight"><pre><span></span><code>presentation/…/presentation/home/         ui/…/ui/home/
+├── HomeState.kt                           ├── HomeScreenContent.kt
+├── HomeAction.kt                          └── HomeNavigator.kt
+├── HomeEvent.kt
+├── HomeDialog.kt
+├── HomeViewModel.kt
+└── HomeInitializer.kt   (solo si la pantalla recibe datos)
+</code></pre></div>
+<p>Todo lo de Home está en dos carpetas con el mismo nombre. Para borrar la pantalla, borras esas carpetas.</p>
 <h2 id="nombres">Nombres<a class="headerlink" href="#nombres" title="Permanent link">&para;</a></h2>
+<p>Si todas las pantallas siguen la misma convención, puedes abrir cualquiera y saber dónde está cada cosa. Tomemos la
+pantalla Home como ejemplo:</p>
 <table>
 <thead>
 <tr>
@@ -1788,79 +1911,196 @@ flowchart LR
 </tr>
 <tr>
 <td>Acción</td>
-<td><code>&lt;Pantalla&gt;Action</code>, con el nombre de lo que hizo el usuario</td>
-<td><code>UserNameWritten</code>, <code>ProfileClicked</code></td>
+<td><code>&lt;Pantalla&gt;Action</code>, con el nombre de <strong>lo que hizo el usuario</strong></td>
+<td><code>QueryWritten</code>, <code>FriendClicked</code></td>
 </tr>
 <tr>
 <td>Evento</td>
-<td><code>&lt;Pantalla&gt;Event</code>, con el nombre de lo que pasó</td>
-<td><code>LoginSuccess</code>, <code>OnBoardingCancelled</code></td>
+<td><code>&lt;Pantalla&gt;Event</code>, con el nombre de <strong>lo que pasó</strong></td>
+<td><code>FriendSelected</code>, <code>CloseClicked</code></td>
 </tr>
 <tr>
 <td>ViewModel</td>
 <td><code>&lt;Pantalla&gt;ViewModel</code></td>
-<td><code>LoginViewModel</code></td>
+<td><code>HomeViewModel</code></td>
 </tr>
 <tr>
 <td>Diálogos en el estado</td>
-<td><code>&lt;Pantalla&gt;Overlap</code></td>
-<td><code>LoginOverlap.ErrorBadCredentials</code></td>
+<td><code>&lt;Pantalla&gt;Dialog</code></td>
+<td><code>HomeDialog.LoadError</code></td>
 </tr>
 <tr>
-<td>Funciones que gestionan las acciones</td>
-<td><code>onAction&lt;Qué&gt;</code></td>
-<td><code>onActionLogin()</code></td>
+<td>Resultados de los side effects</td>
+<td><code>&lt;Pantalla&gt;Action.SideEffects.&lt;Qué&gt;</code></td>
+<td><code>HomeAction.SideEffects.QueryLoaded</code></td>
 </tr>
 <tr>
 <td>Contenido de Compose</td>
 <td><code>&lt;Pantalla&gt;ScreenContent</code></td>
-<td><code>ProfileCreationScreenContent</code></td>
+<td><code>HomeScreenContent</code></td>
 </tr>
 <tr>
 <td>Inicializador</td>
 <td><code>&lt;Pantalla&gt;Initializer</code></td>
 <td><code>HomeInitializer.HomeUser</code></td>
 </tr>
+<tr>
+<td>Preview</td>
+<td><code>Preview&lt;Qué&gt;</code>, con el prefijo para que las previews queden juntas</td>
+<td><code>PreviewAdmin</code>, <code>PreviewLoading</code></td>
+</tr>
 </tbody>
 </table>
-<h2 id="crea-clases-base">Crea clases base<a class="headerlink" href="#crea-clases-base" title="Permanent link">&para;</a></h2>
-<p>Define una sola vez el comportamiento que comparten todas las pantallas. El sample tiene un <code>BaseScreenComposable</code> para
-sus pantallas de Compose, que pinta los diálogos que necesitan todas, y un <code>BaseViewModel</code> en <code>presentation</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">BaseScreenComposable</span><span class="o">&lt;</span><span class="n">S</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaAction</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaEvent</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="n">EmaComposableScreenContent</span><span class="o">&lt;</span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<p>Las dos filas con pista son las que más ayudan a entender el código:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Acción: dice lo que el usuario HIZO, no lo que queremos que ocurra</span>
+<span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">QueryWritten</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">HomeAction</span><span class="w">     </span><span class="c1">// sí</span>
+<span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">SearchFriends</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">HomeAction</span><span class="w">    </span><span class="c1">// no: suena a orden</span>
 
-<span class="w">    </span><span class="nd">@Composable</span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">ShowDialog</span><span class="p">(</span><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="n">SimpleDialogData</span><span class="p">,</span><span class="w"> </span><span class="n">listener</span><span class="p">:</span><span class="w"> </span><span class="n">SimpleDialogListener</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nd">@Composable</span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">ShowError</span><span class="p">(</span><span class="n">data</span><span class="p">:</span><span class="w"> </span><span class="n">ErrorDialogData</span><span class="p">,</span><span class="w"> </span><span class="n">listener</span><span class="p">:</span><span class="w"> </span><span class="n">ErrorDialogListener</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
-
-<span class="w">    </span><span class="nd">@Composable</span>
-<span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">ShowLoading</span><span class="p">(</span><span class="n">loadingDialogData</span><span class="p">:</span><span class="w"> </span><span class="n">LoadingDialogData?</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
-<span class="p">}</span>
+<span class="c1">// Evento: dice lo que PASÓ, y el navigator decide qué hacer con él</span>
+<span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">FriendSelected</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">friend</span><span class="p">:</span><span class="w"> </span><span class="n">Friend</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">HomeEvent</span><span class="w">   </span><span class="c1">// sí</span>
+<span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">GoToFriendDetail</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">friend</span><span class="p">:</span><span class="w"> </span><span class="n">Friend</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">HomeEvent</span><span class="w"> </span><span class="c1">// no: el ViewModel no debe saber nada de navegación</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">BaseViewModel</span><span class="o">&lt;</span><span class="n">S</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaAction</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialDataState</span><span class="p">:</span><span class="w"> </span><span class="n">S</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
+<h2 id="crea-clases-base">Crea clases base<a class="headerlink" href="#crea-clases-base" title="Permanent link">&para;</a></h2>
+<p>Cuando todos los ViewModels necesitan lo mismo, escríbelo una sola vez.</p>
+<p><strong>Crea un ViewModel base aunque al principio esté vacío.</strong> Las clases de Emanate (<code>EmaViewModel</code>...) pertenecen a la
+librería: no puedes modificarlas. Una clase base propia es lo contrario: es <strong>tu</strong> código, y es el único sitio donde
+puedes añadir algo que deba afectar a todas las pantallas de la app (un logger, una gestión de errores...) el día que lo
+necesites. Sin ella, tendrías que editar cada ViewModel uno a uno. Con ella, cambias una sola clase y mantienes el control
+de la app.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// En `presentation`: todos los ViewModels heredan de él</span>
+<span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">BaseViewModel</span><span class="o">&lt;</span><span class="n">S</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaAction</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialDataState</span><span class="p">:</span><span class="w"> </span><span class="n">S</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
 <span class="w">    </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialDataState</span><span class="p">)</span>
 </code></pre></div>
-<p>Un <code>BaseViewModel</code>, aunque esté vacío, te da un único sitio donde añadir algo más adelante. Con las vistas de Android,
-un <code>BaseFragment</code> cumple el mismo papel que <code>BaseScreenComposable</code>, con los proveedores de diálogos y los mensajes.</p>
+<div class="admonition note">
+<p class="admonition-title">No todo va en una clase base</p>
+<p>Una clase base la comparten <strong>todos</strong> los ViewModels, así que mete en ella solo lo que todos necesitan. Para un
+comportamiento que solo necesitan algunas pantallas, es mejor un <a href="../concepts/plugins/">plugin</a> o una función de
+extensión del setup que una jerarquía más profunda (<code>BaseViewModel</code> → <code>BaseListViewModel</code> →
+<code>BasePaginatedListViewModel</code>...). Crear subclases de la clase base es un antipatrón: prefiere la composición frente a
+la herencia.</p>
+</div>
 <h2 id="mantén-limpio-el-viewmodel">Mantén limpio el ViewModel<a class="headerlink" href="#mantén-limpio-el-viewmodel" title="Permanent link">&para;</a></h2>
+<p>El ViewModel es la parte de la app más fácil de probar, <strong>si lo mantienes simple</strong>. Estas reglas lo protegen.</p>
+<h3 id="nada-de-tipos-de-la-plataforma">Nada de tipos de la plataforma<a class="headerlink" href="#nada-de-tipos-de-la-plataforma" title="Permanent link">&para;</a></h3>
+<p>Un ViewModel no debe usar un context, una vista ni recursos.</p>
+<h3 id="cada-pieza-tiene-un-único-trabajo">Cada pieza tiene un único trabajo<a class="headerlink" href="#cada-pieza-tiene-un-único-trabajo" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Nada de <code>Context</code>, <code>View</code> ni recursos de Android. Usa <a href="../guides/utilities/#ematext-textos-que-puede-guardar-el-viewmodel"><code>EmaText</code></a>
-  para los textos.</li>
-<li>Los repositorios solo se usan desde los casos de uso, nunca directamente desde un ViewModel.</li>
-<li>Los casos de uso tienen una sola responsabilidad y reciben una única data class <code>Input</code>.</li>
-<li>Pon los valores derivados en el estado (<code>val showCreateButton get() = ...</code>), no en la vista.</li>
-<li>La vista no llama a más funciones del ViewModel que <code>dispatch</code>.</li>
-<li>En un <code>EmaViewModel</code>, los reducers solo calculan el estado: la lógica de negocio va en los side effects.</li>
+<li>
+<p>Los <strong>repositorios</strong> solo se usan desde los casos de uso, nunca directamente desde un ViewModel.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Mal: el ViewModel habla con el repositorio</span>
+<span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="na">getFriends</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">query</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+
+<span class="c1">// Bien: pasa por un caso de uso</span>
+<span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">getFriendsUseCase</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">.</span><span class="na">Input</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">query</span><span class="p">))</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+</li>
+<li>
+<p>Los <strong>casos de uso</strong> hacen una sola cosa, y reciben una única data class <code>Input</code>, declarada dentro del propio caso de
+  uso, en lugar de varios parámetros sueltos.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">GetFriendsUseCase</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">repository</span><span class="p">:</span><span class="w"> </span><span class="n">FriendsRepository</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="n">EmaUseCase</span><span class="o">&lt;</span><span class="n">GetFriendsUseCase</span><span class="p">.</span><span class="na">Input</span><span class="p">,</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Friend</span><span class="o">&gt;&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">suspend</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">useCaseFunction</span><span class="p">(</span><span class="n">input</span><span class="p">:</span><span class="w"> </span><span class="n">Input</span><span class="p">):</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Friend</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span>
+<span class="w">        </span><span class="n">repository</span><span class="p">.</span><span class="na">getFriends</span><span class="p">(</span><span class="n">input</span><span class="p">.</span><span class="na">query</span><span class="p">,</span><span class="w"> </span><span class="n">input</span><span class="p">.</span><span class="na">onlyOnline</span><span class="p">)</span>
+
+<span class="w">    </span><span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">Input</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">,</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">onlyOnline</span><span class="p">:</span><span class="w"> </span><span class="kt">Boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">// En un side effect: cada valor tiene nombre, así que la llamada se explica sola</span>
+<span class="n">getFriendsUseCase</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">.</span><span class="na">Input</span><span class="p">(</span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">query</span><span class="p">,</span><span class="w"> </span><span class="n">onlyOnline</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">))</span>
+</code></pre></div>
+<p>La llamada se lee bien (<code>onlyOnline = true</code> en lugar de un <code>true</code> suelto), y cuando el caso de uso necesita un valor
+nuevo añades un campo con valor por defecto a <code>Input</code>, sin tocar los sitios que ya lo llaman. Consulta
+<a href="../utils/use-cases/">Casos de uso</a> para más información.</p>
+</li>
+<li>
+<p>Los <strong>reducers</strong> solo calculan el estado. La lógica de negocio (llamadas al backend, guardar...) va en los
+  <a href="../concepts/side-effects/">side effects</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Importante: un reducer debe ser una función pura e idempotente</p>
+<p>Dados el mismo estado y la misma acción, <strong>siempre debe devolver el mismo estado nuevo</strong>, y no hacer nada más: ni
+llamadas al backend, ni leer el reloj ni números aleatorios, ni cambiar nada fuera del estado. Así el estado es
+predecible y un reducer es trivial de probar. Consulta <a href="../concepts/reducers/">Reducers</a>.</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="c1">// Mal: el reducer llama al backend, y su resultado cambia entre llamadas</span>
+<span class="n">add</span><span class="o">&lt;</span><span class="n">LoginAction</span><span class="p">.</span><span class="na">LoginClicked</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="na">login</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">name</span><span class="p">))</span><span class="w"> </span><span class="p">}</span>
+
+<span class="c1">// Bien: el reducer solo cambia el estado, el side effect hace el trabajo</span>
+<span class="n">reducers</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="n">add</span><span class="o">&lt;</span><span class="n">LoginAction</span><span class="p">.</span><span class="na">LoginClicked</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">isLoading</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="n">sideEffects</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">add</span><span class="o">&lt;</span><span class="n">LoginAction</span><span class="p">.</span><span class="na">LoginClicked</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">dispatch</span><span class="p">(</span><span class="n">LoginAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">LoginResult</span><span class="p">(</span><span class="n">loginUseCase</span><span class="p">(...)))</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+</li>
 </ul>
-<h2 id="comparte-una-paleta">Comparte una paleta<a class="headerlink" href="#comparte-una-paleta" title="Permanent link">&para;</a></h2>
-<p>Mientras una app tenga pantallas en Compose y con vistas, define los colores una vez en los recursos y léelos desde los
-dos temas. El <code>EmaSampleTheme</code> del sample construye su <code>ColorScheme</code> de Compose a partir de los mismos recursos
-<code>palette_*</code> que el tema XML, incluida la variante oscura en <code>values-night</code>.</p>
+<h3 id="la-vista-solo-informa-y-pinta">La vista solo informa y pinta<a class="headerlink" href="#la-vista-solo-informa-y-pinta" title="Permanent link">&para;</a></h3>
+<ul>
+<li>La vista no llama a más funciones del ViewModel que <code>dispatch</code>.</li>
+<li>Pon los valores derivados en el estado, no en la vista, para que la pantalla no tenga lógica que probar:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">HomeState</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">userData</span><span class="p">:</span><span class="w"> </span><span class="n">UserData?</span><span class="p">,</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">userList</span><span class="p">:</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">showCreateButton</span><span class="w"> </span><span class="k">get</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userData</span><span class="o">?.</span><span class="na">role</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">Role</span><span class="p">.</span><span class="na">ADMIN</span><span class="w">   </span><span class="c1">// la vista solo lo lee</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">showEmptyList</span><span class="w"> </span><span class="k">get</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">userData</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">userList</span><span class="p">.</span><span class="na">isEmpty</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="no-crees-tus-dependencias-recíbelas">No crees tus dependencias, recíbelas<a class="headerlink" href="#no-crees-tus-dependencias-recíbelas" title="Permanent link">&para;</a></h3>
+<p>Un ViewModel suele necesitar algo que habla con el exterior: un caso de uso que llama al backend, una base de datos, el
+reloj... <strong>No lo crees dentro del ViewModel. Pídelo en el constructor</strong> y deja que otro decida cuál darle.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Mal: el ViewModel crea la pieza real él mismo, así que siempre llama al backend real</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">HomeViewModel</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">BaseViewModel</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">,</span><span class="w"> </span><span class="n">HomeEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">getFriendsUseCase</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">RemoteFriendsRepository</span><span class="p">())</span>
+<span class="p">}</span>
+
+<span class="c1">// Bien: la recibe, y no sabe (ni le importa) cuál es</span>
+<span class="kd">class</span><span class="w"> </span><span class="nc">HomeViewModel</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">getFriendsUseCase</span><span class="p">:</span><span class="w"> </span><span class="n">GetFriendsUseCase</span><span class="p">,</span>
+<span class="w">    </span><span class="n">initialState</span><span class="p">:</span><span class="w"> </span><span class="n">HomeState</span>
+<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">BaseViewModel</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">,</span><span class="w"> </span><span class="n">HomeEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialState</span><span class="p">)</span>
+</code></pre></div>
+<p>El ViewModel es el mismo en los dos casos, pero ahora <strong>quien lo crea elige lo que recibe</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Dónde</th>
+<th>Qué recibe</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>La app</td>
+<td>El caso de uso real, que llama al backend.</td>
+<td>Es lo que necesita el usuario.</td>
+</tr>
+<tr>
+<td>Un test unitario</td>
+<td>Un doble que devuelve una lista fija.</td>
+<td>El test es rápido y siempre da el mismo resultado, sin red.</td>
+</tr>
+<tr>
+<td>Un <code>@Preview</code></td>
+<td>Un doble con datos de ejemplo.</td>
+<td>La preview se pinta sin backend.</td>
+</tr>
+<tr>
+<td>Una build de QA</td>
+<td>Un doble que falla o es lento.</td>
+<td>Puedes ver los estados de error y de carga de la pantalla.</td>
+</tr>
+</tbody>
+</table>
+<p>Si el ViewModel creara el caso de uso por sí mismo, nada de esto sería posible sin cambiar su código. Consulta
+<a href="../guides/dependency-injection/">Inyección de dependencias</a> para ver cómo lo hace el sample con Koin.</p>
+<p>No es solo para los casos de uso. Un ViewModel también puede <strong>recibir sus middlewares, reducers y side effects</strong>, y
+entonces la inyección decide cómo se comporta toda la pantalla: por ejemplo, un side effect que devuelve amigos falsos en
+una build de QA, o un middleware que añade latencia para ver el estado de carga. El ViewModel se escribe una vez y no
+cambia. Consulta <a href="../guides/dependency-injection/#inyectar-piezas">Inyectar piezas</a> para aprender a escribirlas, y
+<a href="../concepts/viewmodel/#las-piezas-son-valores">Las piezas son valores</a> para ver cómo se declara una pieza fuera de <code>setup</code>.</p>
 <h2 id="textos">Textos<a class="headerlink" href="#textos" title="Permanent link">&para;</a></h2>
-<p>Pon el idioma por defecto en <code>values/</code> y las traducciones en <code>values-xx/</code>. Mantén juntos los textos de cada pantalla y
-ponles el nombre de la pantalla como prefijo: <code>login_title</code>, <code>home_empty_message</code>.</p>
+<p>Pon el idioma por defecto en <code>values/</code> y las traducciones en <code>values-xx/</code> (<code>values-es/</code>, <code>values-fr/</code>...). Mantén juntos
+los textos de cada pantalla y ponles el nombre de la pantalla como prefijo, para saber dónde se usa cada uno:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;string</span><span class="w"> </span><span class="na">name=</span><span class="s">"home_title"</span><span class="nt">&gt;</span>Amigos<span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;string</span><span class="w"> </span><span class="na">name=</span><span class="s">"home_empty_message"</span><span class="nt">&gt;</span>Todavía<span class="w"> </span>no<span class="w"> </span>tienes<span class="w"> </span>amigos<span class="nt">&lt;/string&gt;</span>
+<span class="nt">&lt;string</span><span class="w"> </span><span class="na">name=</span><span class="s">"login_error"</span><span class="nt">&gt;</span>Usuario<span class="w"> </span>o<span class="w"> </span>contraseña<span class="w"> </span>incorrectos<span class="nt">&lt;/string&gt;</span>
+</code></pre></div>
 
 
 
@@ -1896,7 +2136,7 @@ ponles el nombre de la pantalla como prefijo: <code>login_title</code>, <code>ho
       <nav class="md-footer__inner md-grid" aria-label="Pie" >
         
           
-          <a href="../android-view/utilities/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Utilidades">
+          <a href="../compose/permissions/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Permisos (Android)">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1906,7 +2146,7 @@ ponles el nombre de la pantalla como prefijo: <code>login_title</code>, <code>ho
                 Anterior
               </span>
               <div class="md-ellipsis">
-                Utilidades
+                Permisos (Android)
               </div>
             </div>
           </a>

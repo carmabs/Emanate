@@ -6,12 +6,12 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android">
+        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform">
       
       
       
       
-        <link rel="prev" href="../../getting-started/">
+        <link rel="prev" href="../../why-emanate/">
       
       
         <link rel="next" href="../state/">
@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -55,6 +55,8 @@
       
     
     
+      <link rel="stylesheet" href="../../../assets/extra.css">
+    
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +73,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -102,8 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Cabecera">
     <a href="../../" title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -133,20 +134,20 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
       </label>
     
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
       </label>
     
   
@@ -264,8 +265,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../" title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../../assets/logo.svg" alt="logo">
 
     </a>
     Emanate
@@ -343,6 +343,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why-emanate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Por qué Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -361,10 +388,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -382,8 +409,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -475,17 +502,6 @@
     <span class="md-ellipsis">
       
         ¿Estado o evento?
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#el-ciclo-de-vida-de-un-vistazo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        El ciclo de vida de un vistazo
       
     </span>
   </a>
@@ -592,6 +608,146 @@
   
   
     <li class="md-nav__item">
+      <a href="../reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../viewmodel/" class="md-nav__link">
         
   
@@ -627,7 +783,7 @@
   <span class="md-ellipsis">
     
   
-    Fuente
+    EmaSource
   
 
     
@@ -668,10 +824,153 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilidades
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilidades
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Casos de uso
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resultados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Textos en el estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -689,8 +988,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -763,42 +1062,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/results-between-screens/" class="md-nav__link">
+      <a href="../../guides/process-death/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Resultados entre pantallas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/async-and-errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Trabajo asíncrono y errores
+    Sobrevivir a la muerte del proceso
   
 
     
@@ -826,35 +1097,7 @@
   <span class="md-ellipsis">
     
   
-    Inyección de dependencias
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
+    Inyección de dependencias y entornos
   
 
     
@@ -896,62 +1139,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/multiplatform/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kotlin Multiplatform
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -979,10 +1166,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   
@@ -1000,8 +1187,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1130,34 +1317,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../compose/save-state/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Guardar el estado
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../compose/permissions/" class="md-nav__link">
         
   
@@ -1165,290 +1324,7 @@
   <span class="md-ellipsis">
     
   
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../compose/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Vistas de Android
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Vistas de Android
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Introducción
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/screens/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fragments y Activities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/navigation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Navegación y botón atrás
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/dialogs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Diálogos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/lists/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Listas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
+    Permisos (Android)
   
 
     
@@ -1571,17 +1447,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#el-ciclo-de-vida-de-un-vistazo" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        El ciclo de vida de un vistazo
-      
-    </span>
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -1603,46 +1468,43 @@
 
 
 <h1 id="arquitectura">Arquitectura<a class="headerlink" href="#arquitectura" title="Permanent link">&para;</a></h1>
-<p>Todas las pantallas de Emanate se componen de las mismas cinco piezas.</p>
-<pre class="mermaid"><code>sequenceDiagram
-    autonumber
-    participant V as Vista&lt;br/&gt;(pantalla Compose / Fragment)
-    participant VM as ViewModel
-    participant UC as Caso de uso
-    participant N as Navigator
-    V-&gt;&gt;VM: dispatch(action)
-    Note over VM: reducers: nuevo estado
-    VM-&gt;&gt;UC: side effect: useCase(input)
-    UC--&gt;&gt;VM: resultado
-    VM--&gt;&gt;V: nuevo estado / postEvent
-    V-&gt;&gt;N: navigate(event)</code></pre>
+<p>Cada pantalla de Emanate se compone de las mismas piezas, y cada acción sigue el mismo camino a través de ellas.</p>
+<p><img alt="Cómo fluye una acción por una pantalla de Emanate" src="../../../assets/flow.svg" /></p>
+<ol>
+<li>La <strong>vista</strong> envía una acción con <code>dispatch</code>.</li>
+<li>Los <strong>middlewares</strong> de su tipo deciden su camino: dejarla continuar, cambiarla, retrasarla o detenerla.</li>
+<li>Los <strong>reducers</strong> de su tipo devuelven el siguiente estado, que la vista pinta.</li>
+<li>Los <strong>side effects</strong> de su tipo ejecutan la lógica de negocio de forma asíncrona. Comunican el resultado enviando
+   nuevas acciones, que siguen el mismo camino, o publicando eventos.</li>
+<li>La vista gestiona cada <strong>evento</strong> una vez, por ejemplo para navegar o mostrar un mensaje.</li>
+</ol>
 <table>
 <thead>
 <tr>
 <th>Pieza</th>
 <th>Responsabilidad</th>
-<th>¿Conoce Android?</th>
+<th>¿Depende de la plataforma?</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>EmaState</code></td>
-<td>Cómo es la pantalla en este momento.</td>
+<td>Cómo se ve la pantalla ahora mismo.</td>
 <td>No</td>
 </tr>
 <tr>
 <td><code>EmaAction</code></td>
-<td>Lo que ha hecho el usuario.</td>
+<td>Lo que ha hecho el usuario, o el resultado de algún trabajo.</td>
 <td>No</td>
 </tr>
 <tr>
 <td><code>EmaEvent</code></td>
-<td>Lo que ha pasado y hay que mostrar o gestionar una vez.</td>
+<td>Lo que ha ocurrido y debe gestionarse una vez.</td>
 <td>No</td>
 </tr>
 <tr>
-<td>ViewModel</td>
-<td>Convierte acciones en cambios de estado y eventos. Ejecuta la lógica de negocio.</td>
+<td><code>EmaViewModel</code></td>
+<td>Gestiona cada acción con sus middlewares, reducers y side effects.</td>
 <td>No</td>
 </tr>
 <tr>
@@ -1654,46 +1516,48 @@
 </table>
 <h2 id="las-reglas">Las reglas<a class="headerlink" href="#las-reglas" title="Permanent link">&para;</a></h2>
 <ol>
-<li><strong>La vista solo pinta e informa.</strong> Pinta el estado y envía acciones. Nunca cambia el estado ni contiene lógica
-   de negocio.</li>
-<li><strong>El ViewModel solo cambia el estado en sus reducers</strong> (<code>updateState</code> en los ViewModels clásicos). El estado se
-   reemplaza, nunca se modifica.</li>
-<li><strong>Lo que perdura va en el estado; lo que ocurre una vez va en un evento.</strong>
-   Un indicador de carga o un error de validación son estado. Un snackbar o una navegación son eventos.</li>
-<li><strong>Los eventos describen lo que ha pasado, no lo que hay que hacer.</strong> Llámalos <code>LoginSuccess</code>, no <code>NavigateToHome</code>.
-   Quien los recibe decide la reacción: el mismo evento podría abrir una pantalla en un móvil y actualizar un panel en
-   una tablet.</li>
-<li><strong>A los repositorios solo se accede desde casos de uso</strong> (una recomendación, consulta <a href="../../recommendations/">Recomendaciones</a>).</li>
+<li><strong>La vista solo pinta y notifica.</strong> Pinta el estado y envía acciones. Nunca cambia el estado ni contiene lógica de
+   negocio.</li>
+<li><strong>El estado solo cambia en los reducers.</strong> Son funciones puras: el estado se reemplaza, nunca se muta.</li>
+<li><strong>La lógica de negocio vive en los side effects.</strong> Llaman a casos de uso y responden con acciones, de modo que cada
+   cambio del estado es visible como una acción.</li>
+<li><strong>Lo que dura pertenece al estado; lo que ocurre una vez pertenece a un evento.</strong>
+   Un indicador de carga o un error de validación es estado. Un snackbar o una navegación es un evento.</li>
+<li><strong>Los eventos describen lo que ha pasado, no lo que hay que hacer.</strong> Llámalos <code>FriendSelected</code>, no <code>OpenProfile</code>.
+   El receptor decide la reacción: el mismo evento podría abrir una pantalla en un móvil y actualizar un panel en una
+   tablet.</li>
+<li><strong>Los repositorios solo se acceden a través de casos de uso</strong> (una recomendación, mira
+   <a href="../../recommendations/">Recomendaciones</a>).</li>
 </ol>
 <h2 id="estado-o-evento">¿Estado o evento?<a class="headerlink" href="#estado-o-evento" title="Permanent link">&para;</a></h2>
-<p>Es la pregunta que más te harás al construir una funcionalidad.</p>
+<p>Esta es la pregunta que más te harás al construir una funcionalidad.</p>
 <table>
 <thead>
 <tr>
 <th>Pregunta</th>
-<th>Si la respuesta es sí →</th>
+<th>Si sí →</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>¿Debería seguir ahí después de girar el dispositivo?</td>
+<td>¿Debería seguir ahí después de recrear la pantalla?</td>
 <td>Estado</td>
 </tr>
 <tr>
-<td>¿Debería volver a verse si el usuario vuelve a la pantalla?</td>
+<td>¿Debería mostrarse de nuevo si el usuario vuelve a la pantalla?</td>
 <td>Estado</td>
 </tr>
 <tr>
-<td>¿Es un hecho sobre algo que acaba de pasar?</td>
+<td>¿Es un hecho sobre algo que acaba de ocurrir?</td>
 <td>Evento</td>
 </tr>
 <tr>
-<td>¿Mostrarlo dos veces sería un error (toast, navegación)?</td>
+<td>¿Mostrarlo dos veces sería un fallo (toast, navegación)?</td>
 <td>Evento</td>
 </tr>
 </tbody>
 </table>
-<p>Ejemplos de la app de ejemplo:</p>
+<p>Ejemplos de una pantalla de inicio:</p>
 <table>
 <thead>
 <tr>
@@ -1703,42 +1567,27 @@
 </thead>
 <tbody>
 <tr>
-<td>El nombre de usuario escrito en el login</td>
-<td>Estado (<code>LoginState.userName</code>)</td>
+<td>La consulta escrita en el campo de búsqueda</td>
+<td>Estado (<code>HomeState.query</code>)</td>
 </tr>
 <tr>
-<td>El indicador de carga del botón de login</td>
-<td>Estado (<code>LoginState.isLoading</code>)</td>
+<td>El indicador de carga de la lista</td>
+<td>Estado (<code>HomeState.isLoading</code>)</td>
 </tr>
 <tr>
-<td>Diálogo de "credenciales incorrectas"</td>
-<td>Estado (<code>LoginState.overlap</code>)</td>
+<td>El diálogo "No se pudieron cargar los amigos"</td>
+<td>Estado (<code>HomeState.dialog</code>)</td>
 </tr>
 <tr>
-<td>Snackbar de "Bienvenida, Ana"</td>
-<td>Evento (<code>LoginEvent.Message</code>)</td>
+<td>El mensaje "12 amigos"</td>
+<td>Evento (<code>HomeEvent.FriendsUpdated</code>)</td>
 </tr>
 <tr>
-<td>Ir a la pantalla de inicio</td>
-<td>Evento (<code>LoginEvent.LoginSuccess</code>)</td>
+<td>Abrir el perfil de un amigo</td>
+<td>Evento (<code>HomeEvent.FriendSelected</code>)</td>
 </tr>
 </tbody>
 </table>
-<h2 id="el-ciclo-de-vida-de-un-vistazo">El ciclo de vida de un vistazo<a class="headerlink" href="#el-ciclo-de-vida-de-un-vistazo" title="Permanent link">&para;</a></h2>
-<pre class="mermaid"><code>sequenceDiagram
-    participant V as Vista
-    participant VM as ViewModel
-    V-&gt;&gt;VM: onCreated(initializer)
-    Note over VM: EmaAction.Initializer
-    V-&gt;&gt;VM: onStartView()
-    V-&gt;&gt;VM: onResumeView()
-    V--&gt;&gt;VM: recoge stateFlow y eventFlow
-    V-&gt;&gt;VM: onPauseView()
-    V-&gt;&gt;VM: onStopView()
-    Note over V,VM: la vista deja de recoger
-    V-&gt;&gt;VM: onCleared() cuando se destruye el ViewModel</code></pre>
-<p>Un <code>EmaViewModel</code> recibe cada llamada como una acción (<code>EmaAction.Initializer</code> y <code>EmaAction.Lifecycle</code>), y un ViewModel
-clásico como un gancho (<code>onStateCreated</code>, <code>onViewResumed</code>...). Los detalles están en <a href="../viewmodel/">ViewModel</a>.</p>
 
 
 
@@ -1774,7 +1623,7 @@ clásico como un gancho (<code>onStateCreated</code>, <code>onViewResumed</code>
       <nav class="md-footer__inner md-grid" aria-label="Pie" >
         
           
-          <a href="../../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Primeros pasos">
+          <a href="../../why-emanate/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Por qué Emanate">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1784,7 +1633,7 @@ clásico como un gancho (<code>onStateCreated</code>, <code>onViewResumed</code>
                 Anterior
               </span>
               <div class="md-ellipsis">
-                Primeros pasos
+                Por qué Emanate
               </div>
             </div>
           </a>

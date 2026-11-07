@@ -6,12 +6,12 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android">
+        <meta name="description" content="Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform">
       
       
       
       
-        <link rel="prev" href="../../guides/utilities/">
+        <link rel="prev" href="../../guides/testing/">
       
       
         <link rel="next" href="../navigation/">
@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../../../assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -55,6 +55,8 @@
       
     
     
+      <link rel="stylesheet" href="../../../assets/extra.css">
+    
     <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +73,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -80,7 +82,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#pantallas-de-compose" class="md-skip">
+        <a href="#pantallas-en-compose" class="md-skip">
           Saltar a contenido
         </a>
       
@@ -102,8 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Cabecera">
     <a href="../../" title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -133,20 +134,20 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
       </label>
     
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
       </label>
     
   
@@ -264,8 +265,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../" title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../../assets/logo.svg" alt="logo">
 
     </a>
     Emanate
@@ -345,6 +345,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../why-emanate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Por qué Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -359,10 +386,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -380,8 +407,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -510,6 +537,146 @@
   
   
     <li class="md-nav__item">
+      <a href="../../concepts/reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../concepts/viewmodel/" class="md-nav__link">
         
   
@@ -545,7 +712,7 @@
   <span class="md-ellipsis">
     
   
-    Fuente
+    EmaSource
   
 
     
@@ -586,10 +753,153 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utilidades
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utilidades
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Casos de uso
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Resultados
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Textos en el estado
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -607,8 +917,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -681,42 +991,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../guides/results-between-screens/" class="md-nav__link">
+      <a href="../../guides/process-death/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Resultados entre pantallas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/async-and-errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Trabajo asíncrono y errores
+    Sobrevivir a la muerte del proceso
   
 
     
@@ -744,35 +1026,7 @@
   <span class="md-ellipsis">
     
   
-    Inyección de dependencias
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
+    Inyección de dependencias y entornos
   
 
     
@@ -801,62 +1055,6 @@
     
   
     Testing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/multiplatform/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kotlin Multiplatform
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../guides/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
   
 
     
@@ -899,10 +1097,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   
@@ -920,8 +1118,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1017,13 +1215,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Registrar la pantalla">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mostrar-una-pantalla-como-diálogo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mostrar una pantalla como diálogo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#dos-sitios-para-gestionar-los-eventos" class="md-nav__link">
+  <a href="#gestionar-los-eventos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dos sitios para gestionar los eventos
+        Gestionar los eventos
       
     </span>
   </a>
@@ -1061,16 +1276,44 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tema" class="md-nav__link">
+    <nav class="md-nav" aria-label="Usar una pantalla sin grafo de navegación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#una-pantalla-en-una-activity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tema
+        Una pantalla en una activity
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#una-pantalla-dentro-de-un-layout-mayor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Una pantalla dentro de un layout mayor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#previews-de-un-layout-mayor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previews de un layout mayor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1174,34 +1417,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../save-state/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Guardar el estado
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../permissions/" class="md-nav__link">
         
   
@@ -1209,290 +1424,7 @@
   <span class="md-ellipsis">
     
   
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Vistas de Android
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Vistas de Android
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Introducción
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/screens/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fragments y Activities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/navigation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Navegación y botón atrás
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/dialogs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Diálogos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/lists/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Listas
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permisos
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilidades
+    Permisos (Android)
   
 
     
@@ -1613,13 +1545,30 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Registrar la pantalla">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mostrar-una-pantalla-como-diálogo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mostrar una pantalla como diálogo
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#dos-sitios-para-gestionar-los-eventos" class="md-nav__link">
+  <a href="#gestionar-los-eventos" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dos sitios para gestionar los eventos
+        Gestionar los eventos
       
     </span>
   </a>
@@ -1657,16 +1606,44 @@
     </span>
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#tema" class="md-nav__link">
+    <nav class="md-nav" aria-label="Usar una pantalla sin grafo de navegación">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#una-pantalla-en-una-activity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tema
+        Una pantalla en una activity
       
     </span>
   </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#una-pantalla-dentro-de-un-layout-mayor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Una pantalla dentro de un layout mayor
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#previews-de-un-layout-mayor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Previews de un layout mayor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1690,28 +1667,72 @@
   
 
 
-<h1 id="pantallas-de-compose">Pantallas de Compose<a class="headerlink" href="#pantallas-de-compose" title="Permanent link">&para;</a></h1>
-<p>Las pantallas de Compose se describen con un <code>EmaComposableScreenContent</code> y se registran en un grafo de navegación con
-<code>createComposableScreen</code>. Necesitan los artefactos <code>emanate-android</code> y <code>emanate-compose</code>.</p>
+<h1 id="pantallas-en-compose">Pantallas en Compose<a class="headerlink" href="#pantallas-en-compose" title="Permanent link">&para;</a></h1>
+<p>Una pantalla de Emanate reparte el trabajo entre tres piezas, para que cada una tenga una única tarea:</p>
+<table>
+<thead>
+<tr>
+<th>Pieza</th>
+<th>Tarea</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>El <strong>ViewModel</strong></td>
+<td>Guarda el <a href="../../concepts/state/">estado</a> y decide qué pasa cuando el usuario hace algo. No sabe nada de Compose.</td>
+<td><code>HomeViewModel</code></td>
+</tr>
+<tr>
+<td>El <strong>contenido de la pantalla</strong> (<code>EmaScreenContent</code>)</td>
+<td>Pinta el estado con Compose y comunica lo que hace el usuario. No guarda datos propios.</td>
+<td><code>HomeScreenContent</code></td>
+</tr>
+<tr>
+<td>El <strong>registro</strong> (<code>emaScreen</code>)</td>
+<td>El pegamento. Crea el ViewModel, lo conecta con el contenido y con el ciclo de vida, coloca la pantalla en tu grafo de navegación y recibe sus eventos.</td>
+<td>El bloque del <code>NavHost</code></td>
+</tr>
+</tbody>
+</table>
+<p>La información siempre viaja igual. En la pantalla home del sample, el administrador toca el botón para crear un
+usuario:</p>
+<p><img alt="Las piezas de una pantalla Compose y cómo se comunican" src="../../../assets/compose-screen.svg" /></p>
+<ol>
+<li>El usuario toca <strong>Create</strong>, y el contenido de la pantalla envía la acción <code>CreateClicked</code>.</li>
+<li>El ViewModel decide qué significa eso. Cada vez que cambia su estado, el contenido de la pantalla lo pinta de nuevo.</li>
+<li>Aquí la respuesta es algo puntual: el ViewModel publica el evento <code>CreateClicked</code>, y el <code>onEvent</code> de
+   <code>emaScreen</code> abre la siguiente pantalla.</li>
+</ol>
+<p>La pantalla <strong>nunca cambia el estado por sí misma</strong>: solo envía <a href="../../concepts/actions/">acciones</a> y pinta el estado que
+le da el ViewModel. Por eso el mismo contenido se puede mostrar en una preview, en un test o en una app real sin
+cambios.</p>
+<p>Esta página sigue la vida de una pantalla, desde que se escribe hasta que se usa. Necesitas los artefactos
+<code>emanate-android</code> y <code>emanate-compose-android</code>. Para registrar las pantallas en un grafo de Navigation Compose, como en
+los ejemplos, necesitas también <code>emanate-compose-android-nav2</code>: los demás artefactos no dependen de ninguna librería de
+navegación.</p>
 <h2 id="contenido-de-la-pantalla">Contenido de la pantalla<a class="headerlink" href="#contenido-de-la-pantalla" title="Permanent link">&para;</a></h2>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">ProfileOnBoardingScreenContent</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="n">EmaComposableScreenContent</span><span class="o">&lt;</span><span class="n">ProfileOnBoardingState</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileOnBoardingActions</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileOnBoardingEvent</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<p>Esta es la parte que más escribirás: el código Compose de la pantalla. Creas una clase que implementa
+<code>EmaScreenContent</code> y rellenas <code>onState</code>, que recibe el estado actual y lo pinta. Cuando el usuario pulsa un botón, no
+cambias nada: envías una acción con <code>actions.dispatch(...)</code>, y el ViewModel responde con un nuevo estado que hace que
+<code>onState</code> se ejecute de nuevo.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">HomeScreenContent</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaScreenContent</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">    </span><span class="nd">@Composable</span>
 <span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onState</span><span class="p">(</span>
-<span class="w">        </span><span class="n">state</span><span class="p">:</span><span class="w"> </span><span class="n">ProfileOnBoardingState</span><span class="p">,</span>
-<span class="w">        </span><span class="n">actions</span><span class="p">:</span><span class="w"> </span><span class="n">EmaImmutableActionDispatcher</span><span class="o">&lt;</span><span class="n">ProfileOnBoardingActions</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="n">state</span><span class="p">:</span><span class="w"> </span><span class="n">HomeState</span><span class="p">,</span>
+<span class="w">        </span><span class="n">actions</span><span class="p">:</span><span class="w"> </span><span class="n">EmaActionDispatcher</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="o">&gt;</span>
 <span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="c1">// Pinta el estado. Envía lo que haga el usuario con actions.dispatch(...)</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><code>EmaComposableScreenContent&lt;S, A, E&gt;</code> tiene tres miembros:</p>
+<p><code>EmaScreenContent&lt;S, A&gt;</code> recibe el tipo del estado y el tipo de las acciones, y tiene dos miembros:</p>
 <table>
 <thead>
 <tr>
 <th>Miembro</th>
-<th>Para qué</th>
+<th>Propósito</th>
 </tr>
 </thead>
 <tbody>
@@ -1720,26 +1741,29 @@
 <td><strong>Obligatorio.</strong> Pinta el estado. Es un <code>@Composable</code>.</td>
 </tr>
 <tr>
-<td><code>suspend onEvent(context, event, actions)</code></td>
-<td>Gestiona los <a href="../../concepts/events/">eventos</a> que son cosa de la UI (mensajes, vibración...). Opcional.</td>
-</tr>
-<tr>
 <td><code>onBack(state): A?</code></td>
-<td>La acción que se envía al pulsar atrás, o <code>null</code>. Consulta <a href="../back-handling/">Botón atrás</a>. Opcional.</td>
+<td>La acción a enviar cuando se pulsa atrás, o <code>null</code>. Mira <a href="../back-handling/">Botón atrás</a>. Opcional.</td>
 </tr>
 </tbody>
 </table>
-<p>Mantén el contenido de la pantalla sin estado: es una descripción sin estado, creada una vez por pantalla.
-Todo lo que tenga que sobrevivir va en el <a href="../../concepts/state/">estado</a> del ViewModel.</p>
+<p>El contenido de la pantalla no recibe los eventos: se gestionan donde se registra la pantalla, como se explica en
+<a href="#gestionar-los-eventos">Gestionar los eventos</a>.</p>
+<p>Mantén el contenido de la pantalla sin estado: es una descripción sin estado, creada una vez por pantalla. Todo lo que
+deba sobrevivir pertenece al <a href="../../concepts/state/">estado</a> del ViewModel.</p>
 <h2 id="registrar-la-pantalla">Registrar la pantalla<a class="headerlink" href="#registrar-la-pantalla" title="Permanent link">&para;</a></h2>
+<p>Un contenido de pantalla por sí solo es solo una descripción: nada lo muestra todavía. Registrarlo significa añadirlo
+como destino de tu <code>NavHost</code>, como harías con el <code>composable(...)</code> de Compose Navigation, pero con <code>emaScreen</code>, que
+además crea el ViewModel y lo conecta todo. Aquí también decides qué pasa cuando el ViewModel envía un evento, como
+navegar a otra pantalla. <code>emaScreen</code> está en el artefacto <code>emanate-compose-android-nav2</code>. Si usas otra navegación, coloca
+la pantalla con <a href="#usar-una-pantalla-sin-grafo-de-navegación"><code>EmaScreen</code></a>, que está en <code>emanate-compose-android</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">NavHost</span><span class="p">(</span>
 <span class="w">    </span><span class="n">navController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">navController</span><span class="p">,</span>
-<span class="w">    </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileOnBoardingScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span>
+<span class="w">    </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span>
 <span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">createComposableScreen</span><span class="p">(</span>
-<span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileOnBoardingScreenContent</span><span class="p">(),</span>
-<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileOnBoardingViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileOnBoardingEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">HomeViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleHomeEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* mostrar el mensaje */</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1747,7 +1771,7 @@ Todo lo que tenga que sobrevivir va en el <a href="../../concepts/state/">estado
 <thead>
 <tr>
 <th>Parámetro</th>
-<th>Para qué</th>
+<th>Propósito</th>
 </tr>
 </thead>
 <tbody>
@@ -1757,120 +1781,298 @@ Todo lo que tenga que sobrevivir va en el <a href="../../concepts/state/">estado
 </tr>
 <tr>
 <td><code>viewModel</code></td>
-<td>Una lambda que crea el ViewModel. Se llama una vez, al abrir la pantalla. Consulta <a href="../../guides/dependency-injection/">Inyección de dependencias</a>.</td>
+<td>Una lambda que crea el ViewModel. Se llama una vez, cuando se abre la pantalla, y recibe el <code>EmaStateStore</code> de la pantalla para un <a href="../../guides/process-death/">backup</a>. Mira <a href="../../guides/dependency-injection/">Inyección de dependencias</a>.</td>
 </tr>
 <tr>
 <td><code>onEvent</code></td>
-<td>Recibe todos los eventos. Pon aquí la <strong>navegación</strong>, donde tienes el <code>NavController</code>.</td>
+<td>Recibe todos los eventos de la pantalla. Mira <a href="#gestionar-los-eventos">Gestionar los eventos</a>.</td>
 </tr>
 <tr>
 <td><code>routeId</code></td>
-<td>La ruta. Por defecto <code>ScreenContent::class.routeId</code>, única por clase.</td>
+<td>La ruta. Por defecto <code>ScreenContent::class.routeId</code>, que es única por clase.</td>
 </tr>
 <tr>
 <td><code>initializerSupport</code></td>
-<td>Cómo leer el <a href="../../guides/initializers/">inicializador</a> de la ruta. Consulta <a href="../navigation/#pasar-un-inicializador">Navegación</a>.</td>
-</tr>
-<tr>
-<td><code>saveStateManager</code></td>
-<td>Consulta <a href="../save-state/">Guardar el estado si el proceso muere</a>.</td>
+<td>Cómo leer el <a href="../../guides/initializers/">inicializador</a> de la ruta. Mira <a href="../navigation/#pasar-un-inicializador">Navegación</a>.</td>
 </tr>
 <tr>
 <td><code>transitionAnimation</code></td>
-<td><code>EmaComposableTransitions(enterTransition, exitTransition, popEnterTransition, popExitTransition)</code>. Las transiciones de vuelta son, por defecto, las de entrada y salida.</td>
-</tr>
-<tr>
-<td><code>fullScreenDialogMode</code></td>
-<td>Registra el destino como un <code>dialog</code> en lugar de un <code>composable</code>.</td>
-</tr>
-<tr>
-<td><code>decoration</code></td>
-<td>Envuelve la pantalla, por ejemplo en un <code>Scaffold</code>. Recibe el contenido y el dispatcher de acciones.</td>
-</tr>
-<tr>
-<td><code>previewRenderState</code></td>
-<td>El estado que se pinta en la preview del IDE.</td>
-</tr>
-<tr>
-<td><code>onViewModelInstance</code></td>
-<td>Te da la instancia del ViewModel, por ejemplo para compartirla con otros composables.</td>
+<td><code>EmaAnimTransition(enterTransition, exitTransition, popEnterTransition, popExitTransition)</code>. Las transiciones pop usan por defecto las de entrada y salida.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="dos-sitios-para-gestionar-los-eventos">Dos sitios para gestionar los eventos<a class="headerlink" href="#dos-sitios-para-gestionar-los-eventos" title="Permanent link">&para;</a></h2>
-<p>Cada evento llega a <strong>los dos</strong> manejadores, en este orden:</p>
-<ol>
-<li>La lambda <code>onEvent</code> de <code>createComposableScreen</code> (sin contexto, pero con tu <code>NavController</code> a mano).</li>
-<li><code>screenContent.onEvent(context, event, actions)</code>.</li>
-</ol>
-<p>Después el evento se consume. Una regla sencilla: la navegación en el grafo y todo lo demás en el contenido de la pantalla.</p>
+<p>Los parámetros que más usarás son los tres primeros. El resto tienen un valor por defecto, así que añádelos solo cuando
+los necesites. Por ejemplo, una pantalla que entra deslizándose desde la derecha:</p>
+<div class="highlight"><pre><span></span><code><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">transitionAnimation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaAnimTransition</span><span class="p">(</span>
+<span class="w">        </span><span class="n">enterTransition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">slideInHorizontally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">exitTransition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">slideOutHorizontally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreationEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<h3 id="mostrar-una-pantalla-como-diálogo">Mostrar una pantalla como diálogo<a class="headerlink" href="#mostrar-una-pantalla-como-diálogo" title="Permanent link">&para;</a></h3>
+<p>Algunas pantallas se muestran sobre la anterior, en un diálogo, en lugar de sustituirla. Regístralas con <code>emaDialog</code> en
+lugar de <code>emaScreen</code>. Todo lo demás es igual: el contenido de la pantalla, el ViewModel, los eventos y el inicializador
+de la ruta. Solo cambian las transiciones, ya que un diálogo no tiene, por <code>dialogProperties</code>, las <code>DialogProperties</code> de
+Compose:</p>
+<div class="highlight"><pre><span></span><code><span class="n">emaDialog</span><span class="p">(</span>
+<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterScreenContent</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">FilterViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">dialogProperties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DialogProperties</span><span class="p">(</span><span class="n">usePlatformDefaultWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">),</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleFilterEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>La abres como cualquier otra pantalla, con <code>navController.navigate(FilterScreenContent::class.routeId)</code>.</p>
+<blockquote>
+<p>Este es un destino del grafo que parece un diálogo. Para un diálogo pequeño dentro de una pantalla, como una
+confirmación, usa el estado: mira <a href="../dialogs/">Diálogos</a>.</p>
+</blockquote>
+<h2 id="gestionar-los-eventos">Gestionar los eventos<a class="headerlink" href="#gestionar-los-eventos" title="Permanent link">&para;</a></h2>
+<p>Un <a href="../../concepts/events/">evento</a> es algo que debe ocurrir <strong>una vez</strong>, como mostrar un toast o abrir otra pantalla, a
+diferencia del estado, que siempre está ahí. Todos los eventos de la pantalla llegan a un único sitio: la lambda
+<code>onEvent</code> de <code>emaScreen</code>. Cuando termina, el evento queda consumido y no volverá a llegar.</p>
+<p><img alt="Cada evento de una pantalla llega una vez al onEvent de emaScreen" src="../../../assets/compose-events.svg" /></p>
+<p><code>onEvent</code> se escribe en el grafo, dentro de tu activity o composable, así que tienes a mano todo lo que un evento pueda
+necesitar: el <code>NavController</code> o el navigator para navegar, y el <code>Context</code> para mostrar un toast o abrir otra app.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LocalContext</span><span class="p">.</span><span class="na">current</span>
+
+<span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">            </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">ProfileCreationEvent</span><span class="p">.</span><span class="na">DialogConfirmationAccepted</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="p">()</span>
+<span class="w">                </span><span class="k">is</span><span class="w"> </span><span class="n">ProfileCreationEvent</span><span class="p">.</span><span class="na">ProfileSaved</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">                    </span><span class="n">Toast</span><span class="p">.</span><span class="na">makeText</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="s">"Perfil guardado"</span><span class="p">,</span><span class="w"> </span><span class="n">Toast</span><span class="p">.</span><span class="na">LENGTH_SHORT</span><span class="p">).</span><span class="na">show</span><span class="p">()</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Como todos los eventos llegan al mismo <code>when</code>, el compilador te avisa cuando un evento nuevo no está gestionado. Cuando
+el <code>when</code> crece, muévelo a una función de tu navigator, como hace el sample con
+<code>navigator.handleHomeEvent(it)</code>.</p>
+<p><code>onEvent</code> debe terminar rápido: los siguientes eventos esperan por él. Navegar o mostrar un toast es inmediato. Para algo
+que tarda, como un snackbar, lánzalo en un scope de corrutinas tuyo:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rememberCoroutineScope</span><span class="p">()</span>
+<span class="kd">val</span><span class="w"> </span><span class="nv">snackbarHostState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remember</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SnackbarHostState</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+
+<span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">            </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="k">is</span><span class="w"> </span><span class="n">ProfileCreationEvent</span><span class="p">.</span><span class="na">ProfileSaved</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">scope</span><span class="p">.</span><span class="na">launch</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">snackbarHostState</span><span class="p">.</span><span class="na">showSnackbar</span><span class="p">(</span><span class="s">"Guardado"</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">                </span><span class="n">ProfileCreationEvent</span><span class="p">.</span><span class="na">DialogConfirmationAccepted</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="p">()</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
 <h2 id="ciclo-de-vida">Ciclo de vida<a class="headerlink" href="#ciclo-de-vida" title="Permanent link">&para;</a></h2>
+<p>Una pantalla pasa por momentos: se crea, aparece, el usuario se va a otra app, vuelve, se destruye. El ViewModel a
+menudo necesita saberlo, por ejemplo para cargar datos cuando aparece la pantalla o para dejar de escuchar algo cuando se
+pausa. No tienes que observar el ciclo de vida tú mismo: la pantalla lo hace y pasa cada momento al ViewModel.</p>
+<p><img alt="Cada momento del ciclo de vida del destino llega al ViewModel como una acción" src="../../../assets/compose-lifecycle.svg" /></p>
 <p>La pantalla conecta el ViewModel con el ciclo de vida de su destino:</p>
 <table>
 <thead>
 <tr>
 <th>Evento del ciclo de vida</th>
-<th>ViewModel</th>
+<th>El ViewModel recibe</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>ON_CREATE</code></td>
-<td><code>onCreated(initializer)</code></td>
+<td><code>ON_CREATE</code>, la primera vez</td>
+<td>El <code>EmaInitializer</code> de la pantalla</td>
 </tr>
 <tr>
 <td><code>ON_START</code></td>
-<td><code>onStartView()</code></td>
+<td><code>EmaLifecycle.Started</code></td>
 </tr>
 <tr>
 <td><code>ON_RESUME</code></td>
-<td><code>onResumeView()</code></td>
+<td><code>EmaLifecycle.Resumed</code></td>
 </tr>
 <tr>
 <td><code>ON_PAUSE</code></td>
-<td><code>onPauseView()</code></td>
+<td><code>EmaLifecycle.Paused</code></td>
 </tr>
 <tr>
 <td><code>ON_STOP</code></td>
-<td><code>onStopView()</code></td>
+<td><code>EmaLifecycle.Stopped</code></td>
 </tr>
 <tr>
 <td>La pantalla sale de la composición</td>
-<td><code>onPauseView()</code> y <code>onStopView()</code></td>
+<td><code>EmaLifecycle.Paused</code> y <code>EmaLifecycle.Stopped</code></td>
+</tr>
+<tr>
+<td>Se elimina el destino</td>
+<td><code>EmaLifecycle.Destroyed</code>, y se cierra</td>
 </tr>
 </tbody>
 </table>
 <p>El estado se recoge con <code>collectAsStateWithLifecycle</code> y los eventos mientras el ciclo de vida está en <code>STARTED</code>.</p>
 <h2 id="previews">Previews<a class="headerlink" href="#previews" title="Permanent link">&para;</a></h2>
-<p>En la preview del IDE no hay ViewModel, así que llama a <code>onState</code> directamente con un estado y un dispatcher vacío:</p>
+<p>El <code>@Preview</code> de Android Studio dibuja un composable sin ejecutar la app, lo que hace mucho más rápido diseñar la UI.
+Pero una preview no puede crear un ViewModel real, así que le das un estado a mano y ves cómo queda la pantalla con él.
+Escribir una preview por cada estado interesante (vacío, cargando, error...) es una forma barata de comprobarlos todos.</p>
+<p><img alt="En una preview, un estado escrito a mano sustituye al ViewModel" src="../../../assets/compose-preview.svg" /></p>
+<p>Dentro de la preview del IDE no hay ViewModel, así que llama a <code>onState</code> directamente con un estado y un dispatcher
+vacío:</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@Preview</span>
 <span class="nd">@Composable</span>
-<span class="kd">private</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">NormalPreview</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="kd">private</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">PreviewNormal</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">EmaSampleTheme</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">ProfileCreationScreenContent</span><span class="p">().</span><span class="na">onState</span><span class="p">(</span>
-<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">(</span><span class="n">Role</span><span class="p">.</span><span class="na">ADMIN</span><span class="p">,</span><span class="w"> </span><span class="s">"Carlos"</span><span class="p">,</span><span class="w"> </span><span class="s">"Mateo"</span><span class="p">),</span>
-<span class="w">            </span><span class="n">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaImmutableActionDispatcher</span><span class="p">.</span><span class="na">EMPTY</span>
+<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">(</span><span class="s">"Carlos"</span><span class="p">,</span><span class="w"> </span><span class="s">"Mateo"</span><span class="p">),</span>
+<span class="w">            </span><span class="n">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaActionDispatcher</span><span class="p">.</span><span class="na">EMPTY</span>
 <span class="w">        </span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><code>previewRenderState</code> en <code>createComposableScreen</code> hace lo mismo para toda la pantalla: en una preview no se crea el
-ViewModel y la pantalla pinta ese estado. <code>EmaUtils.Preview.Compose.isInPreview()</code> y <code>skipForPreview { }</code> te ayudan a
-saltarte el código que no puede ejecutarse en una preview. Consulta <a href="../utilities/#previews">Utilidades</a>.</p>
 <h2 id="usar-una-pantalla-sin-grafo-de-navegación">Usar una pantalla sin grafo de navegación<a class="headerlink" href="#usar-una-pantalla-sin-grafo-de-navegación" title="Permanent link">&para;</a></h2>
-<p><code>EmaComposableScreen</code> es el composable que hay detrás de <code>createComposableScreen</code>. Úsalo para colocar una pantalla de Emanate
-en cualquier sitio:</p>
-<div class="highlight"><pre><span></span><code><span class="n">EmaComposableScreen</span><span class="p">(</span>
+<p><code>emaScreen</code> necesita un <code>NavHost</code>. Pero no todas las apps usan Navigation Compose: una activity puede mostrar una sola
+pantalla, o puede que quieras una pantalla de Emanate como simple <strong>parte</strong> de un layout mayor, como un contador dentro
+de una página. Para esos casos existe <code>EmaScreen</code>, un composable que colocas donde quieras, como un <code>Text</code> o una
+<code>Column</code>.</p>
+<p><code>EmaScreen</code> es en realidad lo que <code>emaScreen</code> dibuja dentro de cada destino, así que hace el mismo trabajo: crea el
+ViewModel, lo conecta con el ciclo de vida, pinta el estado con el contenido de la pantalla, envía las acciones del botón
+atrás y pasa cada evento a <code>onEvent</code>. Lo único que falta es el grafo.</p>
+<h3 id="una-pantalla-en-una-activity">Una pantalla en una activity<a class="headerlink" href="#una-pantalla-en-una-activity" title="Permanent link">&para;</a></h3>
+<p>El caso más habitual: una activity que muestra una pantalla de Emanate y nada más. Imagina un contador con un botón <code>+</code>
+que avisa al usuario cuando llega a 10.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">CounterActivity</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ComponentActivity</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">:</span><span class="w"> </span><span class="n">Bundle?</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">super</span><span class="p">.</span><span class="na">onCreate</span><span class="p">(</span><span class="n">savedInstanceState</span><span class="p">)</span>
+<span class="w">        </span><span class="n">setContent</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">EmaSampleTheme</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">EmaScreen</span><span class="p">(</span>
+<span class="w">                    </span><span class="n">vm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CounterViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">                    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterScreenContent</span><span class="p">(),</span>
+<span class="w">                    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">                        </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                            </span><span class="n">CounterEvent</span><span class="p">.</span><span class="na">LimitReached</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">                                </span><span class="n">Toast</span><span class="p">.</span><span class="na">makeText</span><span class="p">(</span><span class="k">this</span><span class="p">,</span><span class="w"> </span><span class="s">"Has llegado a 10"</span><span class="p">,</span><span class="w"> </span><span class="n">Toast</span><span class="p">.</span><span class="na">LENGTH_SHORT</span><span class="p">).</span><span class="na">show</span><span class="p">()</span>
+<span class="w">                        </span><span class="p">}</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Los parámetros son los de <code>emaScreen</code>, con nombres más cortos:</p>
+<table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vm</code></td>
+<td>Una lambda que crea el ViewModel. Se llama solo la primera vez, como en <code>emaScreen</code>.</td>
+</tr>
+<tr>
+<td><code>screenContent</code></td>
+<td>El contenido de la pantalla.</td>
+</tr>
+<tr>
+<td><code>onEvent</code></td>
+<td>Recibe todos los eventos de la pantalla, como en <a href="#gestionar-los-eventos">Gestionar los eventos</a>.</td>
+</tr>
+<tr>
+<td><code>initializer</code></td>
+<td>El <a href="../../guides/initializers/">inicializador</a> de la pantalla. Aquí no hay una ruta de la que leerlo, así que lo pasas directamente. Opcional.</td>
+</tr>
+<tr>
+<td><code>previewRenderState</code></td>
+<td>El estado a pintar en una preview. Mira <a href="#previews-de-un-layout-mayor">Previews de un layout mayor</a>. Opcional.</td>
+</tr>
+</tbody>
+</table>
+<p>Por ejemplo, para abrir el contador empezando en 5, pasa tú el inicializador:</p>
+<div class="highlight"><pre><span></span><code><span class="n">EmaScreen</span><span class="p">(</span>
+<span class="w">    </span><span class="n">initializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterInitializer</span><span class="p">(</span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">),</span>
 <span class="w">    </span><span class="n">vm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CounterViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterScreenContent</span><span class="p">(),</span>
 <span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>Acepta el <code>initializer</code>, un <code>saveStateSupport</code> (consulta <a href="../save-state/#sin-grafo-de-navegación">Guardar el estado</a>)
-y un <code>previewRenderState</code>. Otra sobrecarga recibe una instancia del ViewModel y su dispatcher de acciones, para
-ViewModels que creas y conservas tú.</p>
-<h2 id="tema">Tema<a class="headerlink" href="#tema" title="Permanent link">&para;</a></h2>
-<p>Envuelve el <code>NavHost</code> (o tu contenido) en tu tema de Material. El sample usa <code>EmaSampleTheme</code>.</p>
+<h3 id="una-pantalla-dentro-de-un-layout-mayor">Una pantalla dentro de un layout mayor<a class="headerlink" href="#una-pantalla-dentro-de-un-layout-mayor" title="Permanent link">&para;</a></h3>
+<p>Como <code>EmaScreen</code> es un composable, puede ser una pieza de una página. Aquí el contador está bajo un título y sobre un
+botón que no forma parte de él:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Composable</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">DashboardPage</span><span class="p">(</span><span class="n">onSettingsClicked</span><span class="p">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">Unit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Column</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Text</span><span class="p">(</span><span class="s">"Dashboard"</span><span class="p">,</span><span class="w"> </span><span class="n">style</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MaterialTheme</span><span class="p">.</span><span class="na">typography</span><span class="p">.</span><span class="na">headlineMedium</span><span class="p">)</span>
+
+<span class="w">        </span><span class="n">EmaScreen</span><span class="p">(</span>
+<span class="w">            </span><span class="n">vm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CounterViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterScreenContent</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">)</span>
+
+<span class="w">        </span><span class="n">Button</span><span class="p">(</span><span class="n">onClick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">onSettingsClicked</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Text</span><span class="p">(</span><span class="s">"Settings"</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>El ViewModel vive tanto como la activity (o el destino del grafo) que contiene la página, no tanto como el composable. Si
+el contador está dentro de un <code>if</code> y desaparece, su ViewModel recibe <code>Paused</code> y <code>Stopped</code>, y conserva su estado: cuando
+el contador vuelve a aparecer, muestra el mismo número.</p>
+<h3 id="previews-de-un-layout-mayor">Previews de un layout mayor<a class="headerlink" href="#previews-de-un-layout-mayor" title="Permanent link">&para;</a></h3>
+<p><code>previewRenderState</code> es el estado que muestra la pantalla <strong>en lugar del real</strong> cuando se dibuja en la preview de
+Android Studio:</p>
+<table>
+<thead>
+<tr>
+<th>Dónde se dibuja la pantalla</th>
+<th>Qué muestra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>En la app, en un dispositivo</td>
+<td>El estado real, el del ViewModel. <code>previewRenderState</code> se ignora.</td>
+</tr>
+<tr>
+<td>En la preview de Android Studio</td>
+<td><code>previewRenderState</code>. Ni siquiera se crea el ViewModel.</td>
+</tr>
+</tbody>
+</table>
+<p>Lo necesitas porque una <a href="#previews">preview</a> no puede crear el ViewModel, así que sin <code>previewRenderState</code> la pantalla no
+tiene estado que pintar y su espacio queda vacío. Con él, ves la página completa tal como se verá:</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Composable</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">DashboardPage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">Column</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Text</span><span class="p">(</span><span class="s">"Dashboard"</span><span class="p">)</span>
+<span class="w">        </span><span class="n">EmaScreen</span><span class="p">(</span>
+<span class="w">            </span><span class="n">vm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CounterViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterScreenContent</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="c1">// Solo para la preview: la app muestra la cuenta real del ViewModel</span>
+<span class="w">            </span><span class="n">previewRenderState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterState</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nd">@Preview</span>
+<span class="nd">@Composable</span>
+<span class="kd">private</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">PreviewDashboard</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// El título y un contador con el número 3</span>
+<span class="w">    </span><span class="n">DashboardPage</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
@@ -1906,7 +2108,7 @@ ViewModels que creas y conservas tú.</p>
       <nav class="md-footer__inner md-grid" aria-label="Pie" >
         
           
-          <a href="../../guides/utilities/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Utilidades">
+          <a href="../../guides/testing/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Testing">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1916,7 +2118,7 @@ ViewModels que creas y conservas tú.</p>
                 Anterior
               </span>
               <div class="md-ellipsis">
-                Utilidades
+                Testing
               </div>
             </div>
           </a>

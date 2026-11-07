@@ -6,12 +6,12 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels and Android Views">
+        <meta name="description" content="A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels">
       
       
       
       
-        <link rel="prev" href="../../concepts/source/">
+        <link rel="prev" href="../../utils/texts/">
       
       
         <link rel="next" href="../initializers/">
@@ -24,7 +24,7 @@
         
       
       
-      <link rel="icon" href="../../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/logo.svg">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
     
     
@@ -55,6 +55,8 @@
       
     
     
+      <link rel="stylesheet" href="../../assets/extra.css">
+    
     <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -71,7 +73,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal">
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -102,8 +104,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -133,20 +134,20 @@
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
     
       <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
       </label>
     
   
     
     
     
-    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="teal"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
     
       <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
       </label>
     
   
@@ -264,8 +265,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
       
-  
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <img src="../../assets/logo.svg" alt="logo">
 
     </a>
     Emanate
@@ -345,6 +345,33 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="../../why-emanate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
     
     
     
@@ -359,10 +386,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -380,8 +407,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -510,6 +537,146 @@
   
   
     <li class="md-nav__item">
+      <a href="../../concepts/reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../concepts/viewmodel/" class="md-nav__link">
         
   
@@ -545,7 +712,150 @@
   <span class="md-ellipsis">
     
   
-    Source
+    EmaSource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utils
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use cases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Texts in the state
   
 
     
@@ -588,10 +898,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
             
   
   
@@ -609,8 +919,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -695,6 +1005,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="What can be configured">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-for-android" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration for Android
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -702,6 +1029,101 @@
     <span class="md-ellipsis">
       
         Dispatchers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#printing-the-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Printing the state
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Printing the state">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-custom-printer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A custom printer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-custom-logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A custom logger
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Errors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reporting-the-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reporting the errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#measuring-the-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measuring the side effects
       
     </span>
   </a>
@@ -720,21 +1142,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#printing-objects" class="md-nav__link">
+  <a href="#closing-a-viewmodel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Printing objects
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Logs
+        Closing a ViewModel
       
     </span>
   </a>
@@ -760,6 +1171,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Libraries and SDKs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wrap-the-classes-of-emanate-in-base-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrap the classes of Emanate in base classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -807,42 +1235,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../results-between-screens/" class="md-nav__link">
+      <a href="../process-death/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Results between screens
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../async-and-errors/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Async work and errors
+    Surviving process death
   
 
     
@@ -870,35 +1270,7 @@
   <span class="md-ellipsis">
     
   
-    Dependency injection
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permissions
+    Dependency injection and environments
   
 
     
@@ -940,62 +1312,6 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multiplatform/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Kotlin Multiplatform
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
@@ -1023,10 +1339,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
             
   
   
@@ -1044,8 +1360,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1174,34 +1490,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../compose/save-state/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Saving state
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../compose/permissions/" class="md-nav__link">
         
   
@@ -1209,290 +1497,7 @@
   <span class="md-ellipsis">
     
   
-    Permissions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../compose/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Android Views
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Android Views
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/screens/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Fragments and Activities
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/navigation/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Navigation and back handling
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/dialogs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Dialogs
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/lists/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Lists
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/permissions/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Permissions
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../android-view/utilities/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Utilities
+    Permissions (Android)
   
 
     
@@ -1602,6 +1607,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="What can be configured">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configuration-for-android" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration for Android
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1609,6 +1631,101 @@
     <span class="md-ellipsis">
       
         Dispatchers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#printing-the-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Printing the state
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Printing the state">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-custom-printer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A custom printer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-custom-logger" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A custom logger
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errors
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Errors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#reporting-the-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reporting the errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#measuring-the-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measuring the side effects
       
     </span>
   </a>
@@ -1627,21 +1744,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#printing-objects" class="md-nav__link">
+  <a href="#closing-a-viewmodel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Printing objects
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#logs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Logs
+        Closing a ViewModel
       
     </span>
   </a>
@@ -1667,6 +1773,23 @@
       
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Libraries and SDKs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wrap-the-classes-of-emanate-in-base-classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrap the classes of Emanate in base classes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1706,166 +1829,631 @@
 <li>If it is never called, the default <code>EmaConfiguration()</code> is used. That is the usual case in unit tests and in
   non-Android platforms.</li>
 </ul>
-<p>A ViewModel or a source can also receive its own configuration, which is used instead of the one of the application.
-See <a href="#explicit-configuration">Explicit configuration</a>.</p>
+<p>Register the application in <code>AndroidManifest.xml</code> (<code>android:name=".MyApplication"</code>). A ViewModel or an <code>EmaSource</code> can also
+receive its own configuration, which is used instead of the one of the application. See
+<a href="#explicit-configuration">Explicit configuration</a>.</p>
 <h2 id="what-can-be-configured">What can be configured<a class="headerlink" href="#what-can-be-configured" title="Permanent link">&para;</a></h2>
-<p>Each property configures one thing:</p>
+<p>Each property configures one thing. The ones that hold an object with several parameters list them in their own column, before what the property configures.</p>
 <table>
 <thead>
 <tr>
 <th>Property</th>
 <th>Default <code>EmaConfiguration()</code></th>
-<th><code>EmaConfiguration.Android(debug)</code></th>
-<th>Purpose</th>
+<th>Parameters</th>
+<th>What it configures</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>dispatchers</code></td>
 <td><code>EmaDispatchers()</code></td>
-<td><code>main</code> is <code>Dispatchers.Main.immediate</code></td>
-<td>Where ViewModels, use cases and CPU-intensive work run. See <a href="#dispatchers">Dispatchers</a>.</td>
+<td><strong><code>main</code></strong>: where ViewModels and <code>EmaSource</code> run, and so their reducers and side effects. Default <code>Dispatchers.Main</code>.<br><strong><code>io</code></strong>: where <a href="../../utils/use-cases/">use cases</a> run, for network, disk and blocking work. Default <code>Dispatchers.IO</code>.<br><strong><code>default</code></strong>: CPU-intensive work, like processing images. Default <code>Dispatchers.Default</code>.</td>
+<td>The coroutine dispatchers. See <a href="#dispatchers">Dispatchers</a>.</td>
 </tr>
 <tr>
 <td><code>errorPolicy</code></td>
 <td><code>EmaErrorPolicy.Catch()</code></td>
-<td><code>Throw</code> in debug, <code>Catch()</code> in release</td>
-<td>What happens when a middleware, reducer or side effect throws an exception. See <a href="../async-and-errors/#errors">Errors</a>.</td>
+<td><strong><code>Catch(onError)</code></strong>: the exception is caught and the screen keeps working. <code>onError</code> is optional and receives each <code>EmaError</code>, to send it to a crash reporter.<br><strong><code>Throw</code></strong>: the exception is thrown again and the app fails at once.</td>
+<td>What happens when a middleware, reducer or side effect throws an exception. See <a href="#errors">Errors</a>.</td>
 </tr>
 <tr>
 <td><code>logger</code></td>
 <td><code>EmaLogger.Println</code></td>
-<td><code>EmaLogger.Logcat</code> in debug, <code>null</code> in release</td>
-<td>Where the logs of Emanate go. See <a href="#logs">Logs</a>.</td>
+<td><strong><code>log(tag, message)</code></strong>: writes one line. The tag is the name of the ViewModel.<br><strong><code>prefix</code></strong>: text added before every tag, to filter the logs of Emanate, like <code>EMA_HomeViewModel</code>. Set it with <code>EmaLogger(prefix) { tag, message -&gt; ... }</code>.</td>
+<td>Where the logs go. <code>null</code> disables them. See <a href="#logs">Logs</a>.</td>
 </tr>
 <tr>
 <td><code>printer</code></td>
 <td><code>EmaDataClassPrinter.ToString</code></td>
-<td>Prints every field, indented</td>
-<td>How objects are printed in the logs and by <code>toStringPretty()</code>.</td>
+<td><strong><code>print(value)</code></strong>: returns the text of the state or the action. By default its <code>toString()</code>.<br><strong><code>indent</code></strong> and <strong><code>wrappedLineWidth</code></strong>: only in <code>EmaAndroidDataClassPrinter</code>. The spaces of each nesting level (2) and the length from which a long <code>String</code> is split into lines (80).</td>
+<td>How the states and actions are turned into text in the logs. See <a href="#printing-the-state">Printing the state</a>.</td>
 </tr>
 <tr>
-<td><code>destroyedTimeout</code></td>
+<td><code>closeTimeout</code></td>
 <td>5 seconds</td>
-<td>5 seconds</td>
-<td>How long the side effects of <code>Lifecycle.Destroyed</code> can run after the ViewModel is cleared, unless they have their own <code>timeout</code>.</td>
+<td></td>
+<td>How long the work of a closed ViewModel can still run before it is cancelled. See <a href="#closing-a-viewmodel">Closing a ViewModel</a>.</td>
 </tr>
 <tr>
 <td><code>sideEffectListener</code></td>
 <td><code>null</code></td>
-<td><code>null</code></td>
-<td>Receives the result of every side effect, to track or measure them.</td>
-</tr>
-<tr>
-<td><code>methodNameResolver</code></td>
-<td>Generic names</td>
-<td>Resolved from the lambdas</td>
-<td>The name of the function that launched a side effect, reported in the errors. See <a href="#naming-the-side-effects">Naming the side effects</a>.</td>
+<td><strong><code>onSuccess(reflection, output, duration)</code></strong>: it finished without error. Receives its <code>Reflection</code>, what it launched (<code>output</code>) and how long it took.<br><strong><code>onError(error, duration)</code></strong>: it threw an exception. Receives the <code>EmaError</code> and how long it took.<br><strong><code>onFinish(reflection, duration)</code></strong>: it ended, with success, with error or cancelled.</td>
+<td>Receives every side effect that ends, to track or measure it. See <a href="#measuring-the-side-effects">Measuring the side effects</a>.</td>
 </tr>
 <tr>
 <td><code>broadcaster</code></td>
 <td><code>EmaActionBroadcaster.Shared</code></td>
-<td><code>EmaActionBroadcaster.Shared</code></td>
-<td>Sends the actions broadcast between ViewModels. See <a href="#libraries-and-sdks">Libraries and SDKs</a>.</td>
+<td><strong><code>Shared</code></strong>: used by the whole process, so every ViewModel receives the actions broadcast by the others.<br><strong><code>EmaActionBroadcaster()</code></strong>: a new one isolates the ViewModels that use it, for example the ones of a library.</td>
+<td>Delivers the actions broadcast between ViewModels. See <a href="#libraries-and-sdks">Libraries and SDKs</a>.</td>
 </tr>
 </tbody>
 </table>
-<p><code>EmaConfiguration.Android(debug)</code> is in <code>emanate-android</code> (<code>com.carmabs.emanate.android.configuration.Android</code>). Pass
-<code>BuildConfig.DEBUG</code>: debug builds log to logcat and fail at once with any exception, and release builds don't log, so
-the state doesn't reach logcat, and keep working after an exception.</p>
+<h3 id="configuration-for-android">Configuration for Android<a class="headerlink" href="#configuration-for-android" title="Permanent link">&para;</a></h3>
+<p><code>EmaConfiguration.Android(debug)</code> is a predefined configuration in <code>emanate-android</code>
+(<code>com.carmabs.emanate.android.configuration.Android</code>). It is the one to use in an Android application, with
+<code>BuildConfig.DEBUG</code> as the flag. It changes these properties from the default configuration. Each column says the value that the property has, so
+you can compare them:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th><code>EmaConfiguration()</code></th>
+<th><code>Android(debug = true)</code></th>
+<th><code>Android(debug = false)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>errorPolicy</code></td>
+<td><code>Catch()</code></td>
+<td><code>Throw</code></td>
+<td><code>Catch()</code></td>
+</tr>
+<tr>
+<td><code>logger</code></td>
+<td><code>EmaLogger.Println</code></td>
+<td><code>EmaLogger.Logcat</code></td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td><code>dispatchers.main</code></td>
+<td><code>Dispatchers.Main</code></td>
+<td><code>Dispatchers.Main.immediate</code></td>
+<td><code>Dispatchers.Main.immediate</code></td>
+</tr>
+<tr>
+<td><code>printer</code></td>
+<td><code>EmaDataClassPrinter.ToString</code></td>
+<td><code>EmaAndroidDataClassPrinter()</code></td>
+<td><code>EmaAndroidDataClassPrinter()</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong><code>errorPolicy</code>.</strong> With <code>Throw</code>, an exception in a middleware, reducer or side effect crashes the app at once, so you
+  notice it while developing. With <code>Catch()</code>, it is caught and the screen keeps working. See <a href="#errors">Errors</a>.</li>
+<li><strong><code>logger</code>.</strong> In debug builds every action and state is written to logcat with <code>Log.d</code>. In release builds nothing is
+  logged, so the state of the user, which may have personal data, never reaches logcat. See <a href="#logs">Logs</a>.</li>
+<li><strong><code>dispatchers.main</code>.</strong> <code>Dispatchers.Main.immediate</code> is what the <code>viewModelScope</code> of Android uses: the work started
+  from the main thread, like dispatching an action from a click, runs at once instead of waiting for the next frame.</li>
+<li><strong><code>printer</code>.</strong> <code>EmaAndroidDataClassPrinter</code> prints every field, indented. In release builds there is no <code>logger</code>, so
+  it isn't used. See <a href="#printing-the-state">Printing the state</a>.</li>
+</ul>
+<p>Only <code>errorPolicy</code> and <code>logger</code> depend on the flag. <code>closeTimeout</code>, <code>sideEffectListener</code>, <code>broadcaster</code> and the other
+dispatchers keep the default values in all of them.</p>
 <p><code>EmaConfiguration</code> is a data class, so change only what you need with <code>copy</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Emanate</span><span class="p">.</span><span class="na">init</span><span class="p">(</span>
 <span class="w">    </span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">).</span><span class="na">copy</span><span class="p">(</span>
-<span class="w">        </span><span class="n">errorPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaErrorPolicy</span><span class="p">.</span><span class="na">Catch</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">crashReporter</span><span class="p">.</span><span class="na">record</span><span class="p">(</span><span class="n">error</span><span class="p">.</span><span class="na">exception</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="n">closeTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10.</span><span class="n">seconds</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div>
 <h2 id="dispatchers">Dispatchers<a class="headerlink" href="#dispatchers" title="Permanent link">&para;</a></h2>
-<p><code>EmaDispatchers</code> groups the dispatchers Emanate uses by default:</p>
+<p><code>EmaDispatchers</code> groups the three coroutine dispatchers that Emanate uses, one for each kind of work. It is the
+<code>dispatchers</code> property of the configuration, and each one is applied in a different place:</p>
 <table>
 <thead>
 <tr>
 <th>Dispatcher</th>
 <th>Default</th>
-<th>Used by</th>
+<th>Where it is applied</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>main</code></td>
 <td><code>Dispatchers.Main</code></td>
-<td>ViewModels and sources, by default.</td>
+<td>The scope of every <code>EmaViewModel</code> and <code>EmaSource</code>. Everything the ViewModel does runs there: its middlewares, its reducers, its side effects and the dispatch of its actions.</td>
 </tr>
 <tr>
 <td><code>io</code></td>
-<td><code>Dispatchers.IO</code>, or <code>Dispatchers.Default</code> on JS and Wasm</td>
-<td><a href="../utilities/#use-cases">Use cases</a>: network, disk and blocking work.</td>
+<td><code>Dispatchers.IO</code></td>
+<td>The <a href="../../utils/use-cases/">use cases</a>: <code>EmaUseCase</code> and <code>EmaFlowUseCase</code> switch to it to run, so the side effect that calls them doesn't block <code>main</code>.</td>
 </tr>
 <tr>
 <td><code>default</code></td>
 <td><code>Dispatchers.Default</code></td>
-<td>CPU-intensive work, such as processing images in <code>emanate-android</code>.</td>
+<td>The CPU-intensive work of <code>emanate-android</code>: the extensions that create bitmaps from a <code>ByteArray</code> or a drawable resource (<code>toBitmap</code>, <code>getBitmapFromResource</code>, <code>getBitmapCropFromResource</code>), and the coroutines of <code>EmaJobService</code>.</td>
 </tr>
 </tbody>
 </table>
-<p><code>EmaConfiguration.Android(debug)</code> uses <code>Dispatchers.Main.immediate</code> as <code>main</code>, as the <code>viewModelScope</code> of Android does: the
-work started from the main thread, such as dispatching an action from a click, runs at once instead of waiting for the
-next frame.</p>
-<p>Change any of them with <code>copy</code>, keeping the others:</p>
+<p><strong><code>main</code></strong> is the one you will change most. A side effect runs on <code>main</code>, so it can read the state and dispatch actions
+safely, and the work that blocks is delegated to a use case, which switches to <code>io</code> itself:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sideEffects</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Runs on main</span>
+<span class="w">        </span><span class="n">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryStarted</span><span class="p">)</span>
+<span class="w">        </span><span class="c1">// The use case switches to io, and comes back to main with the result</span>
+<span class="w">        </span><span class="n">getFriendsUseCase</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">.</span><span class="na">Input</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">query</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="na">onSuccess</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">friends</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryLoaded</span><span class="p">(</span><span class="n">friends</span><span class="p">))</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>In the tests, replace <code>main</code> with the dispatcher of the test, see <a href="../testing/">Testing</a>.</p>
+<p><strong><code>io</code></strong> is read by the use case when it is created, from <code>Emanate.configuration</code>, not from the configuration of the
+ViewModel that calls it. To use another one, for example the <code>io</code> of a <a href="#libraries-and-sdks">library</a>, pass it to the
+constructor of the use case.</p>
+<p><strong><code>default</code></strong> is read from <code>Emanate.configuration</code> when the work runs. You can use it for your own CPU-intensive work, so
+it is replaced together with the others in the tests:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">suspend</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">sortContacts</span><span class="p">(</span><span class="n">contacts</span><span class="p">:</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">Contact</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">withContext</span><span class="p">(</span><span class="n">Emanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">.</span><span class="na">dispatchers</span><span class="p">.</span><span class="na">default</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">contacts</span><span class="p">.</span><span class="na">sortedBy</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">name</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p><code>EmaConfiguration.Android(debug)</code> only changes <code>main</code>, see <a href="#configuration-for-android">Configuration for Android</a>.
+Change any of them with <code>copy</code>, keeping the others:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">android</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">)</span>
 <span class="n">Emanate</span><span class="p">.</span><span class="na">init</span><span class="p">(</span><span class="n">android</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">dispatchers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">android</span><span class="p">.</span><span class="na">dispatchers</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">io</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myIoDispatcher</span><span class="p">)))</span>
 </code></pre></div>
-<h2 id="naming-the-side-effects">Naming the side effects<a class="headerlink" href="#naming-the-side-effects" title="Permanent link">&para;</a></h2>
-<p>Every <code>sideEffect</code> reports the name of the function that launched it, which is useful for logging errors.</p>
-<ul>
-<li><code>EmaConfiguration.Android(debug)</code> reads it from the class the compiler generates for the lambda, so a <code>sideEffect</code> in
-  <code>doLogin()</code> is reported as <code>doLogin</code>.</li>
-<li>On other platforms the name is generic. Pass <code>logName</code> to set it yourself, on any platform:</li>
-</ul>
-<div class="highlight"><pre><span></span><code><span class="n">sideEffect</span><span class="p">(</span><span class="n">logName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"login"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">loginUseCase</span><span class="p">(</span><span class="n">input</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<h2 id="printing-the-state">Printing the state<a class="headerlink" href="#printing-the-state" title="Permanent link">&para;</a></h2>
+<p>The logs print each state and action with the <code>printer</code> of the configuration. Take this state:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">HomeState</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">query</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">isLoading</span><span class="p">:</span><span class="w"> </span><span class="kt">Boolean</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">friends</span><span class="p">:</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">emptyList</span><span class="p">()</span>
+<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span>
 </code></pre></div>
-<p>To decide the name differently, implement <code>EmaMethodNameResolver</code> and set it in <code>EmaConfiguration.methodNameResolver</code>.</p>
-<h2 id="printing-objects">Printing objects<a class="headerlink" href="#printing-objects" title="Permanent link">&para;</a></h2>
-<p><code>toStringPretty()</code> prints any object with the <code>printer</code> of the configuration. <code>EmaConfiguration.Android(debug)</code> uses
-<code>EmaAndroidDataClassPrinter</code>, which prints the fields, nested objects, collections and maps with indentation.
-Implement <code>EmaDataClassPrinter</code> to print them your own way.</p>
+<p>With the default printer, <code>EmaDataClassPrinter.ToString</code>, it is its <code>toString()</code>, in a single line:</p>
+<div class="highlight"><pre><span></span><code>HomeState(query=An, isLoading=false, friends=[User(name=Ana, role=USER), User(name=Andrés, role=ADMIN)])
+</code></pre></div>
+<p><code>EmaConfiguration.Android(debug)</code> uses <code>EmaAndroidDataClassPrinter</code>, which reads the fields and indents the nested
+objects, collections and maps, so a big state can be read at a glance:</p>
+<div class="highlight"><pre><span></span><code>HomeState(
+  query = "An"
+  isLoading = false
+  friends = [
+              User(
+                name = "Ana"
+                role = Role.USER
+              ),
+              User(
+                name = "Andrés"
+                role = Role.ADMIN
+              )
+            ]
+)
+</code></pre></div>
+<p>It reads the fields with Java reflection, so it is only available on Android and the JVM. Change its indentation or
+the width where long texts are split with <code>EmaAndroidDataClassPrinter(indent = 4, wrappedLineWidth = 120)</code>.</p>
+<h3 id="a-custom-printer">A custom printer<a class="headerlink" href="#a-custom-printer" title="Permanent link">&para;</a></h3>
+<p>Implement <code>EmaDataClassPrinter</code> to print the states your way. A useful case is <strong>hiding sensitive data</strong>, so it doesn't
+reach the logs of a QA build:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">maskedPrinter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaDataClassPrinter</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">    </span><span class="n">value</span><span class="p">.</span><span class="na">toString</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="na">replace</span><span class="p">(</span><span class="n">Regex</span><span class="p">(</span><span class="s">"(password|token)=[^,)]*"</span><span class="p">),</span><span class="w"> </span><span class="s">"</span><span class="si">$</span><span class="n">1</span><span class="s">=***"</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">Emanate</span><span class="p">.</span><span class="na">init</span><span class="p">(</span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">).</span><span class="na">copy</span><span class="p">(</span><span class="n">printer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">maskedPrinter</span><span class="p">))</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>LoginState(user=ana, password=***, isLoading=false)
+</code></pre></div>
+<p>To print any object with the printer of the configuration, use <code>toStringPretty()</code>.</p>
 <h2 id="logs">Logs<a class="headerlink" href="#logs" title="Permanent link">&para;</a></h2>
-<p>Emanate writes its logs with the <code>logger</code> of the configuration. By default it is <code>EmaLogger.Println</code>, which writes to
-the standard output and adds <code>EMA_</code> before the tag. <code>EmaConfiguration.Android(debug)</code> uses <code>EmaLogger.Logcat</code> in debug
-builds, which writes with <code>Log.d</code>, and no logger in release builds. The errors caught by the
-<a href="../async-and-errors/#errors">error policy</a> are also logged.</p>
-<p>Every <code>EmaViewModel</code> uses it, with its name as tag, to log its actions:</p>
+<p>Emanate writes its logs with the <code>logger</code> of the configuration. A logger is a function that receives a <code>tag</code>, the
+name of the ViewModel, and a <code>message</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Logger</th>
+<th>Where it writes</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EmaLogger.Println</code></td>
+<td>The standard output, with <code>EMA_</code> before the tag.</td>
+<td><code>EmaConfiguration()</code></td>
+</tr>
+<tr>
+<td><code>EmaLogger.Logcat</code></td>
+<td>Logcat with <code>Log.d</code>, with <code>EMA_</code> before the tag.</td>
+<td><code>EmaConfiguration.Android(true)</code></td>
+</tr>
+<tr>
+<td><code>null</code></td>
+<td>Nowhere.</td>
+<td><code>EmaConfiguration.Android(false)</code></td>
+</tr>
+<tr>
+<td>Your own <code>EmaLogger</code></td>
+<td>Wherever you want.</td>
+<td>Anything</td>
+</tr>
+</tbody>
+</table>
+<p>Every <code>EmaViewModel</code> logs its actions with its name as tag:</p>
 <ul>
-<li>One line when an action is received, before the middlewares: <code>Received action: Search(query=ema)</code>. It shows the
-  actions that a middleware stops, which don't reach the reducers.</li>
-<li>A block with the action and the state before and after its reducers. It is written right before them, after all the
-  middlewares, so the state after the action is correct even if a middleware continues it later with <code>nextAfter</code>, and
-  the action is the one the reducers receive.</li>
+<li>One line when an action is received, before the middlewares. It shows the actions that a middleware stops, which
+  don't reach the reducers.</li>
+<li>A block with the action and the state before and after its reducers. It is written right before them, after all
+  the middlewares, so the state after the action is correct even if a middleware continues it later with <code>nextAfter</code>,
+  and the action is the one the reducers receive.</li>
 </ul>
-<p>The state may contain data of the user, so don't log in release builds, as <code>EmaConfiguration.Android(debug)</code> does. To
-send the logs to your own logger:</p>
+<p>For the action <code>QueryWritten("An")</code> of the state above, logcat shows (the tag, <code>EMA_HomeViewModel</code>, is omitted):</p>
+<div class="highlight"><pre><span></span><code>Received action: QueryWritten(query=An)
+
+**********************    STARTING EMA ACTION LOGGING    ***********************
+**                                                                            **
+|||||||||||||||||||||||||||    Dispatched action    ||||||||||||||||||||||||||||
+||                                                                            ||
+||    QueryWritten(query=An)                                                  ||
+|||||||||||||||||||||||    State before apply action    ||||||||||||||||||||||||
+||                                                                            ||
+||    HomeState(                                                              ||
+||      query = ""                                                            ||
+||      isLoading = false                                                     ||
+||      friends = []                                                          ||
+||    )                                                                       ||
+||||||||||||||||||||||||    State after apply action    ||||||||||||||||||||||||
+||                                                                            ||
+||    HomeState(                                                              ||
+||      query = "An"                                                          ||
+||      isLoading = false                                                     ||
+||      friends = []                                                          ||
+||    )                                                                       ||
+||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+**                                                                            **
+**********************    FINISHED EMA ACTION LOGGING    ***********************
+</code></pre></div>
+<p>The errors caught by the <a href="#errors">error policy</a> are logged too, with the same tag.</p>
+<p>The state may contain data of the user, so don't log in release builds, as <code>EmaConfiguration.Android(debug)</code> does.</p>
+<h3 id="a-custom-logger">A custom logger<a class="headerlink" href="#a-custom-logger" title="Permanent link">&para;</a></h3>
+<p>An <code>EmaLogger</code> is a lambda, so it can send the logs wherever you need. To use Timber in debug builds:</p>
 <div class="highlight"><pre><span></span><code><span class="n">Emanate</span><span class="p">.</span><span class="na">init</span><span class="p">(</span>
 <span class="w">    </span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">).</span><span class="na">copy</span><span class="p">(</span>
 <span class="w">        </span><span class="n">logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">)</span><span class="w"> </span><span class="n">EmaLogger</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Timber</span><span class="p">.</span><span class="na">tag</span><span class="p">(</span><span class="n">tag</span><span class="p">).</span><span class="na">d</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>A ViewModel can still pass its own <code>logger</code> in the constructor, or <code>null</code> to disable only its logs. A source used on
-its own doesn't log: add <code>loggerMiddleware(tag, logger)</code> as its last middleware.</p>
+<p>Or keep the last actions as breadcrumbs of a crash report, and skip the big blocks of state:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">breadcrumbs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaLogger</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">    </span><span class="c1">// "Received action: ..." is one line and enough to know what the user did before the crash</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">message</span><span class="p">.</span><span class="na">startsWith</span><span class="p">(</span><span class="s">"Received action"</span><span class="p">))</span><span class="w"> </span><span class="n">FirebaseCrashlytics</span><span class="p">.</span><span class="na">getInstance</span><span class="p">().</span><span class="na">log</span><span class="p">(</span><span class="s">"</span><span class="si">$</span><span class="n">tag</span><span class="s">: </span><span class="si">$</span><span class="n">message</span><span class="s">"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Use <code>EmaLogger(prefix = "MYAPP_") { tag, message -&gt; ... }</code> to add a prefix to every tag, so they can be filtered in
+logcat.</p>
+<p>To disable the logs of a single ViewModel, pass it a configuration without logger:
+<code>Emanate.configuration.copy(logger = null)</code>. An <code>EmaSource</code> used on its own doesn't log: add <code>loggerMiddleware(tag, logger)</code>
+as its last middleware.</p>
+<h2 id="errors">Errors<a class="headerlink" href="#errors" title="Permanent link">&para;</a></h2>
+<p>The code of your ViewModel can fail: a reducer that calls <code>friends.first()</code> on an empty list, a middleware that parses
+a wrong value, a side effect that throws. What Emanate does then is the <code>errorPolicy</code>.</p>
+<blockquote>
+<p><strong>Errors you expect are not exceptions.</strong> A request that can fail is not an error of this kind: return an
+<a href="../../utils/results/"><code>EmaResult</code></a> from the use case and let the side effect dispatch an action that shows the
+failure. The policy is for the <strong>bugs</strong>, the things you didn't expect.</p>
+</blockquote>
+<p>Take a reducer with a bug:</p>
+<div class="highlight"><pre><span></span><code><span class="n">reducers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">FriendClicked</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">action</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">        </span><span class="c1">// Bug: throws NoSuchElementException when the friend isn't in the list</span>
+<span class="w">        </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">selected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">friends</span><span class="p">.</span><span class="na">first</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">action</span><span class="p">.</span><span class="na">id</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>Throw</code></th>
+<th><code>Catch</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>What happens</strong></td>
+<td>The exception is thrown again where it happened, so the app crashes with its stack trace.</td>
+<td>The exception is caught. The app keeps running.</td>
+</tr>
+<tr>
+<td><strong>The screen</strong></td>
+<td>Closed by the crash.</td>
+<td>Still working. The state is the one it had before the action.</td>
+</tr>
+<tr>
+<td><strong>The log</strong></td>
+<td>The crash of the app.</td>
+<td>One line with the stack trace: <code>HomeViewModel: action FriendClicked failed: java.util.NoSuchElementException ...</code></td>
+</tr>
+<tr>
+<td><strong><code>onError</code></strong></td>
+<td>Not called.</td>
+<td>Called with an <code>EmaError</code>.</td>
+</tr>
+<tr>
+<td><strong>Use it</strong></td>
+<td>While developing, so the bug can't go unnoticed. It is the default of <code>EmaConfiguration.Android(true)</code>.</td>
+<td>In production, so a bug in one action doesn't take the whole app down. It is the default of <code>EmaConfiguration()</code> and of release builds.</td>
+</tr>
+</tbody>
+</table>
+<p>What "keeps working" means depends on the piece that failed:</p>
+<table>
+<thead>
+<tr>
+<th>It threw in...</th>
+<th>With <code>Catch</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A reducer</td>
+<td>The action is discarded: the state doesn't change and the next actions are processed as usual.</td>
+</tr>
+<tr>
+<td>A middleware</td>
+<td>The action is discarded and doesn't reach the reducers or the side effects.</td>
+</tr>
+<tr>
+<td>A side effect</td>
+<td>That side effect ends. The rest of the side effects and the actions keep working.</td>
+</tr>
+</tbody>
+</table>
+<p>Cancellations are never errors: a side effect cancelled by its concurrency, its timeout or the closing of the
+ViewModel is not reported.</p>
+<h3 id="reporting-the-errors">Reporting the errors<a class="headerlink" href="#reporting-the-errors" title="Permanent link">&para;</a></h3>
+<p>With <code>Catch</code>, pass <code>onError</code> to send each error to your crash reporter, so a bug that is silent for the user is not
+silent for you:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Emanate</span><span class="p">.</span><span class="na">init</span><span class="p">(</span>
+<span class="w">    </span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">).</span><span class="na">copy</span><span class="p">(</span>
+<span class="w">        </span><span class="n">errorPolicy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">EmaErrorPolicy</span><span class="p">.</span><span class="na">Throw</span>
+<span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">EmaErrorPolicy</span><span class="p">.</span><span class="na">Catch</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">                </span><span class="n">crashReporter</span><span class="p">.</span><span class="na">recordException</span><span class="p">(</span><span class="n">error</span><span class="p">.</span><span class="na">exception</span><span class="p">)</span>
+<span class="w">                </span><span class="n">crashReporter</span><span class="p">.</span><span class="na">setCustomKey</span><span class="p">(</span><span class="s">"viewModel"</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="na">reflection</span><span class="p">.</span><span class="na">containerClassName</span><span class="p">)</span>
+<span class="w">                </span><span class="n">crashReporter</span><span class="p">.</span><span class="na">setCustomKey</span><span class="p">(</span><span class="s">"where"</span><span class="p">,</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="na">reflection</span><span class="p">.</span><span class="na">name</span><span class="p">)</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>An <code>EmaError</code> has:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>exception</code></td>
+<td>The <code>NoSuchElementException</code> that was thrown.</td>
+</tr>
+<tr>
+<td><code>reflection.containerClassName</code></td>
+<td><code>HomeViewModel</code></td>
+</tr>
+<tr>
+<td><code>reflection.containerClassQualifiedName</code></td>
+<td><code>com.carmabs.sample.home.HomeViewModel</code></td>
+</tr>
+<tr>
+<td><code>reflection.name</code></td>
+<td><code>action FriendClicked</code> for a middleware or a reducer. For a side effect, its name: <code>RefreshRequested</code>, see <a href="#naming-the-side-effects">Naming the side effects</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>To crash also in the QA builds, so the testers report the bugs instead of the app hiding them, use <code>Throw</code> there: the
+<code>debug</code> flag is only the default of <code>EmaConfiguration.Android</code>, and the policy is yours to choose.</p>
+<h2 id="measuring-the-side-effects">Measuring the side effects<a class="headerlink" href="#measuring-the-side-effects" title="Permanent link">&para;</a></h2>
+<p>To track the side effects, for example to measure how long they take, count how many fail or send them to your
+analytics, set a <code>sideEffectListener</code>. It is called for every side effect of every ViewModel, and it has three
+functions, all optional. Each one receives the <code>duration</code> the side effect took:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Called when</th>
+<th>Receives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>onSuccess(reflection, output, duration)</code></td>
+<td>A side effect finishes without error.</td>
+<td>The <code>reflection</code> and its <code>output</code>: what it launched while it ran.</td>
+</tr>
+<tr>
+<td><code>onError(error, duration)</code></td>
+<td>A side effect throws, with <code>Catch</code> and with <code>Throw</code> (right before the app fails).</td>
+<td>An <code>EmaError</code>: the <code>reflection</code> and the <code>exception</code>.</td>
+</tr>
+<tr>
+<td><code>onFinish(reflection, duration)</code></td>
+<td>A side effect ends: after <code>onSuccess</code>, after <code>onError</code>, or when it is cancelled.</td>
+<td>The <code>reflection</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>A cancellation (a new action with <code>Latest</code>, a timeout, the closing of the ViewModel) is not an error, so it only calls
+<code>onFinish</code>. That is how you tell the three endings apart: <code>onSuccess</code> is a success, <code>onError</code> a failure, and an
+<code>onFinish</code> with neither before it is a cancellation.</p>
+<p>The <code>Reflection</code> says which side effect it is:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>containerClassName</code></td>
+<td><code>HomeViewModel</code></td>
+</tr>
+<tr>
+<td><code>containerClassQualifiedName</code></td>
+<td><code>com.carmabs.sample.home.HomeViewModel</code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>The name of the side effect, see <a href="#naming-the-side-effects">Naming the side effects</a>.</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>SideEffectOutput</code> says what the side effect produced, in the order it happened:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What it has</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>actions</code></td>
+<td>The actions it dispatched to its ViewModel with <code>dispatch</code>: <code>Started</code>, <code>Loaded(friends)</code>...</td>
+</tr>
+<tr>
+<td><code>broadcasts</code></td>
+<td>The actions it sent to other ViewModels with <code>broadcast</code>.</td>
+</tr>
+<tr>
+<td><code>events</code></td>
+<td>The events it published for the view with <code>publish</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>It only has what <strong>that execution</strong> launched, not what other side effects launched at the same time. With all of it you
+can track, for each side effect, which ViewModel launched it, its name, how long it took, how it ended and what it
+produced:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">SideEffectTracker</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">analytics</span><span class="p">:</span><span class="w"> </span><span class="n">Analytics</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaSideEffectListener</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onSuccess</span><span class="p">(</span><span class="n">reflection</span><span class="p">:</span><span class="w"> </span><span class="n">Reflection</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="p">:</span><span class="w"> </span><span class="n">SideEffectOutput</span><span class="p">,</span><span class="w"> </span><span class="n">duration</span><span class="p">:</span><span class="w"> </span><span class="n">Duration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">analytics</span><span class="p">.</span><span class="na">track</span><span class="p">(</span>
+<span class="w">            </span><span class="n">event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"side_effect_success"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"name"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="s">"</span><span class="si">${</span><span class="n">reflection</span><span class="p">.</span><span class="na">containerClassName</span><span class="si">}</span><span class="s">.</span><span class="si">${</span><span class="n">reflection</span><span class="p">.</span><span class="na">name</span><span class="si">}</span><span class="s">"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"millis"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">duration</span><span class="p">.</span><span class="na">inWholeMilliseconds</span><span class="p">.</span><span class="na">toString</span><span class="p">(),</span>
+<span class="w">            </span><span class="c1">// Loaded(friends = [...]), Failed...</span>
+<span class="w">            </span><span class="s">"actions"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">output</span><span class="p">.</span><span class="na">actions</span><span class="p">.</span><span class="na">joinToString</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">simpleName</span><span class="p">.</span><span class="na">toString</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onError</span><span class="p">(</span><span class="n">error</span><span class="p">:</span><span class="w"> </span><span class="n">EmaError</span><span class="p">,</span><span class="w"> </span><span class="n">duration</span><span class="p">:</span><span class="w"> </span><span class="n">Duration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">analytics</span><span class="p">.</span><span class="na">track</span><span class="p">(</span>
+<span class="w">            </span><span class="n">event</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"side_effect_error"</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"viewModel"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="na">reflection</span><span class="p">.</span><span class="na">containerClassName</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"name"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="na">reflection</span><span class="p">.</span><span class="na">name</span><span class="p">,</span>
+<span class="w">            </span><span class="s">"error"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="na">exception</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">simpleName</span><span class="p">.</span><span class="na">toString</span><span class="p">(),</span>
+<span class="w">            </span><span class="s">"millis"</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">duration</span><span class="p">.</span><span class="na">inWholeMilliseconds</span><span class="p">.</span><span class="na">toString</span><span class="p">()</span>
+<span class="w">        </span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">onFinish</span><span class="p">(</span><span class="n">reflection</span><span class="p">:</span><span class="w"> </span><span class="n">Reflection</span><span class="p">,</span><span class="w"> </span><span class="n">duration</span><span class="p">:</span><span class="w"> </span><span class="n">Duration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Also called by the cancelled ones</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">Emanate</span><span class="p">.</span><span class="na">init</span><span class="p">(</span>
+<span class="w">    </span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">).</span><span class="na">copy</span><span class="p">(</span><span class="n">sideEffectListener</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SideEffectTracker</span><span class="p">(</span><span class="n">analytics</span><span class="p">))</span>
+<span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><strong><code>onSuccess</code> and <code>onError</code> are for tracking, not for handling.</strong> The error is also handled by the
+  <a href="#errors">error policy</a>: <code>onError</code> of the listener tells you about <strong>that side effect and its time</strong>, while the
+  <code>onError</code> of <code>EmaErrorPolicy.Catch</code> is the place to report bugs.</li>
+<li><strong>A side effect doesn't return a value</strong>: it reports with actions and events, so that is what <code>output</code> has. The
+  <code>output</code> of the <code>onClose</code> blocks has what they launched too. Keep in mind that the actions can have the data of the
+  user, like the <code>friends</code> of <code>Loaded(friends)</code>: send their type, as in the example, if that data must not leave the
+  app.</li>
+<li><strong>The duration</strong> is the time the side effect was running, including the <code>delay</code>s and the suspensions. A side effect
+  that ends by its <code>timeout</code> calls <code>onSuccess</code> after the time of the timeout.</li>
+</ul>
+<h2 id="naming-the-side-effects">Naming the side effects<a class="headerlink" href="#naming-the-side-effects" title="Permanent link">&para;</a></h2>
+<p>The <code>name</code> of the <code>Reflection</code> identifies the work in the errors and in the <code>sideEffectListener</code>. Emanate gives it a
+name from what it knows:</p>
+<table>
+<thead>
+<tr>
+<th>Work</th>
+<th>Name</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A side effect of the <code>setup</code></td>
+<td>The type of the action that launches it, or the <code>name</code> you pass.</td>
+<td><code>RefreshRequested</code></td>
+</tr>
+<tr>
+<td>A <code>nextAfter</code> of a middleware</td>
+<td><code>nextAfter</code> and the type of the action it received.</td>
+<td><code>nextAfter QueryWritten</code></td>
+</tr>
+<tr>
+<td>An <code>onClose</code> block</td>
+<td><code>onClose</code></td>
+<td><code>onClose</code></td>
+</tr>
+<tr>
+<td>A reducer or a middleware that fails (errors only)</td>
+<td><code>action</code> and the type of the action.</td>
+<td><code>action FriendClicked</code></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="n">sideEffects</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span><span class="w">                       </span><span class="c1">// RefreshRequested</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">FriendClicked</span><span class="o">&gt;</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"openProfile"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span><span class="w">    </span><span class="c1">// openProfile</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Pass <code>name</code> to <code>add</code>, to <code>sideEffectOf</code> or to the <code>name</code> property of a class that implements <code>SideEffect</code>, when the
+type of the action isn't a good name, for example when two side effects listen to the same action or to a base type
+like <code>EmaAction</code>.</p>
+<h2 id="closing-a-viewmodel">Closing a ViewModel<a class="headerlink" href="#closing-a-viewmodel" title="Permanent link">&para;</a></h2>
+<p>When a ViewModel is closed, its side effects are cancelled, so the work that was running stops. Two things can still
+run after it:</p>
+<ul>
+<li>the <code>onClose</code> blocks of its <code>EmaSource</code>, which are the last thing the ViewModel does, and</li>
+<li>the side effects added with <code>survivesClose = true</code>, like the one that saves a draft when the user leaves the editor.</li>
+</ul>
+<p>The <code>closeTimeout</code> is how long they have. After it, they are cancelled, so a request that never answers doesn't keep
+the ViewModel alive for ever. By default it is 5 seconds.</p>
+<div class="highlight"><pre><span></span><code><span class="n">sideEffects</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">EditorAction</span><span class="p">.</span><span class="na">SaveClicked</span><span class="o">&gt;</span><span class="p">(</span><span class="n">survivesClose</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">saveDraftUseCase</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">draft</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>If the user leaves the editor and the save takes 8 seconds, it is cancelled at the 5th. For slower work, increase it:</p>
+<div class="highlight"><pre><span></span><code><span class="n">Emanate</span><span class="p">.</span><span class="na">init</span><span class="p">(</span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">).</span><span class="na">copy</span><span class="p">(</span><span class="n">closeTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">15.</span><span class="n">seconds</span><span class="p">))</span>
+</code></pre></div>
+<p>Keep it short: it is the time a ViewModel that was already closed stays in memory. See
+<a href="../../concepts/side-effects/#when-the-screen-is-closed">Side effects</a>.</p>
 <h2 id="explicit-configuration">Explicit configuration<a class="headerlink" href="#explicit-configuration" title="Permanent link">&para;</a></h2>
-<p><code>Emanate.configuration</code> is shared by the whole process. <code>EmaViewModel</code>, <code>EmaViewModelClassic</code>, <code>EmaViewModelAction</code> and
-<code>EmaSource(...)</code> read it when they are created, as the default value of their <code>configuration</code> parameter, which goes
+<p><code>Emanate.configuration</code> is shared by the whole process. <code>EmaViewModel</code> and <code>EmaSource(...)</code> read it when they are created, as the default value of their <code>configuration</code> parameter, which goes
 right after the initial state. Pass one to use it instead:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">LoginViewModel</span><span class="p">(</span>
-<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">loginUseCase</span><span class="p">:</span><span class="w"> </span><span class="n">LoginUseCase</span><span class="p">,</span>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">HomeViewModel</span><span class="p">(</span>
+<span class="w">    </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">getFriendsUseCase</span><span class="p">:</span><span class="w"> </span><span class="n">GetFriendsUseCase</span><span class="p">,</span>
 <span class="w">    </span><span class="n">configuration</span><span class="p">:</span><span class="w"> </span><span class="n">EmaConfiguration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Emanate</span><span class="p">.</span><span class="na">configuration</span>
-<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">LoginState</span><span class="p">,</span><span class="w"> </span><span class="n">LoginAction</span><span class="p">,</span><span class="w"> </span><span class="n">LoginEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">LoginState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">,</span><span class="w"> </span><span class="n">HomeEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">HomeState</span><span class="p">(),</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>The <code>dispatcher</code> and <code>logger</code> parameters take their default value from it, and can still be passed by name to change
-only them. The configuration is kept by the ViewModel and its source, so its error policy, side effect listener,
-<code>destroyedTimeout</code> and broadcaster are the ones of the configuration they received.</p>
+<p>The ViewModel runs on its <code>main</code> dispatcher and logs with its <code>logger</code>. The configuration is kept by the ViewModel and its <code>EmaSource</code>, so its error policy, side effect listener,
+<code>closeTimeout</code> and broadcaster are the ones of the configuration they received.</p>
 <p><strong>Use <code>Emanate.init</code></strong> in an application: it configures every ViewModel in one place, and they don't need any
 parameter. <strong>Pass the configuration</strong> when the one of the application isn't enough or can't be relied on:</p>
 <ul>
@@ -1873,42 +2461,56 @@ parameter. <strong>Pass the configuration</strong> when the one of the applicati
   Emanate passes its own configuration to its ViewModels, so it doesn't clash with an application that also uses
   Emanate, nor depend on whether it was initialized. See <a href="#libraries-and-sdks">Libraries and SDKs</a>.</li>
 <li><strong>A module with a different configuration</strong>, for example its own logger or error policy.</li>
-<li><strong>Dependency injection.</strong> The configuration is one more dependency, provided by Hilt or Koin. See
+<li><strong>Dependency injection.</strong> The configuration is one more dependency, provided by Koin or any other dependency injection framework. See
   <a href="../dependency-injection/#injecting-the-configuration">Dependency injection</a>.</li>
 <li><strong>Tests.</strong> Each test passes its configuration, with the dispatchers of the test, without changing the one of Emanate,
   so the tests can run in parallel. See <a href="../testing/#without-changing-the-configuration-of-emanate">Testing</a>.</li>
 </ul>
-<p>The <a href="../utilities/#use-cases">use cases</a> don't receive the whole configuration, only a dispatcher in the constructor:
-by default the <code>io</code> dispatcher of the configuration of Emanate, so pass the <code>io</code> dispatcher of yours. <code>toStringPretty()</code>
-prints with the <code>printer</code> of the configuration of Emanate unless it receives another one.</p>
+<p>The <a href="../../utils/use-cases/">use cases</a> don't receive the whole configuration, only a dispatcher in the constructor:
+by default the <code>io</code> dispatcher of the configuration of Emanate, so pass the <code>io</code> dispatcher of yours.</p>
 <h2 id="libraries-and-sdks">Libraries and SDKs<a class="headerlink" href="#libraries-and-sdks" title="Permanent link">&para;</a></h2>
 <p>A library built with Emanate can be used by an application that also uses Emanate and calls <code>Emanate.init</code>. To keep
-them apart, the library doesn't call <code>Emanate.init</code> nor use the configuration of Emanate: it creates its own and passes
-it to all its pieces.</p>
+them apart, the library doesn't call <code>Emanate.init</code> nor use the configuration of Emanate: it creates its own and
+passes it to all its pieces.</p>
 <div class="highlight"><pre><span></span><code><span class="kd">internal</span><span class="w"> </span><span class="kd">object</span><span class="w"> </span><span class="nc">MyLibraryEmanate</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaConfiguration</span><span class="p">.</span><span class="na">Android</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">).</span><span class="na">copy</span><span class="p">(</span>
 <span class="w">        </span><span class="n">logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">BuildConfig</span><span class="p">.</span><span class="na">DEBUG</span><span class="p">)</span><span class="w"> </span><span class="n">EmaLogger</span><span class="p">(</span><span class="n">prefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"MYLIB_"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Log</span><span class="p">.</span><span class="na">d</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span><span class="w"> </span><span class="n">message</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">        </span><span class="n">broadcaster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaActionBroadcaster</span><span class="p">()</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">}</span>
+</code></pre></div>
+<h3 id="wrap-the-classes-of-emanate-in-base-classes">Wrap the classes of Emanate in base classes<a class="headerlink" href="#wrap-the-classes-of-emanate-in-base-classes" title="Permanent link">&para;</a></h3>
+<p>Passing the configuration in every ViewModel and use case of the library is easy to forget: one that doesn't receive it
+silently uses the one of the application, or the default one if the application never initialized Emanate. <strong>Don't
+extend the classes of Emanate directly in the library: create a base class for each one that already passes the
+configuration</strong>, and extend only those:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">internal</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">MyLibViewModel</span><span class="o">&lt;</span><span class="n">S</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaAction</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialState</span><span class="p">:</span><span class="w"> </span><span class="n">S</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="o">&gt;</span><span class="p">(</span><span class="n">initialState</span><span class="p">,</span><span class="w"> </span><span class="n">MyLibraryEmanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">)</span>
 
-<span class="kd">internal</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">PayUseCase</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">repository</span><span class="p">:</span><span class="w"> </span><span class="n">PaymentRepository</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="n">EmaUseCase</span><span class="o">&lt;</span><span class="n">Payment</span><span class="p">,</span><span class="w"> </span><span class="n">Receipt</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MyLibraryEmanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">.</span><span class="na">dispatchers</span><span class="p">.</span><span class="na">io</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="kd">internal</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">MyLibUseCase</span><span class="o">&lt;</span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="n">EmaUseCase</span><span class="o">&lt;</span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MyLibraryEmanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">.</span><span class="na">dispatchers</span><span class="p">.</span><span class="na">io</span><span class="p">)</span>
+
+<span class="kd">internal</span><span class="w"> </span><span class="kd">abstract</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">MyLibFlowUseCase</span><span class="o">&lt;</span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="o">&gt;</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="n">EmaFlowUseCase</span><span class="o">&lt;</span><span class="n">I</span><span class="p">,</span><span class="w"> </span><span class="n">O</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MyLibraryEmanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">.</span><span class="na">dispatchers</span><span class="p">.</span><span class="na">io</span><span class="p">)</span>
+</code></pre></div>
+<p>The classes of the library extend them, and there is nothing to remember:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">internal</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">PayUseCase</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">repository</span><span class="p">:</span><span class="w"> </span><span class="n">PaymentRepository</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MyLibUseCase</span><span class="o">&lt;</span><span class="n">Payment</span><span class="p">,</span><span class="w"> </span><span class="n">Receipt</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// ...</span>
 <span class="p">}</span>
 
 <span class="kd">internal</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">PaymentViewModel</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">payUseCase</span><span class="p">:</span><span class="w"> </span><span class="n">PayUseCase</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
-<span class="w">    </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">PaymentState</span><span class="p">,</span><span class="w"> </span><span class="n">PaymentAction</span><span class="p">,</span><span class="w"> </span><span class="n">PaymentEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">PaymentState</span><span class="p">(),</span><span class="w"> </span><span class="n">MyLibraryEmanate</span><span class="p">.</span><span class="na">configuration</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">MyLibViewModel</span><span class="o">&lt;</span><span class="n">PaymentState</span><span class="p">,</span><span class="w"> </span><span class="n">PaymentAction</span><span class="p">,</span><span class="w"> </span><span class="n">PaymentEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">PaymentState</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// ...</span>
 <span class="p">}</span>
 </code></pre></div>
+<p>The base classes are also the place to add what every piece of the library shares, like a plugin that all its
+ViewModels install. If the library creates an <code>EmaSource</code> on its own with <code>EmaSource(...)</code>, wrap it the same way.</p>
 <ul>
-<li><strong>ViewModels and sources</strong> receive the configuration of the library as their <code>configuration</code> parameter.</li>
-<li><strong>Use cases</strong> receive its <code>io</code> dispatcher.</li>
-<li><strong>Printing objects:</strong> <code>toStringPretty(MyLibraryEmanate.configuration.printer)</code>.</li>
 <li><strong>Broadcast actions.</strong> With its own <code>EmaActionBroadcaster</code>, the ViewModels of the library only receive the actions
   broadcast by each other, and the ones of the application don't receive theirs. Keep the shared one,
   <code>EmaActionBroadcaster.Shared</code>, if the library and the application send results to each other.</li>
+<li><strong>Public ViewModels.</strong> If the application must create the ViewModels of the library, expose factories or a public
+  base class of your own, not the classes of Emanate, so the configuration can't be skipped.</li>
 </ul>
 <p>If the application must be able to change something, like the logger, add a function to the library that receives it
 before any of its screens is opened, instead of using <code>Emanate.init</code>.</p>
@@ -1949,7 +2551,7 @@ on a version compatible with the applications that use it.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../../concepts/source/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Source">
+          <a href="../../utils/texts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Texts in the state">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1959,7 +2561,7 @@ on a version compatible with the applications that use it.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Source
+                Texts in the state
               </div>
             </div>
           </a>

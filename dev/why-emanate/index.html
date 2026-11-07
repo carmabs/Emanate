@@ -1,0 +1,1937 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels">
+      
+      
+      
+      
+        <link rel="prev" href="../getting-started/">
+      
+      
+        <link rel="next" href="../concepts/architecture/">
+      
+      
+        
+          <link rel="alternate" href="./" hreflang="en">
+        
+          <link rel="alternate" href="../es/why-emanate/" hreflang="es">
+        
+      
+      
+      <link rel="icon" href="../assets/logo.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Why Emanate - Emanate</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#why-emanate" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Emanate" class="md-header__button md-logo" aria-label="Emanate" data-md-component="logo">
+      
+  <img src="../assets/logo.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Emanate
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Why Emanate
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M2 12a10 10 0 0 0 13 9.54 10 10 0 0 1 0-19.08A10 10 0 0 0 2 12"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="./" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="../es/why-emanate/" hreflang="es" class="md-select__link">
+              Español
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/carmabs/Ema" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carmabs/Ema
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Emanate" class="md-nav__button md-logo" aria-label="Emanate" data-md-component="logo">
+      
+  <img src="../assets/logo.svg" alt="logo">
+
+    </a>
+    Emanate
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/carmabs/Ema" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    carmabs/Ema
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Emanate
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why Emanate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-change-how-a-screen-behaves-just-by-changing-what-you-inject" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Change how a screen behaves just by changing what you inject
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-middlewares-step-in-before-any-action-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Middlewares: step in before any action runs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-plugins-write-cross-cutting-behaviour-once-and-install-it-anywhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Plugins: write cross-cutting behaviour once and install it anywhere
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-concurrency-under-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Concurrency under control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-results-between-screens-as-typed-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Results between screens, as typed actions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-whole-history-of-a-screen-with-no-extra-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The whole history of a screen, with no extra code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-survive-process-death-declaratively" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Survive process death declaratively
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-one-policy-for-every-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. One policy for every error
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-multiplatform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Multiplatform
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-rules-that-make-it-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The rules that make it work
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/state/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    State
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/actions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Actions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/reducers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reducers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/side-effects/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Side effects
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/middlewares/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Middlewares
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/broadcasts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/viewmodel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ViewModel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/source/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EmaSource
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Utils
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Utils
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/use-cases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Use cases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../utils/texts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Texts in the state
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/initializers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Initializers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/process-death/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Surviving process death
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/dependency-injection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dependency injection and environments
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guides/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Compose
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Compose
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compose/screens/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Screens
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compose/navigation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Navigation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compose/back-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Back handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compose/dialogs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dialogs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../compose/permissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Permissions (Android)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../recommendations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Recommendations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-change-how-a-screen-behaves-just-by-changing-what-you-inject" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Change how a screen behaves just by changing what you inject
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-middlewares-step-in-before-any-action-runs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Middlewares: step in before any action runs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-plugins-write-cross-cutting-behaviour-once-and-install-it-anywhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Plugins: write cross-cutting behaviour once and install it anywhere
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-concurrency-under-control" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Concurrency under control
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-results-between-screens-as-typed-actions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Results between screens, as typed actions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-the-whole-history-of-a-screen-with-no-extra-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. The whole history of a screen, with no extra code
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-survive-process-death-declaratively" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Survive process death declaratively
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-one-policy-for-every-error" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. One policy for every error
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-multiplatform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Multiplatform
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-rules-that-make-it-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The rules that make it work
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="why-emanate">Why Emanate<a class="headerlink" href="#why-emanate" title="Permanent link">&para;</a></h1>
+<p>Most architectures tell you where to put your code. Emanate also changes <strong>what your code is made of</strong>.</p>
+<p>In a classic ViewModel the behaviour of a screen is code inside its functions: to change it you edit the ViewModel, add
+an <code>if</code> or mock a whole repository. In Emanate every behaviour is a piece of code that reacts to an action, and every
+piece can be replaced:</p>
+<table>
+<thead>
+<tr>
+<th>Piece</th>
+<th>Runs</th>
+<th>Its job</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Middleware</strong></td>
+<td>First, when an action arrives</td>
+<td>Decide the path of the action: let it continue, change it, delay it or stop it.</td>
+</tr>
+<tr>
+<td><strong>Reducer</strong></td>
+<td>Then, synchronously</td>
+<td>Return the next state. A pure function.</td>
+</tr>
+<tr>
+<td><strong>Side effect</strong></td>
+<td>After the reducers, asynchronously</td>
+<td>Run the business logic and report the result with actions or events.</td>
+</tr>
+<tr>
+<td><strong>Broadcast</strong></td>
+<td>Sent from a side effect</td>
+<td>Send an action to the other screens that listen to its type, like a result for the previous screen.</td>
+</tr>
+<tr>
+<td><strong>Plugin</strong></td>
+<td>Installed in the setup</td>
+<td>Group a set of pieces (middlewares, reducers, side effects) that work together, so they can be reused in different screens, like analytics or the backup of the state.</td>
+</tr>
+</tbody>
+</table>
+<p>A piece can be a lambda written in the screen, a class, or an object received in the constructor. So the behaviour of
+a screen can be composed, replaced and inspected like any other data, and that unlocks things a classic architecture
+can't do without rewriting the screen.</p>
+<h2 id="1-change-how-a-screen-behaves-just-by-changing-what-you-inject">1. Change how a screen behaves just by changing what you inject<a class="headerlink" href="#1-change-how-a-screen-behaves-just-by-changing-what-you-inject" title="Permanent link">&para;</a></h2>
+<p>The ViewModel receives the side effect that loads the friends of the user. Production injects the real one, the demo
+build a mock and the tests a fake. The ViewModel is the same in the three of them.</p>
+<p><img alt="The same ViewModel in three environments" src="../assets/environments.svg" /></p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">HomeViewModel</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">loadFriends</span><span class="p">:</span><span class="w"> </span><span class="n">FriendsEffect</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="n">EmaViewModel</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">,</span><span class="w"> </span><span class="n">HomeEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">HomeState</span><span class="p">())</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">reducers</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="n">sideEffects</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">add</span><span class="p">(</span><span class="n">loadFriends</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Production</span>
+<span class="n">HomeViewModel</span><span class="p">(</span><span class="n">LiveFriends</span><span class="p">(</span><span class="n">getFriendsUseCase</span><span class="p">))</span>
+
+<span class="c1">// Demo build: no backend, a fixed list after half a second</span>
+<span class="n">HomeViewModel</span><span class="p">(</span><span class="n">MockFriends</span><span class="p">(</span><span class="n">friends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">demoFriends</span><span class="p">))</span>
+</code></pre></div>
+<p><strong>Without Emanate</strong> the usual options are an <code>if (isDemo)</code> inside the ViewModel, a mocking library in the tests, or a
+fake repository for the whole app. Here you replace exactly the behaviour you want, and nothing else.
+See <a href="../guides/dependency-injection/">Dependency injection and environments</a>.</p>
+<h2 id="2-middlewares-step-in-before-any-action-runs">2. Middlewares: step in before any action runs<a class="headerlink" href="#2-middlewares-step-in-before-any-action-runs" title="Permanent link">&para;</a></h2>
+<p>A middleware sees every action of its type before the business logic and decides what happens to it, without the
+ViewModel knowing it. Inject them only where you need them:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// Two seconds of latency before every refresh, in the QA build</span>
+<span class="n">middlewareDelayOf</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">&gt;</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">::</span><span class="n">class</span><span class="p">,</span><span class="w"> </span><span class="m">2.</span><span class="n">seconds</span><span class="p">)</span>
+
+<span class="c1">// Every refresh fails, to check the error dialog against the real backend</span>
+<span class="n">middlewareOf</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">&gt;</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">::</span><span class="n">class</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">next</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryFailed</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The same mechanism debounces a search field, stops the actions of a feature behind a flag or an expired session,
+replaces an action with another one, or tracks every action for analytics. Testing loading states and error dialogs
+no longer needs a broken network or a special backend. See <a href="../concepts/middlewares/">Middlewares</a>.</p>
+<h2 id="3-plugins-write-cross-cutting-behaviour-once-and-install-it-anywhere">3. Plugins: write cross-cutting behaviour once and install it anywhere<a class="headerlink" href="#3-plugins-write-cross-cutting-behaviour-once-and-install-it-anywhere" title="Permanent link">&para;</a></h2>
+<p>A plugin is a reusable setup: it groups a set of middlewares, reducers and side effects that work together, and any
+screen installs it in one line. Analytics, logs, session checks, feature flags or the backup of the state are needed
+by many screens, so they are written once, as a plugin.</p>
+<p>This one tracks every action of the screen and when the screen is shown:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">ScreenAnalytics</span><span class="o">&lt;</span><span class="n">S</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="o">&gt;</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">tracker</span><span class="p">:</span><span class="w"> </span><span class="n">Tracker</span><span class="p">,</span><span class="w"> </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">screen</span><span class="p">:</span><span class="w"> </span><span class="kt">String</span><span class="p">)</span><span class="w"> </span><span class="p">:</span>
+<span class="w">    </span><span class="n">EmaSourcePlugin</span><span class="o">&lt;</span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">Nothing</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">    </span><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">install</span><span class="p">(</span><span class="n">setup</span><span class="p">:</span><span class="w"> </span><span class="n">SourceSetupScope</span><span class="o">&lt;</span><span class="n">S</span><span class="p">,</span><span class="w"> </span><span class="n">Nothing</span><span class="p">,</span><span class="w"> </span><span class="n">Nothing</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Sees every action of the screen before the reducers</span>
+<span class="w">        </span><span class="n">setup</span><span class="p">.</span><span class="na">middlewares</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">add</span><span class="o">&lt;</span><span class="n">EmaAction</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">action</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">                </span><span class="n">tracker</span><span class="p">.</span><span class="na">track</span><span class="p">(</span><span class="n">screen</span><span class="p">,</span><span class="w"> </span><span class="n">action</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">simpleName</span><span class="p">.</span><span class="na">orEmpty</span><span class="p">())</span>
+<span class="w">                </span><span class="n">next</span><span class="p">()</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="c1">// Reacts to the lifecycle of the screen</span>
+<span class="w">        </span><span class="n">setup</span><span class="p">.</span><span class="na">sideEffects</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">add</span><span class="o">&lt;</span><span class="n">EmaLifecycle</span><span class="p">.</span><span class="na">Resumed</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">tracker</span><span class="p">.</span><span class="na">screenShown</span><span class="p">(</span><span class="n">screen</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>And any screen installs it:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">plugins</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">add</span><span class="p">(</span><span class="n">ScreenAnalytics</span><span class="o">&lt;</span><span class="n">HomeState</span><span class="o">&gt;</span><span class="p">(</span><span class="n">tracker</span><span class="p">,</span><span class="w"> </span><span class="n">screen</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Home"</span><span class="p">))</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">reducers</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>No inheritance, no annotations and no code generation. See <a href="../concepts/plugins/">Plugins</a>.</p>
+<h2 id="4-concurrency-under-control">4. Concurrency under control<a class="headerlink" href="#4-concurrency-under-control" title="Permanent link">&para;</a></h2>
+<p>Each side effect has built-in mechanisms to manage the work queued for its actions: ignore new actions while one is
+running, cancel the running work when a new action arrives, or run them all in parallel, with timeouts and debounce.
+The classic bugs of a screen (the button tapped twice, the search that shows old results, the request triggered on
+every keystroke) are one parameter away:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sideEffects</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// A second refresh while one is running is ignored</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="o">&gt;</span><span class="p">(</span><span class="n">concurrency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SideEffectConcurrency</span><span class="p">.</span><span class="na">Leading</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="c1">// A new query cancels the previous search</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">QueryWritten</span><span class="o">&gt;</span><span class="p">(</span><span class="n">concurrency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">SideEffectConcurrency</span><span class="p">.</span><span class="na">Latest</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+<span class="n">middlewares</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// Debounce: only the last query of the last 300 ms continues</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">QueryWritten</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">nextAfter</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"search"</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">delay</span><span class="p">(</span><span class="m">300</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>See <a href="../concepts/side-effects/#when-the-same-action-arrives-twice">Side effects</a> and
+<a href="../concepts/middlewares/#waiting-delays-and-debounce">Middlewares</a>.</p>
+<h2 id="5-results-between-screens-as-typed-actions">5. Results between screens, as typed actions<a class="headerlink" href="#5-results-between-screens-as-typed-actions" title="Permanent link">&para;</a></h2>
+<p>A screen can send a result to other screens by broadcasting an action. Every ViewModel that listens to its type
+receives it as one more action of its own, and handles it with its own reducers and side effects. No shared
+ViewModels, no result APIs of the platform and no casts:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// The profile screen broadcasts the friend it created</span>
+<span class="n">sideEffects</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="o">&lt;</span><span class="n">ProfileAction</span><span class="p">.</span><span class="na">SaveClicked</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">broadcast</span><span class="p">(</span><span class="n">ProfileBroadcast</span><span class="p">.</span><span class="na">FriendCreated</span><span class="p">(</span><span class="n">state</span><span class="p">.</span><span class="na">friend</span><span class="p">),</span><span class="w"> </span><span class="n">keepUntilReceived</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// The home screen adds it to its list</span>
+<span class="kd">override</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">setup</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">reducers</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">add</span><span class="o">&lt;</span><span class="n">ProfileBroadcast</span><span class="p">.</span><span class="na">FriendCreated</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">action</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">friends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">.</span><span class="na">friends</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">action</span><span class="p">.</span><span class="na">friend</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">broadcasts</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">listen</span><span class="o">&lt;</span><span class="n">ProfileBroadcast</span><span class="p">.</span><span class="na">FriendCreated</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>With <code>keepUntilReceived</code>, the result waits for the first screen that listens to it, even if that screen is not created
+yet. See <a href="../concepts/broadcasts/">Results between screens</a>.</p>
+<h2 id="6-the-whole-history-of-a-screen-with-no-extra-code">6. The whole history of a screen, with no extra code<a class="headerlink" href="#6-the-whole-history-of-a-screen-with-no-extra-code" title="Permanent link">&para;</a></h2>
+<p>Every action, state change, event and side effect goes through the same pipeline, so everything that happens on the
+screen is traced without writing a line for it. The testing module records that history in order, so a test checks
+the whole flow step by step, with virtual time:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">MockFriends</span><span class="p">(</span><span class="n">friends</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)))</span>
+<span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
+
+<span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
+<span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">FriendClicked</span><span class="p">(</span><span class="n">ana</span><span class="p">))</span>
+<span class="n">advanceUntilIdle</span><span class="p">()</span>
+
+<span class="n">recorder</span><span class="p">.</span><span class="na">assertState</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nb">it</span><span class="p">.</span><span class="na">friends</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="n">recorder</span><span class="p">.</span><span class="na">assertEvents</span><span class="p">(</span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">FriendSelected</span><span class="p">(</span><span class="n">ana</span><span class="p">))</span>
+</code></pre></div>
+<p><code>assertSetup()</code> even fails when a piece can never run, like the reducer of a result that the screen forgot to listen
+to. See <a href="../guides/testing/">Testing</a>.</p>
+<h2 id="7-survive-process-death-declaratively">7. Survive process death declaratively<a class="headerlink" href="#7-survive-process-death-declaratively" title="Permanent link">&para;</a></h2>
+<p>The system can kill your app while the user is in another one. A backup plugin saves the fields you choose and
+restores them when the screen comes back, with no platform code in the ViewModel:</p>
+<div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">add</span><span class="p">(</span><span class="n">backupOf</span><span class="p">(</span><span class="n">stateStore</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">add</span><span class="p">(</span><span class="s">"search"</span><span class="p">,</span><span class="w"> </span><span class="n">save</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">restore</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">saved</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">copy</span><span class="p">(</span><span class="n">query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">saved</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>See <a href="../guides/process-death/">Surviving process death</a>.</p>
+<h2 id="8-one-policy-for-every-error">8. One policy for every error<a class="headerlink" href="#8-one-policy-for-every-error" title="Permanent link">&para;</a></h2>
+<p>Every <code>EmaViewModel</code> logs each action it receives and the state before and after it. The errors of any middleware,
+reducer or side effect go through a single configurable <a href="../guides/configuration/#errors">error policy</a>: fail at
+once while developing, report and keep working in production. A <code>sideEffectListener</code> measures every piece of business
+logic.</p>
+<h2 id="9-multiplatform">9. Multiplatform<a class="headerlink" href="#9-multiplatform" title="Permanent link">&para;</a></h2>
+<p><code>emanate-core</code> is pure Kotlin Multiplatform, with no platform dependency. The same ViewModels run in your Android app,
+in your unit tests and on iOS, so the presentation layer can be shared between both.</p>
+<h2 id="the-rules-that-make-it-work">The rules that make it work<a class="headerlink" href="#the-rules-that-make-it-work" title="Permanent link">&para;</a></h2>
+<p>Emanate stays predictable because it keeps a few rules: the state only changes in the reducers, the view only renders
+and reports, and anything that lasts belongs in the state while anything that happens once is an event. Read them in
+<a href="../concepts/architecture/">Architecture</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer" >
+        
+          
+          <a href="../getting-started/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Getting started">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Getting started
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../concepts/architecture/" class="md-footer__link md-footer__link--next" aria-label="Next: Architecture">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Architecture
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "navigation.footer", "search.highlight", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
