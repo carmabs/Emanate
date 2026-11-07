@@ -9,22 +9,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.window.DialogProperties
 import com.carmabs.emanate.compose.extension.stringResource
 import com.carmabs.emanate.core.model.EmaText
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.dialog.simple.SimpleDialogData
-import com.carmabs.emanate.ui.dialog.simple.SimpleDialogListener
-import com.carmabs.emanate.ui.theme.EmaSampleTheme
+import com.carmabs.emanate.ui.utils.RenderPreview
 
+/**
+ * A dialog with an accept button, and a cancel one only when [onCancelClick] is given.
+ * @param onConfirmClick the accept button is pressed
+ * @param onCancelClick the cancel button is pressed. Without it the dialog has no cancel button
+ * @param onDismiss the user presses back or touches outside of it
+ */
 @Composable
-fun SimpleDialogComposable(dialogData: SimpleDialogData, dialogListener: SimpleDialogListener) {
+fun SimpleDialogComposable(
+    dialogData: SimpleDialogData,
+    onConfirmClick: () -> Unit,
+    onDismiss: () -> Unit,
+    onCancelClick: (() -> Unit)? = null
+) {
     AlertDialog(
-        onDismissRequest = {
-            dialogListener.onBackPressed()
-        },
-        properties = DialogProperties(dismissOnClickOutside = !dialogData.isModal),
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(dismissOnClickOutside = false),
         icon = dialogData.image?.let {
             {
                 Icon(
@@ -41,36 +49,35 @@ fun SimpleDialogComposable(dialogData: SimpleDialogData, dialogListener: SimpleD
             Text(text = dialogData.message.stringResource(), textAlign = TextAlign.Center)
         },
         confirmButton = {
-            TextButton(onClick = { dialogListener.onConfirmClicked() }) {
+            TextButton(onClick = onConfirmClick) {
                 Text(text = stringResource(id = R.string.dialog_accept))
             }
         },
-        dismissButton = if (dialogData.showCancel) {
+        dismissButton = onCancelClick?.let {
             {
-                TextButton(onClick = { dialogListener.onCancelClicked() }) {
+                TextButton(onClick = it) {
                     Text(text = stringResource(id = R.string.dialog_cancel))
                 }
             }
-        } else {
-            null
         }
     )
 }
 
 //region Previews
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewOnDialog() {
-    EmaSampleTheme {
+    RenderPreview {
         SimpleDialogComposable(
-            SimpleDialogData(
+            dialogData = SimpleDialogData(
                 title = EmaText.text("Preview title sample"),
                 message = EmaText.text("Preview message sample"),
-                image = R.drawable.ic_exit,
-                showCancel = true
+                image = R.drawable.ic_exit
             ),
-            SimpleDialogListener.EMPTY
+            onConfirmClick = {},
+            onDismiss = {},
+            onCancelClick = {}
         )
     }
 }

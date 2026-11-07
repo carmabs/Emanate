@@ -1,7 +1,7 @@
 package com.carmabs.app
 
 import android.app.Application
-import com.carmabs.app.di.dataModule
+import com.carmabs.app.di.environmentModule
 import com.carmabs.app.di.uiModule
 import com.carmabs.app.di.useCaseModule
 import com.carmabs.emanate.android.configuration.Android
@@ -27,7 +27,7 @@ class EmaSampleApplication : Application() {
         Emanate.init(EmaConfiguration.Android(debug = BuildConfig.DEBUG))
         startKoin {
             androidContext(this@EmaSampleApplication)
-            modules(dataModule, uiModule, useCaseModule)
+            modules(environmentModule, uiModule, useCaseModule)
         }
     }
 }

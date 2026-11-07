@@ -13,10 +13,19 @@ import com.carmabs.emanate.core.action.EmaAction
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo Benito</a>
  */
 sealed interface HomeAction : EmaAction {
-    data object ProfileClicked : HomeAction
-}
+    data object CreateClicked : HomeAction
 
-/**
- * The friends of the user have been loaded. Only dispatched by the side effects of HomeViewModel.
- */
-internal data class HomeFriendsLoaded(val friends: List<User>) : HomeAction
+    data class DeleteClicked(val user: User) : HomeAction
+
+    data object CloseClicked : HomeAction
+
+    /**
+     * Actions dispatched by the side effects of HomeViewModel to report what they did
+     */
+    sealed interface SideEffects : HomeAction {
+        /**
+         * The friends of the storage have been read
+         */
+        data class FriendsLoaded(val friends: List<User>) : SideEffects
+    }
+}

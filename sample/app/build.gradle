@@ -13,6 +13,29 @@ android {
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
 
+    // Each environment binds its own implementations of the repositories: see the environmentModule of each flavor
+    flavorDimensions = ["environment"]
+    productFlavors {
+        mock {
+            dimension = "environment"
+            applicationIdSuffix = ".mock"
+        }
+        dev {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+        }
+        pro {
+            dimension = "environment"
+        }
+    }
+
+    // The implementations that only an environment uses are in its source set, so the other builds don't have them.
+    // mock and dev share the mock login
+    sourceSets {
+        mock.kotlin.srcDir 'src/mockDev/java'
+        dev.kotlin.srcDir 'src/mockDev/java'
+    }
+
     buildTypes {
         release {
             minifyEnabled = false
@@ -50,4 +73,8 @@ dependencies {
 
     implementation project(rootProject.emanateLibraries.emanateAndroid)
     implementation libs.koin.android
+    implementation libs.kotlinx.coroutines.android
+
+    testImplementation libs.kotlin.test.junit
+    testImplementation libs.kotlinx.coroutines.test
 }

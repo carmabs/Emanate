@@ -1,7 +1,5 @@
 package com.carmabs.emanate.presentation.profile.creation
 
-import com.carmabs.domain.model.Role
-
 /**
  * Created by Carlos Mateo Benito on 23/3/24.
  *
@@ -15,5 +13,5 @@ sealed interface ProfileCreationDialog {
 
     data object BackConfirmation : ProfileCreationDialog
 
-    data class UserCreated(val role: Role) : ProfileCreationDialog
+    data object CreateConfirmation : ProfileCreationDialog
 }

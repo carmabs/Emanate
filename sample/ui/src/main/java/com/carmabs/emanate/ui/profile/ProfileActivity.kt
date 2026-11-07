@@ -4,20 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.koin.android.ext.android.get
 import org.koin.core.parameter.parametersOf
 import com.carmabs.emanate.compose.nav2.emaScreen
 import com.carmabs.emanate.compose.nav2.routeId
-import com.carmabs.emanate.compose.nav2.EmaInitializerSupport
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationInitializer
 import com.carmabs.emanate.presentation.profile.creation.ProfileCreationViewModel
-import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingInitializer
-import com.carmabs.emanate.presentation.profile.onboarding.ProfileOnBoardingViewModel
 import com.carmabs.emanate.ui.profile.creation.ProfileCreationScreenContent
-import com.carmabs.emanate.ui.profile.onboarding.ProfileOnBoardingScreenContent
 import com.carmabs.emanate.ui.theme.EmaSampleTheme
 
 class ProfileActivity : ComponentActivity() {
@@ -32,31 +31,22 @@ class ProfileActivity : ComponentActivity() {
                     ProfileNavigator(navController)
                 }
 
-                NavHost(
-                    navController = navController,
-                    startDestination = ProfileOnBoardingScreenContent::class.routeId
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    emaScreen(
-                        // The home screen opens this activity with the initializer in its intent
-                        initializerSupport = EmaInitializerSupport.fromIntent(
-                            ProfileOnBoardingInitializer.serializer()
-                        ),
-                        screenContent = ProfileOnBoardingScreenContent(),
-                        onEvent = {
-                            navigator.handleProfileOnBoardingEvent(it)
-                        },
-                        viewModel = { get<ProfileOnBoardingViewModel>() }
-                    )
-                    emaScreen(
-                        screenContent = ProfileCreationScreenContent(),
-                        viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
-                        onEvent = {
-                            navigator.handleProfileCreationEvent(it)
-                        },
-                        initializerSupport = EmaInitializerSupport.fromRoute(
-                            ProfileCreationInitializer.serializer()
+                    NavHost(
+                        navController = navController,
+                        startDestination = ProfileCreationScreenContent::class.routeId
+                    ) {
+                        emaScreen(
+                            screenContent = ProfileCreationScreenContent(),
+                            viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
+                            onEvent = {
+                                navigator.handleProfileCreationEvent(it)
+                            }
                         )
-                    )
+                    }
                 }
             }
         }

@@ -39,24 +39,28 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.text.font.FontWeight
 import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.model.EmaText
 import com.carmabs.emanate.presentation.login.LoginAction
 import com.carmabs.emanate.presentation.login.LoginDialog
 import com.carmabs.emanate.presentation.login.LoginState
 import com.carmabs.emanate.sample.ui.R
-import com.carmabs.emanate.ui.base.compose.BaseScreenComposable
+import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.ui.compose.AppButton
-import com.carmabs.emanate.ui.dialog.error.ErrorDialogData
-import com.carmabs.emanate.ui.dialog.error.ErrorDialogListener
-import com.carmabs.emanate.ui.theme.EmaSampleTheme
+import com.carmabs.emanate.ui.compose.EnvironmentLabel
+import com.carmabs.emanate.ui.compose.SimpleDialogComposable
+import com.carmabs.emanate.ui.environment.AppEnvironment
+import com.carmabs.emanate.ui.dialog.simple.SimpleDialogData
+import com.carmabs.emanate.ui.utils.RenderPreview
 
 /**
  * Login of the sample. The messages it shows are events handled where the graph is created.
  */
-class LoginScreenContent : BaseScreenComposable<LoginState, LoginAction>() {
+class LoginScreenContent(private val environment: AppEnvironment) : EmaScreenContent<LoginState, LoginAction> {
 
     @Composable
     override fun onState(state: LoginState, actions: EmaActionDispatcher<LoginAction>) {
@@ -72,23 +76,35 @@ class LoginScreenContent : BaseScreenComposable<LoginState, LoginAction>() {
                     .verticalScroll(rememberScrollState())
                     .padding(dimensionResource(id = R.dimen.screen_padding))
             ) {
-                Spacer(modifier = Modifier.height(32.dp))
-                Image(
-                    modifier = Modifier.size(56.dp),
-                    painter = painterResource(id = R.drawable.ic_ema_logo),
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = stringResource(id = R.string.login_title),
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = stringResource(id = R.string.login_subtitle),
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                // The header is centered: the brand first, so it is clear which app it is, and the welcome below it
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Image(
+                        modifier = Modifier.size(88.dp),
+                        painter = painterResource(id = R.drawable.ic_ema_logo),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = stringResource(id = R.string.ema_sample_name),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(32.dp))
+                    Text(
+                        text = stringResource(id = R.string.login_title),
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.login_subtitle),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 Spacer(modifier = Modifier.height(32.dp))
                 UserField(state, actions)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -98,6 +114,11 @@ class LoginScreenContent : BaseScreenComposable<LoginState, LoginAction>() {
                 Spacer(modifier = Modifier.height(32.dp))
                 DemoCard()
             }
+            // Only the login tells the environment
+            EnvironmentLabel(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                environment = environment
+            )
         }
         state.dialog?.also { StateDialog(it, actions) }
     }
@@ -222,29 +243,23 @@ class LoginScreenContent : BaseScreenComposable<LoginState, LoginAction>() {
     @Composable
     private fun StateDialog(dialog: LoginDialog, actions: EmaActionDispatcher<LoginAction>) {
         when (dialog) {
-            LoginDialog.ErrorBadCredentials -> ShowError(
-                data = ErrorDialogData(
-                    EmaText.id(R.string.login_error_fail_title),
-                    EmaText.id(R.string.login_error_fail)
+            LoginDialog.ErrorBadCredentials -> SimpleDialogComposable(
+                dialogData = SimpleDialogData(
+                    title = EmaText.id(R.string.login_error_fail_title),
+                    message = EmaText.id(R.string.login_error_fail),
+                    image = R.drawable.ic_error
                 ),
-                listener = object : ErrorDialogListener {
-                    override fun onConfirmClicked() {
-                        actions.dispatch(LoginAction.Error.BadCredentialsAccepted)
-                    }
-
-                    override fun onBackPressed() {
-                        actions.dispatch(LoginAction.Error.BackPressed)
-                    }
-                }
+                onConfirmClick = { actions.dispatch(LoginAction.Error.BadCredentialsAccepted) },
+                onDismiss = { actions.dispatch(LoginAction.Error.BackPressed) }
             )
         }
     }
+}
 
-    @Preview
-    @Composable
-    private fun PreviewNormal() {
-        EmaSampleTheme {
-            onState(state = LoginState.DEFAULT, actions = EmaActionDispatcher.EMPTY)
-        }
+@PreviewLightDark
+@Composable
+private fun PreviewNormal() {
+    RenderPreview {
+        LoginScreenContent(AppEnvironment("mock")).onState(state = LoginState.DEFAULT, actions = EmaActionDispatcher.EMPTY)
     }
 }

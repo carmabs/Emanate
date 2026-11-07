@@ -1,11 +1,16 @@
+<img src="docs/assets/logo.svg" alt="Emanate logo" height="80" align="right">
+
 # Emanate
 
 **English** · [Español](README.es.md)
 
-**Emanate** is a small library for building screens with a unidirectional, MVI-style flow:
-a **state** the view renders, **actions** the user performs, and one-shot **events** the view reacts to.
-The ViewModels are pure Kotlin Multiplatform code, the screens are built with Jetpack Compose, and the Android View
-system is supported in its own module.
+**Emanate** is a unidirectional architecture for Kotlin where every behaviour of a screen is a small piece you can
+swap, intercept, reuse and test on its own: a **state** the view renders, **actions** the user performs, one-shot
+**events** the view reacts to, and a ViewModel that handles each action with **middlewares**, **reducers** and
+**side effects**. The ViewModels are pure Kotlin Multiplatform code and the screens are built with Jetpack Compose.
+
+Because the pieces are values, the same screen can call the real API in production, answer with mocked data in a demo
+build, simulate latency or errors in QA and run against a fake in the tests, only by changing what is injected.
 
 ```kotlin
 data class CounterState(val count: Int = 0) : EmaState
@@ -31,7 +36,7 @@ class CounterViewModel :
         }
         sideEffects {
             add<CounterAction.Increment> {
-                if (state.count == 10) postEvent(CounterEvent.LimitReached(10))
+                if (state.count == 10) publish(CounterEvent.LimitReached(10))
             }
         }
     }
@@ -47,12 +52,10 @@ maven { url = uri("https://jitpack.io") }
 
 ```kotlin
 dependencies {
-    // Compose
     implementation("com.github.carmabs.ema:emanate-android:7.0.0")
-    implementation("com.github.carmabs.ema:emanate-compose:7.0.0")
-
-    // Android Views
-    implementation("com.github.carmabs.ema:emanate-android-view:7.0.0")
+    implementation("com.github.carmabs.ema:emanate-compose-android:7.0.0")
+    // Only if your screens are in a Navigation Compose graph
+    implementation("com.github.carmabs.ema:emanate-compose-android-nav2:7.0.0")
 }
 ```
 
@@ -67,17 +70,15 @@ Emanate.init(EmaConfiguration.Android(debug = BuildConfig.DEBUG))
 
 The guide is in [`docs/`](docs/index.md):
 
-- [Getting started](docs/getting-started.md)
+- [Why Emanate](docs/why-emanate.md) and [getting started](docs/getting-started.md)
 - Concepts: [architecture](docs/concepts/architecture.md), [state](docs/concepts/state.md), [actions](docs/concepts/actions.md), [events](docs/concepts/events.md), [ViewModel](docs/concepts/viewmodel.md), [source](docs/concepts/source.md)
-- Guides: [configuration](docs/guides/configuration.md), [initializers](docs/guides/initializers.md), [async work and errors](docs/guides/async-and-errors.md), [testing](docs/guides/testing.md), [Kotlin Multiplatform](docs/guides/multiplatform.md) and more
-- [Compose](docs/compose/screens.md): screens, navigation, back handling, dialogs, saved state and permissions
-- [Android Views](docs/android-view/index.md): Fragments, Activities, dialogs and lists
+- Guides: [configuration](docs/guides/configuration.md), [surviving process death](docs/guides/process-death.md), [dependency injection and environments](docs/guides/dependency-injection.md), [testing](docs/guides/testing.md) and more
+- [Compose](docs/compose/screens.md): screens, navigation, back handling, dialogs and permissions
 - [Recommendations](docs/recommendations.md) and [contributing](docs/contributing.md)
 
 ## Sample
 
 The [`sample/`](sample) app shows every feature working together: a login with validation and dialogs,
-a list with roles, and a Compose flow with navigation, back handling and saved state.
-Its first screen lets you choose the ViewModels of the rest: built with `EmaViewModel`, the recommended way, or with
-the classic `EmaViewModelAction`, so you can compare both.
+a list with roles, three environments (mock, dev and pro) chosen with flavors, and a Compose flow with navigation,
+back handling and saved state.
 Open the `sample` folder in Android Studio and run the `app` module.

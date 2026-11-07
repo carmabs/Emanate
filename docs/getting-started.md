@@ -20,18 +20,16 @@ dependencyResolutionManagement {
 }
 ```
 
-Add the dependencies of your UI technology:
+Add the dependencies:
 
 ```kotlin
 val emanateVersion = "7.0.0"
 
 dependencies {
-    // Compose (recommended)
     implementation("com.github.carmabs.ema:emanate-android:$emanateVersion")
-    implementation("com.github.carmabs.ema:emanate-compose:$emanateVersion")
-
-    // Android Views: Fragments and Activities
-    implementation("com.github.carmabs.ema:emanate-android-view:$emanateVersion")
+    implementation("com.github.carmabs.ema:emanate-compose-android:$emanateVersion")
+    // Only if your screens are in a Navigation Compose graph
+    implementation("com.github.carmabs.ema:emanate-compose-android-nav2:$emanateVersion")
 }
 ```
 
@@ -46,12 +44,21 @@ dependencies {
 ```
 
 `emanate-core` is a Kotlin Multiplatform library, so it can also be used from the `commonMain` of a multiplatform module.
-See [Kotlin Multiplatform](guides/multiplatform.md).
+
+## Modules
+
+| Artifact                       | Use it for                                                                                                                                        |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emanate-core`                 | State, actions, events, ViewModels, `EmaSource`, plugins and use cases. Pure Kotlin Multiplatform.                                                |
+| `emanate-compose-android`      | Jetpack Compose screens, back handling, dialogs, permissions and previews. It doesn't depend on any navigation library.                           |
+| `emanate-compose-android-nav2` | Emanate screens in a Navigation Compose graph (`emaScreen`, `emaDialog`). See [Compose navigation](compose/navigation.md).                        |
+| `emanate-android`              | The integration with the Android platform: configuration, initializers, permissions and the store of the saved state.                             |
+| `emanate-serialization`        | Saves any serializable value of the state across process death. Based on kotlinx.serialization. See the [backup plugin](guides/process-death.md). |
+| `emanate-test`                 | Records and checks `EmaViewModel` and `EmaSource` in your unit tests. See [Testing](guides/testing.md).                                           |
 
 ## Initialize Emanate
 
-Call `Emanate.init` once, when the application starts and before any ViewModel is created.
-`EmaConfiguration.Android(debug)` is the configuration for Android apps:
+Call `Emanate.init` once, when the application starts and before any ViewModel is created:
 
 ```kotlin
 class MyApplication : Application() {
@@ -63,14 +70,14 @@ class MyApplication : Application() {
 }
 ```
 
-Register the application in `AndroidManifest.xml` (`android:name=".MyApplication"`).
-The configuration decides the dispatchers, what happens with the exceptions and where the logs go: with
-`BuildConfig.DEBUG`, debug builds log and fail at once, and release builds don't log and keep working. See [Configuration](guides/configuration.md).
+Register the application in `AndroidManifest.xml` (`android:name=".MyApplication"`). With `BuildConfig.DEBUG`, debug
+builds log every action and fail at once with any exception, and release builds don't log and keep working.
+See [Configuration](guides/configuration.md).
 
 ## Your first screen
 
-A screen is made of a **state**, the **actions** the user can perform, the **events** it can emit
-and a **ViewModel** that connects them. This is a counter.
+A screen is made of a **state**, the **actions** the user can perform, the **events** it can emit and a **ViewModel**
+that connects them. This is a counter.
 
 ```kotlin
 data class CounterState(val count: Int = 0) : EmaState
@@ -90,13 +97,13 @@ class CounterViewModel :
         reducers {
             add<CounterAction> { action ->
                 when (action) {
-                    CounterAction.Increment -> state.copy(count = state.count + 1)
+                    is CounterAction.Increment -> state.copy(count = state.count + 1)
                 }
             }
         }
         sideEffects {
             add<CounterAction.Increment> {
-                if (state.count == LIMIT) postEvent(CounterEvent.LimitReached(LIMIT))
+                if (state.count == LIMIT) publish(CounterEvent.LimitReached(LIMIT))
             }
         }
     }
@@ -107,25 +114,21 @@ class CounterViewModel :
 }
 ```
 
-- The reducer returns the next state for each action, and the view is notified.
-- The side effect runs after the reducer, with the new state, and `postEvent(...)` sends a one-shot event to the view.
-- The ViewModel never touches Android classes, so it can be tested on the JVM.
-
-`EmaViewModel` is the recommended ViewModel. The classic `EmaViewModelAction`, which updates the state imperatively
-in `onAction`, is also available: see [ViewModel](concepts/viewmodel.md).
+- The **reducer** returns the next state for each action, and the view is notified.
+- The **side effect** runs after the reducer, with the new state, and `publish` sends a one-shot event to the view.
+- The ViewModel never touches platform classes, so it can be tested as plain Kotlin and shared between platforms.
 
 ### The screen
 
-A Compose screen is described by an `EmaComposableScreenContent`:
+A Compose screen is described by an `EmaScreenContent`:
 
 ```kotlin
-class CounterScreenContent :
-    EmaComposableScreenContent<CounterState, CounterAction, CounterEvent> {
+class CounterScreenContent : EmaScreenContent<CounterState, CounterAction> {
 
     @Composable
     override fun onState(
         state: CounterState,
-        actions: EmaImmutableActionDispatcher<CounterAction>
+        actions: EmaActionDispatcher<CounterAction>
     ) {
         Column {
             Text(text = state.count.toString())
@@ -134,21 +137,10 @@ class CounterScreenContent :
             }
         }
     }
-
-    override suspend fun onEvent(
-        context: Context,
-        event: CounterEvent,
-        actions: EmaImmutableActionDispatcher<CounterAction>
-    ) {
-        when (event) {
-            is CounterEvent.LimitReached ->
-                Toast.makeText(context, "Limit: ${event.limit}", Toast.LENGTH_SHORT).show()
-        }
-    }
 }
 ```
 
-And it is added to the navigation graph of an activity:
+And it is added to the navigation graph of an activity, where its events are handled:
 
 ```kotlin
 class MainActivity : ComponentActivity() {
@@ -161,11 +153,17 @@ class MainActivity : ComponentActivity() {
                 navController = navController,
                 startDestination = CounterScreenContent::class.routeId
             ) {
-                createComposableScreen(
+                emaScreen(
                     screenContent = CounterScreenContent(),
                     viewModel = { CounterViewModel() },
                     onEvent = { event ->
-                        // Navigation decisions go here
+                        when (event) {
+                            is CounterEvent.LimitReached -> Toast.makeText(
+                                this@MainActivity,
+                                "Limit: ${event.limit}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 )
             }
@@ -175,16 +173,36 @@ class MainActivity : ComponentActivity() {
 ```
 
 `viewModel` is a lambda that creates the ViewModel. Use your dependency injection framework there, or create it
-directly as above: see [Dependency injection](guides/dependency-injection.md). More in [Compose screens](compose/screens.md).
+directly as above: see [Dependency injection](guides/dependency-injection.md). `onEvent` receives every event of the
+screen, to show a message, as here, or to navigate. More in [Compose screens](compose/screens.md).
 
-If you build the UI with Fragments and Activities, the same screen is written in
-[Android Views](android-view/screens.md).
+### The preview
+
+`onState` only draws the state it receives, so a preview is one call: write it inside the screen content, give it
+any state and an `EmaActionDispatcher.EMPTY`, which ignores the actions. No ViewModel, no fake data source:
+
+```kotlin
+class CounterScreenContent : EmaScreenContent<CounterState, CounterAction> {
+
+    // onState, as above
+
+    @Preview
+    @Composable
+    private fun PreviewCounter() {
+        onState(state = CounterState(count = 7), actions = EmaActionDispatcher.EMPTY)
+    }
+}
+```
+
+The IDE creates the screen content to draw the preview, so keep its constructor without parameters. Add one preview
+per interesting state (empty, loading, an error dialog...) to see every case of the screen at once.
 
 ## What just happened
 
 1. The user taps the button: the screen calls `actions.dispatch(Increment)`.
 2. The reducer of the ViewModel computes the next state.
 3. The screen receives the new state and recomposes.
-4. On the tenth tap the side effect also posts `LimitReached`, which the screen shows once and consumes.
+4. On the tenth tap the side effect also publishes `LimitReached`, which the screen shows once and consumes.
 
-Continue with [Architecture](concepts/architecture.md).
+Continue with [Why Emanate](why-emanate.md) to see what else the same pieces can do, or with
+[Architecture](concepts/architecture.md).

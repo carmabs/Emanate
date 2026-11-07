@@ -1,0 +1,93 @@
+/* Names of code in the tables stay in one line: they are read as a unit and a break in the middle of one is confusing */
+.md-typeset table:not([class]) td code,
+.md-typeset table:not([class]) th code,
+.md-typeset table:not([class]) td:first-child,
+.md-typeset table:not([class]) th:first-child {
+  white-space: nowrap;
+}
+
+/* Short texts are not squeezed by the wide columns next to them */
+.md-typeset table:not([class]) th,
+.md-typeset table:not([class]) td {
+  min-width: 8.5rem;
+}
+
+/* Colors of the logo: the header is a soft lavender with a dark ink so the logo shows, and the indigo and violet of the logo are the accents */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color: #eeebff;
+  --md-primary-fg-color--light: #f5f3ff;
+  --md-primary-fg-color--dark: #e2deff;
+  --md-primary-bg-color: #1e1b4b;
+  --md-primary-bg-color--light: #3c3a78;
+  --md-accent-fg-color: #7c3aed;
+  --md-typeset-a-color: #3c40b3;
+}
+
+[data-md-color-scheme="default"] .md-header {
+  box-shadow: 0 1px 0 #d9d4fb;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: #0f1729;
+  --md-primary-fg-color--light: #1a2440;
+  --md-primary-fg-color--dark: #0a1020;
+  --md-primary-bg-color: #e6e9ff;
+  --md-primary-bg-color--light: #aab1f5;
+  --md-accent-fg-color: #a78bfa;
+  --md-typeset-a-color: #8e96ff;
+  --md-default-bg-color: #0a1220;
+}
+
+/* Header controls: search, then the language as a small code, then the theme toggle at the end */
+.md-header__inner > label[for="__search"] { order: 1; }
+.md-header__inner > .md-search { order: 1; }
+.md-header__inner > .md-header__option:has(.md-select) { order: 2; margin-left: 0.2rem; }
+.md-header__inner > form[data-md-component="palette"] { order: 3; margin: 0 0.2rem 0 0.4rem; }
+
+.md-select > .md-header__button {
+  width: auto;
+  height: 1.5rem;
+  margin: 0.45rem 0.3rem;
+  padding: 0 0.55rem;
+  border: 1px solid currentColor;
+  border-radius: 0.4rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.4rem;
+  opacity: 0.8;
+}
+.md-select > .md-header__button:hover { opacity: 1; }
+.md-select > .md-header__button svg { display: none; }
+html[lang="en"] .md-select > .md-header__button::after { content: "EN"; }
+html[lang="es"] .md-select > .md-header__button::after { content: "ES"; }
+
+/* Logo and name together, and a bit bigger */
+.md-header__button.md-logo {
+  padding: 0.2rem 0 0.2rem 0.2rem;
+  margin-right: 0;
+}
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 1.7rem;
+  width: auto;
+}
+.md-header__title {
+  margin-left: 0;
+}
+
+/* On small screens the logo is shown and the name is left out: it would be cut, and the logo already says it */
+@media screen and (max-width: 76.1875em) {
+  .md-header__button.md-logo {
+    display: block;
+  }
+  .md-header__title {
+    margin-left: 0.2rem;
+  }
+  .md-header__topic:first-child {
+    display: none;
+  }
+  .md-header__inner > label[for="__drawer"] {
+    order: -1;
+  }
+}

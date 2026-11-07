@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icon of the system splash. It is drawn in a frame of 288dp, and the logo is 144dp in the center, the same as in
+SplashScreenContent -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+    <group
+        android:scaleX="0.4114"
+        android:scaleY="0.4114"
+        android:translateX="82.29"
+        android:translateY="72">
+        <path android:pathData="M58.67,207.1a91.33,91.33 0,1 0,182.66 0a91.33,91.33 0,1 0,-182.66 0z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="radial"
+                    android:centerX="151.54"
+                    android:centerY="184.92"
+                    android:gradientRadius="118.7"
+                    android:startColor="#E0A3FF"
+                    android:endColor="#A24DF0" />
+            </aapt:attr>
+        </path>
+        <path android:pathData="m53.3,193.26h61.37c3.06,0,5.54,2.47,5.54,5.53,0,.79-.17,1.56-.49,2.28-7.54,16.72-.09,36.39,16.63,43.92,16.72,7.54,36.39.09,43.92-16.63,3.91-8.68,3.91-18.62,0-27.29-1.26-2.79-.02-6.06,2.77-7.32.72-.32,1.49-.49,2.28-.49h61.37c4.4,0,8.04,3.43,8.29,7.82,3.33,57.98-40.98,107.69-98.96,111.02-57.98,3.33-107.69-40.98-111.02-98.96-.23-4.02-.23-8.04,0-12.06.25-4.39,3.89-7.82,8.29-7.82Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="149.39"
+                    android:startY="161.64"
+                    android:endX="149.39"
+                    android:endY="312.06"
+                    android:startColor="#5EA6FF"
+                    android:endColor="#2563EB" />
+            </aapt:attr>
+        </path>
+        <path android:pathData="m146.01,40.73c.63-2.2,2.93-3.48,5.13-2.85,1.38.39,2.46,1.47,2.85,2.85,12.37,43.12,50.4,57.32,84.06,108.87,4.97,7.61,8.93,15.83,11.78,24.45,1.44,4.35-.92,9.05-5.27,10.49-.84.28-1.72.42-2.61.42h-76.04c-1.91,0-3.46,1.55-3.46,3.46v2.81c0,1.15.57,2.22,1.52,2.86,11.39,7.72,14.36,23.21,6.64,34.59-7.72,11.39-23.21,14.36-34.59,6.64-11.39-7.72-14.36-23.21-6.64-34.59,1.77-2.61,4.03-4.87,6.64-6.64.95-.64,1.52-1.72,1.52-2.86v-2.81c0-1.91-1.55-3.46-3.46-3.46H58.04c-4.59,0-8.3-3.72-8.3-8.3,0-.89.14-1.77.42-2.61,2.85-8.62,6.82-16.84,11.78-24.45,33.67-51.55,71.69-65.75,84.06-108.87Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="149.39"
+                    android:startY="38.26"
+                    android:endX="149.39"
+                    android:endY="216.83"
+                    android:startColor="#7C83FF"
+                    android:endColor="#4338CA" />
+            </aapt:attr>
+        </path>
+    </group>
+</vector>

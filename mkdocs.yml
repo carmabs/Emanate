@@ -1,24 +1,26 @@
 site_name: Emanate
-site_description: A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels and Android Views
+site_description: A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels
 repo_url: https://github.com/carmabs/Ema
 repo_name: carmabs/Ema
 
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/weather-night
+        icon: material/moon-waning-crescent
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/weather-sunny
+        icon: material/white-balance-sunny
         name: Switch to light mode
   features:
     - navigation.sections
@@ -27,7 +29,11 @@ theme:
     - search.highlight
     - content.code.copy
 
+extra_css:
+  - assets/extra.css
+
 markdown_extensions:
+  - admonition
   - tables
   - toc:
       permalink: true
@@ -58,75 +64,74 @@ plugins:
         - locale: es
           name: Español
           build: true
-          site_description: Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform y vistas de Android
+          site_description: Una pequeña librería para pantallas con un flujo MVI, con Jetpack Compose, ViewModels Kotlin Multiplatform
           nav_translations:
             Home: Inicio
             Getting started: Primeros pasos
+            Why Emanate: Por qué Emanate
             Concepts: Conceptos
             Architecture: Arquitectura
             State: Estado
             Actions: Acciones
             Events: Eventos
-            Source: Fuente
+            Reducers: Reducers
+            Side effects: Side effects
+            Middlewares: Middlewares
+            Broadcasts: Broadcasts
+            Plugins: Plugins
+            ViewModel: ViewModel
+            EmaSource: EmaSource
+            Utils: Utilidades
+            Use cases: Casos de uso
+            Results: Resultados
+            Texts in the state: Textos en el estado
             Guides: Guías
             Configuration: Configuración
             Initializers: Inicializadores
-            Results between screens: Resultados entre pantallas
-            Async work and errors: Trabajo asíncrono y errores
-            Dependency injection: Inyección de dependencias
-            Permissions: Permisos
+            Surviving process death: Sobrevivir a la muerte del proceso
+            Dependency injection and environments: Inyección de dependencias y entornos
             Testing: Testing
-            Kotlin Multiplatform: Kotlin Multiplatform
-            Utilities: Utilidades
+            Compose: Compose
             Screens: Pantallas
             Navigation: Navegación
             Back handling: Botón atrás
             Dialogs: Diálogos
-            Saving state: Guardar el estado
-            Android Views: Vistas de Android
-            Overview: Introducción
-            Fragments and Activities: Fragments y Activities
-            Navigation and back handling: Navegación y botón atrás
-            Lists: Listas
+            Permissions (Android): Permisos (Android)
             Recommendations: Recomendaciones
             Contributing: Contribuir
 
 nav:
   - Home: index.md
   - Getting started: getting-started.md
+  - Why Emanate: why-emanate.md
   - Concepts:
       - Architecture: concepts/architecture.md
       - State: concepts/state.md
       - Actions: concepts/actions.md
       - Events: concepts/events.md
+      - Reducers: concepts/reducers.md
+      - Side effects: concepts/side-effects.md
+      - Middlewares: concepts/middlewares.md
+      - Broadcasts: concepts/broadcasts.md
+      - Plugins: concepts/plugins.md
       - ViewModel: concepts/viewmodel.md
-      - Source: concepts/source.md
+      - EmaSource: concepts/source.md
+  - Utils:
+      - Use cases: utils/use-cases.md
+      - Results: utils/results.md
+      - Texts in the state: utils/texts.md
   - Guides:
       - Configuration: guides/configuration.md
       - Initializers: guides/initializers.md
-      - Results between screens: guides/results-between-screens.md
-      - Async work and errors: guides/async-and-errors.md
-      - Dependency injection: guides/dependency-injection.md
-      - Permissions: guides/permissions.md
+      - Surviving process death: guides/process-death.md
+      - Dependency injection and environments: guides/dependency-injection.md
       - Testing: guides/testing.md
-      - Kotlin Multiplatform: guides/multiplatform.md
-      - Utilities: guides/utilities.md
   - Compose:
       - Screens: compose/screens.md
       - Navigation: compose/navigation.md
       - Back handling: compose/back-handling.md
       - Dialogs: compose/dialogs.md
-      - Saving state: compose/save-state.md
-      - Permissions: compose/permissions.md
-      - Utilities: compose/utilities.md
-  - Android Views:
-      - Overview: android-view/index.md
-      - Fragments and Activities: android-view/screens.md
-      - Navigation and back handling: android-view/navigation.md
-      - Dialogs: android-view/dialogs.md
-      - Lists: android-view/lists.md
-      - Permissions: android-view/permissions.md
-      - Utilities: android-view/utilities.md
+      - Permissions (Android): compose/permissions.md
   - Recommendations: recommendations.md
   - Contributing: contributing.md
 

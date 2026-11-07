@@ -1,30 +1,31 @@
-# Dependency injection
+# Dependency injection and environments
 
 Emanate does not depend on any dependency injection framework. Wherever it needs a ViewModel, it asks you for it with a
-function, so you can use Koin, Hilt, Kodein, a manual container or plain constructors.
+function, so you can use Koin, a manual container or plain constructors.
 
 ```kotlin
-// Compose
-createComposableScreen(
-    screenContent = LoginScreenContent(),
-    viewModel = { LoginViewModel(loginUseCase, LoginState.DEFAULT) },
+emaScreen(
+    screenContent = HomeScreenContent(),
+    viewModel = { HomeViewModel(getFriendsUseCase, HomeState()) },
     onEvent = { /* ... */ }
 )
-
-// Android Views
-override fun provideViewModel(store: EmaStateStore): LoginViewModel = LoginViewModel(loginUseCase, LoginState.DEFAULT)
 ```
+
+And because the behaviour of a screen is a list of pieces (middlewares, reducers and side effects) that
+[can be replaced](../concepts/viewmodel.md#pieces-are-values), the same injection decides **how the screen behaves**:
+the real backend in production, mocked data in a development build, latency or errors in QA, a fake in the tests. The
+ViewModel, the screen and the rest of the app stay exactly the same.
 
 ## One ViewModel per screen
 
 Emanate calls the function once, when the screen is opened for the first time, and keeps the ViewModel while the screen
-exists: see [How the ViewModel is kept alive](../concepts/viewmodel.md#how-the-viewmodel-is-kept-alive).
+exists: see [How the ViewModel is kept alive](../concepts/viewmodel.md#the-viewmodel-and-its-screen).
 The function must create the ViewModel, not return one that already exists, so each screen gets its own. A singleton
 would be shared by every screen of that type and would keep the state of a screen that was already closed.
 
 ## With Koin
 
-This is how the `sample/` app does it. Start Koin after initializing Emanate:
+This is how the `sample` app does it. Start Koin after initializing Emanate:
 
 ```kotlin
 class EmaSampleApplication : Application() {
@@ -40,86 +41,334 @@ class EmaSampleApplication : Application() {
 }
 ```
 
-Declare the ViewModels as `factory`, so each screen gets its own. The initial state can be injected too, which
-keeps the default state in one place:
+Repositories are usually singletons and use cases are created when needed. Declare the ViewModels as `factory`, so
+each screen gets its own. The initial state can be injected too, which keeps the default state in one place:
 
 ```kotlin
+val dataModule = module {
+    single<Repository> { RemoteRepository() }
+}
+
+val useCaseModule = module {
+    factory { GetFriendsUseCase(get()) }
+}
+
 val uiModule = module {
-    factoryOf(::LoginViewModel)
     factoryOf(::HomeViewModel)
-
-    factory { LoginState.DEFAULT }
-    factory { HomeState.DEFAULT }
+    factory { HomeState() }
 }
 ```
 
 ```kotlin
-// Compose
-createComposableScreen(
-    screenContent = ProfileCreationScreenContent(),
-    viewModel = { get<ProfileCreationViewModel>() },
+emaScreen(
+    screenContent = HomeScreenContent(),
+    viewModel = { get<HomeViewModel>() },
     onEvent = { /* ... */ }
 )
-
-// Android Views
-override fun provideViewModel(store: EmaStateStore): LoginViewModel = get()
 ```
 
-## The store of a backup
+### The store of a backup
 
-A ViewModel that saves part of its state with a backup receives its `EmaStateStore` in the constructor. The function
-that creates the ViewModel receives the store of the screen, so pass it on:
-
-```kotlin
-class ProfileCreationViewModel(
-    initialDataState: ProfileCreationState,
-    private val stateStore: EmaStateStore
-) : EmaViewModel<ProfileCreationState, ProfileCreationAction, ProfileCreationEvent>(initialDataState) {
-
-    override fun setup() = source {
-        install(backupOf(stateStore) { /* ... */ })
-    }
-}
-
-// Compose
-createComposableScreen(
-    screenContent = ProfileCreationScreenContent(),
-    viewModel = { store -> ProfileCreationViewModel(ProfileCreationState.DEFAULT, store) },
-    onEvent = { /* ... */ }
-)
-
-// Android Views
-override fun provideViewModel(store: EmaStateStore) = ProfileCreationViewModel(ProfileCreationState.DEFAULT, store)
-```
-
-With Koin, pass it as a parameter:
+A ViewModel that [survives the death of the process](process-death.md) receives its `EmaStateStore` in the
+constructor. The function that creates the ViewModel receives the store of the screen, so pass it on. With Koin, as a
+parameter:
 
 ```kotlin
 val uiModule = module {
-    factory { (stateStore: EmaStateStore) -> ProfileCreationViewModel(get(), stateStore) }
+    factory { (stateStore: EmaStateStore) -> HomeViewModel(get(), stateStore) }
 }
 
-viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } }
+emaScreen(
+    screenContent = HomeScreenContent(),
+    viewModel = { store -> get<HomeViewModel> { parametersOf(store) } },
+    onEvent = { /* ... */ }
+)
 ```
 
 On the platforms without a store, or in a test that doesn't check the saved state, pass `EmaStateStore.None`.
 
-## Data and use cases
+## Injecting pieces
 
-Repositories are usually singletons and use cases are created when needed:
+Besides use cases, a ViewModel can receive its middlewares, reducers and side effects. A ViewModel that **receives** a
+piece instead of declaring it doesn't know which one it gets.
+
+![The same ViewModel in three environments](../assets/environments.svg)
+
+The home screen loads the friends of the user. Take the side effect that loads them out of the ViewModel, as a class
+that implements `SideEffect`. A type alias keeps the signatures short:
 
 ```kotlin
-val dataModule = module {
-    single<Repository> { MockRepository() }
-}
+typealias FriendsEffect = SideEffect<HomeState, HomeAction, HomeEvent, HomeAction.RefreshRequested>
 
-val useCaseModule = module {
-    factory { LoginUseCase(get()) }
-    factory { GetUserFriendsUseCase(get()) }
+class LiveFriends(private val getFriendsUseCase: GetFriendsUseCase) : FriendsEffect {
+
+    override val actionType = HomeAction.RefreshRequested::class
+    override val concurrency = SideEffectConcurrency.Leading
+
+    override suspend fun SideEffectScope<HomeState, HomeAction, HomeEvent>.invoke(action: HomeAction.RefreshRequested) {
+        dispatch(HomeAction.SideEffects.QueryStarted)
+        getFriendsUseCase(GetFriendsUseCase.Input(state.query))
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+    }
 }
 ```
 
-The ViewModels receive the use cases in the constructor, so they can receive fakes in the [tests](testing.md).
+The ViewModel receives it and installs it with `add`. Middlewares can be received the same way:
+
+```kotlin
+class HomeViewModel(
+    private val loadFriends: FriendsEffect,
+    private val tuning: List<EmaMiddleware<HomeState, HomeAction, *>> = emptyList(),
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
+
+    override fun setup() = source {
+        // Before anything else, so they see every action first
+        middlewares(MiddlewarePosition.First) {
+            tuning.forEach { add(it) }
+        }
+        reducers {
+            add<HomeAction> { action ->
+                when (action) {
+                    is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
+                    is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    // ...
+                }
+            }
+        }
+        sideEffects {
+            add(loadFriends)
+            add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
+        }
+    }
+}
+```
+
+A mock is one more implementation of the same piece. It dispatches the same actions as the real one, so the rest of the
+screen can't tell the difference:
+
+```kotlin
+class MockFriends(
+    private val friends: List<User>?,
+    private val latency: Duration = 500.milliseconds
+) : FriendsEffect {
+
+    override val actionType = HomeAction.RefreshRequested::class
+    override val concurrency = SideEffectConcurrency.Leading
+
+    override suspend fun SideEffectScope<HomeState, HomeAction, HomeEvent>.invoke(action: HomeAction.RefreshRequested) {
+        dispatch(HomeAction.SideEffects.QueryStarted)
+        delay(latency)
+        dispatch(if (friends != null) HomeAction.SideEffects.QueryLoaded(friends) else HomeAction.SideEffects.QueryFailed)
+    }
+}
+```
+
+`MockFriends(friends = null)` shows the error dialog, `MockFriends(emptyList())` the empty list and
+`MockFriends(hundredFriends)` a long one. The reducers and the events don't change: the screen still shows its loading
+state, its error dialog and its navigation exactly as in production.
+
+## Two behaviours by flavor on Android: dev and pro
+
+This example is specific to Android, the only platform with product flavors. On the other platforms you get the same
+result by choosing the modules in each target, or with a manual factory.
+
+Decide the pieces where the ViewModel is created: in the dependency injection of each build. With two Android flavors,
+`dev` works without a backend and `pro` calls the real one:
+
+![Android flavors dev and pro choose different pieces for the same ViewModel](../assets/flavors.svg)
+
+```kotlin
+// build.gradle.kts of the app
+android {
+    flavorDimensions += "environment"
+    productFlavors {
+        create("dev") { dimension = "environment" }
+        create("pro") { dimension = "environment" }
+    }
+}
+```
+
+The main source set declares what both builds share, and the source set of each flavor declares a module with the
+same name and its own pieces:
+
+```kotlin
+// src/main: the same in every build
+val homeModule = module {
+    factory {
+        HomeViewModel(loadFriends = get(), tuning = get(named("homeTuning")), initialState = get())
+    }
+}
+
+// src/pro: the real backend
+val environmentModule = module {
+    factory<FriendsEffect> { LiveFriends(get()) }
+    factory<List<EmaMiddleware<HomeState, HomeAction, *>>>(named("homeTuning")) { emptyList() }
+}
+
+// src/dev: mocked friends and a slow network
+val environmentModule = module {
+    factory<FriendsEffect> { MockFriends(friends = demoFriends) }
+    factory<List<EmaMiddleware<HomeState, HomeAction, *>>>(named("homeTuning")) {
+        listOf(middlewareDelayOf(HomeAction.RefreshRequested::class, 2.seconds))
+    }
+}
+```
+
+```kotlin
+startKoin {
+    modules(dataModule, useCaseModule, homeModule, environmentModule)
+}
+```
+
+Each build compiles only the `environmentModule` of its flavor, so the mocks never reach the `pro` build. The list of
+middlewares has a name because Koin can't tell two `List` types apart. The same works
+with build types (`debug`, `qa`, `release`), with any other dependency injection framework, or with a manual factory.
+
+### The environments of the sample
+
+The `sample` app applies this idea to its repositories, with three flavors. Each one has its own `environmentModule` in
+`src/<flavor>` that binds the two repositories, and an `AppEnvironment` that the login screen shows as a label in the corner, except in `pro`:
+
+| Flavor | `LoginRepository` | `FriendsRepository` | For |
+|--------|-------------------|---------------------|-----|
+| `mock` | `MockLoginRepository`, instant | `InMemoryFriendsRepository` with three friends, nothing saved | Demos and working offline: it always starts the same |
+| `dev`  | `MockLoginRepository`, 2 seconds | `DelayedFriendsRepository` over `MapFriendsRepository` | Seeing the loading states and the animations of a slow network |
+| `pro`  | `ApiLoginRepository` over a `LoginApi` | `MapFriendsRepository` | The real path: the `LoginApi` is the piece a network client replaces |
+
+```kotlin
+// app/src/mock
+val environmentModule = module {
+    single { AppEnvironment("mock") }
+    single<LoginRepository> { MockLoginRepository(latency = ZERO) }
+    single<FriendsRepository> { InMemoryFriendsRepository(demoFriends) }
+}
+```
+
+The use cases, the ViewModels and the screens are the same in the three builds. The repositories are named after the
+kind of implementation they are, not with an `Impl` suffix. Each implementation lives in the source set of the
+environment that uses it (`MockLoginRepository` in `src/mockDev`, shared by `mock` and `dev`), so the production build
+doesn't carry classes it doesn't use; the `pro` label tone is `Invisible`, so nothing is drawn there. Choose the variant in Build Variants of Android Studio, or
+with `./gradlew :app:assembleMockDebug`. Each flavor has its own application id, so the three can be installed together.
+
+## What an environment can change
+
+You replace exactly the behaviour you want to change, at the size you want: one response, one delay, one rule. Without
+Emanate, this usually means an `if (isDemo)` inside the ViewModel, a fake implementation of a whole repository, or a
+mocking library that only works in the tests.
+
+### Latency
+
+`middlewareDelayOf` delays the actions of a type before they reach the reducers and the side effects, to see every
+loading state as a slow network would show it:
+
+```kotlin
+val slowRefresh = middlewareDelayOf<HomeState, HomeAction, HomeAction.RefreshRequested>(
+    HomeAction.RefreshRequested::class,
+    2.seconds
+)
+```
+
+With `nextAfter`, a middleware can also decide the delay, for example a random one for every action:
+
+```kotlin
+val randomLatency = middlewareOf<HomeState, HomeAction, EmaAction>(EmaAction::class) {
+    nextAfter { delay(Random.nextLong(200, 1500)) }
+}
+```
+
+### Errors and disabled features
+
+A middleware can replace an action with `next(action)`. This one turns every refresh into a failure, so the error
+dialog can be checked in a build that talks to the real backend:
+
+```kotlin
+val failingRefresh = middlewareOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction.RefreshRequested::class) {
+    next(HomeAction.SideEffects.QueryFailed)
+}
+```
+
+And one that doesn't call `next` stops the action: it never reaches the reducers nor the side effects. For example, to
+keep a feature disabled in a build:
+
+```kotlin
+val profilesDisabled = middlewareOf<HomeState, HomeAction, HomeAction.FriendClicked>(HomeAction.FriendClicked::class) {
+    // Not calling next: the profiles can't be opened in this build
+}
+```
+
+### A different business rule
+
+Reducers can be replaced too, to change a business rule in one build. A development build can give every user the
+administrator role, to show the screens that only administrators see, without a special account:
+
+```kotlin
+class HomeViewModel(
+    private val userReducer: EmaReducer<HomeState, HomeInitializer> = reducerOf(HomeInitializer::class) { initializer ->
+        when (initializer) {
+            is HomeInitializer.HomeUser -> state.copy(user = initializer.user)
+        }
+    }
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+
+    override fun setup() = source {
+        reducers { add(userReducer) }
+    }
+}
+
+// dev
+HomeViewModel(
+    userReducer = reducerOf(HomeInitializer::class) { initializer ->
+        when (initializer) {
+            is HomeInitializer.HomeUser -> state.copy(user = initializer.user.copy(role = Role.ADMIN))
+        }
+    }
+)
+```
+
+### The starting state
+
+For QA, open a screen already in the state you want to check, without repeating the steps that lead to it. Receive
+the initial state in the constructor, with the usual one as default, and pass the one you need:
+
+```kotlin
+class HomeViewModel(
+    private val loadFriends: FriendsEffect,
+    initialState: HomeState = HomeState()
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
+    // ...
+}
+
+// QA: a search with no results
+HomeViewModel(
+    loadFriends = MockFriends(friends = emptyList()),
+    initialState = HomeState(query = "Zoe", friends = emptyList())
+)
+```
+
+With the environment modules of the [flavors](#two-behaviours-by-flavor-on-android-dev-and-pro), each build provides its
+own state and the `homeModule` of `src/main` passes it with `initialState = get()`:
+
+```kotlin
+// src/pro
+val environmentModule = module {
+    factory { HomeState() }
+}
+
+// src/dev
+val environmentModule = module {
+    factory { HomeState(query = "Zoe", friends = emptyList()) }
+}
+```
+
+The state is built by hand, so keep it a valid one.
+
+### The tests
+
+The tests create the ViewModel with the pieces they need, with no mocking library and no device:
+`HomeViewModel(loadFriends = MockFriends(friends = null))`. See [Testing](testing.md#swapping-pieces-in-the-tests).
 
 ## Injecting the configuration
 
@@ -128,10 +377,10 @@ instead, for example in a library that can't call `Emanate.init` or in a module 
 in the constructor and pass it to the ViewModel. See [Explicit configuration](configuration.md#explicit-configuration).
 
 ```kotlin
-class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
+class HomeViewModel(
+    private val getFriendsUseCase: GetFriendsUseCase,
     configuration: EmaConfiguration
-) : EmaViewModel<LoginState, LoginAction, LoginEvent>(LoginState.DEFAULT, configuration)
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState(), configuration)
 ```
 
 With Koin, declare it as a `single`:
@@ -139,20 +388,7 @@ With Koin, declare it as a `single`:
 ```kotlin
 val uiModule = module {
     single { EmaConfiguration.Android(debug = BuildConfig.DEBUG) }
-    factoryOf(::LoginViewModel)
-}
-```
-
-With Hilt, provide it from a module, and add `@Inject` to the constructor of the ViewModel:
-
-```kotlin
-@Module
-@InstallIn(SingletonComponent::class)
-object EmanateModule {
-
-    @Provides
-    @Singleton
-    fun provideConfiguration(): EmaConfiguration = EmaConfiguration.Android(debug = BuildConfig.DEBUG)
+    factoryOf(::HomeViewModel)
 }
 ```
 
@@ -160,6 +396,22 @@ The use cases only receive the `io` dispatcher of the configuration, in the cons
 
 ```kotlin
 val useCaseModule = module {
-    factory { LoginUseCase(get(), get<EmaConfiguration>().dispatchers.io) }
+    factory { GetFriendsUseCase(get(), get<EmaConfiguration>().dispatchers.io) }
 }
 ```
+
+## Guidelines
+
+- **Declare the ViewModel as `factory`.** Each screen needs its own instance; a `single` would share the state of a
+  screen that was already closed.
+- **Inject the pieces, not the ViewModel, and only the ones that an environment may change.** Receive in the
+  constructor the side effect of the backend, the middlewares or the initial state, with the production ones as default
+  values. What never changes stays inside the ViewModel, so the constructor doesn't grow with every detail.
+- **Choose the environment in the dependency injection, never in the ViewModel.** An `if (isDemo)` inside the
+  ViewModel is a branch that production carries and nobody tests.
+- **Keep the mocks out of the production build.** Declare them in the source set of their flavor or build type, as in
+  [the flavors example](#two-behaviours-by-flavor-on-android-dev-and-pro).
+- **Run the middlewares that simulate conditions first**, with `MiddlewarePosition.First`, so they act before the
+  middlewares of the screen.
+- **Use a plugin for a whole feature** that an environment installs or not, like analytics or a debug overlay. See
+  [Plugins](../concepts/plugins.md).
