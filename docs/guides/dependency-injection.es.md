@@ -227,6 +227,33 @@ Cada build compila solo el `environmentModule` de su flavor, así que los mocks 
 de middlewares tiene nombre porque Koin no distingue dos tipos `List`. Lo mismo funciona con build types (`debug`,
 `qa`, `release`), con cualquier otro framework de inyección de dependencias, o con una factoría manual.
 
+### Los entornos del sample
+
+La app `sample` aplica esta idea a sus repositorios, con tres flavors. Cada uno tiene su `environmentModule` en
+`src/<flavor>`, que enlaza los dos repositorios, y un `AppEnvironment` que la pantalla de login muestra como una etiqueta en una
+esquina, salvo en `pro`:
+
+| Flavor | `LoginRepository` | `FriendsRepository` | Para |
+|--------|-------------------|---------------------|------|
+| `mock` | `MockLoginRepository`, instantáneo | `InMemoryFriendsRepository` con tres amigos, sin guardar nada | Demos y trabajar sin conexión: siempre empieza igual |
+| `dev`  | `MockLoginRepository`, 2 segundos | `DelayedFriendsRepository` sobre `MapFriendsRepository` | Ver los estados de carga y las animaciones de una red lenta |
+| `pro`  | `ApiLoginRepository` sobre un `LoginApi` | `MapFriendsRepository` | El camino real: el `LoginApi` es la pieza que sustituye un cliente de red |
+
+```kotlin
+// app/src/mock
+val environmentModule = module {
+    single { AppEnvironment("mock") }
+    single<LoginRepository> { MockLoginRepository(latency = ZERO) }
+    single<FriendsRepository> { InMemoryFriendsRepository(demoFriends) }
+}
+```
+
+Los casos de uso, los ViewModels y las pantallas son los mismos en las tres builds. Los repositorios se llaman por el tipo
+de implementación que son, sin el sufijo `Impl`. Cada implementación vive en el source set del entorno que la usa (`MockLoginRepository` en
+`src/mockDev`, compartido por `mock` y `dev`), así que la build de producción no lleva clases que no usa; el tono de la
+etiqueta de `pro` es `Invisible`, así que ahí no se dibuja nada. Elige la variante en Build Variants de Android Studio, o con
+`./gradlew :app:assembleMockDebug`. Cada flavor tiene su propio application id, así que las tres se pueden instalar a la vez.
+
 ## Qué puede cambiar un entorno
 
 Sustituyes exactamente el comportamiento que quieres cambiar, al tamaño que quieras: una respuesta, un retraso, una

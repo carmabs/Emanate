@@ -227,6 +227,32 @@ Each build compiles only the `environmentModule` of its flavor, so the mocks nev
 middlewares has a name because Koin can't tell two `List` types apart. The same works
 with build types (`debug`, `qa`, `release`), with any other dependency injection framework, or with a manual factory.
 
+### The environments of the sample
+
+The `sample` app applies this idea to its repositories, with three flavors. Each one has its own `environmentModule` in
+`src/<flavor>` that binds the two repositories, and an `AppEnvironment` that the login screen shows as a label in the corner, except in `pro`:
+
+| Flavor | `LoginRepository` | `FriendsRepository` | For |
+|--------|-------------------|---------------------|-----|
+| `mock` | `MockLoginRepository`, instant | `InMemoryFriendsRepository` with three friends, nothing saved | Demos and working offline: it always starts the same |
+| `dev`  | `MockLoginRepository`, 2 seconds | `DelayedFriendsRepository` over `MapFriendsRepository` | Seeing the loading states and the animations of a slow network |
+| `pro`  | `ApiLoginRepository` over a `LoginApi` | `MapFriendsRepository` | The real path: the `LoginApi` is the piece a network client replaces |
+
+```kotlin
+// app/src/mock
+val environmentModule = module {
+    single { AppEnvironment("mock") }
+    single<LoginRepository> { MockLoginRepository(latency = ZERO) }
+    single<FriendsRepository> { InMemoryFriendsRepository(demoFriends) }
+}
+```
+
+The use cases, the ViewModels and the screens are the same in the three builds. The repositories are named after the
+kind of implementation they are, not with an `Impl` suffix. Each implementation lives in the source set of the
+environment that uses it (`MockLoginRepository` in `src/mockDev`, shared by `mock` and `dev`), so the production build
+doesn't carry classes it doesn't use; the `pro` label tone is `Invisible`, so nothing is drawn there. Choose the variant in Build Variants of Android Studio, or
+with `./gradlew :app:assembleMockDebug`. Each flavor has its own application id, so the three can be installed together.
+
 ## What an environment can change
 
 You replace exactly the behaviour you want to change, at the size you want: one response, one delay, one rule. Without

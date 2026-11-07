@@ -1,4 +1,4 @@
-package com.carmabs.data.repository
+package com.carmabs.app.repository
 
 import com.carmabs.domain.exception.LoginException
 import com.carmabs.domain.model.LoginRequest
@@ -7,6 +7,7 @@ import com.carmabs.domain.model.User
 import com.carmabs.domain.repository.LoginRepository
 import com.carmabs.emanate.core.model.EmaResult
 import kotlinx.coroutines.delay
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -18,9 +19,9 @@ import kotlin.time.Duration.Companion.seconds
  *
  * Created by: Carlos Mateo Benito on 19/1/19.
  */
-class MockLoginRepository : LoginRepository {
+class MockLoginRepository(private val latency: Duration = 2.seconds) : LoginRepository {
     override suspend fun login(loginRequest: LoginRequest): EmaResult<User, LoginException> {
-        delay(2.seconds)
+        delay(latency)
         return when {
             (loginRequest.name.equals("Admin", true) && loginRequest.password == "1234") ->
                 EmaResult.success(User("Carmabs", "Ema Creator", Role.ADMIN))

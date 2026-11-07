@@ -34,6 +34,7 @@ import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.home.HomeScreenContent
 import com.carmabs.emanate.ui.login.LoginScreenContent
 import com.carmabs.emanate.ui.splash.SplashScreenContent
+import com.carmabs.emanate.ui.environment.AppEnvironment
 import com.carmabs.emanate.ui.theme.EmaSampleTheme
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
@@ -63,6 +64,8 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        // The flavor of the app tells which environment is running
+        val environment = get<AppEnvironment>()
         setContent {
             EmaSampleTheme {
                 val navController = rememberNavController()
@@ -90,7 +93,7 @@ class MainActivity : ComponentActivity() {
                                 onEvent = { navigator.handleSplashEvent(it) }
                             )
                             emaScreen(
-                                screenContent = LoginScreenContent(),
+                                screenContent = LoginScreenContent(environment),
                                 viewModel = { get<LoginViewModel>() },
                                 onEvent = { event ->
                                     navigator.handleLoginEvent(event) {

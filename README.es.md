@@ -81,5 +81,5 @@ La guía está en [`docs/`](docs/index.es.md):
 ## Ejemplo
 
 La app [`sample/`](sample) muestra todas las funcionalidades juntas: un login con validación y diálogos, una lista con
-roles y un flujo en Compose con navegación, botón atrás y estado guardado.
+roles, tres entornos (mock, dev y pro) elegidos con flavors y un flujo en Compose con navegación, botón atrás y estado guardado.
 Abre la carpeta `sample` en Android Studio y ejecuta el módulo `app`.

@@ -79,5 +79,6 @@ The guide is in [`docs/`](docs/index.md):
 ## Sample
 
 The [`sample/`](sample) app shows every feature working together: a login with validation and dialogs,
-a list with roles, and a Compose flow with navigation, back handling and saved state.
+a list with roles, three environments (mock, dev and pro) chosen with flavors, and a Compose flow with navigation,
+back handling and saved state.
 Open the `sample` folder in Android Studio and run the `app` module.

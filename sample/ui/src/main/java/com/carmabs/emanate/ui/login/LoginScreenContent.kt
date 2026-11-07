@@ -51,14 +51,16 @@ import com.carmabs.emanate.presentation.login.LoginState
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.ui.compose.AppButton
+import com.carmabs.emanate.ui.compose.EnvironmentLabel
 import com.carmabs.emanate.ui.compose.SimpleDialogComposable
+import com.carmabs.emanate.ui.environment.AppEnvironment
 import com.carmabs.emanate.ui.dialog.simple.SimpleDialogData
 import com.carmabs.emanate.ui.utils.RenderPreview
 
 /**
  * Login of the sample. The messages it shows are events handled where the graph is created.
  */
-class LoginScreenContent : EmaScreenContent<LoginState, LoginAction> {
+class LoginScreenContent(private val environment: AppEnvironment) : EmaScreenContent<LoginState, LoginAction> {
 
     @Composable
     override fun onState(state: LoginState, actions: EmaActionDispatcher<LoginAction>) {
@@ -112,6 +114,11 @@ class LoginScreenContent : EmaScreenContent<LoginState, LoginAction> {
                 Spacer(modifier = Modifier.height(32.dp))
                 DemoCard()
             }
+            // Only the login tells the environment
+            EnvironmentLabel(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                environment = environment
+            )
         }
         state.dialog?.also { StateDialog(it, actions) }
     }
@@ -247,12 +254,12 @@ class LoginScreenContent : EmaScreenContent<LoginState, LoginAction> {
             )
         }
     }
+}
 
-    @PreviewLightDark
-    @Composable
-    private fun PreviewNormal() {
-        RenderPreview {
-            onState(state = LoginState.DEFAULT, actions = EmaActionDispatcher.EMPTY)
-        }
+@PreviewLightDark
+@Composable
+private fun PreviewNormal() {
+    RenderPreview {
+        LoginScreenContent(AppEnvironment("mock")).onState(state = LoginState.DEFAULT, actions = EmaActionDispatcher.EMPTY)
     }
 }
