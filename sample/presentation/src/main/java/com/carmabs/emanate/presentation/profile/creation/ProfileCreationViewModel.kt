@@ -41,10 +41,10 @@ class ProfileCreationViewModel(
         }
     }
 
-    // The user is stored and the home screen, which lists the stored users, is told to read them again
+    // The friend is stored and the home screen, which lists the stored friends, is told to read them again
     private val sideEffectCreateUser = sideEffectOf(ProfileCreationAction.DialogConfirmClicked::class) {
-        val user = addFriendUseCase(AddFriendUseCase.Input(state.name, state.surname))
-        broadcast(ProfileCreationBroadcast.UserCreated(user), keepUntilReceived = true)
+        val friend = addFriendUseCase(AddFriendUseCase.Input(state.name, state.surname))
+        broadcast(ProfileCreationBroadcast.FriendCreated(friend), keepUntilReceived = true)
         publish(ProfileCreationEvent.DialogConfirmationAccepted)
     }
 

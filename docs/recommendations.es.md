@@ -220,9 +220,9 @@ Un ViewModel no debe usar un context, una vista ni recursos.
 - Pon los valores derivados en el estado, no en la vista, para que la pantalla no tenga lógica que probar:
 
 ```kotlin
-data class HomeState(val userData: UserData?, val userList: List<User>) : EmaState {
+data class HomeState(val userData: UserData?, val friends: List<Friend>) : EmaState {
     val showCreateButton get() = userData?.role == Role.ADMIN   // la vista solo lo lee
-    val showEmptyList get() = userData != null && userList.isEmpty()
+    val showEmptyList get() = userData != null && friends.isEmpty()
 }
 ```
 

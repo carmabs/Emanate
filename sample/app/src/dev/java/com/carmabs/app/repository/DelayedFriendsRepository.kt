@@ -1,6 +1,6 @@
 package com.carmabs.app.repository
 
-import com.carmabs.domain.model.User
+import com.carmabs.domain.model.Friend
 import com.carmabs.domain.repository.FriendsRepository
 import kotlin.time.Duration
 import kotlinx.coroutines.delay
@@ -14,12 +14,12 @@ class DelayedFriendsRepository(
     private val latency: Duration
 ) : FriendsRepository {
 
-    override suspend fun getFriends(): List<User> {
+    override suspend fun getFriends(): List<Friend> {
         delay(latency)
         return delegate.getFriends()
     }
 
-    override suspend fun addFriend(name: String, surname: String): User {
+    override suspend fun addFriend(name: String, surname: String): Friend {
         delay(latency)
         return delegate.addFriend(name, surname)
     }

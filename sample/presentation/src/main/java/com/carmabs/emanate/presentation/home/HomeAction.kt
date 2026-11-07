@@ -1,6 +1,6 @@
 package com.carmabs.emanate.presentation.home
 
-import com.carmabs.domain.model.User
+import com.carmabs.domain.model.Friend
 import com.carmabs.emanate.core.action.EmaAction
 
 /**
@@ -15,7 +15,7 @@ import com.carmabs.emanate.core.action.EmaAction
 sealed interface HomeAction : EmaAction {
     data object CreateClicked : HomeAction
 
-    data class DeleteClicked(val user: User) : HomeAction
+    data class DeleteClicked(val friend: Friend) : HomeAction
 
     data object CloseClicked : HomeAction
 
@@ -26,6 +26,6 @@ sealed interface HomeAction : EmaAction {
         /**
          * The friends of the storage have been read
          */
-        data class FriendsLoaded(val friends: List<User>) : SideEffects
+        data class FriendsLoaded(val friends: List<Friend>) : SideEffects
     }
 }

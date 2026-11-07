@@ -1,6 +1,6 @@
 package com.carmabs.emanate.presentation.profile.creation
 
-import com.carmabs.domain.model.User
+import com.carmabs.domain.model.Friend
 import com.carmabs.emanate.core.action.EmaAction
 
 /**
@@ -15,7 +15,7 @@ import com.carmabs.emanate.core.action.EmaAction
 sealed interface ProfileCreationBroadcast : EmaAction {
 
     /**
-     * A user has been created
+     * A friend has been created
      */
-    data class UserCreated(val user: User) : ProfileCreationBroadcast
+    data class FriendCreated(val friend: Friend) : ProfileCreationBroadcast
 }

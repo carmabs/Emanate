@@ -217,9 +217,9 @@ A ViewModel must not use a context, a view or resources.
 - Put derived values in the state, not in the view, so the screen has no logic to test:
 
 ```kotlin
-data class HomeState(val userData: UserData?, val userList: List<User>) : EmaState {
+data class HomeState(val userData: UserData?, val friends: List<Friend>) : EmaState {
     val showCreateButton get() = userData?.role == Role.ADMIN   // the view only reads it
-    val showEmptyList get() = userData != null && userList.isEmpty()
+    val showEmptyList get() = userData != null && friends.isEmpty()
 }
 ```
 

@@ -28,7 +28,7 @@ class HomeViewModel(
     private val reducerAction = reducerOf(HomeAction::class) { action ->
         when (action) {
             // The user disappears from the list at once, the side effect deletes it from the storage
-            is HomeAction.DeleteClicked -> state.copy(userList = state.userList.filterNot { it.id == action.user.id })
+            is HomeAction.DeleteClicked -> state.copy(friends = state.friends.filterNot { it.id == action.friend.id })
 
             HomeAction.CreateClicked,
             HomeAction.CloseClicked -> state
@@ -40,7 +40,7 @@ class HomeViewModel(
 
     private val reducerSideEffects = reducerOf(HomeAction.SideEffects::class) { action ->
         when (action) {
-            is HomeAction.SideEffects.FriendsLoaded -> state.copy(userList = action.friends, friendsLoaded = true)
+            is HomeAction.SideEffects.FriendsLoaded -> state.copy(friends = action.friends, friendsLoaded = true)
         }
     }
 
@@ -56,7 +56,7 @@ class HomeViewModel(
     }
 
     private val sideEffectDeleteFriend = sideEffectOf(HomeAction.DeleteClicked::class) { action ->
-        deleteFriendUseCase(DeleteFriendUseCase.Input(action.user))
+        deleteFriendUseCase(DeleteFriendUseCase.Input(action.friend.id))
     }
 
     private val sideEffectClose = sideEffectOf(HomeAction.CloseClicked::class) {
@@ -64,9 +64,9 @@ class HomeViewModel(
     }
 
     // The screen of the profile creation is in another activity, so the list is read again from the storage
-    private val sideEffectReloadFriends = sideEffectOf(ProfileCreationBroadcast.UserCreated::class) { action ->
+    private val sideEffectReloadFriends = sideEffectOf(ProfileCreationBroadcast.FriendCreated::class) { action ->
         dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
-        publish(HomeEvent.UserCreated(action.user))
+        publish(HomeEvent.FriendCreated(action.friend))
     }
 
     override fun setup() = source {
@@ -85,8 +85,8 @@ class HomeViewModel(
         }
 
         broadcasts {
-            // The users created in the profile screen
-            listen<ProfileCreationBroadcast.UserCreated>()
+            // The friends created in the profile screen
+            listen<ProfileCreationBroadcast.FriendCreated>()
         }
     }
 }

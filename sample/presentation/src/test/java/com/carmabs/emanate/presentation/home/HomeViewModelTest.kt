@@ -1,5 +1,6 @@
 package com.carmabs.emanate.presentation.home
 
+import com.carmabs.domain.model.Friend
 import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
 import com.carmabs.domain.usecase.AddFriendUseCase
@@ -22,8 +23,8 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 
 private val admin = User("Carmabs", "Ema Creator", Role.ADMIN)
-private val ana = User("Ana", "López", Role.BASIC, "1")
-private val luis = User("Luis", "Pérez", Role.BASIC, "2")
+private val ana = Friend("1", "Ana", "López")
+private val luis = Friend("2", "Luis", "Pérez")
 
 class HomeViewModelTest {
 
@@ -50,7 +51,7 @@ class HomeViewModelTest {
         viewModel.onCreated(HomeInitializer.HomeUser(admin))
         advanceUntilIdle()
 
-        recorder.assertState { it.userList == listOf(ana, luis) && it.friendsLoaded && !it.showEmptyList }
+        recorder.assertState { it.friends == listOf(ana, luis) && it.friendsLoaded && !it.showEmptyList }
         viewModel.close()
     }
 
@@ -88,7 +89,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `a deleted user disappears from the list and from the storage`() = runTest {
+    fun `a deleted friend disappears from the list and from the storage`() = runTest {
         val viewModel = homeViewModel()
         val recorder = viewModel.record()
         viewModel.onCreated(HomeInitializer.HomeUser(admin))
@@ -97,7 +98,7 @@ class HomeViewModelTest {
         viewModel.dispatch(HomeAction.DeleteClicked(ana))
         advanceUntilIdle()
 
-        recorder.assertState { it.userList == listOf(luis) }
+        recorder.assertState { it.friends == listOf(luis) }
         assertEquals(listOf(luis), repository.getFriends())
         viewModel.close()
     }
@@ -116,7 +117,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `the user created in the profile screen is stored, listed and notified`() = runTest {
+    fun `the friend created in the profile screen is stored, listed and notified`() = runTest {
         val viewModel = homeViewModel()
         val recorder = viewModel.record()
         viewModel.onCreated(HomeInitializer.HomeUser(admin))
@@ -132,9 +133,9 @@ class HomeViewModelTest {
         profileCreationViewModel.dispatch(ProfileCreationAction.DialogConfirmClicked)
         advanceUntilIdle()
 
-        val marta = User("Marta", "", Role.BASIC, "3")
-        recorder.assertState { it.userList == listOf(ana, luis, marta) }
-        recorder.assertEvents(HomeEvent.UserCreated(marta))
+        val marta = Friend("3", "Marta", "")
+        recorder.assertState { it.friends == listOf(ana, luis, marta) }
+        recorder.assertEvents(HomeEvent.FriendCreated(marta))
         profileCreationViewModel.close()
         viewModel.close()
     }

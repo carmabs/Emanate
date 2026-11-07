@@ -112,8 +112,8 @@ class MainActivity : ComponentActivity() {
                                 onEvent = { event ->
                                     navigator.handleHomeEvent(event) {
                                         val message = when (it) {
-                                            is HomeEvent.UserCreated ->
-                                                getString(R.string.home_user_created, it.user.fullName)
+                                            is HomeEvent.FriendCreated ->
+                                                getString(R.string.home_user_created, it.friend.fullName)
                                             HomeEvent.CreateClicked,
                                             HomeEvent.CloseClicked -> return@handleHomeEvent
                                         }

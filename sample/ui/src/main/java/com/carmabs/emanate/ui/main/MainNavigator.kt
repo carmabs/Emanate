@@ -58,7 +58,7 @@ class MainNavigator(private val navController: NavController, private val contex
             // The login is the screen below the home
             HomeEvent.CloseClicked -> navController.navigateBack()
 
-            is HomeEvent.UserCreated -> onMessage(event)
+            is HomeEvent.FriendCreated -> onMessage(event)
         }
     }
 }

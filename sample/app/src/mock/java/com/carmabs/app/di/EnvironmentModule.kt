@@ -2,7 +2,7 @@ package com.carmabs.app.di
 
 import com.carmabs.app.repository.InMemoryFriendsRepository
 import com.carmabs.app.repository.MockLoginRepository
-import com.carmabs.domain.model.User
+import com.carmabs.domain.model.Friend
 import com.carmabs.domain.repository.FriendsRepository
 import com.carmabs.domain.repository.LoginRepository
 import com.carmabs.emanate.ui.environment.AppEnvironment
@@ -20,9 +20,9 @@ val environmentModule = module {
     single<FriendsRepository> {
         InMemoryFriendsRepository(
             listOf(
-                User("Lucía", "Navarro"),
-                User("Marcos", "Ferrer"),
-                User("Elena", "Vidal")
+                Friend("mock-1", "Lucía", "Navarro"),
+                Friend("mock-2", "Marcos", "Ferrer"),
+                Friend("mock-3", "Elena", "Vidal")
             )
         )
     }

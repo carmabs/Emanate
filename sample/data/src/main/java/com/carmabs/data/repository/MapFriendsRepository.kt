@@ -1,8 +1,7 @@
 package com.carmabs.data.repository
 
 import android.content.SharedPreferences
-import com.carmabs.domain.model.Role
-import com.carmabs.domain.model.User
+import com.carmabs.domain.model.Friend
 import com.carmabs.domain.repository.FriendsRepository
 import com.carmabs.emanate.sample.androidutils.getJson
 import com.carmabs.emanate.sample.androidutils.putJson
@@ -21,18 +20,18 @@ import kotlinx.serialization.builtins.serializer
  */
 class MapFriendsRepository(private val preferences: SharedPreferences) : FriendsRepository {
 
-    private val serializer = MapSerializer(String.serializer(), User.serializer())
+    private val serializer = MapSerializer(String.serializer(), Friend.serializer())
 
     // The map keeps the order of insertion, so the friends are listed in the order they were created
-    private val friends: MutableMap<String, User> by lazy { read() }
+    private val friends: MutableMap<String, Friend> by lazy { read() }
 
     private val mutex = Mutex()
 
-    override suspend fun getFriends(): List<User> = mutex.withLock { friends.values.toList() }
+    override suspend fun getFriends(): List<Friend> = mutex.withLock { friends.values.toList() }
 
-    override suspend fun addFriend(name: String, surname: String): User = mutex.withLock {
+    override suspend fun addFriend(name: String, surname: String): Friend = mutex.withLock {
         val id = UUID.randomUUID().toString()
-        val friend = User(name = name, surname = surname, role = Role.BASIC, id = id)
+        val friend = Friend(id = id, name = name, surname = surname)
         friends[id] = friend
         write()
         friend
@@ -45,7 +44,7 @@ class MapFriendsRepository(private val preferences: SharedPreferences) : Friends
         }
     }
 
-    private fun read(): MutableMap<String, User> =
+    private fun read(): MutableMap<String, Friend> =
         preferences.getJson(KEY_FRIENDS, serializer, emptyMap()).toMutableMap()
 
     private fun write() = preferences.putJson(KEY_FRIENDS, serializer, friends)
