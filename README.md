@@ -1,3 +1,5 @@
+<img src="docs/assets/logo.svg" alt="Emanate logo" height="80" align="right">
+
 # Emanate
 
 **English** · [Español](README.es.md)

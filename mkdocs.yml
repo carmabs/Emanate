@@ -5,20 +5,22 @@ repo_name: carmabs/Ema
 
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/weather-night
+        icon: material/moon-waning-crescent
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/weather-sunny
+        icon: material/white-balance-sunny
         name: Switch to light mode
   features:
     - navigation.sections
@@ -26,6 +28,9 @@ theme:
     - navigation.footer
     - search.highlight
     - content.code.copy
+
+extra_css:
+  - assets/extra.css
 
 markdown_extensions:
   - admonition
