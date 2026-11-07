@@ -4,10 +4,10 @@ import com.carmabs.domain.exception.LoginException
 import com.carmabs.domain.model.LoginRequest
 import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
-import com.carmabs.domain.repository.Repository
+import com.carmabs.domain.repository.LoginRepository
 import com.carmabs.emanate.core.model.EmaResult
-import com.carmabs.emanate.core.model.onSuccess
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 /**
  *  *<p>
@@ -18,14 +18,14 @@ import kotlinx.coroutines.delay
  *
  * Created by: Carlos Mateo Benito on 19/1/19.
  */
-class MockRepository : Repository {
+class MockLoginRepository : LoginRepository {
     override suspend fun login(loginRequest: LoginRequest): EmaResult<User, LoginException> {
-        delay(2000)
+        delay(2.seconds)
         return when {
             (loginRequest.name.equals("Admin", true) && loginRequest.password == "1234") ->
                 EmaResult.success(User("Carmabs", "Ema Creator", Role.ADMIN))
 
-            (loginRequest.name.equals("User", true) && loginRequest.password == "1234") -> {
+            (loginRequest.name.equals("Basic", true) && loginRequest.password == "1234") -> {
                 EmaResult.success(User("Anonymous", "Testing", Role.BASIC))
             }
 
@@ -33,15 +33,5 @@ class MockRepository : Repository {
                 EmaResult.failure(LoginException())
             }
         }
-    }
-
-    override suspend fun getFriendsList(user: User): List<User> {
-        val userList = mutableListOf<User>()
-        if (user.role == Role.BASIC) {
-            repeat(10) {
-                userList.add(User("User$it", "Surname$it", Role.BASIC))
-            }
-        }
-        return userList
     }
 }

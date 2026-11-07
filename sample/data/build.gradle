@@ -45,4 +45,7 @@ dependencies {
     //Kotlin
     implementation libs.kotlin.stdlib
     implementation libs.kotlinx.coroutines.android
+
+    //Serialization of the map of friends
+    implementation libs.kotlinx.serialization.json
 }

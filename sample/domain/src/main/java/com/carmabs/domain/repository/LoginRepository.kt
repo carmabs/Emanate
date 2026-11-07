@@ -14,8 +14,7 @@ import com.carmabs.emanate.core.model.EmaResult
  * @author <a href=“mailto:apps.carmabs@gmail.com”>Carlos Mateo</a>
  */
 
-interface Repository {
+interface LoginRepository {
 
     suspend fun login(loginRequest: LoginRequest): EmaResult<User, LoginException>
-    suspend fun getFriendsList(user: User): List<User>
 }

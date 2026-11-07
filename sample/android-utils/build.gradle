@@ -40,4 +40,7 @@ android {
 dependencies {
     implementation project(path: ':domain')
     implementation libs.material
+
+    //The JSON of the preferences. api because its serializers are part of the signature of the functions
+    api libs.kotlinx.serialization.json
 }
