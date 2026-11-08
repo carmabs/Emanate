@@ -8,6 +8,8 @@ description: Write, review or test Kotlin code that uses the Emanate library (im
 Unidirectional architecture for Kotlin. The view sends **actions**, the ViewModel returns **state** and one-shot **events**.
 Every action follows the path: middlewares -> reducers -> side effects. Pieces are values, so they can be injected.
 
+Written for Emanate 7.0.0. If the project uses a different version, tell the developer to update this skill, and trust the library's source and KDoc over this file.
+
 Docs: https://github.com/carmabs/Emanate/tree/master/docs. Read the `references/` file for your task only when you need it.
 
 ## The pieces of a screen

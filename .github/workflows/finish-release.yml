@@ -35,6 +35,9 @@ jobs:
           if ! grep -qE "versionName +: +\"$VERSION\"" build-system/config.gradle; then
             echo "::error::build-system/config.gradle does not have version $VERSION"; exit 1
           fi
+          if ! grep -qF "Written for Emanate $VERSION." ai/skill/emanate/SKILL.md; then
+            echo "::error::ai/skill/emanate/SKILL.md does not have version $VERSION"; exit 1
+          fi
 
       - name: Create the tag and the GitHub release
         run: gh release create "$VERSION" --target "${{ github.event.pull_request.merge_commit_sha }}" --title "$VERSION" --generate-notes

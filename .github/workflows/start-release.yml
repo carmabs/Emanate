@@ -51,6 +51,7 @@ jobs:
           git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
           git checkout -b "release/${{ steps.version.outputs.version }}"
           sed -i -E 's/(versionName +: +")[^"]+(")/\1${{ steps.version.outputs.version }}\2/' build-system/config.gradle
+          sed -i -E 's/^Written for Emanate [^ ]+\./Written for Emanate ${{ steps.version.outputs.version }}./' ai/skill/emanate/SKILL.md
           git commit -am "Release ${{ steps.version.outputs.version }}"
           git push origin "release/${{ steps.version.outputs.version }}"
 
