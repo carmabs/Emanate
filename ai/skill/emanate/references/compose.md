@@ -8,10 +8,10 @@ Artifacts: `emanate-compose-android` (screens, no navigation dependency) + `eman
 NavHost(navController, startDestination = HomeScreenContent::class.routeId) {
     emaScreen(
         screenContent = HomeScreenContent(),
-        viewModel = { store -> get<HomeViewModel> { parametersOf(store) } }, // lambda; store only if it has a backup
+        viewModel = { store -> HomeViewModel(getFriends, HomeState.DEFAULT, store) },       // new instance; store only if it has a backup
         initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()), // only if it receives data
         transitionAnimation = EmaAnimTransition(enterTransition = {...}, exitTransition = {...}), // optional
-        onEvent = { navigator.handleHomeEvent(it) }
+        onEvent = { navigator.handleHome(it) }
     )
 }
 ```
@@ -23,27 +23,34 @@ NavHost(navController, startDestination = HomeScreenContent::class.routeId) {
 
 ## Events and navigator
 
-All events of a screen reach `onEvent` once, in order, only while the lifecycle is STARTED. Not persisted across process death.
-`when` over a sealed event is exhaustive. Create **one navigator per graph** with `remember`, one function per screen:
+All events of a screen reach `onEvent` once, in order, only while the lifecycle is STARTED. Not persisted across process death. Keep `onEvent` short.
+
+**One navigator per graph**, a plain class created with `remember`. It has **one `handleX` per screen of the graph**, receiving that screen's sealed event in an exhaustive `when`:
 
 ```kotlin
 class MainNavigator(private val navController: NavController) {
-    fun handleLoginEvent(event: LoginEvent, onMessage: (LoginEvent) -> Unit) = when (event) {
-        is LoginEvent.LoginSuccess -> navController.navigate(
-            route = HomeScreenContent::class.routeId,
-            initializerBundle = EmaInitializerBundle(
-                HomeInitializer.HomeUser(event.user),
-                BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
-            )
-        )
-        is LoginEvent.Message -> onMessage(event)           // not navigation: whoever shows messages handles it
+
+    fun handleHome(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.FriendSelected -> navController.navigate(ProfileScreenContent::class.routeId)
+            HomeEvent.CloseClicked -> navController.navigateBack()
+        }
     }
-    // HomeEvent.CloseClicked -> navController.navigateBack()
+}
+```
+
+If something must go back to the containing screen, add **lambdas** to the handler. The handler decides, per event, what to return through them:
+
+```kotlin
+fun handleProfile(event: ProfileEvent, onSaved: (User) -> Unit) {
+    when (event) {
+        is ProfileEvent.Saved -> onSaved(event.user)
+        ProfileEvent.CloseClicked -> navController.navigateBack()
+    }
 }
 ```
 
 Equal events: while one waits to be delivered an equal one is dropped; pass `publish(e, allowDuplicated = true)` to queue it.
-Slow UI (snackbar): `scope.launch { snackbarHostState.showSnackbar(...) }` from `onEvent`, never block it.
 
 ## Initializers (data for a screen)
 
@@ -52,6 +59,14 @@ Slow UI (snackbar): `scope.launch { snackbarHostState.showSnackbar(...) }` from 
 sealed interface HomeInitializer : EmaInitializer {
     @Serializable data class HomeUser(val user: User) : HomeInitializer
 }
+
+navController.navigate(
+    route = HomeScreenContent::class.routeId,
+    initializerBundle = EmaInitializerBundle(
+        HomeInitializer.HomeUser(user),
+        BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
+    )
+)
 ```
 Arrives **once** as an action (`EmaInitializer.EMPTY` if none). Handle in a reducer (apply to state) and/or a side effect (load data). Not re-sent on rotation; re-sent after process death, and a backup restores typed values on top.
 
@@ -59,18 +74,25 @@ Arrives **once** as an action (`EmaInitializer.EMPTY` if none). Handle in a redu
 
 ```kotlin
 sealed interface NoteDialog { data object ConfirmDelete : NoteDialog }
-data class NoteState(val dialog: NoteDialog? = null) : EmaState
-// reducers: DeleteClicked -> state.copy(dialog = ConfirmDelete); DeleteCancelled/Confirmed -> state.copy(dialog = null)
-// view:  if (state.dialog == NoteDialog.ConfirmDelete) AlertDialog(onDismissRequest = { actions.dispatch(DeleteCancelled) }, ...)
+// state: val dialog: NoteDialog?
+// reducers: DeleteClicked -> state.copy(dialog = NoteDialog.ConfirmDelete); DeleteCancelled/DeleteConfirmed -> state.copy(dialog = null)
+// view:  if (state.dialog == NoteDialog.ConfirmDelete) AlertDialog(onDismissRequest = { actions.dispatch(NoteAction.DeleteCancelled) }, ...)
 ```
-Buttons, outside-tap and back all dispatch actions. Close dialogs on `EmaLifecycle.Stopped` if they must not survive leaving the screen.
+Buttons, outside-tap and back all dispatch actions.
 
 ## Back handling
 
+`onBack` decides **when back is intercepted**: return an action to intercept it, or `null` so the OS handles it. It can read the state for that. What happens after the action is decided by the ViewModel. Don't override it if the default system back is enough.
+
 ```kotlin
-override fun onBack(state: NoteState): NoteAction? = if (state.dialog == null) NoteAction.OnBack else null
+override fun onBack(state: NoteState): NoteAction? =
+    if (state.hasChanges && state.dialog == null) NoteAction.BackPressed else null   // null: the OS handles back
+
+// ViewModel
+reducers { add<NoteAction.BackPressed> { state.copy(dialog = NoteDialog.Discard) } }
 ```
-Return an action to intercept system back (the ViewModel decides: open a "discard?" dialog, publish a close event), `null` for default. The toolbar arrow dispatches the same action. Never create a `BackHandler` yourself.
+
+While `onBack` returns an action the screen doesn't close by itself: to leave, the ViewModel publishes an event and the navigator goes back. The toolbar arrow dispatches the same action. Never create a `BackHandler` yourself.
 
 ## Permissions (Android)
 
@@ -78,4 +100,16 @@ Return an action to intercept system back (the ViewModel decides: open a "discar
 
 ## Previews
 
-`@Preview` functions inside the screen content, named `Preview<What>`, one per interesting state (empty, loading, error dialog). The IDE instantiates the content, so keep its constructor parameterless.
+**Every screen content has its preview**, annotated with `@PreviewLightDark` so it shows in light and dark mode. Write them inside the screen content, named `Preview<What>`, wrapped in the app theme (without it dark mode shows nothing different), and starting from `XState.DEFAULT`. Add one per interesting state (empty, loading, error dialog).
+
+```kotlin
+@PreviewLightDark
+@Composable
+private fun PreviewLoading() {
+    AppTheme {
+        onState(state = HomeState.DEFAULT.copy(isLoading = true), actions = EmaActionDispatcher.EMPTY)
+    }
+}
+```
+
+The IDE instantiates the content, so keep its constructor parameterless.

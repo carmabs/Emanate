@@ -1,6 +1,6 @@
 ---
 name: emanate
-description: Write, review or test code that uses the Emanate library (com.github.carmabs.ema, package prefix "ema"/"emanate"): EmaViewModel, EmaState, EmaAction, EmaEvent, EmaScreenContent, emaScreen, EmaSource, reducers, side effects, middlewares, broadcasts, backup/process death, emanate-test. Use when creating a screen or ViewModel, handling actions/events/dialogs/navigation/back/permissions, injecting environments (mock/dev/pro), or writing ViewModel tests with Emanate.
+description: Write, review or test Kotlin code that uses the Emanate library (imports from com.carmabs.emanate), including EmaViewModel, EmaState, EmaAction, EmaEvent, EmaScreenContent, emaScreen, EmaUseCase, EmaResult, EmaSource and emanate-test. Use when creating a screen, ViewModel or use case, handling actions, events, dialogs, navigation, back or permissions, deciding how to split an app into modules, switching behaviour for mocks, flavors or tests, or when code comments and uncomments lines to change behaviour.
 ---
 
 # Emanate
@@ -10,18 +10,27 @@ Every action follows the path: middlewares -> reducers -> side effects. Pieces a
 
 Docs: https://github.com/carmabs/Ema/tree/master/docs. Read the `references/` file for your task only when you need it.
 
-## The five pieces of a screen
+## The pieces of a screen
 
 ```kotlin
-data class HomeState(val query: String = "", val isLoading: Boolean = false, val dialog: HomeDialog? = null) : EmaState
+data class HomeState(                                            // no default values in the constructor
+    val query: String,
+    val friends: List<User>,
+    val isLoading: Boolean,
+    val dialog: HomeDialog?
+) : EmaState {
+    companion object {
+        val DEFAULT = HomeState(query = "", friends = emptyList(), isLoading = false, dialog = null)
+    }
+}
 
 sealed interface HomeAction : EmaAction {
     data class QueryWritten(val query: String) : HomeAction      // what the USER did, past tense
     data object RefreshRequested : HomeAction
-    sealed interface SideEffects : HomeAction {                  // results, only sent by the ViewModel
-        data object Started : SideEffects
-        data class Loaded(val friends: List<User>) : SideEffects
-        data object Failed : SideEffects
+    sealed interface SideEffects : HomeAction {                  // results, only sent by the ViewModel; name the data
+        data object FriendsLoadStarted : SideEffects
+        data class FriendsLoaded(val friends: List<User>) : SideEffects
+        data object FriendsLoadFailed : SideEffects
     }
 }
 
@@ -30,8 +39,8 @@ sealed interface HomeEvent : EmaEvent {                          // what HAPPENE
 }
 
 class HomeViewModel(
-    private val getFriends: GetFriendsUseCase,                   // dependencies come in the constructor
-    initialState: HomeState = HomeState()
+    private val getFriends: GetFriendsUseCase,                   // constructor: use cases and state
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
 
     override fun setup() = source {                              // runs once; pieces run in the order added
@@ -39,19 +48,19 @@ class HomeViewModel(
             add<HomeAction> { action ->                          // pure: state + action -> new state
                 when (action) {                                  // exhaustive on the sealed type
                     is HomeAction.QueryWritten -> state.copy(query = action.query)
-                    HomeAction.SideEffects.Started -> state.copy(isLoading = true)
-                    is HomeAction.SideEffects.Loaded -> state.copy(isLoading = false)
-                    HomeAction.SideEffects.Failed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    HomeAction.SideEffects.FriendsLoadStarted -> state.copy(isLoading = true)
+                    is HomeAction.SideEffects.FriendsLoaded -> state.copy(isLoading = false, friends = action.friends)
+                    HomeAction.SideEffects.FriendsLoadFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
                     HomeAction.RefreshRequested -> state
                 }
             }
         }
         sideEffects {
             add<HomeAction.RefreshRequested>(concurrency = SideEffectConcurrency.Leading) {
-                dispatch(HomeAction.SideEffects.Started)
+                dispatch(HomeAction.SideEffects.FriendsLoadStarted)
                 getFriends(GetFriendsUseCase.Input(state.query))                  // EmaResult
-                    .onSuccess { dispatch(HomeAction.SideEffects.Loaded(it)) }
-                    .onFailure { dispatch(HomeAction.SideEffects.Failed) }
+                    .onSuccess { dispatch(HomeAction.SideEffects.FriendsLoaded(it)) }
+                    .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
             }
         }
     }
@@ -61,15 +70,18 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {  // stateles
     @Composable
     override fun onState(state: HomeState, actions: EmaActionDispatcher<HomeAction>) { /* draw; actions.dispatch(...) */ }
 
-    @Preview @Composable
-    private fun PreviewLoading() = onState(HomeState(isLoading = true), EmaActionDispatcher.EMPTY)
+    @PreviewLightDark                                            // every screen content has one
+    @Composable
+    private fun PreviewLoading() {
+        AppTheme { onState(HomeState.DEFAULT.copy(isLoading = true), EmaActionDispatcher.EMPTY) }
+    }
 }
 
 // In the NavHost (emanate-compose-android-nav2). Initialize once: Emanate.init(EmaConfiguration.Android(debug = BuildConfig.DEBUG))
 emaScreen(
     screenContent = HomeScreenContent(),
-    viewModel = { get<HomeViewModel>() },                        // creates a NEW one per screen (factory, never single)
-    onEvent = { navigator.handleHomeEvent(it) }
+    viewModel = { HomeViewModel(getFriends) },                   // a NEW instance per screen, from your DI or by hand
+    onEvent = { navigator.handleHome(it) }
 )
 ```
 
@@ -77,37 +89,39 @@ emaScreen(
 
 | Do | Don't |
 |---|---|
+| State: constructor without default values + `companion object { val DEFAULT }` with every field filled; previews and tests start from `DEFAULT.copy(...)` | Default values in the state constructor |
 | Change state only in reducers, with `copy` | Mutate state, or change it from a side effect/middleware/view |
 | Reducers pure: no use cases, clock, random, `dispatch`/`publish` | Call the backend in a reducer |
-| Work in side effects; one action per step (`Started`/`Loaded`/`Failed`) and report with `dispatch`, `publish`, `broadcast` | Put business logic in the ViewModel body or the view |
+| Work in side effects; one action per step, named after the data (`FriendsLoadStarted`/`FriendsLoaded`/`FriendsLoadFailed`), and report with `dispatch`, `publish`, `broadcast` | Put business logic in the ViewModel body or the view |
 | Pick `concurrency` on purpose: `Leading` for taps, `Latest` for search, `Every` only for independent work | Leave the default `Every` on user actions |
 | ViewModel: pure Kotlin, no `Context`/`View`/`R.string`. Texts in state as `EmaText` | `String` translated in the state, platform types in state |
-| Call repositories only from use cases (`EmaUseCase`, one `Input` data class inside, return `EmaResult` if it can fail) | Repository in a ViewModel, several loose params |
+| Logical operations in use cases, even when they combine several repositories/managers. One `Input` data class inside. Repositories only from use cases | Use cases as CRUD pass-throughs with the logic elsewhere; repository in a ViewModel |
+| Use case by type: `EmaSyncUseCase` (sync), `EmaUseCase` (suspend), `EmaFlowUseCase` (Flow) | `suspend` for something synchronous |
+| Controlled errors as modelled types (`sealed interface LoginError`), in `EmaResult` when the use case can fail | Exceptions for controlled errors |
 | View only does `actions.dispatch(...)` and reads state | Call other ViewModel functions from the view |
 | Derived values as properties of the state (`val showEmpty get() = ...`) | Logic in the composable |
-| Dialog = nullable sealed field in state (`dialog: HomeDialog? = null`); buttons dispatch actions; reducer sets `null` | `show()`/`dismiss()` or local `remember` state for dialogs |
-| Navigation in a **navigator** (one per graph, plain class, one `handleXEvent` per screen) reacting to events | Navigate from the ViewModel, or name events `GoToX`/`OpenX` |
+| `onBack` only decides if back is intercepted: an action, or `null` to let the OS handle it. What happens next is decided by the ViewModel | Business logic in `onBack` |
+| Dialog = nullable sealed field in state (`dialog: HomeDialog?`); buttons dispatch actions; reducer sets `null` | `show()`/`dismiss()` or local `remember` state for dialogs |
+| Navigation in a **navigator**: one per graph, one `handleX(event)` per screen (`handleHome`, `handleLogin`). Lambdas in the handler if something must go back to the container | Navigate from the ViewModel, or name events `GoToX`/`OpenX` |
 | Events named for what happened: `FriendSelected`, `LoginSuccess`, `CloseClicked` | Events as commands: `ShowToast`, `GoToHome` |
-| Keep `onEvent` short; long UI work in your own coroutine scope | Block `onEvent` |
-| Constructor-inject use cases, state and (optionally) pieces so mock/dev/pro/test swap them | Create dependencies inside the ViewModel |
-| One feature = one package in `presentation` and `ui` with the same name; naming `<Screen>State/Action/Event/ViewModel/ScreenContent/Initializer/Dialog` | Packages by type (`states/`, `viewmodels/`) |
+| ViewModel constructor: use cases and state (plus `EmaStateStore` if it has a backup). Pieces only when behaviour must change per build | Create dependencies inside the ViewModel; inject pieces by default |
+| Switch behaviour with pieces in the constructor or implementations per flavor (`references/di-environments.md`). If code is being commented/uncommented for this, propose it | Comment/uncomment code to mock or test |
+| Modules by layer (`references/architecture.md`); package per feature; naming `<Screen>State/Action/Event/ViewModel/ScreenContent/Initializer/Dialog` | Framework code in `domain`; packages by type (`states/`, `viewmodels/`) |
 | Use a base `BaseViewModel` of your own, even if empty | Deep ViewModel hierarchies; prefer plugins/composition |
-| Previews: `Preview<What>` private functions inside the screen content, using `EmaActionDispatcher.EMPTY` | A real ViewModel in a preview |
-| Screens that need no state/actions/events: `EmaState.EMPTY`, `EmaAction.EMPTY`, `EmaEvent.EMPTY` (and if all three, a plain composable) | |
+| Every screen content has a preview: private `Preview<What>` inside it, `@PreviewLightDark`, app theme, `EmaActionDispatcher.EMPTY` | A real ViewModel in a preview |
+| Screens with no state/actions/events: `EmaState.EMPTY`, `EmaAction.EMPTY`, `EmaEvent.EMPTY` (if all three, a plain composable) | |
 | Broadcast to other screens with `broadcast(...)` **and** `broadcasts { listen<Type>() }` in the receiver | Forget `listen` (silent failure) |
 | State for what must be there when the user comes back; events for one-shots | An event for something that must survive recreation |
 
-## Module layout (recommended)
-
-`presentation` and `domain` = pure Kotlin (use `api` for what appears in public signatures: state models, `emanate-core`).
-`ui` = composables + navigators. `data` = repository implementations. `app` = Application + DI.
-Artifacts: `emanate-core` (KMP), `emanate-android`, `emanate-compose-android`, `emanate-compose-android-nav2`, `emanate-serialization`, `emanate-test`.
+Artifacts: `emanate-core` (KMP), `emanate-android`, `emanate-compose-android`, `emanate-compose-android-nav2`, `emanate-serialization`, `emanate-test`. Always with `implementation`, in each module that uses them.
+Gradle coordinates on JitPack: `com.github.carmabs.ema:<artifact>:<version>`. That name comes from the GitHub repository; the code packages are `com.carmabs.emanate`.
 
 ## Where to read next (only when needed)
 
-- Screens, events, navigator, initializers, dialogs, back, permissions, `EmaScreen` without NavHost -> `references/compose.md`
+- Layers, modules and their dependencies, initializing libraries -> `references/architecture.md`
+- Screens, events, navigator, initializers, dialogs, back, permissions, previews, `EmaScreen` without NavHost -> `references/compose.md`
 - Middlewares, plugins, broadcasts, `survivesClose`, timeouts, lifecycle actions, pieces as values -> `references/viewmodel.md`
 - Saving state across process death (`backupOf`) -> `references/process-death.md`
-- Injecting environments (mock/dev/pro) and Koin -> `references/di-environments.md`
+- DI, and changing behaviour for mocks, flavors, tests or demos -> `references/di-environments.md`
 - Unit tests (`emanate-test`) -> `references/testing.md`
-- `EmaText`, `EmaResult`, use cases -> `references/utils.md`
+- Use cases, modelled errors, `EmaResult`, `EmaText` -> `references/utils.md`

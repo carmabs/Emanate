@@ -23,7 +23,7 @@ class ProfileViewModel(
 }
 @Serializable data class ProfileForm(val name: String, val surname: String)
 
-emaScreen(screenContent = ..., viewModel = { store -> get<ProfileViewModel> { parametersOf(store) } }, onEvent = ...)
+emaScreen(screenContent = ..., viewModel = { store -> ProfileViewModel(addFriend, ProfileState.DEFAULT, store) }, onEvent = ...)
 ```
 
 - Keys must be unique. Restored in the order added. A value that fails to decode is skipped (initial state kept).

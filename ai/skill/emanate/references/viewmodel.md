@@ -34,7 +34,7 @@ private val refresh = sideEffectOf(HomeAction.RefreshRequested::class, concurren
 private val reducer = reducerOf(HomeAction::class) { action -> ... }
 override fun setup() = source { reducers { add(reducer) }; sideEffects { add(refresh) } }
 ```
-Or implement `SideEffect<S, A, E, ActionType>` as a class (override `actionType`, `concurrency`, `suspend fun SideEffectScope<S, A, E>.invoke(action)`) and receive it in the constructor.
+Or implement `SideEffect<S, A, E, ActionType>` as a class (override `actionType`, `concurrency`, `suspend fun SideEffectScope<S, A, E>.invoke(action)`). Receive pieces in the constructor only when behaviour must change per build.
 
 ## Broadcasts
 

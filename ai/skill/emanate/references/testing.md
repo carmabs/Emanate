@@ -1,6 +1,6 @@
 # Testing with emanate-test
 
-`testImplementation("com.github.carmabs.ema:emanate-test:<version>")` in the module with the ViewModels (JVM). A ViewModel is plain Kotlin: no emulator.
+Add the `emanate-test` artifact with `testImplementation` in the module with the ViewModels (JVM). A ViewModel is plain Kotlin: no emulator.
 
 ```kotlin
 class HomeViewModelTest {
@@ -8,7 +8,7 @@ class HomeViewModelTest {
     @AfterTest fun tearDown() { resetTestConfiguration() }    // otherwise tests leak into each other
 
     @Test fun `a search shows the matching friends`() = runTest {
-        val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())  // AFTER useTestConfiguration
+        val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT)  // AFTER useTestConfiguration
         val recorder = viewModel.record()                                                 // BEFORE the first action
         viewModel.dispatch(HomeAction.QueryWritten("An"))
         viewModel.dispatch(HomeAction.RefreshRequested)

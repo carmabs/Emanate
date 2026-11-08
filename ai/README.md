@@ -1,19 +1,16 @@
 # Emanate for AI assistants
 
-Files to copy into **your** project so your coding assistant knows how to use Emanate and the recommended practices.
-Copy one of the two formats, not both.
+A skill to copy into **your** project so your coding assistant knows how to use Emanate and the recommended practices.
 
-| Your tool | Copy | To |
-|-----------|------|----|
-| Claude Code, or any tool with Agent Skills | the folder [`skill/emanate`](skill/emanate) | `.claude/skills/emanate/` (or `.agents/skills/emanate/`) |
-| Claude Code (instructions) | [`instructions/emanate.md`](instructions/emanate.md) | append to `CLAUDE.md` or `AGENTS.md` |
-| GitHub Copilot | [`instructions/emanate.md`](instructions/emanate.md) | `.github/copilot-instructions.md` |
-| Cursor | [`instructions/emanate.md`](instructions/emanate.md) | `.cursor/rules/emanate.md` |
-| Other tools | [`instructions/emanate.md`](instructions/emanate.md) | the file your tool reads for project rules |
+Copy the folder [`skill/emanate`](skill/emanate) to the skills folder of your tool:
 
-**Skill or instructions?** The skill is the better choice when your tool supports it: only its short description is
-always in the context, and the rest (`references/`) is read when the task needs it. The instructions are a single short
-file that is always loaded, for tools without skills.
+| Your tool | Copy to |
+|-----------|---------|
+| Claude Code | `.claude/skills/emanate/` |
+| Other tools with Agent Skills | `.agents/skills/emanate/`, or the skills folder of your tool |
 
-Both were written for the version of Emanate in the root `README.md` of this repository. Copy them again when you
-update the library.
+Only the short description of the skill is always in the context. The rest, including `references/`, is read when the
+task needs it.
+
+It was written for the version of Emanate in the root `README.md` of this repository. Copy it again when you update
+the library.
