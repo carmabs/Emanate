@@ -1,6 +1,6 @@
 package com.carmabs.domain.repository
 
-import com.carmabs.domain.exception.LoginException
+import com.carmabs.domain.error.LoginException
 import com.carmabs.domain.model.LoginRequest
 import com.carmabs.domain.model.User
 import com.carmabs.emanate.core.model.EmaResult

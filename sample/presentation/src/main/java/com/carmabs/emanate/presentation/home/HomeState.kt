@@ -7,13 +7,14 @@ import com.carmabs.emanate.core.state.EmaState
 data class HomeState(
     val userData: UserData?,
     val friends: List<Friend>,
-    val friendsLoaded: Boolean = false
+    val friendsLoaded: Boolean
 ) : EmaState {
 
     companion object {
         val DEFAULT = HomeState(
             userData = null,
-            friends = emptyList()
+            friends = emptyList(),
+            friendsLoaded = false
         )
     }
 

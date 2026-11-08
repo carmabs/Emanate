@@ -21,11 +21,11 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Emanate"
 include ':app',
-        ':ui',
+        ':ui-android',
         ':presentation',
-        ':data',
+        ':data-android',
         ':domain',
-        ':android-utils'
+        ':utils-android'
 
 
 include(':emanate-core')

@@ -40,7 +40,8 @@ android {
 
 dependencies {
     implementation project(path: ':domain')
-    implementation project(path: ':android-utils')
+    implementation project(path: ':utils-android')
+    implementation project(rootProject.emanateLibraries.emanateCore)
 
     //Kotlin
     implementation libs.kotlin.stdlib

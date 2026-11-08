@@ -52,7 +52,7 @@ class ProfileScreenContent(
                 emaScreen(
                     screenContent = ProfileCreationScreenContent(),
                     viewModel = profileCreationViewModel,
-                    onEvent = { navigator.handleProfileCreationEvent(it) }
+                    onEvent = { navigator.handleProfileCreation(it) }
                 )
             }
         }

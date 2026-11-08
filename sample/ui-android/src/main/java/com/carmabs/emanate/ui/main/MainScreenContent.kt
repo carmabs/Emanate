@@ -108,18 +108,18 @@ class MainScreenContent(
                     emaScreen(
                         screenContent = SplashScreenContent(environment, onLogoDrawn = onLogoDrawn),
                         viewModel = { splashViewModel() },
-                        onEvent = { navigator.handleSplashEvent(it) }
+                        onEvent = { navigator.handleSplash(it) }
                     )
                     emaScreen(
                         screenContent = LoginScreenContent(environment),
                         viewModel = { loginViewModel() },
-                        onEvent = { navigator.handleLoginEvent(it, ::showMessage) }
+                        onEvent = { navigator.handleLogin(it, ::showMessage) }
                     )
                     emaScreen(
                         screenContent = HomeScreenContent(),
                         viewModel = { homeViewModel() },
                         initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()),
-                        onEvent = { navigator.handleHomeEvent(it, ::showMessage) }
+                        onEvent = { navigator.handleHome(it, ::showMessage) }
                     )
                 }
                 SnackbarHost(

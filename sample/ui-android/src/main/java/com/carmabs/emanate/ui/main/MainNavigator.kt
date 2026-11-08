@@ -24,7 +24,7 @@ import com.carmabs.emanate.ui.splash.SplashScreenContent
  */
 class MainNavigator(private val navController: NavController, private val context: Context) {
 
-    fun handleSplashEvent(event: SplashEvent) {
+    fun handleSplash(event: SplashEvent) {
         when (event) {
             SplashEvent.SplashFinished -> navController.navigate(LoginScreenContent::class.routeId) {
                 popUpTo(SplashScreenContent::class.routeId) { inclusive = true }
@@ -35,7 +35,7 @@ class MainNavigator(private val navController: NavController, private val contex
     /**
      * The messages are not navigation: [onMessage] shows them
      */
-    fun handleLoginEvent(event: LoginEvent, onMessage: (String) -> Unit) {
+    fun handleLogin(event: LoginEvent, onMessage: (String) -> Unit) {
         when (event) {
             is LoginEvent.LoginSuccess -> navController.navigate(
                 route = HomeScreenContent::class.routeId,
@@ -52,7 +52,7 @@ class MainNavigator(private val navController: NavController, private val contex
     /**
      * The messages are not navigation: [onMessage] shows them
      */
-    fun handleHomeEvent(event: HomeEvent, onMessage: (String) -> Unit) {
+    fun handleHome(event: HomeEvent, onMessage: (String) -> Unit) {
         when (event) {
             // The profile creation is in its own activity
             HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))

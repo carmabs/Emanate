@@ -1,6 +1,6 @@
 package com.carmabs.app.repository
 
-import com.carmabs.domain.exception.FriendsException
+import com.carmabs.domain.error.FriendsException
 import com.carmabs.domain.model.Friend
 import com.carmabs.domain.repository.FriendsRepository
 import com.carmabs.emanate.core.model.EmaResult

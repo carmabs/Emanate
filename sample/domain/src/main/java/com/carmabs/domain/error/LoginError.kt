@@ -1,4 +1,4 @@
-package com.carmabs.domain.exception
+package com.carmabs.domain.error
 
 /**
  *  *<p>

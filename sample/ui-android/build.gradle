@@ -50,8 +50,10 @@ android {
 }
 
 dependencies {
+    implementation project(path: ':domain')
     implementation project(path: ':presentation')
-    implementation project(path: ':android-utils')
+    implementation project(path: ':utils-android')
+    implementation project(rootProject.emanateLibraries.emanateCore)
     implementation project(rootProject.emanateLibraries.emanateComposeAndroid)
     implementation project(rootProject.emanateLibraries.emanateComposeAndroidNav2)
     implementation project(rootProject.emanateLibraries.emanateAndroid)
