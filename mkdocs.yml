@@ -1,7 +1,7 @@
 site_name: Emanate
 site_description: A small library for MVI-style screens with Jetpack Compose, Kotlin Multiplatform ViewModels
-repo_url: https://github.com/carmabs/Ema
-repo_name: carmabs/Ema
+repo_url: https://github.com/carmabs/Emanate
+repo_name: carmabs/Emanate
 
 theme:
   name: material

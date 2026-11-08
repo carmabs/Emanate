@@ -47,7 +47,7 @@ Cuando pides un permiso, el resultado es un `PermissionState`:
 
 ## El manager
 
-La pantalla crea el manager con `rememberEmaPermissionManager()`. En un `@Preview` devuelve un manager que lo concede
+La pantalla crea el manager con `rememberEmaPermissionManager()`. En un `@PreviewLightDark` devuelve un manager que lo concede
 todo, para que tus previews no abran diálogos del sistema.
 
 ```kotlin
@@ -106,9 +106,14 @@ nunca toca Android.
 
 ```kotlin
 data class LocationState(
-    val requestingPermission: Boolean = false,   // true mientras hay que pedir el permiso
-    val locationGranted: Boolean = false
-) : EmaState
+    val requestingPermission: Boolean,   // true mientras hay que pedir el permiso
+    val locationGranted: Boolean
+) : EmaState {
+
+    companion object {
+        val DEFAULT = LocationState(requestingPermission = false, locationGranted = false)
+    }
+}
 
 sealed interface LocationAction : EmaAction {
     data object AllowClicked : LocationAction                                           // el usuario pulsó Permitir
@@ -123,7 +128,7 @@ sealed interface LocationEvent : EmaEvent {
 ### Paso 2: el ViewModel
 
 ```kotlin
-class LocationViewModel : EmaViewModel<LocationState, LocationAction, LocationEvent>(LocationState()) {
+class LocationViewModel : EmaViewModel<LocationState, LocationAction, LocationEvent>(LocationState.DEFAULT) {
 
     override fun setup() = source {
         reducers {

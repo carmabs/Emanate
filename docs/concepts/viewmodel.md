@@ -24,7 +24,7 @@ between platforms.
 ```kotlin
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
-    initialState: HomeState = HomeState()
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState)
 ```
 
@@ -33,7 +33,7 @@ class HomeViewModel(
 ```kotlin
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
-    initialState: HomeState = HomeState()
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
 
     override fun setup() = source {
@@ -41,9 +41,9 @@ class HomeViewModel(
             add<HomeAction> { action ->
                 when (action) {
                     is HomeAction.QueryWritten -> state.copy(query = action.query)
-                    is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
-                    is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
-                    is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    is HomeAction.SideEffects.FriendsLoadStarted -> state.copy(isLoading = true)
+                    is HomeAction.SideEffects.FriendsLoaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.SideEffects.FriendsLoadFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
                     is HomeAction.RefreshRequested,
                     is HomeAction.FriendClicked -> state
                 }
@@ -51,10 +51,10 @@ class HomeViewModel(
         }
         sideEffects {
             add<HomeAction.RefreshRequested>(concurrency = SideEffectConcurrency.Leading) {
-                dispatch(HomeAction.SideEffects.QueryStarted)
+                dispatch(HomeAction.SideEffects.FriendsLoadStarted)
                 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-                    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
-                    .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+                    .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
+                    .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
             }
             add<HomeAction.FriendClicked> { action ->
                 publish(HomeEvent.FriendSelected(action.friend))
@@ -87,10 +87,10 @@ This is a refresh in the ViewModel above. Each row is one action:
 ![The refresh, one action at a time](../assets/viewmodel-trace.svg)
 
 1. The view sends `RefreshRequested`. The reducers leave the state as it is, and the side effect `loadFriends` starts.
-2. The side effect dispatches `Started`. It goes through the middlewares, and a reducer returns `isLoading = true`:
+2. The side effect dispatches `FriendsLoadStarted`. It goes through the middlewares, and a reducer returns `isLoading = true`:
    the view shows the loader.
 3. The side effect calls the use case and waits. The screen keeps working meanwhile.
-4. When the friends arrive, it dispatches `Loaded(friends)`. Same path: a reducer puts them in the state, and the view
+4. When the friends arrive, it dispatches `FriendsLoaded(friends)`. Same path: a reducer puts them in the state, and the view
    draws the list.
 
 This ViewModel has no middlewares, so each action goes straight on, as if a middleware called `next()`.
@@ -119,21 +119,23 @@ A few rules apply to all of them:
 
 ### Pieces are values
 
+**By default a ViewModel receives only its use cases and its state** (and its `EmaStateStore` if it has a backup). Receive pieces in the constructor only when the behaviour must change depending on the build.
+
 A piece doesn't have to be written inside `setup`. It can be a property of the ViewModel, declared with `reducerOf` or
 `sideEffectOf`, and installed with `add`:
 
 ```kotlin
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
-    initialState: HomeState = HomeState()
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
 
     private val homeReducer = reducerOf(HomeAction::class) { action ->
         when (action) {
             is HomeAction.QueryWritten -> state.copy(query = action.query)
-            is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
-            is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
-            is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+            is HomeAction.SideEffects.FriendsLoadStarted -> state.copy(isLoading = true)
+            is HomeAction.SideEffects.FriendsLoaded -> state.copy(isLoading = false, friends = action.friends)
+            is HomeAction.SideEffects.FriendsLoadFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
             is HomeAction.RefreshRequested,
             is HomeAction.FriendClicked -> state
         }
@@ -143,10 +145,10 @@ class HomeViewModel(
         HomeAction.RefreshRequested::class,
         concurrency = SideEffectConcurrency.Leading
     ) {
-        dispatch(HomeAction.SideEffects.QueryStarted)
+        dispatch(HomeAction.SideEffects.FriendsLoadStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
-            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
     }
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
@@ -238,7 +240,7 @@ an initializer other than `EmaInitializer.EMPTY`.
 ```kotlin
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
-    initialState: HomeState = HomeState()
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
 
     override val updateOnInitialization = false
@@ -255,7 +257,7 @@ decides where the ViewModel runs and what happens with its errors. See [Configur
 ```kotlin
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
-    initialState: HomeState = HomeState()
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(
     initialState,
     configuration = EmaConfiguration.Android(debug = BuildConfig.DEBUG)

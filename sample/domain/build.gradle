@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-    api project(rootProject.emanateLibraries.emanateCore)
+    implementation project(rootProject.emanateLibraries.emanateCore)
 }

@@ -45,7 +45,7 @@ it to the ViewModel.
 ```kotlin
 emaScreen(
     screenContent = ProfileCreationScreenContent(),
-    viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
+    viewModel = { store -> createProfileCreationViewModel(store) },
     onEvent = { /* ... */ }
 )
 ```
@@ -108,7 +108,7 @@ Each value has a unique key, a function that reads it from the state and another
 
 ```kotlin
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-serialization:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-serialization:$emanateVersion")
 }
 ```
 

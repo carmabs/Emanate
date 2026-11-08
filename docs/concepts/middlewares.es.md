@@ -97,7 +97,7 @@ middlewares {
     add<HomeAction.RefreshRequested> {
         nextAfter(
             timeout = 1.seconds,
-            onTimeout = { dispatch(HomeAction.SideEffects.QueryFailed) }
+            onTimeout = { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
         ) {
             // Una tarea que tarda más de 1 segundo
         }
@@ -194,7 +194,7 @@ Un middleware también se puede crear con `middlewareOf` o `middlewareDelayOf`, 
 Así se implementaría un middleware como valor:
 
 ```kotlin
-class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     private val blankQueryAsClear = middlewareOf(HomeAction.QueryWritten::class) { action ->
         if (action.query.isBlank()) next(HomeAction.SearchCleared) else next()
@@ -213,7 +213,7 @@ tocarla:
 ```kotlin
 class HomeViewModel(
     private val tuning: List<EmaMiddleware<HomeState, HomeAction, *>> = emptyList()
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     override fun setup() = source {
         middlewares(MiddlewarePosition.First) { tuning.forEach { add(it) } }

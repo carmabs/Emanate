@@ -98,7 +98,7 @@ middlewares {
     add<HomeAction.RefreshRequested> {
         nextAfter(
             timeout = 1.seconds,
-            onTimeout = { dispatch(HomeAction.SideEffects.QueryFailed) }
+            onTimeout = { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
         ) {
             // A task that takes more than 1 second
         }
@@ -193,7 +193,7 @@ A middleware can also be created with `middlewareOf` or `middlewareDelayOf`, ins
 This would be how a middleware is implemented as value:
 
 ```kotlin
-class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     private val blankQueryAsClear = middlewareOf(HomeAction.QueryWritten::class) { action ->
         if (action.query.isBlank()) next(HomeAction.SearchCleared) else next()
@@ -211,7 +211,7 @@ It could also be received in the constructor, so a QA build could add latency to
 ```kotlin
 class HomeViewModel(
     private val tuning: List<EmaMiddleware<HomeState, HomeAction, *>> = emptyList()
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     override fun setup() = source {
         middlewares(MiddlewarePosition.First) { tuning.forEach { add(it) } }

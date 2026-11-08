@@ -30,7 +30,7 @@ the JVM test source sets):
 
 ```kotlin
 dependencies {
-    testImplementation("com.github.carmabs.ema:emanate-test:$emanateVersion")
+    testImplementation("com.github.carmabs.emanate:emanate-test:$emanateVersion")
 }
 ```
 
@@ -99,7 +99,7 @@ class HomeViewModelTest {
 
     @Test
     fun `a search shows the matching friends`() = runTest {
-        val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())
+        val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT)
         val recorder = viewModel.record()
 
         viewModel.dispatch(HomeAction.QueryWritten("An"))
@@ -138,14 +138,14 @@ fun setUp() {
 
 @Test
 fun `the refresh is processed when the test advances`() = runTest {
-    val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())
+    val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT)
     val recorder = viewModel.record()
 
     viewModel.dispatch(HomeAction.RefreshRequested)
     recorder.assertActions()                                   // still waiting in the queue
 
     advanceUntilIdle()
-    recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))
+    recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoaded(listOf(ana)))
 }
 ```
 
@@ -201,7 +201,7 @@ class InboxViewModelTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val viewModel = InboxViewModel(
             GetUnreadCountUseCase(FakeMessagesRepository(), dispatcher),
-            InboxState(),
+            InboxState.DEFAULT,
             testConfiguration(dispatcher)
         )
         val recorder = viewModel.record()
@@ -238,13 +238,13 @@ spinner that never disappears at the right moment, a duplicated event or a missi
 **How to use it.**
 
 ```kotlin
-val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())
+val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT)
 val recorder = viewModel.record()           // before the first action
 
 viewModel.dispatch(HomeAction.RefreshRequested)
 advanceUntilIdle()
 
-println(recorder.actions)   // [RefreshRequested, Loaded([Ana])]
+println(recorder.actions)   // [RefreshRequested, FriendsLoaded([Ana])]
 println(recorder.states)    // [HomeState(isLoading=true), HomeState(friends=[Ana])]
 println(recorder.events)    // [FriendsUpdated(1)]
 ```
@@ -259,9 +259,9 @@ fails and the message shows both lists. You don't write the loops and the compar
 
 | Function | Checks | Example |
 |----------|--------|---------|
-| `assertActions(...)` | The actions that entered, in order, including the ones dispatched by side effects and the ones a middleware blocked. | `recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))` |
-| `assertStates(...)` | The states returned by the reducers, one for each reduced action. | `recorder.assertStates(HomeState(isLoading = true), HomeState(friends = listOf(ana)))` |
-| `assertState(state)` | The last state is exactly that one. | `recorder.assertState(HomeState(friends = listOf(ana)))` |
+| `assertActions(...)` | The actions that entered, in order, including the ones dispatched by side effects and the ones a middleware blocked. | `recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoaded(listOf(ana)))` |
+| `assertStates(...)` | The states returned by the reducers, one for each reduced action. | `recorder.assertStates(HomeState.DEFAULT.copy(isLoading = true), HomeState.DEFAULT.copy(friends = listOf(ana)))` |
+| `assertState(state)` | The last state is exactly that one. | `recorder.assertState(HomeState.DEFAULT.copy(friends = listOf(ana)))` |
 | `assertState { }` | The last state fulfils a condition, without writing the whole state. | `recorder.assertState { !it.isLoading && it.friends.size == 1 }` |
 | `assertEvents(...)` | The published events, in order. | `recorder.assertEvents(HomeEvent.FriendsUpdated(1))` |
 | `assertNoEvents()` | No event was published. | `recorder.assertNoEvents()` |
@@ -314,7 +314,7 @@ and the list never updates, and no test notices, because the tests of the ViewMo
 ```kotlin
 @Test
 fun `the setup is complete`() {
-    HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState()).assertSetup()
+    HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT).assertSetup()
 }
 ```
 
@@ -440,7 +440,7 @@ fun `a second refresh while loading is ignored`() = runTest {
     advanceUntilIdle()
 
     recorder.assertActions(
-        HomeAction.RefreshRequested, HomeAction.SideEffects.QueryStarted, HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana))
+        HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoadStarted, HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoaded(listOf(ana))
     )
 }
 ```
@@ -518,8 +518,8 @@ that talk to each other must receive **the same** one. With `testConfiguration` 
 @Test
 fun `a friend created in the profile reaches the home list`() = runTest {
     val configuration = testConfiguration(UnconfinedTestDispatcher(testScheduler))
-    val home = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState(), configuration)   // listens to FriendCreated
-    val profile = ProfileViewModel(ProfileState(friend = ana), configuration)                    // sends FriendCreated
+    val home = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT, configuration)   // listens to FriendCreated
+    val profile = ProfileViewModel(ProfileState.DEFAULT.copy(friend = ana), configuration)                    // sends FriendCreated
     val homeRecorder = home.record()
 
     profile.dispatch(ProfileAction.SaveClicked)       // its side effect broadcasts FriendCreated(ana)

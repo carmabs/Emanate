@@ -65,12 +65,13 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':data')
+    implementation project(path: ':data-android')
     implementation project(path: ':presentation')
-    implementation project(path: ':ui')
-    implementation project(path: ':android-utils')
+    implementation project(path: ':ui-android')
+    implementation project(path: ':utils-android')
     implementation project(path: ':domain')
 
+    implementation project(rootProject.emanateLibraries.emanateCore)
     implementation project(rootProject.emanateLibraries.emanateAndroid)
     implementation libs.koin.android
     implementation libs.kotlinx.coroutines.android

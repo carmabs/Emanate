@@ -17,7 +17,7 @@ Los eventos se publican desde los side effects del ViewModel, con `publish`:
 
 ```kotlin
 sideEffects {
-    add<HomeAction.SideEffects.QueryLoaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
+    add<HomeAction.SideEffects.FriendsLoaded> { action -> publish(HomeEvent.FriendsUpdated(action.friends.size)) }
     add<HomeAction.FriendClicked> { action -> publish(HomeEvent.FriendSelected(action.friend)) }
 }
 ```
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
             NavHost(navController, startDestination = HomeScreenContent::class.routeId) {
                 emaScreen(
                     screenContent = HomeScreenContent(),
-                    viewModel = { get<HomeViewModel>() },
+                    viewModel = { createHomeViewModel() },
                     onEvent = { event ->
                         when (event) {
                             is HomeEvent.FriendSelected -> navigator.goToProfile(event.friend)
@@ -108,7 +108,7 @@ Mira la tabla en [Arquitectura](architecture.md#estado-o-evento).
 Una pantalla que nunca publica eventos usa `EmaEvent.EMPTY` como tipo de evento, y su `onEvent` no hace nada:
 
 ```kotlin
-class SettingsViewModel : EmaViewModel<SettingsState, SettingsAction, EmaEvent.EMPTY>(SettingsState()) {
+class SettingsViewModel : EmaViewModel<SettingsState, SettingsAction, EmaEvent.EMPTY>(SettingsState.DEFAULT) {
     // ...
 }
 

@@ -69,9 +69,9 @@ navController.navigate(
 // Recibir
 emaScreen(
     screenContent = HomeScreenContent(),
-    viewModel = { get<HomeViewModel>() },
+    viewModel = { createHomeViewModel() },
     initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()),
-    onEvent = { navigator.handleHomeEvent(it) { /* mostrar el mensaje */ } }
+    onEvent = { navigator.handleHome(it) }
 )
 ```
 

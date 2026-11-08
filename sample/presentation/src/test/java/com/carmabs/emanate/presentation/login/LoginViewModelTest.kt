@@ -1,6 +1,6 @@
 package com.carmabs.emanate.presentation.login
 
-import com.carmabs.domain.exception.LoginException
+import com.carmabs.domain.error.LoginException
 import com.carmabs.domain.model.LoginRequest
 import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User

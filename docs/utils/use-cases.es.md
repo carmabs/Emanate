@@ -1,5 +1,7 @@
 # Casos de uso
 
+Las operaciones lógicas de la app viven en los casos de uso, y no son simples intermediarios para operaciones CRUD: un login puede llamar a varios repositorios y managers, y todo eso va en un caso de uso.
+
 Un caso de uso es una operación de la lógica de negocio. Cada uno tiene un único `Input`. Lo que hacen por dentro
 depende de la implementación: llamar a repositorios, a otros casos de uso, a servicios de la plataforma o simplemente
 calcular algo.
@@ -13,7 +15,7 @@ puede devolver un modelo normal, `Unit`, un `Boolean` o cualquier tipo que defin
 | `EmaFlowUseCase<I, O>`         | Una operación que emite valores a lo largo del tiempo (`Flow<O>`). El flow se ejecuta en el dispatcher que recibe en el constructor, por defecto el `io` de la configuración, y los valores llegan al colector en su propio dispatcher (`main` en un side effect). |
 | `EmaSyncUseCase<I, O>`         | Una operación rápida y síncrona. Es una interfaz sin dispatcher: se ejecuta en el hilo que la llama. |
 
-Implementa `useCaseFunction` (la función protegida) y llama al caso de uso como a una función:
+Elige la clase según cómo se ejecute la operación: síncrona, `suspend` o `Flow`. En `EmaUseCase` y `EmaFlowUseCase` implementa `useCaseFunction` (la función protegida), y en `EmaSyncUseCase` implementa `invoke`. Llama al caso de uso como a una función:
 
 ```kotlin
 class GetGreetingUseCase(private val repository: UserRepository) :
@@ -30,7 +32,7 @@ val greeting = getGreetingUseCase(GetGreetingUseCase.Input(state.userId))
 
 ### Modela los fallos con `EmaResult`
 
-Cuando la operación puede fallar, [`EmaResult`](results.md) es un buen tipo de retorno, y el recomendado. Pone los fallos
+Los errores controlados son tipos que modelas tú, no excepciones: una `data class` o una `sealed interface`. Cuando la operación puede fallar, [`EmaResult`](results.md) es un buen tipo de retorno, y el recomendado. Pone los fallos
 en la firma, así que quien llama al caso de uso no puede olvidarlos, y te permite usar tu propio tipo de error en lugar
 de excepciones. Una buena práctica en el side effect es convertir cada caso en una acción, para que los
 [reducers](../concepts/reducers.md) decidan cómo cambia el estado:
@@ -46,8 +48,8 @@ class GetFriendsUseCase(private val repository: FriendsRepository) :
 
 // En un side effect
 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
-    .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+    .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
+    .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
 ```
 
 Si la operación no puede fallar de un modo que le importe a quien llama, devuelve el modelo directamente y no lo

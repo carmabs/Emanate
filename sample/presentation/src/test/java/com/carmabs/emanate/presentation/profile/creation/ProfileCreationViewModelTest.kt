@@ -48,7 +48,7 @@ class ProfileCreationViewModelTest {
             restoreStateOf("form" to """{"name":"Ana","surname":"García"}""")
         )
         // The dialog isn't saved, so it is closed
-        recorder.assertState(ProfileCreationState("Ana", "García"))
+        recorder.assertState(ProfileCreationState.DEFAULT.copy(name = "Ana", surname = "García"))
         restoredViewModel.close()
     }
 
@@ -83,11 +83,11 @@ class ProfileCreationViewModelTest {
         advanceUntilIdle()
 
         // The screen is not closed: there is no event, and the user can read the error and try again
-        recorder.assertState(ProfileCreationState("Ana", "García", ProfileCreationDialog.CreateError))
+        recorder.assertState(ProfileCreationState.DEFAULT.copy(name = "Ana", surname = "García", dialog = ProfileCreationDialog.CreateError))
         recorder.assertEvents()
         viewModel.dispatch(ProfileCreationAction.DialogErrorAccepted)
         advanceUntilIdle()
-        recorder.assertState(ProfileCreationState("Ana", "García"))
+        recorder.assertState(ProfileCreationState.DEFAULT.copy(name = "Ana", surname = "García"))
         viewModel.close()
     }
 
@@ -102,7 +102,7 @@ class ProfileCreationViewModelTest {
         advanceUntilIdle()
 
         // Only the name is written: the confirmation is not asked
-        recorder.assertState(ProfileCreationState("Ana", ""))
+        recorder.assertState(ProfileCreationState.DEFAULT.copy(name = "Ana", surname = ""))
         viewModel.close()
     }
 }

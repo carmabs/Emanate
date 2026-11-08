@@ -11,7 +11,7 @@ these three functions, depending on what has to happen with it:
 
 | Use it to                                              | Call                 | Example                                                                             | Result                                              |
 |--------------------------------------------------------|----------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------|
-| **Save the result in the state**                       | `dispatch(action)`   | The friends were loaded: `dispatch(HomeAction.SideEffects.QueryLoaded(friends))`  | A reducer puts them in the state and the list shows them. |
+| **Save the result in the state**                       | `dispatch(action)`   | The friends were loaded: `dispatch(HomeAction.SideEffects.FriendsLoaded(friends))`  | A reducer puts them in the state and the list shows them. |
 | **Trigger a one-time UI action**, like navigating or showing a message | `publish(event)` | The user clicked a friend: `publish(HomeEvent.FriendSelected(friend))` | The profile of the friend is opened.                |
 | **Notify other ViewModels**                            | `broadcast(action)`  | A friend was created: `broadcast(ProfileBroadcast.FriendCreated(friend))`           | The ViewModels that listen to it receive it. See [Broadcasts](broadcasts.md). |
 
@@ -26,10 +26,10 @@ can call use cases directly:
 ```kotlin
 sideEffects {
     add<HomeAction.RefreshRequested> {
-        dispatch(HomeAction.SideEffects.QueryStarted)
+        dispatch(HomeAction.SideEffects.FriendsLoadStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
-            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
     }
 }
 ```
@@ -38,9 +38,9 @@ Step by step:
 
 1. The user pulls to refresh, and the view dispatches `RefreshRequested`.
 2. The reducers of `RefreshRequested` run. Then this side effect starts.
-3. It dispatches `Started`: a reducer shows the loading indicator.
+3. It dispatches `FriendsLoadStarted`: a reducer shows the loading indicator.
 4. It waits for the use case. The screen keeps working meanwhile.
-5. It dispatches `Loaded` or `Failed`: a reducer shows the list or the error dialog.
+5. It dispatches `FriendsLoaded` or `FriendsLoadFailed`: a reducer shows the list or the error dialog.
 
 Inside the lambda you have `state` (always the latest one), the `action` that launched it, and `dispatch`, `publish`
 and `broadcast`.
@@ -84,7 +84,7 @@ With `timeout`, a side effect that takes too long is cancelled, and `onTimeout` 
 sideEffects {
     add<HomeAction.RefreshRequested>(
         timeout = 10.seconds,
-        onTimeout = { dispatch(HomeAction.SideEffects.QueryFailed) }
+        onTimeout = { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
     ) {
         // ...
     }
@@ -125,7 +125,7 @@ production and a mock in a demo build:
 
 ```kotlin
 class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
-    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
         publish(HomeEvent.FriendSelected(action.friend))
@@ -142,7 +142,7 @@ See [Pieces are values](viewmodel.md#pieces-are-values) and [Dependency injectio
 ## Tips
 
 - **Keep the business logic in use cases.** The side effect calls them and turns their result into actions.
-- **Dispatch an action for each step of the work**, like `Started`, `Loaded` and `Failed` in
+- **Dispatch an action for each step of the work**, like `FriendsLoadStarted`, `FriendsLoaded` and `FriendsLoadFailed` in
   [your first side effect](#your-first-side-effect). Then the reducers can show each step (loading, list, error), and
   the tests can check it too.
 - **Choose the concurrency on purpose.** `Every` is the default, but most user actions want `Leading` or `Latest`.

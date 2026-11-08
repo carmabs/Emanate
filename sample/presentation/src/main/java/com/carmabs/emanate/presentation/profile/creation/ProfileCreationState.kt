@@ -6,13 +6,14 @@ import com.carmabs.emanate.core.state.EmaState
 data class ProfileCreationState(
     val name: String,
     val surname: String,
-    val dialog: ProfileCreationDialog? = null
+    val dialog: ProfileCreationDialog?
 ) : EmaState {
 
     companion object {
         val DEFAULT = ProfileCreationState(
-            STRING_EMPTY,
-            STRING_EMPTY
+            name = STRING_EMPTY,
+            surname = STRING_EMPTY,
+            dialog = null
         )
     }
 

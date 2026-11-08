@@ -19,7 +19,7 @@ Este es el flujo principal del sample, con dos de sus pantallas, el login y la h
 1. Cada destino del `NavHost` es un `emaScreen`, con su contenido de pantalla, su ViewModel y su `onEvent`.
 2. Cuando las credenciales son correctas, el ViewModel de `Login` publica `LoginSuccess(user)`. No sabe qué pantalla
    viene después.
-3. El `onEvent` de esa pantalla entrega el evento al navigator, a su función para esa pantalla: `handleLoginEvent`.
+3. El `onEvent` de esa pantalla entrega el evento al navigator, a su función para esa pantalla: `handleLogin`.
 4. El navigator decide para cada evento: `LoginSuccess` abre `Home`, y el `CloseClicked` de `Home` vuelve al login. Lo
    hace con el `navController`, que cambia el destino que muestra el `NavHost`.
 
@@ -50,7 +50,7 @@ cualquier clase con esta forma. Créalo una vez, con `remember`, junto al `NavHo
 ```kotlin
 class MainNavigator(private val navController: NavController, private val context: Context) {
 
-    fun handleLoginEvent(event: LoginEvent, onMessage: (LoginEvent) -> Unit) {
+    fun handleLogin(event: LoginEvent) {
         when (event) {
             is LoginEvent.LoginSuccess -> navController.navigate(
                 route = HomeScreenContent::class.routeId,
@@ -59,22 +59,28 @@ class MainNavigator(private val navController: NavController, private val contex
                     BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
                 )
             )
-
-            // Un mensaje no es navegación: lo gestiona quien muestra los mensajes
-            is LoginEvent.Message -> onMessage(event)
         }
     }
 
-    fun handleHomeEvent(event: HomeEvent, onMessage: (HomeEvent) -> Unit) {
+    fun handleHome(event: HomeEvent) {
         when (event) {
             // La creación de perfil está en su propia activity
             HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))
 
             // El login es la pantalla que hay debajo de la home
             HomeEvent.CloseClicked -> navController.navigateBack()
-
-            is HomeEvent.FriendCreated -> onMessage(event)
         }
+    }
+}
+```
+
+Cada función se llama `handle` más la pantalla, y recibe el tipo sellado de sus eventos. Si hay que devolver algo a la pantalla que contiene el grafo, añade una lambda a la función: la función decide, para cada evento, qué devolver por ella.
+
+```kotlin
+fun handleHome(event: HomeEvent, onFriendCreated: (Friend) -> Unit) {
+    when (event) {
+        is HomeEvent.FriendCreated -> onFriendCreated(event.friend)
+        HomeEvent.CloseClicked -> navController.navigateBack()
     }
 }
 ```
@@ -87,8 +93,8 @@ setContent {
     NavHost(navController, startDestination = LoginScreenContent::class.routeId) {
         emaScreen(
             screenContent = LoginScreenContent(),
-            viewModel = { get<LoginViewModel>() },
-            onEvent = { navigator.handleLoginEvent(it) { /* mostrar el mensaje */ } }
+            viewModel = { createLoginViewModel() },
+            onEvent = { navigator.handleLogin(it) }
         )
     }
 }
@@ -120,9 +126,9 @@ funcionan con Bundles, no se pueden usar en una ruta.
 ```kotlin
 emaScreen(
     screenContent = HomeScreenContent(),
-    viewModel = { get<HomeViewModel>() },
+    viewModel = { createHomeViewModel() },
     initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()),
-    onEvent = { navigator.handleHomeEvent(it) { /* mostrar el mensaje */ } }
+    onEvent = { navigator.handleHome(it) }
 )
 ```
 
@@ -179,10 +185,10 @@ EmaInitializerBundle(...))` lo pone ahí por ti, y solo tienes que usar el mismo
 NavHost(navController, startDestination = ProfileCreationScreenContent::class.routeId) {
     emaScreen(
         screenContent = ProfileCreationScreenContent(),
-        viewModel = { get<ProfileCreationViewModel>() },
+        viewModel = { createProfileCreationViewModel() },
         // El inicializador que la pantalla de inicio puso en el intent de la activity
         initializerSupport = EmaInitializerSupport.fromIntent(ProfileCreationInitializer.serializer()),
-        onEvent = { navigator.handleProfileCreationEvent(it) }
+        onEvent = { navigator.handleProfileCreation(it) }
     )
 }
 ```

@@ -1,6 +1,6 @@
 package com.carmabs.domain.usecase
 
-import com.carmabs.domain.exception.LoginException
+import com.carmabs.domain.error.LoginException
 import com.carmabs.domain.model.LoginRequest
 import com.carmabs.domain.model.User
 import com.carmabs.domain.repository.LoginRepository

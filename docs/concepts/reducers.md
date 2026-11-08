@@ -42,9 +42,9 @@ reducers {
         when (action) {
             is HomeAction.QueryWritten -> state.copy(query = action.query, errorQueryTooShort = false)
             is HomeAction.ErrorAccepted -> state.copy(dialog = null)
-            is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
-            is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
-            is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+            is HomeAction.SideEffects.FriendsLoadStarted -> state.copy(isLoading = true)
+            is HomeAction.SideEffects.FriendsLoaded -> state.copy(isLoading = false, friends = action.friends)
+            is HomeAction.SideEffects.FriendsLoadFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
             is HomeAction.RefreshRequested,
             is HomeAction.FriendClicked -> state
         }
@@ -91,7 +91,7 @@ A reducer can also be created with `reducerOf`, to declare it as a property, sha
 constructor, and added with `add`:
 
 ```kotlin
-class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     private val queryReducer = reducerOf(HomeAction.QueryWritten::class) { action ->
         state.copy(query = action.query)

@@ -26,10 +26,10 @@ Añade las dependencias:
 val emanateVersion = "7.0.0"
 
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-android:$emanateVersion")
-    implementation("com.github.carmabs.ema:emanate-compose-android:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-android:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-compose-android:$emanateVersion")
     // Solo si tus pantallas están en un grafo de Navigation Compose
-    implementation("com.github.carmabs.ema:emanate-compose-android-nav2:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-compose-android-nav2:$emanateVersion")
 }
 ```
 
@@ -38,8 +38,8 @@ testearlos:
 
 ```kotlin
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-core:$emanateVersion")
-    testImplementation("com.github.carmabs.ema:emanate-test:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-core:$emanateVersion")
+    testImplementation("com.github.carmabs.emanate:emanate-test:$emanateVersion")
 }
 ```
 
@@ -81,7 +81,12 @@ Una pantalla se compone de un **estado**, las **acciones** que puede realizar el
 emitir y un **ViewModel** que los conecta. Esto es un contador.
 
 ```kotlin
-data class CounterState(val count: Int = 0) : EmaState
+data class CounterState(val count: Int) : EmaState {
+
+    companion object {
+        val DEFAULT = CounterState(count = 0)
+    }
+}
 
 sealed interface CounterAction : EmaAction {
     data object Increment : CounterAction
@@ -92,7 +97,7 @@ sealed interface CounterEvent : EmaEvent {
 }
 
 class CounterViewModel :
-    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState()) {
+    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState.DEFAULT) {
 
     override fun setup() = source {
         reducers {
@@ -189,10 +194,12 @@ class CounterScreenContent : EmaScreenContent<CounterState, CounterAction> {
 
     // onState, como arriba
 
-    @Preview
+    @PreviewLightDark
     @Composable
     private fun PreviewCounter() {
-        onState(state = CounterState(count = 7), actions = EmaActionDispatcher.EMPTY)
+        MaterialTheme {
+            onState(state = CounterState.DEFAULT.copy(count = 7), actions = EmaActionDispatcher.EMPTY)
+        }
     }
 }
 ```

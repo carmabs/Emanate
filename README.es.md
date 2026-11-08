@@ -15,7 +15,12 @@ una build de demo, simular latencia o errores en QA y ejecutarse contra un fake 
 inyecta.
 
 ```kotlin
-data class CounterState(val count: Int = 0) : EmaState
+data class CounterState(val count: Int) : EmaState {
+
+    companion object {
+        val DEFAULT = CounterState(count = 0)
+    }
+}
 
 sealed interface CounterAction : EmaAction {
     data object Increment : CounterAction
@@ -26,7 +31,7 @@ sealed interface CounterEvent : EmaEvent {
 }
 
 class CounterViewModel :
-    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState()) {
+    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState.DEFAULT) {
 
     override fun setup() = source {
         reducers {
@@ -54,10 +59,10 @@ maven { url = uri("https://jitpack.io") }
 
 ```kotlin
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-android:7.0.0")
-    implementation("com.github.carmabs.ema:emanate-compose-android:7.0.0")
+    implementation("com.github.carmabs.emanate:emanate-android:7.0.0")
+    implementation("com.github.carmabs.emanate:emanate-compose-android:7.0.0")
     // Solo si tus pantallas están en un grafo de Navigation Compose
-    implementation("com.github.carmabs.ema:emanate-compose-android-nav2:7.0.0")
+    implementation("com.github.carmabs.emanate:emanate-compose-android-nav2:7.0.0")
 }
 ```
 
