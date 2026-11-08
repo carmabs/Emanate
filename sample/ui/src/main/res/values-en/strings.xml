@@ -36,6 +36,8 @@
     <string name="home_create">Create user</string>
     <string name="home_user_created">User created: %s</string>
     <string name="home_delete">Delete user</string>
+    <string name="home_delete_failed">We couldn\'t delete %s</string>
+    <string name="home_load_failed">We couldn\'t load the list</string>
     <string name="home_close">Sign out</string>
 
     <!--DIALOG-->
@@ -49,6 +51,8 @@
     <string name="profile_creation_create_user">Create user</string>
     <string name="profile_creation_user_title">Create user?</string>
     <string name="profile_creation_user_message">The user will be added to your list</string>
+    <string name="profile_creation_error_title">We couldn\'t create the user</string>
+    <string name="profile_creation_error_message">Try again in a moment</string>
     <string name="profile_creation_user_exit_title">Leave without saving?</string>
     <string name="profile_creation_user_exit_message">The entered data will be lost</string>
 

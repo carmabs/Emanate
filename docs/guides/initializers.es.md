@@ -36,7 +36,9 @@ override fun setup() = source {
     sideEffects {
         add<HomeInitializer> { initializer ->
             when (initializer) {
-                is HomeInitializer.HomeUser -> dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
+                is HomeInitializer.HomeUser -> getFriendsUseCase(Unit).onSuccess {
+                    dispatch(HomeAction.SideEffects.FriendsLoaded(it))
+                }
             }
         }
     }

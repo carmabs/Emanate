@@ -2,6 +2,8 @@ package com.carmabs.emanate.presentation.home
 
 import com.carmabs.domain.usecase.DeleteFriendUseCase
 import com.carmabs.domain.usecase.GetFriendsUseCase
+import com.carmabs.emanate.core.model.onFailure
+import com.carmabs.emanate.core.model.onSuccess
 import com.carmabs.emanate.core.source.reducer.reducerOf
 import com.carmabs.emanate.core.source.sideeffect.sideEffectOf
 import com.carmabs.emanate.presentation.base.BaseViewModel
@@ -28,7 +30,7 @@ class HomeViewModel(
     private val reducerAction = reducerOf(HomeAction::class) { action ->
         when (action) {
             // The user disappears from the list at once, the side effect deletes it from the storage
-            is HomeAction.DeleteClicked -> state.copy(userList = state.userList.filterNot { it.id == action.user.id })
+            is HomeAction.DeleteClicked -> state.copy(friends = state.friends.filterNot { it.id == action.friend.id })
 
             HomeAction.CreateClicked,
             HomeAction.CloseClicked -> state
@@ -40,14 +42,16 @@ class HomeViewModel(
 
     private val reducerSideEffects = reducerOf(HomeAction.SideEffects::class) { action ->
         when (action) {
-            is HomeAction.SideEffects.FriendsLoaded -> state.copy(userList = action.friends, friendsLoaded = true)
+            is HomeAction.SideEffects.FriendsLoaded -> state.copy(friends = action.friends, friendsLoaded = true)
         }
     }
 
     // The friends are read when the screen is created
     private val sideEffectLoadFriends = sideEffectOf(HomeInitializer::class) { initializer ->
         when (initializer) {
-            is HomeInitializer.HomeUser -> dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
+            is HomeInitializer.HomeUser -> getFriendsUseCase(Unit)
+                .onSuccess { dispatch(HomeAction.SideEffects.FriendsLoaded(it)) }
+                .onFailure { publish(HomeEvent.LoadFailed) }
         }
     }
 
@@ -56,7 +60,13 @@ class HomeViewModel(
     }
 
     private val sideEffectDeleteFriend = sideEffectOf(HomeAction.DeleteClicked::class) { action ->
-        deleteFriendUseCase(DeleteFriendUseCase.Input(action.user))
+        deleteFriendUseCase(DeleteFriendUseCase.Input(action.friend.id)).onFailure {
+            // The friend left the list at once, so the storage, where it still is, gives it back its place
+            publish(HomeEvent.DeleteFailed(action.friend))
+            getFriendsUseCase(Unit)
+                .onSuccess { dispatch(HomeAction.SideEffects.FriendsLoaded(it)) }
+                .onFailure { publish(HomeEvent.LoadFailed) }
+        }
     }
 
     private val sideEffectClose = sideEffectOf(HomeAction.CloseClicked::class) {
@@ -64,9 +74,11 @@ class HomeViewModel(
     }
 
     // The screen of the profile creation is in another activity, so the list is read again from the storage
-    private val sideEffectReloadFriends = sideEffectOf(ProfileCreationBroadcast.UserCreated::class) { action ->
-        dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
-        publish(HomeEvent.UserCreated(action.user))
+    private val sideEffectReloadFriends = sideEffectOf(ProfileCreationBroadcast.FriendCreated::class) { action ->
+        getFriendsUseCase(Unit)
+            .onSuccess { dispatch(HomeAction.SideEffects.FriendsLoaded(it)) }
+            .onFailure { publish(HomeEvent.LoadFailed) }
+        publish(HomeEvent.FriendCreated(action.friend))
     }
 
     override fun setup() = source {
@@ -85,8 +97,8 @@ class HomeViewModel(
         }
 
         broadcasts {
-            // The users created in the profile screen
-            listen<ProfileCreationBroadcast.UserCreated>()
+            // The friends created in the profile screen
+            listen<ProfileCreationBroadcast.FriendCreated>()
         }
     }
 }

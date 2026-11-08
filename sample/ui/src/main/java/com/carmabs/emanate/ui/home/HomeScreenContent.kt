@@ -37,10 +37,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.carmabs.domain.model.Friend
 import com.carmabs.domain.model.Role
-import com.carmabs.domain.model.User
 import com.carmabs.emanate.core.action.EmaActionDispatcher
-import com.carmabs.emanate.presentation.extension.fullName
 import com.carmabs.emanate.presentation.extension.fullNameOf
 import com.carmabs.emanate.presentation.extension.initials
 import com.carmabs.emanate.presentation.extension.initialsOf
@@ -140,14 +139,14 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
                     ),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(state.userList, key = { it.id.ifEmpty { it.fullName } }) { user ->
+                    items(state.friends, key = { it.id }) { friend ->
                         UserItem(
                             // The removed user fades out while the ones below slide up to its place
                             modifier = Modifier.animateItem(),
-                            user = user,
+                            friend = friend,
                             showDelete = state.showDeleteButtons
                         ) {
-                            actions.dispatch(HomeAction.DeleteClicked(user))
+                            actions.dispatch(HomeAction.DeleteClicked(friend))
                         }
                     }
                 }
@@ -197,18 +196,10 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
     }
 
     @Composable
-    private fun UserItem(modifier: Modifier, user: User, showDelete: Boolean, onDelete: () -> Unit) {
-        val isAdmin = user.role == Role.ADMIN
-        val container = if (isAdmin) {
-            MaterialTheme.colorScheme.primaryContainer
-        } else {
-            MaterialTheme.colorScheme.secondaryContainer
-        }
-        val content = if (isAdmin) {
-            MaterialTheme.colorScheme.onPrimaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSecondaryContainer
-        }
+    private fun UserItem(modifier: Modifier, friend: Friend, showDelete: Boolean, onDelete: () -> Unit) {
+        // The friends are basic users
+        val container = MaterialTheme.colorScheme.secondaryContainer
+        val content = MaterialTheme.colorScheme.onSecondaryContainer
         Card(
             modifier = modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
@@ -218,21 +209,28 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Avatar(text = user.initials, container = container, content = content, size = 44.dp)
-                Text(
+                Avatar(text = friend.initials, container = container, content = content, size = 44.dp)
+                // The name and the surname are in two lines
+                Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 16.dp),
-                    text = user.fullName,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                RoleChip(
-                    role = if (isAdmin) R.string.role_admin else R.string.role_basic,
-                    container = container,
-                    content = content
-                )
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = friend.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = friend.surname,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                RoleChip(role = R.string.role_basic, container = container, content = content)
                 if (showDelete) {
                     IconButton(onClick = onDelete) {
                         Icon(
@@ -316,7 +314,7 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
             onState(
                 state = HomeState.DEFAULT.copy(
                     userData = HomeState.UserData("Carlos", "Mateo", Role.ADMIN),
-                    userList = listOf(User("Ana", "López", Role.BASIC, "1"), User("Luis", "Pérez", Role.BASIC, "2")),
+                    friends = listOf(Friend("1", "Ana", "López"), Friend("2", "Luis", "Pérez")),
                     friendsLoaded = true
                 ),
                 actions = EmaActionDispatcher.EMPTY

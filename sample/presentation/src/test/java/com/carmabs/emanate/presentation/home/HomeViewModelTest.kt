@@ -1,5 +1,6 @@
 package com.carmabs.emanate.presentation.home
 
+import com.carmabs.domain.model.Friend
 import com.carmabs.domain.model.Role
 import com.carmabs.domain.model.User
 import com.carmabs.domain.usecase.AddFriendUseCase
@@ -22,8 +23,8 @@ import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 
 private val admin = User("Carmabs", "Ema Creator", Role.ADMIN)
-private val ana = User("Ana", "López", Role.BASIC, "1")
-private val luis = User("Luis", "Pérez", Role.BASIC, "2")
+private val ana = Friend("1", "Ana", "López")
+private val luis = Friend("2", "Luis", "Pérez")
 
 class HomeViewModelTest {
 
@@ -50,7 +51,7 @@ class HomeViewModelTest {
         viewModel.onCreated(HomeInitializer.HomeUser(admin))
         advanceUntilIdle()
 
-        recorder.assertState { it.userList == listOf(ana, luis) && it.friendsLoaded && !it.showEmptyList }
+        recorder.assertState { it.friends == listOf(ana, luis) && it.friendsLoaded && !it.showEmptyList }
         viewModel.close()
     }
 
@@ -88,7 +89,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `a deleted user disappears from the list and from the storage`() = runTest {
+    fun `a deleted friend disappears from the list and from the storage`() = runTest {
         val viewModel = homeViewModel()
         val recorder = viewModel.record()
         viewModel.onCreated(HomeInitializer.HomeUser(admin))
@@ -97,8 +98,38 @@ class HomeViewModelTest {
         viewModel.dispatch(HomeAction.DeleteClicked(ana))
         advanceUntilIdle()
 
-        recorder.assertState { it.userList == listOf(luis) }
-        assertEquals(listOf(luis), repository.getFriends())
+        recorder.assertState { it.friends == listOf(luis) }
+        assertEquals(listOf(luis), repository.getFriends().getOrThrow())
+        viewModel.close()
+    }
+
+    @Test
+    fun `a friend that can't be deleted comes back to the list and the failure is published`() = runTest {
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+        viewModel.onCreated(HomeInitializer.HomeUser(admin))
+        advanceUntilIdle()
+        repository.failDelete = true
+
+        viewModel.dispatch(HomeAction.DeleteClicked(ana))
+        advanceUntilIdle()
+
+        recorder.assertState { it.friends == listOf(ana, luis) }
+        recorder.assertEvents(HomeEvent.DeleteFailed(ana))
+        viewModel.close()
+    }
+
+    @Test
+    fun `the failure is published when the friends can't be read`() = runTest {
+        repository.failGet = true
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+
+        viewModel.onCreated(HomeInitializer.HomeUser(admin))
+        advanceUntilIdle()
+
+        recorder.assertState { it.friends.isEmpty() && !it.friendsLoaded && !it.showEmptyList }
+        recorder.assertEvents(HomeEvent.LoadFailed)
         viewModel.close()
     }
 
@@ -116,7 +147,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `the user created in the profile screen is stored, listed and notified`() = runTest {
+    fun `the friend created in the profile screen is stored, listed and notified`() = runTest {
         val viewModel = homeViewModel()
         val recorder = viewModel.record()
         viewModel.onCreated(HomeInitializer.HomeUser(admin))
@@ -128,13 +159,14 @@ class HomeViewModelTest {
         profileCreationViewModel.onCreated()
 
         profileCreationViewModel.dispatch(ProfileCreationAction.UserNameWritten("Marta"))
+        profileCreationViewModel.dispatch(ProfileCreationAction.UserSurnameWritten("Soler"))
         profileCreationViewModel.dispatch(ProfileCreationAction.CreateClicked)
         profileCreationViewModel.dispatch(ProfileCreationAction.DialogConfirmClicked)
         advanceUntilIdle()
 
-        val marta = User("Marta", "", Role.BASIC, "3")
-        recorder.assertState { it.userList == listOf(ana, luis, marta) }
-        recorder.assertEvents(HomeEvent.UserCreated(marta))
+        val marta = Friend("3", "Marta", "Soler")
+        recorder.assertState { it.friends == listOf(ana, luis, marta) }
+        recorder.assertEvents(HomeEvent.FriendCreated(marta))
         profileCreationViewModel.close()
         viewModel.close()
     }

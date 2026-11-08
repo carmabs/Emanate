@@ -19,4 +19,16 @@ sealed interface ProfileCreationAction : EmaAction {
     data object DialogBackConfirm : ProfileCreationAction
 
     data object DialogBackCancel : ProfileCreationAction
+
+    data object DialogErrorAccepted : ProfileCreationAction
+
+    /**
+     * Actions dispatched by the side effects of ProfileCreationViewModel to report what they did
+     */
+    sealed interface SideEffects : ProfileCreationAction {
+        /**
+         * The friend couldn't be stored
+         */
+        data object CreateFailed : SideEffects
+    }
 }

@@ -8,10 +8,12 @@ import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerS
 import com.carmabs.emanate.compose.nav2.navigate
 import com.carmabs.emanate.compose.nav2.navigateBack
 import com.carmabs.emanate.compose.nav2.routeId
+import com.carmabs.emanate.presentation.extension.fullName
 import com.carmabs.emanate.presentation.home.HomeEvent
 import com.carmabs.emanate.presentation.home.HomeInitializer
 import com.carmabs.emanate.presentation.login.LoginEvent
 import com.carmabs.emanate.presentation.splash.SplashEvent
+import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.home.HomeScreenContent
 import com.carmabs.emanate.ui.login.LoginScreenContent
 import com.carmabs.emanate.ui.profile.ProfileActivity
@@ -31,9 +33,9 @@ class MainNavigator(private val navController: NavController, private val contex
     }
 
     /**
-     * The messages are not navigation: they are shown by [onMessage]
+     * The messages are not navigation: [onMessage] shows them
      */
-    fun handleLoginEvent(event: LoginEvent, onMessage: (LoginEvent) -> Unit) {
+    fun handleLoginEvent(event: LoginEvent, onMessage: (String) -> Unit) {
         when (event) {
             is LoginEvent.LoginSuccess -> navController.navigate(
                 route = HomeScreenContent::class.routeId,
@@ -43,14 +45,14 @@ class MainNavigator(private val navController: NavController, private val contex
                 )
             )
 
-            is LoginEvent.Message -> onMessage(event)
+            is LoginEvent.Message -> onMessage(context.getString(R.string.login_welcome, event.userName))
         }
     }
 
     /**
-     * The messages are not navigation: they are shown by [onMessage]
+     * The messages are not navigation: [onMessage] shows them
      */
-    fun handleHomeEvent(event: HomeEvent, onMessage: (HomeEvent) -> Unit) {
+    fun handleHomeEvent(event: HomeEvent, onMessage: (String) -> Unit) {
         when (event) {
             // The profile creation is in its own activity
             HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))
@@ -58,7 +60,9 @@ class MainNavigator(private val navController: NavController, private val contex
             // The login is the screen below the home
             HomeEvent.CloseClicked -> navController.navigateBack()
 
-            is HomeEvent.UserCreated -> onMessage(event)
+            is HomeEvent.FriendCreated -> onMessage(context.getString(R.string.home_user_created, event.friend.fullName))
+            is HomeEvent.DeleteFailed -> onMessage(context.getString(R.string.home_delete_failed, event.friend.fullName))
+            HomeEvent.LoadFailed -> onMessage(context.getString(R.string.home_load_failed))
         }
     }
 }

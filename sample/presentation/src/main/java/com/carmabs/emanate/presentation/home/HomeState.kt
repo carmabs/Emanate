@@ -1,19 +1,19 @@
 package com.carmabs.emanate.presentation.home
 
+import com.carmabs.domain.model.Friend
 import com.carmabs.domain.model.Role
-import com.carmabs.domain.model.User
 import com.carmabs.emanate.core.state.EmaState
 
 data class HomeState(
     val userData: UserData?,
-    val userList: List<User>,
+    val friends: List<Friend>,
     val friendsLoaded: Boolean = false
 ) : EmaState {
 
     companion object {
         val DEFAULT = HomeState(
             userData = null,
-            userList = emptyList()
+            friends = emptyList()
         )
     }
 
@@ -29,5 +29,5 @@ data class HomeState(
         get() = userData != null
 
     val showEmptyList
-        get() = showUserList && friendsLoaded && userList.isEmpty()
+        get() = showUserList && friendsLoaded && friends.isEmpty()
 }
