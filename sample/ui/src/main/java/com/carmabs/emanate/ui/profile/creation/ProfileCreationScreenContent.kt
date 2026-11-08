@@ -41,8 +41,9 @@ import com.carmabs.emanate.ui.utils.RenderPreview
 
 class ProfileCreationScreenContent : EmaScreenContent<ProfileCreationState, ProfileCreationAction> {
 
-    // The view only reports the back press: the ViewModel decides what it means
-    override fun onBack(state: ProfileCreationState): ProfileCreationAction = ProfileCreationAction.OnBack
+    // With a dialog open, back belongs to the dialog. Otherwise the ViewModel decides what it means
+    override fun onBack(state: ProfileCreationState): ProfileCreationAction? =
+        if (state.dialog == null) ProfileCreationAction.OnBack else null
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
