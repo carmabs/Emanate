@@ -30,7 +30,7 @@ the JVM test source sets):
 
 ```kotlin
 dependencies {
-    testImplementation("com.github.carmabs.ema:emanate-test:$emanateVersion")
+    testImplementation("com.github.carmabs.emanate:emanate-test:$emanateVersion")
 }
 ```
 

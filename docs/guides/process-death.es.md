@@ -108,7 +108,7 @@ Cada valor tiene una clave única, una función que lo lee del estado y otra que
 
 ```kotlin
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-serialization:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-serialization:$emanateVersion")
 }
 ```
 

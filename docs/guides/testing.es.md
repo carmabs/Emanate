@@ -29,7 +29,7 @@ tests unitarios del módulo de tus ViewModels (por ahora se publica para los sou
 
 ```kotlin
 dependencies {
-    testImplementation("com.github.carmabs.ema:emanate-test:$emanateVersion")
+    testImplementation("com.github.carmabs.emanate:emanate-test:$emanateVersion")
 }
 ```
 

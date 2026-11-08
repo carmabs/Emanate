@@ -41,7 +41,7 @@ jobs:
 
       - name: Ask JitPack to build the version
         continue-on-error: true
-        run: curl -fsS --retry 3 --max-time 1200 -o /dev/null "https://jitpack.io/com/github/carmabs/Ema/$VERSION/build.log"
+        run: curl -fsS --retry 3 --max-time 1200 -o /dev/null "https://jitpack.io/com/github/carmabs/Emanate/$VERSION/build.log"
 
       - name: Open the pull request that syncs develop
         run: |

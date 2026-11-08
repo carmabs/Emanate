@@ -26,10 +26,10 @@ Añade las dependencias:
 val emanateVersion = "7.0.0"
 
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-android:$emanateVersion")
-    implementation("com.github.carmabs.ema:emanate-compose-android:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-android:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-compose-android:$emanateVersion")
     // Solo si tus pantallas están en un grafo de Navigation Compose
-    implementation("com.github.carmabs.ema:emanate-compose-android-nav2:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-compose-android-nav2:$emanateVersion")
 }
 ```
 
@@ -38,8 +38,8 @@ testearlos:
 
 ```kotlin
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-core:$emanateVersion")
-    testImplementation("com.github.carmabs.ema:emanate-test:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-core:$emanateVersion")
+    testImplementation("com.github.carmabs.emanate:emanate-test:$emanateVersion")
 }
 ```
 

@@ -8,7 +8,7 @@ description: Write, review or test Kotlin code that uses the Emanate library (im
 Unidirectional architecture for Kotlin. The view sends **actions**, the ViewModel returns **state** and one-shot **events**.
 Every action follows the path: middlewares -> reducers -> side effects. Pieces are values, so they can be injected.
 
-Docs: https://github.com/carmabs/Ema/tree/master/docs. Read the `references/` file for your task only when you need it.
+Docs: https://github.com/carmabs/Emanate/tree/master/docs. Read the `references/` file for your task only when you need it.
 
 ## The pieces of a screen
 
@@ -114,7 +114,7 @@ emaScreen(
 | State for what must be there when the user comes back; events for one-shots | An event for something that must survive recreation |
 
 Artifacts: `emanate-core` (KMP), `emanate-android`, `emanate-compose-android`, `emanate-compose-android-nav2`, `emanate-serialization`, `emanate-test`. Always with `implementation`, in each module that uses them.
-Gradle coordinates on JitPack: `com.github.carmabs.ema:<artifact>:<version>`. That name comes from the GitHub repository; the code packages are `com.carmabs.emanate`.
+Gradle coordinates on JitPack: `com.github.carmabs.emanate:<artifact>:<version>`.
 
 ## Where to read next (only when needed)
 

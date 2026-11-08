@@ -52,10 +52,10 @@ maven { url = uri("https://jitpack.io") }
 
 ```kotlin
 dependencies {
-    implementation("com.github.carmabs.ema:emanate-android:7.0.0")
-    implementation("com.github.carmabs.ema:emanate-compose-android:7.0.0")
+    implementation("com.github.carmabs.emanate:emanate-android:7.0.0")
+    implementation("com.github.carmabs.emanate:emanate-compose-android:7.0.0")
     // Only if your screens are in a Navigation Compose graph
-    implementation("com.github.carmabs.ema:emanate-compose-android-nav2:7.0.0")
+    implementation("com.github.carmabs.emanate:emanate-compose-android-nav2:7.0.0")
 }
 ```
 
