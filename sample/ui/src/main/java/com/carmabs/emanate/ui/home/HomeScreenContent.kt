@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import com.carmabs.domain.model.Friend
 import com.carmabs.domain.model.Role
 import com.carmabs.emanate.core.action.EmaActionDispatcher
-import com.carmabs.emanate.presentation.extension.fullName
 import com.carmabs.emanate.presentation.extension.fullNameOf
 import com.carmabs.emanate.presentation.extension.initials
 import com.carmabs.emanate.presentation.extension.initialsOf
@@ -211,15 +210,26 @@ class HomeScreenContent : EmaScreenContent<HomeState, HomeAction> {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Avatar(text = friend.initials, container = container, content = content, size = 44.dp)
-                Text(
+                // The name and the surname are in two lines
+                Column(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(horizontal = 16.dp),
-                    text = friend.fullName,
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Text(
+                        text = friend.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = friend.surname,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 RoleChip(role = R.string.role_basic, container = container, content = content)
                 if (showDelete) {
                     IconButton(onClick = onDelete) {

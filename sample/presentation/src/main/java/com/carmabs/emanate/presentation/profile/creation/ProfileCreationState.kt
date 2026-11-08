@@ -17,5 +17,5 @@ data class ProfileCreationState(
     }
 
     val canCreate
-        get() = name.isNotBlank()
+        get() = name.isNotBlank() && surname.isNotBlank()
 }

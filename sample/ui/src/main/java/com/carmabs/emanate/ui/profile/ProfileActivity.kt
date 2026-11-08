@@ -4,50 +4,26 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
+import com.carmabs.emanate.core.action.EmaActionDispatcher
+import com.carmabs.emanate.core.state.EmaState
+import com.carmabs.emanate.presentation.profile.creation.ProfileCreationViewModel
+import com.carmabs.emanate.ui.theme.EmaSampleTheme
 import org.koin.android.ext.android.get
 import org.koin.core.parameter.parametersOf
-import com.carmabs.emanate.compose.nav2.emaScreen
-import com.carmabs.emanate.compose.nav2.routeId
-import com.carmabs.emanate.presentation.profile.creation.ProfileCreationViewModel
-import com.carmabs.emanate.ui.profile.creation.ProfileCreationScreenContent
-import com.carmabs.emanate.ui.theme.EmaSampleTheme
 
+/**
+ * Shows [ProfileScreenContent], the graph with the creation of a friend
+ */
 class ProfileActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        val profileContent = ProfileScreenContent { store -> get<ProfileCreationViewModel> { parametersOf(store) } }
         setContent {
             EmaSampleTheme {
-                val navController = rememberNavController()
-                val navigator = remember {
-                    ProfileNavigator(navController)
-                }
-
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = ProfileCreationScreenContent::class.routeId
-                    ) {
-                        emaScreen(
-                            screenContent = ProfileCreationScreenContent(),
-                            viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
-                            onEvent = {
-                                navigator.handleProfileCreationEvent(it)
-                            }
-                        )
-                    }
-                }
+                // There is no view model behind the profile content, so it is drawn directly, without EmaScreen
+                profileContent.onState(EmaState.EMPTY, EmaActionDispatcher.EMPTY)
             }
         }
     }

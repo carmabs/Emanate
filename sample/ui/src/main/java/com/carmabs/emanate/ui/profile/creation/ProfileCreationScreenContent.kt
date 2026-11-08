@@ -165,7 +165,8 @@ class ProfileCreationScreenContent : EmaScreenContent<ProfileCreationState, Prof
                 dialogData = SimpleDialogData(
                     title = EmaText.id(R.string.profile_creation_error_title),
                     message = EmaText.id(R.string.profile_creation_error_message),
-                    image = R.drawable.ic_error
+                    image = R.drawable.ic_error,
+                    isError = true
                 ),
                 onConfirmClick = { actions.dispatch(ProfileCreationAction.DialogErrorAccepted) },
                 onDismiss = { actions.dispatch(ProfileCreationAction.DialogErrorAccepted) }

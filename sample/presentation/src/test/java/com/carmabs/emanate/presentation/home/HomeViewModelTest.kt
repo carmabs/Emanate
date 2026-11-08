@@ -159,11 +159,12 @@ class HomeViewModelTest {
         profileCreationViewModel.onCreated()
 
         profileCreationViewModel.dispatch(ProfileCreationAction.UserNameWritten("Marta"))
+        profileCreationViewModel.dispatch(ProfileCreationAction.UserSurnameWritten("Soler"))
         profileCreationViewModel.dispatch(ProfileCreationAction.CreateClicked)
         profileCreationViewModel.dispatch(ProfileCreationAction.DialogConfirmClicked)
         advanceUntilIdle()
 
-        val marta = Friend("3", "Marta", "")
+        val marta = Friend("3", "Marta", "Soler")
         recorder.assertState { it.friends == listOf(ana, luis, marta) }
         recorder.assertEvents(HomeEvent.FriendCreated(marta))
         profileCreationViewModel.close()

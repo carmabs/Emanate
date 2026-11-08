@@ -247,7 +247,8 @@ class LoginScreenContent(private val environment: AppEnvironment) : EmaScreenCon
                 dialogData = SimpleDialogData(
                     title = EmaText.id(R.string.login_error_fail_title),
                     message = EmaText.id(R.string.login_error_fail),
-                    image = R.drawable.ic_error
+                    image = R.drawable.ic_error,
+                    isError = true
                 ),
                 onConfirmClick = { actions.dispatch(LoginAction.Error.BadCredentialsAccepted) },
                 onDismiss = { actions.dispatch(LoginAction.Error.BackPressed) }

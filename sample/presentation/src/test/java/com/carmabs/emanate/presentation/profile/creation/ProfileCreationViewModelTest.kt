@@ -76,16 +76,32 @@ class ProfileCreationViewModelTest {
         val recorder = viewModel.record()
         viewModel.onCreated()
         viewModel.dispatch(ProfileCreationAction.UserNameWritten("Ana"))
+        viewModel.dispatch(ProfileCreationAction.UserSurnameWritten("García"))
         viewModel.dispatch(ProfileCreationAction.CreateClicked)
 
         viewModel.dispatch(ProfileCreationAction.DialogConfirmClicked)
         advanceUntilIdle()
 
         // The screen is not closed: there is no event, and the user can read the error and try again
-        recorder.assertState(ProfileCreationState("Ana", "", ProfileCreationDialog.CreateError))
+        recorder.assertState(ProfileCreationState("Ana", "García", ProfileCreationDialog.CreateError))
         recorder.assertEvents()
         viewModel.dispatch(ProfileCreationAction.DialogErrorAccepted)
         advanceUntilIdle()
+        recorder.assertState(ProfileCreationState("Ana", "García"))
+        viewModel.close()
+    }
+
+    @Test
+    fun `a friend without surname can't be created`() = runTest {
+        val viewModel = ProfileCreationViewModel(AddFriendUseCase(FakeFriendsRepository()), ProfileCreationState.DEFAULT, testStateStore())
+        val recorder = viewModel.record()
+        viewModel.onCreated()
+        viewModel.dispatch(ProfileCreationAction.UserNameWritten("Ana"))
+
+        viewModel.dispatch(ProfileCreationAction.CreateClicked)
+        advanceUntilIdle()
+
+        // Only the name is written: the confirmation is not asked
         recorder.assertState(ProfileCreationState("Ana", ""))
         viewModel.close()
     }

@@ -4,43 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.splashscreen.SplashScreenViewProvider
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
-import com.carmabs.emanate.compose.nav2.EmaInitializerSupport
-import com.carmabs.emanate.compose.nav2.emaScreen
-import com.carmabs.emanate.compose.nav2.routeId
-import com.carmabs.emanate.presentation.extension.fullName
-import com.carmabs.emanate.presentation.home.HomeEvent
-import com.carmabs.emanate.presentation.home.HomeInitializer
+import com.carmabs.emanate.core.action.EmaActionDispatcher
+import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.presentation.home.HomeViewModel
-import com.carmabs.emanate.presentation.login.LoginEvent
 import com.carmabs.emanate.presentation.login.LoginViewModel
 import com.carmabs.emanate.presentation.splash.SplashViewModel
-import com.carmabs.emanate.sample.ui.R
-import com.carmabs.emanate.ui.home.HomeScreenContent
-import com.carmabs.emanate.ui.login.LoginScreenContent
-import com.carmabs.emanate.ui.splash.SplashScreenContent
 import com.carmabs.emanate.ui.environment.AppEnvironment
 import com.carmabs.emanate.ui.theme.EmaSampleTheme
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.get
 
 /**
- * Launcher of the sample: the graph of the splash, the login and the home
+ * Launcher of the sample: it shows [MainScreenContent], the graph of the splash, the login and the home
  */
 class MainActivity : ComponentActivity() {
 
@@ -65,75 +41,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         // The flavor of the app tells which environment is running
-        val environment = get<AppEnvironment>()
+        val mainContent = MainScreenContent(
+            environment = get<AppEnvironment>(),
+            splashViewModel = { get<SplashViewModel>() },
+            loginViewModel = { get<LoginViewModel>() },
+            homeViewModel = { get<HomeViewModel>() },
+            onLogoDrawn = {
+                logoDrawn = true
+                removeSystemSplash()
+            }
+        )
         setContent {
             EmaSampleTheme {
-                val navController = rememberNavController()
-                val navigator = remember { MainNavigator(navController, this) }
-                val snackbarHostState = remember { SnackbarHostState() }
-                val scope = rememberCoroutineScope()
-
-                // The surface gives the screens the background and the color of the texts, also in dark mode
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        NavHost(
-                            modifier = Modifier.fillMaxSize(),
-                            navController = navController,
-                            startDestination = SplashScreenContent::class.routeId
-                        ) {
-                            emaScreen(
-                                screenContent = SplashScreenContent(environment, onLogoDrawn = {
-                                    logoDrawn = true
-                                    removeSystemSplash()
-                                }),
-                                viewModel = { get<SplashViewModel>() },
-                                onEvent = { navigator.handleSplashEvent(it) }
-                            )
-                            emaScreen(
-                                screenContent = LoginScreenContent(environment),
-                                viewModel = { get<LoginViewModel>() },
-                                onEvent = { event ->
-                                    navigator.handleLoginEvent(event) {
-                                        val message = when (it) {
-                                            is LoginEvent.Message -> getString(R.string.login_welcome, it.userName)
-                                            is LoginEvent.LoginSuccess -> return@handleLoginEvent
-                                        }
-                                        scope.launch { snackbarHostState.showSnackbar(message) }
-                                    }
-                                }
-                            )
-                            emaScreen(
-                                screenContent = HomeScreenContent(),
-                                viewModel = { get<HomeViewModel>() },
-                                initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()),
-                                onEvent = { event ->
-                                    navigator.handleHomeEvent(event) {
-                                        val message = when (it) {
-                                            is HomeEvent.FriendCreated ->
-                                                getString(R.string.home_user_created, it.friend.fullName)
-                                            is HomeEvent.DeleteFailed ->
-                                                getString(R.string.home_delete_failed, it.friend.fullName)
-                                            HomeEvent.LoadFailed -> getString(R.string.home_load_failed)
-                                            HomeEvent.CreateClicked,
-                                            HomeEvent.CloseClicked -> return@handleHomeEvent
-                                        }
-                                        scope.launch { snackbarHostState.showSnackbar(message) }
-                                    }
-                                }
-                            )
-                        }
-                        SnackbarHost(
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .navigationBarsPadding()
-                                .imePadding(),
-                            hostState = snackbarHostState
-                        )
-                    }
-                }
+                // There is no view model behind the main content, so it is drawn directly, without EmaScreen
+                mainContent.onState(EmaState.EMPTY, EmaActionDispatcher.EMPTY)
             }
         }
     }
