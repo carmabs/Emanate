@@ -227,13 +227,13 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+        <a href="https://github.com/carmabs/Emanate" title="Ir al repositorio" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
       </div>
@@ -272,13 +272,13 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+      <a href="https://github.com/carmabs/Emanate" title="Ir al repositorio" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
     </div>
@@ -1858,7 +1858,7 @@ acción, cada estado y cada evento.</p>
 <p><code>emanate-test</code> tiene las utilidades para testear <code>EmaViewModel</code> y <a href="../../concepts/source/"><code>EmaSource</code></a>. Añádelo a los
 tests unitarios del módulo de tus ViewModels (por ahora se publica para los source sets de test de la JVM):</p>
 <div class="highlight"><pre><span></span><code><span class="n">dependencies</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">"com.github.carmabs.ema:emanate-test:</span><span class="si">$</span><span class="n">emanateVersion</span><span class="s">"</span><span class="p">)</span>
+<span class="w">    </span><span class="n">testImplementation</span><span class="p">(</span><span class="s">"com.github.carmabs.emanate:emanate-test:</span><span class="si">$</span><span class="n">emanateVersion</span><span class="s">"</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Trae <code>kotlinx-coroutines-test</code> y requiere la misma versión de <code>emanate-core</code> con la que se construyó.</p>
@@ -1953,7 +1953,7 @@ que es el tipo más difícil de encontrar.</p>
 
 <span class="w">    </span><span class="nd">@Test</span>
 <span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">`a search shows the matching friends`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">())</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">)</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
 
 <span class="w">        </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">QueryWritten</span><span class="p">(</span><span class="s">"An"</span><span class="p">))</span>
@@ -2012,14 +2012,14 @@ que es el tipo más difícil de encontrar.</p>
 
 <span class="nd">@Test</span>
 <span class="kd">fun</span><span class="w"> </span><span class="nf">`the refresh is processed when the test advances`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">())</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">)</span>
 <span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
 
 <span class="w">    </span><span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
 <span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">()</span><span class="w">                                   </span><span class="c1">// todavía esperando en la cola</span>
 
 <span class="w">    </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
-<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryLoaded</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)))</span>
+<span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">FriendsLoaded</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">)))</span>
 <span class="p">}</span>
 </code></pre></div>
 <ul>
@@ -2068,7 +2068,7 @@ tests que se ejecutan en paralelo, las acciones emitidas en uno llegan a los Vie
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">dispatcher</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">UnconfinedTestDispatcher</span><span class="p">(</span><span class="n">testScheduler</span><span class="p">)</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">InboxViewModel</span><span class="p">(</span>
 <span class="w">            </span><span class="n">GetUnreadCountUseCase</span><span class="p">(</span><span class="n">FakeMessagesRepository</span><span class="p">(),</span><span class="w"> </span><span class="n">dispatcher</span><span class="p">),</span>
-<span class="w">            </span><span class="n">InboxState</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">InboxState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span>
 <span class="w">            </span><span class="n">testConfiguration</span><span class="p">(</span><span class="n">dispatcher</span><span class="p">)</span>
 <span class="w">        </span><span class="p">)</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
@@ -2100,13 +2100,13 @@ recorder es lo que te permite comprobar el comportamiento, no solo el resultado 
 <p><strong>Qué pasa sin él.</strong> Solo puedes leer el último estado con <code>viewModel.stateFlow.value</code>. Un bug que muestra un spinner que
 no desaparece en el momento adecuado, un evento duplicado o uno que falta, pasa desapercibido.</p>
 <p><strong>Cómo usarlo.</strong></p>
-<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">)</span>
 <span class="kd">val</span><span class="w"> </span><span class="nv">recorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">viewModel</span><span class="p">.</span><span class="na">record</span><span class="p">()</span><span class="w">           </span><span class="c1">// antes de la primera acción</span>
 
 <span class="n">viewModel</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">)</span>
 <span class="n">advanceUntilIdle</span><span class="p">()</span>
 
-<span class="n">println</span><span class="p">(</span><span class="n">recorder</span><span class="p">.</span><span class="na">actions</span><span class="p">)</span><span class="w">   </span><span class="c1">// [RefreshRequested, Loaded([Ana])]</span>
+<span class="n">println</span><span class="p">(</span><span class="n">recorder</span><span class="p">.</span><span class="na">actions</span><span class="p">)</span><span class="w">   </span><span class="c1">// [RefreshRequested, FriendsLoaded([Ana])]</span>
 <span class="n">println</span><span class="p">(</span><span class="n">recorder</span><span class="p">.</span><span class="na">states</span><span class="p">)</span><span class="w">    </span><span class="c1">// [HomeState(isLoading=true), HomeState(friends=[Ana])]</span>
 <span class="n">println</span><span class="p">(</span><span class="n">recorder</span><span class="p">.</span><span class="na">events</span><span class="p">)</span><span class="w">    </span><span class="c1">// [FriendsUpdated(1)]</span>
 </code></pre></div>
@@ -2129,17 +2129,17 @@ y el mensaje muestra ambas listas. No escribes los bucles ni las comparaciones.<
 <tr>
 <td><code>assertActions(...)</code></td>
 <td>Las acciones que entraron, en orden, incluidas las enviadas por side effects y las que bloqueó un middleware.</td>
-<td><code>recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))</code></td>
+<td><code>recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoaded(listOf(ana)))</code></td>
 </tr>
 <tr>
 <td><code>assertStates(...)</code></td>
 <td>Los estados que devolvieron los reducers, uno por cada acción reducida.</td>
-<td><code>recorder.assertStates(HomeState(isLoading = true), HomeState(friends = listOf(ana)))</code></td>
+<td><code>recorder.assertStates(HomeState.DEFAULT.copy(isLoading = true), HomeState.DEFAULT.copy(friends = listOf(ana)))</code></td>
 </tr>
 <tr>
 <td><code>assertState(state)</code></td>
 <td>El último estado es exactamente ese.</td>
-<td><code>recorder.assertState(HomeState(friends = listOf(ana)))</code></td>
+<td><code>recorder.assertState(HomeState.DEFAULT.copy(friends = listOf(ana)))</code></td>
 </tr>
 <tr>
 <td><code>assertState { }</code></td>
@@ -2195,7 +2195,7 @@ nunca se actualiza, y ningún test lo detecta, porque los tests del ViewModel en
 <code>advanceUntilIdle()</code>: solo lee cómo está declarado el ViewModel.</p>
 <div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
 <span class="kd">fun</span><span class="w"> </span><span class="nf">`the setup is complete`</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">()).</span><span class="na">assertSetup</span><span class="p">()</span>
+<span class="w">    </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">).</span><span class="na">assertSetup</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Si cada pieza puede recibir su acción, el test pasa. Para ver qué detecta, toma un <code>HomeViewModel</code> que gestiona el
@@ -2298,7 +2298,7 @@ falla, una que tarda un rato.</p>
 <span class="w">    </span><span class="n">advanceUntilIdle</span><span class="p">()</span>
 
 <span class="w">    </span><span class="n">recorder</span><span class="p">.</span><span class="na">assertActions</span><span class="p">(</span>
-<span class="w">        </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryStarted</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">QueryLoaded</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">))</span>
+<span class="w">        </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">FriendsLoadStarted</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">RefreshRequested</span><span class="p">,</span><span class="w"> </span><span class="n">HomeAction</span><span class="p">.</span><span class="na">SideEffects</span><span class="p">.</span><span class="na">FriendsLoaded</span><span class="p">(</span><span class="n">listOf</span><span class="p">(</span><span class="n">ana</span><span class="p">))</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -2375,8 +2375,8 @@ hablan deben recibir <strong>la misma</strong>. Con <code>testConfiguration</cod
 <div class="highlight"><pre><span></span><code><span class="nd">@Test</span>
 <span class="kd">fun</span><span class="w"> </span><span class="nf">`a friend created in the profile reaches the home list`</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">runTest</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">configuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">testConfiguration</span><span class="p">(</span><span class="n">UnconfinedTestDispatcher</span><span class="p">(</span><span class="n">testScheduler</span><span class="p">))</span>
-<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">home</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">(),</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w">   </span><span class="c1">// escucha FriendCreated</span>
-<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileViewModel</span><span class="p">(</span><span class="n">ProfileState</span><span class="p">(</span><span class="n">friend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ana</span><span class="p">),</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w">                    </span><span class="c1">// envía FriendCreated</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">home</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeViewModel</span><span class="p">(</span><span class="n">GetFriendsUseCase</span><span class="p">(</span><span class="n">FakeRepository</span><span class="p">()),</span><span class="w"> </span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">,</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w">   </span><span class="c1">// escucha FriendCreated</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">profile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileViewModel</span><span class="p">(</span><span class="n">ProfileState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">friend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ana</span><span class="p">),</span><span class="w"> </span><span class="n">configuration</span><span class="p">)</span><span class="w">                    </span><span class="c1">// envía FriendCreated</span>
 <span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">homeRecorder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">home</span><span class="p">.</span><span class="na">record</span><span class="p">()</span>
 
 <span class="w">    </span><span class="n">profile</span><span class="p">.</span><span class="na">dispatch</span><span class="p">(</span><span class="n">ProfileAction</span><span class="p">.</span><span class="na">SaveClicked</span><span class="p">)</span><span class="w">       </span><span class="c1">// su side effect emite FriendCreated(ana)</span>

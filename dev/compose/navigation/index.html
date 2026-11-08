@@ -227,13 +227,13 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/carmabs/Ema" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/carmabs/Emanate" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
       </div>
@@ -272,13 +272,13 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/carmabs/Ema" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/carmabs/Emanate" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
     </div>
@@ -1596,7 +1596,7 @@ yours, and it is a good pattern to handle all the navigation of your app this wa
 <li>When the credentials are right, the ViewModel of <code>Login</code> publishes <code>LoginSuccess(user)</code>. It doesn't know which
    screen comes next.</li>
 <li>The <code>onEvent</code> of that screen hands the event to the navigator, to its function for that screen:
-   <code>handleLoginEvent</code>.</li>
+   <code>handleLogin</code>.</li>
 <li>The navigator decides for each event: <code>LoginSuccess</code> opens <code>Home</code>, and the <code>CloseClicked</code> of <code>Home</code> goes back to the
    login. It does it with the <code>navController</code>, which changes the destination shown by the <code>NavHost</code>.</li>
 </ol>
@@ -1618,7 +1618,7 @@ receives the events of that screen and decides where to go. Emanate doesn't requ
 any class with this shape works. Create it once, with <code>remember</code>, next to the <code>NavHost</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">MainNavigator</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">navController</span><span class="p">:</span><span class="w"> </span><span class="n">NavController</span><span class="p">,</span><span class="w"> </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">context</span><span class="p">:</span><span class="w"> </span><span class="n">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleLoginEvent</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">,</span><span class="w"> </span><span class="n">onMessage</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">LoginEvent</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">Unit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleLogin</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">.</span><span class="na">LoginSuccess</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
 <span class="w">                </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
@@ -1627,22 +1627,25 @@ any class with this shape works. Create it once, with <code>remember</code>, nex
 <span class="w">                    </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
 <span class="w">                </span><span class="p">)</span>
 <span class="w">            </span><span class="p">)</span>
-
-<span class="w">            </span><span class="c1">// A message is not navigation: whoever shows messages handles it</span>
-<span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">.</span><span class="na">Message</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">onMessage</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleHomeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">,</span><span class="w"> </span><span class="n">onMessage</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">HomeEvent</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">Unit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleHome</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="c1">// The profile creation is in its own activity</span>
 <span class="w">            </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CreateClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="na">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileActivity</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">java</span><span class="p">))</span>
 
 <span class="w">            </span><span class="c1">// The login is the screen below the home</span>
 <span class="w">            </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CloseClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="p">()</span>
-
-<span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">FriendCreated</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">onMessage</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Each function is named <code>handle</code> plus the screen, and receives the sealed type of its events. If something has to go back to the screen that contains the graph, add a lambda to the function: the function decides, for each event, what to send through it.</p>
+<div class="highlight"><pre><span></span><code><span class="kd">fun</span><span class="w"> </span><span class="nf">handleHome</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">,</span><span class="w"> </span><span class="n">onFriendCreated</span><span class="p">:</span><span class="w"> </span><span class="p">(</span><span class="n">Friend</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kt">Unit</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">is</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">FriendCreated</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">onFriendCreated</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">friend</span><span class="p">)</span>
+<span class="w">        </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CloseClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="p">()</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1653,8 +1656,8 @@ any class with this shape works. Create it once, with <code>remember</code>, nex
 <span class="w">    </span><span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoginScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">            </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoginScreenContent</span><span class="p">(),</span>
-<span class="w">            </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">LoginViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
-<span class="w">            </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleLoginEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* show the message */</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="w">            </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createLoginViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleLogin</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 <span class="w">        </span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
@@ -1677,9 +1680,9 @@ text, so Compose navigation reads it with kotlinx.serialization: the <code>parce
 only work with Bundles, can't be used in a route.</p>
 <div class="highlight"><pre><span></span><code><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">HomeViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createHomeViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">fromRoute</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()),</span>
-<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleHomeEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* show the message */</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleHome</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 <span class="p">)</span>
 </code></pre></div>
 <p>The initializer reaches the ViewModel as an action, the first time the screen is created. See <a href="../../guides/initializers/">Initializers</a>.</p>
@@ -1744,10 +1747,10 @@ contains the <code>NavHost</code>, using the same serializer:</p>
 <div class="highlight"><pre><span></span><code><span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
-<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createProfileCreationViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
 <span class="w">        </span><span class="c1">// The initializer that the home screen put in the intent of the activity</span>
 <span class="w">        </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">fromIntent</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()),</span>
-<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreationEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreation</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>

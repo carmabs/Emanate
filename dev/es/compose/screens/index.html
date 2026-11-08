@@ -227,13 +227,13 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+        <a href="https://github.com/carmabs/Emanate" title="Ir al repositorio" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
       </div>
@@ -272,13 +272,13 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+      <a href="https://github.com/carmabs/Emanate" title="Ir al repositorio" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
     </div>
@@ -1762,11 +1762,31 @@ la pantalla con <a href="#usar-una-pantalla-sin-grafo-de-navegación"><code>EmaS
 <span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="p">(),</span>
-<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">HomeViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleHomeEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* mostrar el mensaje */</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createHomeViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleHome</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Proporciona los ViewModels con un inyector</p>
+<p><code>createHomeViewModel()</code> representa lo que crea el ViewModel en tu proyecto. Es buena idea usar para ello un inyector
+de dependencias como Koin: el ViewModel y sus casos de uso se declaran una vez, en un módulo, y la pantalla solo pide
+el tipo. Declara los ViewModels con <code>factory</code>, para que cada pantalla tenga el suyo:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// El módulo del inyector</span>
+<span class="kd">val</span><span class="w"> </span><span class="nv">uiModule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">module</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">factoryOf</span><span class="p">(</span><span class="o">::</span><span class="n">HomeViewModel</span><span class="p">)</span>
+<span class="w">    </span><span class="n">factory</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">HomeState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// La pantalla solo pide su ViewModel</span>
+<span class="n">emaScreen</span><span class="p">(</span>
+<span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">HomeViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleHome</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Consulta <a href="../../guides/dependency-injection/#con-koin">Inyección de dependencias</a>.</p>
+</div>
 <table>
 <thead>
 <tr>
@@ -1805,12 +1825,12 @@ la pantalla con <a href="#usar-una-pantalla-sin-grafo-de-navegación"><code>EmaS
 los necesites. Por ejemplo, una pantalla que entra deslizándose desde la derecha:</p>
 <div class="highlight"><pre><span></span><code><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createProfileCreationViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="n">transitionAnimation</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaAnimTransition</span><span class="p">(</span>
 <span class="w">        </span><span class="n">enterTransition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">slideInHorizontally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span>
 <span class="w">        </span><span class="n">exitTransition</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">slideOutHorizontally</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">),</span>
-<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreationEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreation</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 <span class="p">)</span>
 </code></pre></div>
 <h3 id="mostrar-una-pantalla-como-diálogo">Mostrar una pantalla como diálogo<a class="headerlink" href="#mostrar-una-pantalla-como-diálogo" title="Permanent link">&para;</a></h3>
@@ -1820,9 +1840,9 @@ de la ruta. Solo cambian las transiciones, ya que un diálogo no tiene, por <cod
 Compose:</p>
 <div class="highlight"><pre><span></span><code><span class="n">emaDialog</span><span class="p">(</span>
 <span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterScreenContent</span><span class="p">(),</span>
-<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">FilterViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createFilterViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
 <span class="w">    </span><span class="n">dialogProperties</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DialogProperties</span><span class="p">(</span><span class="n">usePlatformDefaultWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">false</span><span class="p">),</span>
-<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleFilterEvent</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleFilter</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 <span class="p">)</span>
 </code></pre></div>
 <p>La abres como cualquier otra pantalla, con <code>navController.navigate(FilterScreenContent::class.routeId)</code>.</p>
@@ -1842,7 +1862,7 @@ necesitar: el <code>NavController</code> o el navigator para navegar, y el <code
 <span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
-<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createProfileCreationViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
 <span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">-&gt;</span>
 <span class="w">            </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="n">ProfileCreationEvent</span><span class="p">.</span><span class="na">DialogConfirmationAccepted</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="p">()</span>
@@ -1855,16 +1875,16 @@ necesitar: el <code>NavController</code> o el navigator para navegar, y el <code
 </code></pre></div>
 <p>Como todos los eventos llegan al mismo <code>when</code>, el compilador te avisa cuando un evento nuevo no está gestionado. Cuando
 el <code>when</code> crece, muévelo a una función de tu navigator, como hace el sample con
-<code>navigator.handleHomeEvent(it)</code>.</p>
+<code>navigator.handleHome(it)</code>.</p>
 <p><code>onEvent</code> debe terminar rápido: los siguientes eventos esperan por él. Navegar o mostrar un toast es inmediato. Para algo
 que tarda, como un snackbar, lánzalo en un scope de corrutinas tuyo:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rememberCoroutineScope</span><span class="p">()</span>
-<span class="kd">val</span><span class="w"> </span><span class="nv">snackbarHostState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remember</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SnackbarHostState</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+<span class="kd">val</span><span class="w"> </span><span class="nv">snackbarHostState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remember</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">SnackbarHostState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="w"> </span><span class="p">}</span>
 
 <span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
-<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="o">&lt;</span><span class="n">ProfileCreationViewModel</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createProfileCreationViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
 <span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">event</span><span class="w"> </span><span class="o">-&gt;</span>
 <span class="w">            </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="k">is</span><span class="w"> </span><span class="n">ProfileCreationEvent</span><span class="p">.</span><span class="na">ProfileSaved</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">scope</span><span class="p">.</span><span class="na">launch</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">snackbarHostState</span><span class="p">.</span><span class="na">showSnackbar</span><span class="p">(</span><span class="s">"Guardado"</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
@@ -1920,18 +1940,19 @@ pausa. No tienes que observar el ciclo de vida tú mismo: la pantalla lo hace y 
 </table>
 <p>El estado se recoge con <code>collectAsStateWithLifecycle</code> y los eventos mientras el ciclo de vida está en <code>STARTED</code>.</p>
 <h2 id="previews">Previews<a class="headerlink" href="#previews" title="Permanent link">&para;</a></h2>
-<p>El <code>@Preview</code> de Android Studio dibuja un composable sin ejecutar la app, lo que hace mucho más rápido diseñar la UI.
+<p><strong>Cada contenido de pantalla tiene su preview</strong>, anotada con <code>@PreviewLightDark</code> para verla en modo claro y oscuro, dentro del tema de la app.</p>
+<p>El <code>@PreviewLightDark</code> de Android Studio dibuja un composable sin ejecutar la app, lo que hace mucho más rápido diseñar la UI.
 Pero una preview no puede crear un ViewModel real, así que le das un estado a mano y ves cómo queda la pantalla con él.
 Escribir una preview por cada estado interesante (vacío, cargando, error...) es una forma barata de comprobarlos todos.</p>
 <p><img alt="En una preview, un estado escrito a mano sustituye al ViewModel" src="../../../assets/compose-preview.svg" /></p>
 <p>Dentro de la preview del IDE no hay ViewModel, así que llama a <code>onState</code> directamente con un estado y un dispatcher
 vacío:</p>
-<div class="highlight"><pre><span></span><code><span class="nd">@Preview</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@PreviewLightDark</span>
 <span class="nd">@Composable</span>
 <span class="kd">private</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">PreviewNormal</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">EmaSampleTheme</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">ProfileCreationScreenContent</span><span class="p">().</span><span class="na">onState</span><span class="p">(</span>
-<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">(</span><span class="s">"Carlos"</span><span class="p">,</span><span class="w"> </span><span class="s">"Mateo"</span><span class="p">),</span>
+<span class="w">            </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Carlos"</span><span class="p">,</span><span class="w"> </span><span class="n">surname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Mateo"</span><span class="p">),</span>
 <span class="w">            </span><span class="n">actions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaActionDispatcher</span><span class="p">.</span><span class="na">EMPTY</span>
 <span class="w">        </span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
@@ -2061,12 +2082,12 @@ tiene estado que pintar y su espacio queda vacío. Con él, ves la página compl
 <span class="w">            </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterScreenContent</span><span class="p">(),</span>
 <span class="w">            </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">},</span>
 <span class="w">            </span><span class="c1">// Solo para la preview: la app muestra la cuenta real del ViewModel</span>
-<span class="w">            </span><span class="n">previewRenderState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterState</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+<span class="w">            </span><span class="n">previewRenderState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CounterState</span><span class="p">.</span><span class="na">DEFAULT</span><span class="p">.</span><span class="na">copy</span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
 <span class="w">        </span><span class="p">)</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 
-<span class="nd">@Preview</span>
+<span class="nd">@PreviewLightDark</span>
 <span class="nd">@Composable</span>
 <span class="kd">private</span><span class="w"> </span><span class="kd">fun</span><span class="w"> </span><span class="nf">PreviewDashboard</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="c1">// El título y un contador con el número 3</span>

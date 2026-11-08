@@ -227,13 +227,13 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+        <a href="https://github.com/carmabs/Emanate" title="Ir al repositorio" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
       </div>
@@ -272,13 +272,13 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/carmabs/Ema" title="Ir al repositorio" class="md-source" data-md-component="source">
+      <a href="https://github.com/carmabs/Emanate" title="Ir al repositorio" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
     </div>
@@ -1353,10 +1353,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#api-o-implementation" class="md-nav__link">
+  <a href="#declara-las-dependencias-con-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ¿api o implementation?
+        Declara las dependencias con implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inicializar-las-librerías" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicializar las librerías
       
     </span>
   </a>
@@ -1569,10 +1580,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#api-o-implementation" class="md-nav__link">
+  <a href="#declara-las-dependencias-con-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ¿api o implementation?
+        Declara las dependencias con implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inicializar-las-librerías" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inicializar las librerías
       
     </span>
   </a>
@@ -1745,7 +1767,7 @@ Dividir en módulos puede esperar a que la app crezca.</p>
 <h2 id="divide-la-app-en-módulos">Divide la app en módulos<a class="headerlink" href="#divide-la-app-en-módulos" title="Permanent link">&para;</a></h2>
 <p>Un módulo es una parte del proyecto que se compila por separado y solo puede usar lo que declara como dependencia.
 Ese límite es justo lo que queremos: <strong>si un módulo no puede ver algo, nadie puede usarlo ahí por error.</strong></p>
-<p>El sample tiene seis módulos:</p>
+<p>El sample tiene seis módulos. <code>XXX</code> en el nombre de un módulo es la plataforma para la que está escrito, aquí <code>android</code>:</p>
 <table>
 <thead>
 <tr>
@@ -1758,15 +1780,15 @@ Ese límite es justo lo que queremos: <strong>si un módulo no puede ver algo, n
 <tbody>
 <tr>
 <td><code>app</code></td>
-<td>La <code>Application</code>, la configuración de la inyección de dependencias y el manifest.</td>
+<td>Solo la inyección de dependencias y la inicialización de las librerías, con la <code>Application</code> y el manifest.</td>
 <td>App Android</td>
 <td>Todo</td>
 </tr>
 <tr>
-<td><code>ui</code></td>
+<td><code>ui-android</code></td>
 <td>Contenidos de pantalla, navigators, diálogos, tema y recursos.</td>
 <td>Librería Android</td>
-<td><code>presentation</code>, <code>domain</code>, <code>android-utils</code>, <code>emanate-compose-android</code></td>
+<td><code>presentation</code>, <code>domain</code>, <code>utils-android</code></td>
 </tr>
 <tr>
 <td><code>presentation</code></td>
@@ -1776,65 +1798,72 @@ Ese límite es justo lo que queremos: <strong>si un módulo no puede ver algo, n
 </tr>
 <tr>
 <td><code>domain</code></td>
-<td>Modelos, casos de uso e interfaces de los repositorios.</td>
+<td>Modelos, casos de uso e interfaces de los repositorios y managers.</td>
 <td><strong>Kotlin puro</strong></td>
-<td><code>emanate-core</code></td>
+<td>Nada de la app</td>
 </tr>
 <tr>
-<td><code>data</code></td>
+<td><code>data-android</code></td>
 <td>Implementaciones de los repositorios, red y almacenamiento.</td>
 <td>Librería Android</td>
-<td><code>domain</code>, <code>android-utils</code></td>
+<td><code>domain</code>, <code>utils-android</code></td>
 </tr>
 <tr>
-<td><code>android-utils</code></td>
-<td>Ayudas de Android compartidas por varios módulos, como leer y guardar JSON en <code>SharedPreferences</code>.</td>
+<td><code>utils-android</code></td>
+<td>Ayudas de Android compartidas por varios módulos, como leer y guardar JSON en <code>SharedPreferences</code>. Opcional.</td>
 <td>Librería Android</td>
 <td><code>domain</code></td>
 </tr>
 </tbody>
 </table>
 <p><img alt="Módulos de una app Emanate y las dependencias entre ellos" src="../../assets/modules.svg" /></p>
-<p>Lee las flechas como <em>"puede ver"</em>: <code>ui</code> puede ver <code>presentation</code>, pero <code>presentation</code> no puede ver <code>ui</code>. Tres detalles:</p>
+<p>Lee las flechas como <em>"puede ver"</em>: <code>ui-android</code> puede ver <code>presentation</code>, pero <code>presentation</code> no puede ver <code>ui-android</code>. Dos detalles:</p>
 <ul>
 <li><strong><code>app</code> ve todos los módulos</strong>, porque crea todas las piezas con la inyección de dependencias.</li>
-<li><strong><code>api</code> expone una dependencia a los módulos de arriba.</strong> <code>presentation</code> declara <code>domain</code> con <code>api</code>, y <code>domain</code> declara
-  <code>emanate-core</code> con <code>api</code>. Así <code>ui</code> puede usar los modelos de <code>domain</code> que aparecen en el estado, y todos los módulos
-  pueden usar <code>emanate-core</code>. Con <code>implementation</code>, un módulo se guarda sus dependencias para sí.</li>
-<li><strong><code>android-utils</code> también depende de <code>domain</code></strong>, para trabajar con sus modelos.</li>
+<li><strong><code>utils-android</code> también depende de <code>domain</code></strong>, para trabajar con sus modelos.</li>
 </ul>
-<h3 id="api-o-implementation">¿<code>api</code> o <code>implementation</code>?<a class="headerlink" href="#api-o-implementation" title="Permanent link">&para;</a></h3>
-<p>Las dos declaran una dependencia. La diferencia es quién más puede verla:</p>
+<p>Con varias plataformas en el mismo proyecto, escribe un módulo por plataforma: <code>data-android</code> y <code>data-ios</code>, <code>ui-android</code> y
+<code>ui-ios</code>. Un módulo compartido por varias plataformas no lleva sufijo.</p>
+<h3 id="declara-las-dependencias-con-implementation">Declara las dependencias con <code>implementation</code><a class="headerlink" href="#declara-las-dependencias-con-implementation" title="Permanent link">&para;</a></h3>
+<p>Cada módulo enumera lo que puede ver, así que <code>implementation</code> es suficiente, y un cambio en un módulo no recompila los que
+no lo usan. Declara también los artefactos de Emanate con <code>implementation</code>, nunca con <code>api</code>, en cada módulo que los use:</p>
 <table>
 <thead>
 <tr>
-<th>Declaración</th>
-<th>Quién ve la dependencia</th>
-<th>Úsala cuando</th>
+<th>Módulo</th>
+<th>Artefactos de Emanate</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>implementation</code></td>
-<td>Solo el módulo que la declara.</td>
-<td>La dependencia es un detalle interno. Es la opción por defecto.</td>
+<td><code>domain</code></td>
+<td><code>emanate-core</code></td>
 </tr>
 <tr>
-<td><code>api</code></td>
-<td>El módulo <strong>y</strong> todos los que dependen de él.</td>
-<td>Sus tipos aparecen en tu código público: estados, acciones, firmas de funciones o superclases.</td>
+<td><code>presentation</code></td>
+<td><code>emanate-core</code>, <code>emanate-serialization</code> si tiene backup, <code>emanate-test</code> para los tests</td>
+</tr>
+<tr>
+<td><code>ui-android</code></td>
+<td><code>emanate-core</code>, <code>emanate-compose-android</code>, <code>emanate-compose-android-nav2</code> con un <code>NavHost</code>, <code>emanate-android</code> si usa sus ayudas</td>
+</tr>
+<tr>
+<td><code>data-android</code>, <code>utils-android</code></td>
+<td><code>emanate-core</code> solo si usan sus tipos</td>
+</tr>
+<tr>
+<td><code>app</code></td>
+<td><code>emanate-core</code>, <code>emanate-android</code></td>
 </tr>
 </tbody>
 </table>
-<p>Imagina el estado de una pantalla de inicio que contiene una lista de usuarios y el rol de cada uno:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">HomeState</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">users</span><span class="p">:</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">role</span><span class="p">:</span><span class="w"> </span><span class="n">Role</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="w">   </span><span class="c1">// User y Role viven en domain</span>
-</code></pre></div>
-<p><code>presentation</code> usa <code>api</code> para <code>domain</code> porque <code>User</code> y <code>Role</code> son modelos de <code>domain</code> y aparecen en el estado, así que quien
-lo pinte necesita conocerlos. <code>domain</code> usa <code>api</code> para <code>emanate-core</code> porque sus casos de uso extienden <code>EmaUseCase</code>. <code>data</code>,
-en cambio, usa <code>implementation</code> para <code>domain</code>: nadie por encima necesita verlo a través de <code>data</code>.</p>
-<p>No marques todo con <code>api</code>: los módulos verían demasiado, y un cambio en uno obligaría a recompilar los otros. Y si <code>ui</code> usa
-los modelos de <code>domain</code> directamente, declara también <code>implementation project(':domain')</code> en <code>ui</code>, para que no dependa de que
-<code>presentation</code> mantenga su <code>api</code>.</p>
+<h3 id="inicializar-las-librerías">Inicializar las librerías<a class="headerlink" href="#inicializar-las-librerías" title="Permanent link">&para;</a></h3>
+<p><code>app</code> arranca el inyector y decide qué implementaciones se usan. Para no depender de una librería concreta:</p>
+<ol>
+<li>Si una librería necesita inicializarse, hazlo en la implementación de <code>data-android</code>, al crearse la clase que la necesita.</li>
+<li>Si conviene inicializarla de forma explícita, añade un <code>initialize()</code> a la interfaz del repositorio o manager, y llámalo
+   desde <code>app</code>.</li>
+</ol>
 <h3 id="por-qué-presentation-y-domain-son-kotlin-puro">Por qué <code>presentation</code> y <code>domain</code> son Kotlin puro<a class="headerlink" href="#por-qué-presentation-y-domain-son-kotlin-puro" title="Permanent link">&para;</a></h3>
 <p><em>Kotlin puro</em> significa que el módulo no tiene nada de Android: ni <code>Context</code>, ni <code>View</code>, ni <code>R.string</code>. Esto tiene dos
 ventajas:</p>
@@ -1857,7 +1886,7 @@ ventajas:</p>
 <tbody>
 <tr>
 <td>Pinta algo o necesita Android para funcionar (un composable, un navigator, un <code>Toast</code>)</td>
-<td><code>ui</code></td>
+<td><code>ui-android</code></td>
 </tr>
 <tr>
 <td>Decide <strong>qué muestra la pantalla</strong> (estado, acciones, eventos, ViewModel)</td>
@@ -1869,16 +1898,16 @@ ventajas:</p>
 </tr>
 <tr>
 <td><strong>Implementa</strong> esas interfaces de repositorio, hablando con la API REST o la base de datos (<code>FriendsRepositoryImpl</code>)</td>
-<td><code>data</code></td>
+<td><code>data-android</code></td>
 </tr>
 </tbody>
 </table>
-<p><code>domain</code> dice <strong>qué</strong> datos necesita (la interfaz), y <code>data</code> decide <strong>cómo</strong> conseguirlos (la implementación).</p>
+<p><code>domain</code> dice <strong>qué</strong> datos necesita (la interfaz), y <code>data-android</code> decide <strong>cómo</strong> conseguirlos (la implementación).</p>
 <h2 id="organiza-por-funcionalidad">Organiza por funcionalidad<a class="headerlink" href="#organiza-por-funcionalidad" title="Permanent link">&para;</a></h2>
 <p>Agrupa los archivos <strong>por pantalla</strong>, no por tipo. No crees un paquete <code>states/</code> con todos los estados de la app y otro
 <code>viewmodels/</code> con todos los ViewModels: al cambiar la pantalla Home tendrías que saltar entre cinco paquetes.</p>
-<p>En su lugar, cada pantalla es un paquete en <code>presentation</code> y otro en <code>ui</code>, con el mismo nombre:</p>
-<div class="highlight"><pre><span></span><code>presentation/…/presentation/home/         ui/…/ui/home/
+<p>En su lugar, cada pantalla es un paquete en <code>presentation</code> y otro en <code>ui-android</code>, con el mismo nombre:</p>
+<div class="highlight"><pre><span></span><code>presentation/…/presentation/home/         ui-android/…/ui/home/
 ├── HomeState.kt                           ├── HomeScreenContent.kt
 ├── HomeAction.kt                          └── HomeNavigator.kt
 ├── HomeEvent.kt
@@ -1932,7 +1961,7 @@ pantalla Home como ejemplo:</p>
 <tr>
 <td>Resultados de los side effects</td>
 <td><code>&lt;Pantalla&gt;Action.SideEffects.&lt;Qué&gt;</code></td>
-<td><code>HomeAction.SideEffects.QueryLoaded</code></td>
+<td><code>HomeAction.SideEffects.FriendsLoaded</code></td>
 </tr>
 <tr>
 <td>Contenido de Compose</td>
@@ -2076,7 +2105,7 @@ reloj... <strong>No lo crees dentro del ViewModel. Pídelo en el constructor</st
 <td>El test es rápido y siempre da el mismo resultado, sin red.</td>
 </tr>
 <tr>
-<td>Un <code>@Preview</code></td>
+<td>Un <code>@PreviewLightDark</code></td>
 <td>Un doble con datos de ejemplo.</td>
 <td>La preview se pinta sin backend.</td>
 </tr>
@@ -2089,6 +2118,7 @@ reloj... <strong>No lo crees dentro del ViewModel. Pídelo en el constructor</st
 </table>
 <p>Si el ViewModel creara el caso de uso por sí mismo, nada de esto sería posible sin cambiar su código. Consulta
 <a href="../guides/dependency-injection/">Inyección de dependencias</a> para ver cómo lo hace el sample con Koin.</p>
+<p><strong>Por defecto un ViewModel recibe solo sus casos de uso y su estado</strong> (y su <code>EmaStateStore</code> si tiene backup). Recibe piezas en el constructor solo cuando el comportamiento deba cambiar según la compilación.</p>
 <p>No es solo para los casos de uso. Un ViewModel también puede <strong>recibir sus middlewares, reducers y side effects</strong>, y
 entonces la inyección decide cómo se comporta toda la pantalla: por ejemplo, un side effect que devuelve amigos falsos en
 una build de QA, o un middleware que añade latencia para ver el estado de carga. El ViewModel se escribe una vez y no

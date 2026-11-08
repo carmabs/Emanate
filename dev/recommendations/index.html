@@ -227,13 +227,13 @@
     
     
       <div class="md-header__source">
-        <a href="https://github.com/carmabs/Ema" title="Go to repository" class="md-source" data-md-component="source">
+        <a href="https://github.com/carmabs/Emanate" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
       </div>
@@ -272,13 +272,13 @@
   </label>
   
     <div class="md-nav__source">
-      <a href="https://github.com/carmabs/Ema" title="Go to repository" class="md-source" data-md-component="source">
+      <a href="https://github.com/carmabs/Emanate" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
-    carmabs/Ema
+    carmabs/Emanate
   </div>
 </a>
     </div>
@@ -1353,10 +1353,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#api-or-implementation" class="md-nav__link">
+  <a href="#declare-the-dependencies-with-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        api or implementation?
+        Declare the dependencies with implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initializing-the-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initializing the libraries
       
     </span>
   </a>
@@ -1569,10 +1580,21 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#api-or-implementation" class="md-nav__link">
+  <a href="#declare-the-dependencies-with-implementation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        api or implementation?
+        Declare the dependencies with implementation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#initializing-the-libraries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initializing the libraries
       
     </span>
   </a>
@@ -1744,7 +1766,7 @@ are <a href="#organise-by-feature">organise by feature</a>, <a href="#naming">us
 <h2 id="split-the-app-into-modules">Split the app into modules<a class="headerlink" href="#split-the-app-into-modules" title="Permanent link">&para;</a></h2>
 <p>A module is a part of the project that is compiled on its own and can only use what it declares as a dependency.
 That limit is exactly what we want: <strong>if a module cannot see something, nobody can use it there by mistake.</strong></p>
-<p>The sample has six modules:</p>
+<p>The sample has six modules. <code>XXX</code> in a module name is the platform it is written for, here <code>android</code>:</p>
 <table>
 <thead>
 <tr>
@@ -1757,15 +1779,15 @@ That limit is exactly what we want: <strong>if a module cannot see something, no
 <tbody>
 <tr>
 <td><code>app</code></td>
-<td>The <code>Application</code>, the dependency injection setup and the manifest.</td>
+<td>Only the dependency injection and the initialization of the libraries, with the <code>Application</code> and the manifest.</td>
 <td>Android app</td>
 <td>Everything</td>
 </tr>
 <tr>
-<td><code>ui</code></td>
+<td><code>ui-android</code></td>
 <td>Screen contents, navigators, dialogs, theme and resources.</td>
 <td>Android library</td>
-<td><code>presentation</code>, <code>domain</code>, <code>android-utils</code>, <code>emanate-compose-android</code></td>
+<td><code>presentation</code>, <code>domain</code>, <code>utils-android</code></td>
 </tr>
 <tr>
 <td><code>presentation</code></td>
@@ -1775,65 +1797,72 @@ That limit is exactly what we want: <strong>if a module cannot see something, no
 </tr>
 <tr>
 <td><code>domain</code></td>
-<td>Models, use cases and repository interfaces.</td>
+<td>Models, use cases and the interfaces of repositories and managers.</td>
 <td><strong>Pure Kotlin</strong></td>
-<td><code>emanate-core</code></td>
+<td>Nothing of the app</td>
 </tr>
 <tr>
-<td><code>data</code></td>
+<td><code>data-android</code></td>
 <td>Repository implementations, network and storage.</td>
 <td>Android library</td>
-<td><code>domain</code>, <code>android-utils</code></td>
+<td><code>domain</code>, <code>utils-android</code></td>
 </tr>
 <tr>
-<td><code>android-utils</code></td>
-<td>Android helpers shared by several modules, like reading and saving JSON in <code>SharedPreferences</code>.</td>
+<td><code>utils-android</code></td>
+<td>Android helpers shared by several modules, like reading and saving JSON in <code>SharedPreferences</code>. Optional.</td>
 <td>Android library</td>
 <td><code>domain</code></td>
 </tr>
 </tbody>
 </table>
 <p><img alt="Modules of an Emanate app and the dependencies between them" src="../assets/modules.svg" /></p>
-<p>Read the arrows as <em>"can see"</em>: <code>ui</code> can see <code>presentation</code>, but <code>presentation</code> cannot see <code>ui</code>. Three details:</p>
+<p>Read the arrows as <em>"can see"</em>: <code>ui-android</code> can see <code>presentation</code>, but <code>presentation</code> cannot see <code>ui-android</code>. Two details:</p>
 <ul>
 <li><strong><code>app</code> sees every module</strong>, because it creates all the pieces with the dependency injection.</li>
-<li><strong><code>api</code> exposes a dependency to the modules above.</strong> <code>presentation</code> declares <code>domain</code> with <code>api</code>, and <code>domain</code> declares
-  <code>emanate-core</code> with <code>api</code>. So <code>ui</code> can use the models of <code>domain</code> that appear in the state, and every module can use
-  <code>emanate-core</code>. With <code>implementation</code>, a module keeps its dependencies to itself.</li>
-<li><strong><code>android-utils</code> also depends on <code>domain</code></strong>, to work with its models.</li>
+<li><strong><code>utils-android</code> also depends on <code>domain</code></strong>, to work with its models.</li>
 </ul>
-<h3 id="api-or-implementation"><code>api</code> or <code>implementation</code>?<a class="headerlink" href="#api-or-implementation" title="Permanent link">&para;</a></h3>
-<p>Both declare a dependency. The difference is who else can see it:</p>
+<p>With several platforms in the same project, write one module per platform: <code>data-android</code> and <code>data-ios</code>, <code>ui-android</code> and
+<code>ui-ios</code>. A module shared by several platforms has no suffix.</p>
+<h3 id="declare-the-dependencies-with-implementation">Declare the dependencies with <code>implementation</code><a class="headerlink" href="#declare-the-dependencies-with-implementation" title="Permanent link">&para;</a></h3>
+<p>Every module lists what it can see, so <code>implementation</code> is enough, and a change in one module doesn't recompile the ones
+that don't use it. Declare the artifacts of Emanate with <code>implementation</code> too, never with <code>api</code>, in each module that uses them:</p>
 <table>
 <thead>
 <tr>
-<th>Declaration</th>
-<th>Who sees the dependency</th>
-<th>Use it when</th>
+<th>Module</th>
+<th>Artifacts of Emanate</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>implementation</code></td>
-<td>Only the module that declares it.</td>
-<td>The dependency is an internal detail. This is the default.</td>
+<td><code>domain</code></td>
+<td><code>emanate-core</code></td>
 </tr>
 <tr>
-<td><code>api</code></td>
-<td>The module <strong>and</strong> every module that depends on it.</td>
-<td>Its types appear in your public code: states, actions, function signatures or superclasses.</td>
+<td><code>presentation</code></td>
+<td><code>emanate-core</code>, <code>emanate-serialization</code> if it has a backup, <code>emanate-test</code> for the tests</td>
+</tr>
+<tr>
+<td><code>ui-android</code></td>
+<td><code>emanate-core</code>, <code>emanate-compose-android</code>, <code>emanate-compose-android-nav2</code> with a <code>NavHost</code>, <code>emanate-android</code> if it uses its helpers</td>
+</tr>
+<tr>
+<td><code>data-android</code>, <code>utils-android</code></td>
+<td><code>emanate-core</code> only if they use its types</td>
+</tr>
+<tr>
+<td><code>app</code></td>
+<td><code>emanate-core</code>, <code>emanate-android</code></td>
 </tr>
 </tbody>
 </table>
-<p>Imagine the state of a home screen that contains a list of users and the role of each one:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">data</span><span class="w"> </span><span class="kd">class</span><span class="w"> </span><span class="nc">HomeState</span><span class="p">(</span><span class="kd">val</span><span class="w"> </span><span class="nv">users</span><span class="p">:</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="n">User</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">role</span><span class="p">:</span><span class="w"> </span><span class="n">Role</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EmaState</span><span class="w">   </span><span class="c1">// User and Role live in domain</span>
-</code></pre></div>
-<p><code>presentation</code> uses <code>api</code> for <code>domain</code> because <code>User</code> and <code>Role</code> are models of <code>domain</code> and appear in the state, so whoever
-draws it needs to know them. <code>domain</code> uses <code>api</code> for <code>emanate-core</code> because its use cases extend <code>EmaUseCase</code>. <code>data</code>, in
-contrast, uses <code>implementation</code> for <code>domain</code>: nobody above needs to see it through <code>data</code>.</p>
-<p>Don't mark everything with <code>api</code>: the modules would see too much, and a change in one of them would recompile the others.
-And if <code>ui</code> uses the models of <code>domain</code> directly, also declare <code>implementation project(':domain')</code> in <code>ui</code>, so it does not
-depend on <code>presentation</code> keeping its <code>api</code>.</p>
+<h3 id="initializing-the-libraries">Initializing the libraries<a class="headerlink" href="#initializing-the-libraries" title="Permanent link">&para;</a></h3>
+<p><code>app</code> starts the injector and decides which implementations are used. To avoid depending on a concrete library:</p>
+<ol>
+<li>If a library needs to be initialized, do it in the implementation of <code>data-android</code>, when the class that needs it is created.</li>
+<li>If it is better to initialize it explicitly, add an <code>initialize()</code> to the interface of the repository or manager, and call
+   it from <code>app</code>.</li>
+</ol>
 <h3 id="why-presentation-and-domain-are-pure-kotlin">Why <code>presentation</code> and <code>domain</code> are pure Kotlin<a class="headerlink" href="#why-presentation-and-domain-are-pure-kotlin" title="Permanent link">&para;</a></h3>
 <p><em>Pure Kotlin</em> means the module has no Android in it: no <code>Context</code>, no <code>View</code>, no <code>R.string</code>. This has two benefits:</p>
 <ul>
@@ -1855,7 +1884,7 @@ depend on <code>presentation</code> keeping its <code>api</code>.</p>
 <tbody>
 <tr>
 <td>Draws something or needs Android to work (a composable, a navigator, a <code>Toast</code>)</td>
-<td><code>ui</code></td>
+<td><code>ui-android</code></td>
 </tr>
 <tr>
 <td>Decides <strong>what the screen shows</strong> (state, actions, events, ViewModel)</td>
@@ -1867,16 +1896,16 @@ depend on <code>presentation</code> keeping its <code>api</code>.</p>
 </tr>
 <tr>
 <td><strong>Implements</strong> those repository interfaces, talking to the REST API or the database (<code>FriendsRepositoryImpl</code>)</td>
-<td><code>data</code></td>
+<td><code>data-android</code></td>
 </tr>
 </tbody>
 </table>
-<p><code>domain</code> says <strong>what</strong> data it needs (the interface), and <code>data</code> decides <strong>how</strong> to get it (the implementation).</p>
+<p><code>domain</code> says <strong>what</strong> data it needs (the interface), and <code>data-android</code> decides <strong>how</strong> to get it (the implementation).</p>
 <h2 id="organise-by-feature">Organise by feature<a class="headerlink" href="#organise-by-feature" title="Permanent link">&para;</a></h2>
 <p>Group the files <strong>by screen</strong>, not by type. Don't create a package <code>states/</code> with every state of the app and another
 <code>viewmodels/</code> with every ViewModel: when you change the Home screen you would have to jump through five packages.</p>
-<p>Instead, each screen is one package in <code>presentation</code> and another one in <code>ui</code>, with the same name:</p>
-<div class="highlight"><pre><span></span><code>presentation/…/presentation/home/         ui/…/ui/home/
+<p>Instead, each screen is one package in <code>presentation</code> and another one in <code>ui-android</code>, with the same name:</p>
+<div class="highlight"><pre><span></span><code>presentation/…/presentation/home/         ui-android/…/ui/home/
 ├── HomeState.kt                           ├── HomeScreenContent.kt
 ├── HomeAction.kt                          └── HomeNavigator.kt
 ├── HomeEvent.kt
@@ -1930,7 +1959,7 @@ as an example:</p>
 <tr>
 <td>Results of side effects</td>
 <td><code>&lt;Screen&gt;Action.SideEffects.&lt;What&gt;</code></td>
-<td><code>HomeAction.SideEffects.QueryLoaded</code></td>
+<td><code>HomeAction.SideEffects.FriendsLoaded</code></td>
 </tr>
 <tr>
 <td>Compose content</td>
@@ -2074,7 +2103,7 @@ to give it.</p>
 <td>The test is fast and always gives the same result, with no network.</td>
 </tr>
 <tr>
-<td>A <code>@Preview</code></td>
+<td>A <code>@PreviewLightDark</code></td>
 <td>A fake with sample data.</td>
 <td>The preview draws without a backend.</td>
 </tr>
@@ -2087,6 +2116,7 @@ to give it.</p>
 </table>
 <p>If the ViewModel created the use case itself, none of this would be possible without changing its code. See
 <a href="../guides/dependency-injection/">Dependency injection</a> for how the sample does it with Koin.</p>
+<p><strong>By default a ViewModel receives only its use cases and its state</strong> (and its <code>EmaStateStore</code> if it has a backup). Receive pieces in the constructor only when the behaviour must change depending on the build.</p>
 <p>It is not only for use cases. A ViewModel can also <strong>receive its middlewares, reducers and side effects</strong>, and then the
 injection decides how the whole screen behaves: for example, a side effect that returns fake friends in a QA build, or
 a middleware that adds latency to see the loading state. The ViewModel is written once and doesn't change. See
