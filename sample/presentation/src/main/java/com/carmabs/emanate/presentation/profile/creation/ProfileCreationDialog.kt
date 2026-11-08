@@ -14,4 +14,6 @@ sealed interface ProfileCreationDialog {
     data object BackConfirmation : ProfileCreationDialog
 
     data object CreateConfirmation : ProfileCreationDialog
+
+    data object CreateError : ProfileCreationDialog
 }

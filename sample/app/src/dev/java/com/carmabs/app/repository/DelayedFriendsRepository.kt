@@ -1,7 +1,9 @@
 package com.carmabs.app.repository
 
+import com.carmabs.domain.exception.FriendsException
 import com.carmabs.domain.model.Friend
 import com.carmabs.domain.repository.FriendsRepository
+import com.carmabs.emanate.core.model.EmaResult
 import kotlin.time.Duration
 import kotlinx.coroutines.delay
 
@@ -14,18 +16,18 @@ class DelayedFriendsRepository(
     private val latency: Duration
 ) : FriendsRepository {
 
-    override suspend fun getFriends(): List<Friend> {
+    override suspend fun getFriends(): EmaResult<List<Friend>, FriendsException> {
         delay(latency)
         return delegate.getFriends()
     }
 
-    override suspend fun addFriend(name: String, surname: String): Friend {
+    override suspend fun addFriend(name: String, surname: String): EmaResult<Friend, FriendsException> {
         delay(latency)
         return delegate.addFriend(name, surname)
     }
 
-    override suspend fun deleteFriend(id: String) {
+    override suspend fun deleteFriend(id: String): EmaResult<Unit, FriendsException> {
         delay(latency)
-        delegate.deleteFriend(id)
+        return delegate.deleteFriend(id)
     }
 }

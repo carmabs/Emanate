@@ -1,7 +1,9 @@
 package com.carmabs.app.repository
 
+import com.carmabs.domain.exception.FriendsException
 import com.carmabs.domain.model.Friend
 import com.carmabs.domain.repository.FriendsRepository
+import com.carmabs.emanate.core.model.EmaResult
 import java.util.UUID
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -19,14 +21,16 @@ class InMemoryFriendsRepository(initial: List<Friend> = emptyList()) : FriendsRe
 
     private val mutex = Mutex()
 
-    override suspend fun getFriends(): List<Friend> = mutex.withLock { friends.values.toList() }
+    override suspend fun getFriends(): EmaResult<List<Friend>, FriendsException> =
+        mutex.withLock { EmaResult.success(friends.values.toList()) }
 
-    override suspend fun addFriend(name: String, surname: String): Friend = mutex.withLock {
+    override suspend fun addFriend(name: String, surname: String): EmaResult<Friend, FriendsException> = mutex.withLock {
         val id = UUID.randomUUID().toString()
-        Friend(id = id, name = name, surname = surname).also { friends[id] = it }
+        EmaResult.success(Friend(id = id, name = name, surname = surname).also { friends[id] = it })
     }
 
-    override suspend fun deleteFriend(id: String) {
-        mutex.withLock { friends.remove(id) }
+    override suspend fun deleteFriend(id: String): EmaResult<Unit, FriendsException> = mutex.withLock {
+        friends.remove(id)
+        EmaResult.success(Unit)
     }
 }

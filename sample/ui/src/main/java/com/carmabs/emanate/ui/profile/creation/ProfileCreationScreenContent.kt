@@ -160,6 +160,16 @@ class ProfileCreationScreenContent : EmaScreenContent<ProfileCreationState, Prof
                 onCancelClick = { actions.dispatch(ProfileCreationAction.DialogCancelClicked) },
                 onDismiss = { actions.dispatch(ProfileCreationAction.DialogCancelClicked) }
             )
+
+            ProfileCreationDialog.CreateError -> SimpleDialogComposable(
+                dialogData = SimpleDialogData(
+                    title = EmaText.id(R.string.profile_creation_error_title),
+                    message = EmaText.id(R.string.profile_creation_error_message),
+                    image = R.drawable.ic_error
+                ),
+                onConfirmClick = { actions.dispatch(ProfileCreationAction.DialogErrorAccepted) },
+                onDismiss = { actions.dispatch(ProfileCreationAction.DialogErrorAccepted) }
+            )
         }
     }
 

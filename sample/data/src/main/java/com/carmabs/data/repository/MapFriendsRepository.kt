@@ -1,8 +1,10 @@
 package com.carmabs.data.repository
 
 import android.content.SharedPreferences
+import com.carmabs.domain.exception.FriendsException
 import com.carmabs.domain.model.Friend
 import com.carmabs.domain.repository.FriendsRepository
+import com.carmabs.emanate.core.model.EmaResult
 import com.carmabs.emanate.sample.androidutils.getJson
 import com.carmabs.emanate.sample.androidutils.putJson
 import java.util.UUID
@@ -27,27 +29,36 @@ class MapFriendsRepository(private val preferences: SharedPreferences) : Friends
 
     private val mutex = Mutex()
 
-    override suspend fun getFriends(): List<Friend> = mutex.withLock { friends.values.toList() }
+    override suspend fun getFriends(): EmaResult<List<Friend>, FriendsException> =
+        storage { friends.values.toList() }
 
-    override suspend fun addFriend(name: String, surname: String): Friend = mutex.withLock {
+    override suspend fun addFriend(name: String, surname: String): EmaResult<Friend, FriendsException> = storage {
         val id = UUID.randomUUID().toString()
         val friend = Friend(id = id, name = name, surname = surname)
+        write(friends + (id to friend))
         friends[id] = friend
-        write()
         friend
     }
 
-    override suspend fun deleteFriend(id: String) {
-        mutex.withLock {
-            friends.remove(id)
-            write()
+    override suspend fun deleteFriend(id: String): EmaResult<Unit, FriendsException> = storage {
+        write(friends - id)
+        friends.remove(id)
+        Unit
+    }
+
+    // The map in memory changes only after the preferences have been written, so a failure leaves both as they were
+    private suspend fun <T> storage(block: () -> T): EmaResult<T, FriendsException> = mutex.withLock {
+        try {
+            EmaResult.success(block())
+        } catch (exception: Exception) {
+            EmaResult.failure(FriendsException())
         }
     }
 
     private fun read(): MutableMap<String, Friend> =
         preferences.getJson(KEY_FRIENDS, serializer, emptyMap()).toMutableMap()
 
-    private fun write() = preferences.putJson(KEY_FRIENDS, serializer, friends)
+    private fun write(friends: Map<String, Friend>) = preferences.putJson(KEY_FRIENDS, serializer, friends)
 
     companion object {
         const val PREFERENCES_NAME = "friends"

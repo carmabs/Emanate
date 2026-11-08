@@ -99,7 +99,37 @@ class HomeViewModelTest {
         advanceUntilIdle()
 
         recorder.assertState { it.friends == listOf(luis) }
-        assertEquals(listOf(luis), repository.getFriends())
+        assertEquals(listOf(luis), repository.getFriends().getOrThrow())
+        viewModel.close()
+    }
+
+    @Test
+    fun `a friend that can't be deleted comes back to the list and the failure is published`() = runTest {
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+        viewModel.onCreated(HomeInitializer.HomeUser(admin))
+        advanceUntilIdle()
+        repository.failDelete = true
+
+        viewModel.dispatch(HomeAction.DeleteClicked(ana))
+        advanceUntilIdle()
+
+        recorder.assertState { it.friends == listOf(ana, luis) }
+        recorder.assertEvents(HomeEvent.DeleteFailed(ana))
+        viewModel.close()
+    }
+
+    @Test
+    fun `the failure is published when the friends can't be read`() = runTest {
+        repository.failGet = true
+        val viewModel = homeViewModel()
+        val recorder = viewModel.record()
+
+        viewModel.onCreated(HomeInitializer.HomeUser(admin))
+        advanceUntilIdle()
+
+        recorder.assertState { it.friends.isEmpty() && !it.friendsLoaded && !it.showEmptyList }
+        recorder.assertEvents(HomeEvent.LoadFailed)
         viewModel.close()
     }
 

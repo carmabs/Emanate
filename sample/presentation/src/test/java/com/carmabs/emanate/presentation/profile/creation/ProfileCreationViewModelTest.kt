@@ -68,4 +68,25 @@ class ProfileCreationViewModelTest {
         recorder.assertState(ProfileCreationState.DEFAULT.copy(dialog = ProfileCreationDialog.BackConfirmation))
         viewModel.close()
     }
+
+    @Test
+    fun `a friend that can't be stored keeps the form and shows the error`() = runTest {
+        val repository = FakeFriendsRepository().apply { failAdd = true }
+        val viewModel = ProfileCreationViewModel(AddFriendUseCase(repository), ProfileCreationState.DEFAULT, testStateStore())
+        val recorder = viewModel.record()
+        viewModel.onCreated()
+        viewModel.dispatch(ProfileCreationAction.UserNameWritten("Ana"))
+        viewModel.dispatch(ProfileCreationAction.CreateClicked)
+
+        viewModel.dispatch(ProfileCreationAction.DialogConfirmClicked)
+        advanceUntilIdle()
+
+        // The screen is not closed: there is no event, and the user can read the error and try again
+        recorder.assertState(ProfileCreationState("Ana", "", ProfileCreationDialog.CreateError))
+        recorder.assertEvents()
+        viewModel.dispatch(ProfileCreationAction.DialogErrorAccepted)
+        advanceUntilIdle()
+        recorder.assertState(ProfileCreationState("Ana", ""))
+        viewModel.close()
+    }
 }

@@ -12,7 +12,7 @@ class InMemoryFriendsRepositoryTest {
     fun `starts with the initial friends, each one with its id`() = runTest {
         val repository = InMemoryFriendsRepository(listOf(Friend("ana", "Ana", "Ruiz"), Friend("leo", "Leo", "Gil")))
 
-        val friends = repository.getFriends()
+        val friends = repository.getFriends().getOrThrow()
 
         assertEquals(listOf("Ana", "Leo"), friends.map { it.name })
         assertEquals(listOf("ana", "leo"), friends.map { it.id })
@@ -22,11 +22,11 @@ class InMemoryFriendsRepositoryTest {
     fun `adds friends at the end and deletes them by id`() = runTest {
         val repository = InMemoryFriendsRepository(listOf(Friend("ana", "Ana", "Ruiz")))
 
-        val added = repository.addFriend("Marta", "Soler")
+        val added = repository.addFriend("Marta", "Soler").getOrThrow()
         assertTrue(added.id.isNotEmpty())
-        assertEquals(listOf("Ana", "Marta"), repository.getFriends().map { it.name })
+        assertEquals(listOf("Ana", "Marta"), repository.getFriends().getOrThrow().map { it.name })
 
         repository.deleteFriend(added.id)
-        assertEquals(listOf("Ana"), repository.getFriends().map { it.name })
+        assertEquals(listOf("Ana"), repository.getFriends().getOrThrow().map { it.name })
     }
 }

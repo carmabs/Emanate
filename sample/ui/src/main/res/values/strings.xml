@@ -37,6 +37,8 @@
     <string name="home_create">Crear usuario</string>
     <string name="home_user_created">Usuario creado: %s</string>
     <string name="home_delete">Eliminar usuario</string>
+    <string name="home_delete_failed">No hemos podido eliminar a %s</string>
+    <string name="home_load_failed">No hemos podido cargar la lista</string>
     <string name="home_close">Cerrar sesión</string>
 
     <!--DIALOG-->
@@ -50,6 +52,8 @@
     <string name="profile_creation_create_user">Crear usuario</string>
     <string name="profile_creation_user_title">¿Crear usuario?</string>
     <string name="profile_creation_user_message">El usuario se añadirá a tu lista</string>
+    <string name="profile_creation_error_title">No hemos podido crear el usuario</string>
+    <string name="profile_creation_error_message">Inténtalo de nuevo en unos instantes</string>
     <string name="profile_creation_user_exit_title">¿Salir sin guardar?</string>
     <string name="profile_creation_user_exit_message">Los datos introducidos se perderán</string>
 

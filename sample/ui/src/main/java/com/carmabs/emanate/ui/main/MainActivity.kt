@@ -114,6 +114,9 @@ class MainActivity : ComponentActivity() {
                                         val message = when (it) {
                                             is HomeEvent.FriendCreated ->
                                                 getString(R.string.home_user_created, it.friend.fullName)
+                                            is HomeEvent.DeleteFailed ->
+                                                getString(R.string.home_delete_failed, it.friend.fullName)
+                                            HomeEvent.LoadFailed -> getString(R.string.home_load_failed)
                                             HomeEvent.CreateClicked,
                                             HomeEvent.CloseClicked -> return@handleHomeEvent
                                         }

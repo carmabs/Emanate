@@ -1,6 +1,8 @@
 package com.carmabs.emanate.presentation.profile.creation
 
 import com.carmabs.domain.usecase.AddFriendUseCase
+import com.carmabs.emanate.core.model.onFailure
+import com.carmabs.emanate.core.model.onSuccess
 import com.carmabs.emanate.core.savestate.EmaStateStore
 import com.carmabs.emanate.core.savestate.backupOf
 import com.carmabs.emanate.core.source.reducer.reducerOf
@@ -37,15 +39,29 @@ class ProfileCreationViewModel(
             ProfileCreationAction.DialogConfirmClicked,
             ProfileCreationAction.DialogCancelClicked,
             ProfileCreationAction.DialogBackConfirm,
-            ProfileCreationAction.DialogBackCancel -> state.copy(dialog = null)
+            ProfileCreationAction.DialogBackCancel,
+            ProfileCreationAction.DialogErrorAccepted -> state.copy(dialog = null)
+
+            // They are reduced by reducerSideEffects
+            is ProfileCreationAction.SideEffects -> state
+        }
+    }
+
+    private val reducerSideEffects = reducerOf(ProfileCreationAction.SideEffects::class) { action ->
+        when (action) {
+            ProfileCreationAction.SideEffects.CreateFailed -> state.copy(dialog = ProfileCreationDialog.CreateError)
         }
     }
 
     // The friend is stored and the home screen, which lists the stored friends, is told to read them again
     private val sideEffectCreateUser = sideEffectOf(ProfileCreationAction.DialogConfirmClicked::class) {
-        val friend = addFriendUseCase(AddFriendUseCase.Input(state.name, state.surname))
-        broadcast(ProfileCreationBroadcast.FriendCreated(friend), keepUntilReceived = true)
-        publish(ProfileCreationEvent.DialogConfirmationAccepted)
+        addFriendUseCase(AddFriendUseCase.Input(state.name, state.surname))
+            .onSuccess { friend ->
+                broadcast(ProfileCreationBroadcast.FriendCreated(friend), keepUntilReceived = true)
+                publish(ProfileCreationEvent.DialogConfirmationAccepted)
+            }
+            // The screen stays open with the form, so the user can try again
+            .onFailure { dispatch(ProfileCreationAction.SideEffects.CreateFailed) }
     }
 
     private val sideEffectCloseAfterBack = sideEffectOf(ProfileCreationAction.DialogBackConfirm::class) {
@@ -67,7 +83,7 @@ class ProfileCreationViewModel(
         }
 
         reducers {
-            add(reducerAction)
+            add(reducerAction, reducerSideEffects)
         }
 
         sideEffects {

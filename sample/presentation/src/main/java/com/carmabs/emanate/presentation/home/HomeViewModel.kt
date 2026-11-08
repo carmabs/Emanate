@@ -2,6 +2,8 @@ package com.carmabs.emanate.presentation.home
 
 import com.carmabs.domain.usecase.DeleteFriendUseCase
 import com.carmabs.domain.usecase.GetFriendsUseCase
+import com.carmabs.emanate.core.model.onFailure
+import com.carmabs.emanate.core.model.onSuccess
 import com.carmabs.emanate.core.source.reducer.reducerOf
 import com.carmabs.emanate.core.source.sideeffect.sideEffectOf
 import com.carmabs.emanate.presentation.base.BaseViewModel
@@ -47,7 +49,9 @@ class HomeViewModel(
     // The friends are read when the screen is created
     private val sideEffectLoadFriends = sideEffectOf(HomeInitializer::class) { initializer ->
         when (initializer) {
-            is HomeInitializer.HomeUser -> dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
+            is HomeInitializer.HomeUser -> getFriendsUseCase(Unit)
+                .onSuccess { dispatch(HomeAction.SideEffects.FriendsLoaded(it)) }
+                .onFailure { publish(HomeEvent.LoadFailed) }
         }
     }
 
@@ -56,7 +60,13 @@ class HomeViewModel(
     }
 
     private val sideEffectDeleteFriend = sideEffectOf(HomeAction.DeleteClicked::class) { action ->
-        deleteFriendUseCase(DeleteFriendUseCase.Input(action.friend.id))
+        deleteFriendUseCase(DeleteFriendUseCase.Input(action.friend.id)).onFailure {
+            // The friend left the list at once, so the storage, where it still is, gives it back its place
+            publish(HomeEvent.DeleteFailed(action.friend))
+            getFriendsUseCase(Unit)
+                .onSuccess { dispatch(HomeAction.SideEffects.FriendsLoaded(it)) }
+                .onFailure { publish(HomeEvent.LoadFailed) }
+        }
     }
 
     private val sideEffectClose = sideEffectOf(HomeAction.CloseClicked::class) {
@@ -65,7 +75,9 @@ class HomeViewModel(
 
     // The screen of the profile creation is in another activity, so the list is read again from the storage
     private val sideEffectReloadFriends = sideEffectOf(ProfileCreationBroadcast.FriendCreated::class) { action ->
-        dispatch(HomeAction.SideEffects.FriendsLoaded(getFriendsUseCase(Unit)))
+        getFriendsUseCase(Unit)
+            .onSuccess { dispatch(HomeAction.SideEffects.FriendsLoaded(it)) }
+            .onFailure { publish(HomeEvent.LoadFailed) }
         publish(HomeEvent.FriendCreated(action.friend))
     }
 
