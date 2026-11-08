@@ -34,12 +34,15 @@ import com.carmabs.emanate.core.action.EmaActionDispatcher
 import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.compose.ui.EmaScreenContent
+import com.carmabs.emanate.ui.compose.EnvironmentLabel
+import com.carmabs.emanate.ui.environment.AppEnvironment
 import com.carmabs.emanate.ui.utils.RenderPreview
 
 /**
  * First screen of the sample: the logo appears while the view model waits before opening the login
  */
 class SplashScreenContent(
+    private val environment: AppEnvironment,
     /**
      * Called when the logo has been drawn, so the system splash, which has the same logo, can be removed
      */
@@ -81,6 +84,14 @@ class SplashScreenContent(
                 letterSpacing = 0.12.em,
                 color = MaterialTheme.colorScheme.onSurface
             )
+            // Below the name, so the environment is known from the first screen
+            EnvironmentLabel(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .offset(y = ENVIRONMENT_OFFSET)
+                    .alpha(entrance.value),
+                environment = environment
+            )
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -98,19 +109,22 @@ class SplashScreenContent(
         }
     }
 
-    @PreviewLightDark
-    @Composable
-    private fun PreviewNormal() {
-        RenderPreview {
-            onState(state = EmaState.EMPTY, actions = EmaActionDispatcher.EMPTY)
-        }
-    }
-
     private companion object {
         // Must match the logo of ic_splash_logo, the icon of the system splash
         val LOGO_SIZE = 144.dp
 
         // The name goes below the logo, which has its content in the center of its square
         val NAME_OFFSET = 92.dp
+
+        // The label of the environment goes below the name
+        val ENVIRONMENT_OFFSET = 136.dp
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun PreviewNormal() {
+    RenderPreview {
+        SplashScreenContent(AppEnvironment("mock")).onState(state = EmaState.EMPTY, actions = EmaActionDispatcher.EMPTY)
     }
 }
