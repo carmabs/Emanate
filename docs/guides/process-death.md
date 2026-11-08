@@ -45,7 +45,7 @@ it to the ViewModel.
 ```kotlin
 emaScreen(
     screenContent = ProfileCreationScreenContent(),
-    viewModel = { store -> get<ProfileCreationViewModel> { parametersOf(store) } },
+    viewModel = { store -> createProfileCreationViewModel(store) },
     onEvent = { /* ... */ }
 )
 ```

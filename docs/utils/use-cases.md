@@ -1,5 +1,7 @@
 # Use cases
 
+The logical operations of the app live in the use cases, and they are not just intermediaries for CRUD operations: a login can call several repositories and managers, and all of that belongs in one use case.
+
 A use case is one operation of the business logic. Each one has a single `Input`. What they do inside is up to the implementation: call repositories, other use cases,
 platform services or just compute something.
 
@@ -12,7 +14,7 @@ return a plain model, `Unit`, a `Boolean`, or any type you define.
 | `EmaFlowUseCase<I, O>`         | An operation that emits values over time (`Flow<O>`). The flow runs on the dispatcher it receives in the constructor, by default the `io` one of the configuration, and the values reach the collector on its own dispatcher (`main` in a side effect). |
 | `EmaSyncUseCase<I, O>`         | A fast, synchronous operation. It's an interface with no dispatcher: it runs on the thread that calls it. |
 
-Implement `useCaseFunction` (the protected function) and call the use case like a function:
+Choose the class by how the operation runs: synchronous, `suspend` or `Flow`. In `EmaUseCase` and `EmaFlowUseCase` implement `useCaseFunction` (the protected function), and in `EmaSyncUseCase` implement `invoke`. Call the use case like a function:
 
 ```kotlin
 class GetGreetingUseCase(private val repository: UserRepository) :
@@ -29,7 +31,7 @@ val greeting = getGreetingUseCase(GetGreetingUseCase.Input(state.userId))
 
 ### Model the failures with `EmaResult`
 
-When the operation can fail, [`EmaResult`](results.md) is a good type to return, and the recommended one. It puts the
+Controlled errors are types you model, not exceptions: a `data class` or a `sealed interface`. When the operation can fail, [`EmaResult`](results.md) is a good type to return, and the recommended one. It puts the
 failures in the signature, so whoever calls the use case can't forget them, and it lets you use your own error type
 instead of exceptions. A good practice in the side effect is to turn each case into an action, so the
 [reducers](../concepts/reducers.md) decide how the state changes:
@@ -45,8 +47,8 @@ class GetFriendsUseCase(private val repository: FriendsRepository) :
 
 // In a side effect
 getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-    .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
-    .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+    .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
+    .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
 ```
 
 If the operation can't fail in a way the caller cares about, return the model directly, and don't wrap it for the sake

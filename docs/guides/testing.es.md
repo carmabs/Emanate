@@ -98,7 +98,7 @@ class HomeViewModelTest {
 
     @Test
     fun `a search shows the matching friends`() = runTest {
-        val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())
+        val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT)
         val recorder = viewModel.record()
 
         viewModel.dispatch(HomeAction.QueryWritten("An"))
@@ -137,14 +137,14 @@ fun setUp() {
 
 @Test
 fun `the refresh is processed when the test advances`() = runTest {
-    val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())
+    val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT)
     val recorder = viewModel.record()
 
     viewModel.dispatch(HomeAction.RefreshRequested)
     recorder.assertActions()                                   // todavía esperando en la cola
 
     advanceUntilIdle()
-    recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))
+    recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoaded(listOf(ana)))
 }
 ```
 
@@ -200,7 +200,7 @@ class InboxViewModelTest {
         val dispatcher = UnconfinedTestDispatcher(testScheduler)
         val viewModel = InboxViewModel(
             GetUnreadCountUseCase(FakeMessagesRepository(), dispatcher),
-            InboxState(),
+            InboxState.DEFAULT,
             testConfiguration(dispatcher)
         )
         val recorder = viewModel.record()
@@ -239,13 +239,13 @@ no desaparece en el momento adecuado, un evento duplicado o uno que falta, pasa 
 **Cómo usarlo.**
 
 ```kotlin
-val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState())
+val viewModel = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT)
 val recorder = viewModel.record()           // antes de la primera acción
 
 viewModel.dispatch(HomeAction.RefreshRequested)
 advanceUntilIdle()
 
-println(recorder.actions)   // [RefreshRequested, Loaded([Ana])]
+println(recorder.actions)   // [RefreshRequested, FriendsLoaded([Ana])]
 println(recorder.states)    // [HomeState(isLoading=true), HomeState(friends=[Ana])]
 println(recorder.events)    // [FriendsUpdated(1)]
 ```
@@ -260,9 +260,9 @@ y el mensaje muestra ambas listas. No escribes los bucles ni las comparaciones.
 
 | Función | Comprueba | Ejemplo |
 |---------|-----------|---------|
-| `assertActions(...)` | Las acciones que entraron, en orden, incluidas las enviadas por side effects y las que bloqueó un middleware. | `recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana)))` |
-| `assertStates(...)` | Los estados que devolvieron los reducers, uno por cada acción reducida. | `recorder.assertStates(HomeState(isLoading = true), HomeState(friends = listOf(ana)))` |
-| `assertState(state)` | El último estado es exactamente ese. | `recorder.assertState(HomeState(friends = listOf(ana)))` |
+| `assertActions(...)` | Las acciones que entraron, en orden, incluidas las enviadas por side effects y las que bloqueó un middleware. | `recorder.assertActions(HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoaded(listOf(ana)))` |
+| `assertStates(...)` | Los estados que devolvieron los reducers, uno por cada acción reducida. | `recorder.assertStates(HomeState.DEFAULT.copy(isLoading = true), HomeState.DEFAULT.copy(friends = listOf(ana)))` |
+| `assertState(state)` | El último estado es exactamente ese. | `recorder.assertState(HomeState.DEFAULT.copy(friends = listOf(ana)))` |
 | `assertState { }` | El último estado cumple una condición, sin escribir el estado completo. | `recorder.assertState { !it.isLoading && it.friends.size == 1 }` |
 | `assertEvents(...)` | Los eventos publicados, en orden. | `recorder.assertEvents(HomeEvent.FriendsUpdated(1))` |
 | `assertNoEvents()` | No se publicó ningún evento. | `recorder.assertNoEvents()` |
@@ -317,7 +317,7 @@ nunca se actualiza, y ningún test lo detecta, porque los tests del ViewModel en
 ```kotlin
 @Test
 fun `the setup is complete`() {
-    HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState()).assertSetup()
+    HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT).assertSetup()
 }
 ```
 
@@ -445,7 +445,7 @@ fun `a second refresh while loading is ignored`() = runTest {
     advanceUntilIdle()
 
     recorder.assertActions(
-        HomeAction.RefreshRequested, HomeAction.SideEffects.QueryStarted, HomeAction.RefreshRequested, HomeAction.SideEffects.QueryLoaded(listOf(ana))
+        HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoadStarted, HomeAction.RefreshRequested, HomeAction.SideEffects.FriendsLoaded(listOf(ana))
     )
 }
 ```
@@ -524,8 +524,8 @@ hablan deben recibir **la misma**. Con `testConfiguration`, créala una vez y p�
 @Test
 fun `a friend created in the profile reaches the home list`() = runTest {
     val configuration = testConfiguration(UnconfinedTestDispatcher(testScheduler))
-    val home = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState(), configuration)   // escucha FriendCreated
-    val profile = ProfileViewModel(ProfileState(friend = ana), configuration)                    // envía FriendCreated
+    val home = HomeViewModel(GetFriendsUseCase(FakeRepository()), HomeState.DEFAULT, configuration)   // escucha FriendCreated
+    val profile = ProfileViewModel(ProfileState.DEFAULT.copy(friend = ana), configuration)                    // envía FriendCreated
     val homeRecorder = home.record()
 
     profile.dispatch(ProfileAction.SaveClicked)       // su side effect emite FriendCreated(ana)

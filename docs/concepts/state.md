@@ -4,13 +4,18 @@ The state is an immutable `data class` with **everything the screen needs to dra
 
 ```kotlin
 data class HomeState(
-    val user: User? = null,
-    val query: String = STRING_EMPTY,
-    val friends: List<User> = emptyList(),
-    val isLoading: Boolean = false,
-    val errorQueryTooShort: Boolean = false,
-    val dialog: HomeDialog? = null
-) : EmaState
+    val user: User?,
+    val query: String,
+    val friends: List<User>,
+    val isLoading: Boolean,
+    val errorQueryTooShort: Boolean,
+    val dialog: HomeDialog?
+) : EmaState {
+
+    companion object {
+        val DEFAULT = HomeState(user = null, query = STRING_EMPTY, friends = emptyList(), isLoading = false, errorQueryTooShort = false, dialog = null)
+    }
+}
 ```
 
 ## Rules
@@ -18,16 +23,21 @@ data class HomeState(
 - **Make it a `data class`.** `copy` is how the next state is created, and its `equals` lets the view skip
   states that did not change. Use `EmaState.EMPTY` for screens with no state.
 - **Make it immutable.** Use `val` and read-only collections. Change it with `copy`.
-- **Give it default values** (or a `DEFAULT` instance). They become the initial state and are handy for previews and
-  tests.
+- **Give it a `DEFAULT` instance.** Write the constructor without default values, and a `companion object` with a `DEFAULT`
+  that fills every field. It is the initial state, and previews and tests start from `DEFAULT.copy(...)`.
 - **Add derived properties instead of duplicating data.** They keep the view free of logic:
 
 ```kotlin
 data class HomeState(
-    val user: User? = null,
-    val friends: List<User> = emptyList(),
+    val user: User?,
+    val friends: List<User>,
     // ...
 ) : EmaState {
+
+    companion object {
+        val DEFAULT = HomeState(user = null, friends = emptyList())
+    }
+
 
     val showCreateButton get() = user?.role == Role.ADMIN
     val showEmptyList get() = user != null && friends.isEmpty()
@@ -76,15 +86,15 @@ sealed interface HomeDialog {
 }
 
 // Reducers
-is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // show
+is HomeAction.SideEffects.FriendsLoadFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // show
 is HomeAction.ErrorAccepted -> state.copy(dialog = null)                                    // hide
 ```
 
 **Loading**: a boolean, set by the action that starts the work and cleared by the one that reports its result.
 
 ```kotlin
-is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
-is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+is HomeAction.SideEffects.FriendsLoadStarted -> state.copy(isLoading = true)
+is HomeAction.SideEffects.FriendsLoaded -> state.copy(isLoading = false, friends = action.friends)
 ```
 
 **Field errors**: one boolean (or a message) per field, named with the prefix `error`. Set it when the input is not

@@ -93,10 +93,10 @@ con seguridad, y el trabajo que bloquea se delega a un caso de uso, que cambia s
 sideEffects {
     add<HomeAction.RefreshRequested> {
         // Se ejecuta en main
-        dispatch(HomeAction.SideEffects.QueryStarted)
+        dispatch(HomeAction.SideEffects.FriendsLoadStarted)
         // El caso de uso cambia a io, y vuelve a main con el resultado
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
     }
 }
 ```
@@ -129,10 +129,15 @@ Los logs imprimen cada estado y acción con el `printer` de la configuración. T
 
 ```kotlin
 data class HomeState(
-    val query: String = "",
-    val isLoading: Boolean = false,
-    val friends: List<User> = emptyList()
-) : EmaState
+    val query: String,
+    val isLoading: Boolean,
+    val friends: List<User>
+) : EmaState {
+
+    companion object {
+        val DEFAULT = HomeState(query = "", isLoading = false, friends = emptyList())
+    }
+}
 ```
 
 Con el printer por defecto, `EmaDataClassPrinter.ToString`, es su `toString()`, en una sola línea:
@@ -367,7 +372,7 @@ El `SideEffectOutput` dice lo que produjo el side effect, en el orden en que ocu
 
 | Campo        | Qué tiene                                                                                       |
 |--------------|-------------------------------------------------------------------------------------------------|
-| `actions`    | Las acciones que envió a su ViewModel con `dispatch`: `Started`, `Loaded(friends)`...           |
+| `actions`    | Las acciones que envió a su ViewModel con `dispatch`: `FriendsLoadStarted`, `FriendsLoaded(friends)`...           |
 | `broadcasts` | Las acciones que envió a otros ViewModels con `broadcast`.                                      |
 | `events`     | Los eventos que publicó para la vista con `publish`.                                             |
 
@@ -382,7 +387,7 @@ class SideEffectTracker(private val analytics: Analytics) : EmaSideEffectListene
             event = "side_effect_success",
             "name" to "${reflection.containerClassName}.${reflection.name}",
             "millis" to duration.inWholeMilliseconds.toString(),
-            // Loaded(friends = [...]), Failed...
+            // FriendsLoaded(friends = [...]), FriendsLoadFailed...
             "actions" to output.actions.joinToString { it::class.simpleName.toString() }
         )
     }
@@ -412,7 +417,7 @@ Emanate.init(
   el `onError` de `EmaErrorPolicy.Catch` es el sitio donde reportar bugs.
 - **Un side effect no devuelve un valor**: comunica con acciones y eventos, así que eso es lo que tiene `output`. El
   `output` de los bloques `onClose` también tiene lo que lanzaron. Ten en cuenta que las acciones pueden llevar datos del
-  usuario, como los `friends` de `Loaded(friends)`: envía su tipo, como en el ejemplo, si esos datos no deben salir de la
+  usuario, como los `friends` de `FriendsLoaded(friends)`: envía su tipo, como en el ejemplo, si esos datos no deben salir de la
   app.
 - **La duración** es el tiempo que estuvo en ejecución el side effect, incluidos los `delay` y las suspensiones. Un side
   effect que termina por su `timeout` llama a `onSuccess` tras el tiempo del timeout.
@@ -477,7 +482,7 @@ su lugar:
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
     configuration: EmaConfiguration = Emanate.configuration
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState(), configuration) {
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT, configuration) {
     // ...
 }
 ```
@@ -543,7 +548,7 @@ internal class PayUseCase(private val repository: PaymentRepository) : MyLibUseC
 }
 
 internal class PaymentViewModel(private val payUseCase: PayUseCase) :
-    MyLibViewModel<PaymentState, PaymentAction, PaymentEvent>(PaymentState()) {
+    MyLibViewModel<PaymentState, PaymentAction, PaymentEvent>(PaymentState.DEFAULT) {
     // ...
 }
 ```

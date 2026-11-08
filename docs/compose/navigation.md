@@ -18,7 +18,7 @@ This is the main flow of the sample, with two of its screens, the login and the 
 2. When the credentials are right, the ViewModel of `Login` publishes `LoginSuccess(user)`. It doesn't know which
    screen comes next.
 3. The `onEvent` of that screen hands the event to the navigator, to its function for that screen:
-   `handleLoginEvent`.
+   `handleLogin`.
 4. The navigator decides for each event: `LoginSuccess` opens `Home`, and the `CloseClicked` of `Home` goes back to the
    login. It does it with the `navController`, which changes the destination shown by the `NavHost`.
 
@@ -49,7 +49,7 @@ any class with this shape works. Create it once, with `remember`, next to the `N
 ```kotlin
 class MainNavigator(private val navController: NavController, private val context: Context) {
 
-    fun handleLoginEvent(event: LoginEvent, onMessage: (LoginEvent) -> Unit) {
+    fun handleLogin(event: LoginEvent) {
         when (event) {
             is LoginEvent.LoginSuccess -> navController.navigate(
                 route = HomeScreenContent::class.routeId,
@@ -58,22 +58,28 @@ class MainNavigator(private val navController: NavController, private val contex
                     BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
                 )
             )
-
-            // A message is not navigation: whoever shows messages handles it
-            is LoginEvent.Message -> onMessage(event)
         }
     }
 
-    fun handleHomeEvent(event: HomeEvent, onMessage: (HomeEvent) -> Unit) {
+    fun handleHome(event: HomeEvent) {
         when (event) {
             // The profile creation is in its own activity
             HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))
 
             // The login is the screen below the home
             HomeEvent.CloseClicked -> navController.navigateBack()
-
-            is HomeEvent.FriendCreated -> onMessage(event)
         }
+    }
+}
+```
+
+Each function is named `handle` plus the screen, and receives the sealed type of its events. If something has to go back to the screen that contains the graph, add a lambda to the function: the function decides, for each event, what to send through it.
+
+```kotlin
+fun handleHome(event: HomeEvent, onFriendCreated: (Friend) -> Unit) {
+    when (event) {
+        is HomeEvent.FriendCreated -> onFriendCreated(event.friend)
+        HomeEvent.CloseClicked -> navController.navigateBack()
     }
 }
 ```
@@ -86,8 +92,8 @@ setContent {
     NavHost(navController, startDestination = LoginScreenContent::class.routeId) {
         emaScreen(
             screenContent = LoginScreenContent(),
-            viewModel = { get<LoginViewModel>() },
-            onEvent = { navigator.handleLoginEvent(it) { /* show the message */ } }
+            viewModel = { createLoginViewModel() },
+            onEvent = { navigator.handleLogin(it) }
         )
     }
 }
@@ -119,9 +125,9 @@ only work with Bundles, can't be used in a route.
 ```kotlin
 emaScreen(
     screenContent = HomeScreenContent(),
-    viewModel = { get<HomeViewModel>() },
+    viewModel = { createHomeViewModel() },
     initializerSupport = EmaInitializerSupport.fromRoute(HomeInitializer.serializer()),
-    onEvent = { navigator.handleHomeEvent(it) { /* show the message */ } }
+    onEvent = { navigator.handleHome(it) }
 )
 ```
 
@@ -177,10 +183,10 @@ contains the `NavHost`, using the same serializer:
 NavHost(navController, startDestination = ProfileCreationScreenContent::class.routeId) {
     emaScreen(
         screenContent = ProfileCreationScreenContent(),
-        viewModel = { get<ProfileCreationViewModel>() },
+        viewModel = { createProfileCreationViewModel() },
         // The initializer that the home screen put in the intent of the activity
         initializerSupport = EmaInitializerSupport.fromIntent(ProfileCreationInitializer.serializer()),
-        onEvent = { navigator.handleProfileCreationEvent(it) }
+        onEvent = { navigator.handleProfileCreation(it) }
     )
 }
 ```

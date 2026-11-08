@@ -15,7 +15,12 @@ una build de demo, simular latencia o errores en QA y ejecutarse contra un fake 
 inyecta.
 
 ```kotlin
-data class CounterState(val count: Int = 0) : EmaState
+data class CounterState(val count: Int) : EmaState {
+
+    companion object {
+        val DEFAULT = CounterState(count = 0)
+    }
+}
 
 sealed interface CounterAction : EmaAction {
     data object Increment : CounterAction
@@ -26,7 +31,7 @@ sealed interface CounterEvent : EmaEvent {
 }
 
 class CounterViewModel :
-    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState()) {
+    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState.DEFAULT) {
 
     override fun setup() = source {
         reducers {

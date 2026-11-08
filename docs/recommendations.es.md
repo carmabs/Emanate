@@ -15,49 +15,47 @@ sirva.
 Un módulo es una parte del proyecto que se compila por separado y solo puede usar lo que declara como dependencia.
 Ese límite es justo lo que queremos: **si un módulo no puede ver algo, nadie puede usarlo ahí por error.**
 
-El sample tiene seis módulos:
+El sample tiene seis módulos. `XXX` en el nombre de un módulo es la plataforma para la que está escrito, aquí `android`:
 
 | Módulo          | Qué vive aquí                                                          | Tipo             | Depende de                                                    |
 |-----------------|------------------------------------------------------------------------|------------------|---------------------------------------------------------------|
-| `app`           | La `Application`, la configuración de la inyección de dependencias y el manifest. | App Android | Todo                                                       |
-| `ui`            | Contenidos de pantalla, navigators, diálogos, tema y recursos.         | Librería Android | `presentation`, `domain`, `android-utils`, `emanate-compose-android` |
+| `app`           | Solo la inyección de dependencias y la inicialización de las librerías, con la `Application` y el manifest. | App Android | Todo                                                       |
+| `ui-android`    | Contenidos de pantalla, navigators, diálogos, tema y recursos.         | Librería Android | `presentation`, `domain`, `utils-android`                     |
 | `presentation`  | Estado, acciones, eventos, inicializadores y ViewModels.               | **Kotlin puro**  | `domain`                                                      |
-| `domain`        | Modelos, casos de uso e interfaces de los repositorios.                | **Kotlin puro**  | `emanate-core`                                                |
-| `data`          | Implementaciones de los repositorios, red y almacenamiento.            | Librería Android | `domain`, `android-utils`                                     |
-| `android-utils` | Ayudas de Android compartidas por varios módulos, como leer y guardar JSON en `SharedPreferences`. | Librería Android | `domain`                                                      |
+| `domain`        | Modelos, casos de uso e interfaces de los repositorios y managers.     | **Kotlin puro**  | Nada de la app                                                |
+| `data-android`  | Implementaciones de los repositorios, red y almacenamiento.            | Librería Android | `domain`, `utils-android`                                     |
+| `utils-android` | Ayudas de Android compartidas por varios módulos, como leer y guardar JSON en `SharedPreferences`. Opcional. | Librería Android | `domain`                                                      |
 
 ![Módulos de una app Emanate y las dependencias entre ellos](assets/modules.svg)
 
-Lee las flechas como *"puede ver"*: `ui` puede ver `presentation`, pero `presentation` no puede ver `ui`. Tres detalles:
+Lee las flechas como *"puede ver"*: `ui-android` puede ver `presentation`, pero `presentation` no puede ver `ui-android`. Dos detalles:
 
 - **`app` ve todos los módulos**, porque crea todas las piezas con la inyección de dependencias.
-- **`api` expone una dependencia a los módulos de arriba.** `presentation` declara `domain` con `api`, y `domain` declara
-  `emanate-core` con `api`. Así `ui` puede usar los modelos de `domain` que aparecen en el estado, y todos los módulos
-  pueden usar `emanate-core`. Con `implementation`, un módulo se guarda sus dependencias para sí.
-- **`android-utils` también depende de `domain`**, para trabajar con sus modelos.
+- **`utils-android` también depende de `domain`**, para trabajar con sus modelos.
 
-### ¿`api` o `implementation`?
+Con varias plataformas en el mismo proyecto, escribe un módulo por plataforma: `data-android` y `data-ios`, `ui-android` y
+`ui-ios`. Un módulo compartido por varias plataformas no lleva sufijo.
 
-Las dos declaran una dependencia. La diferencia es quién más puede verla:
+### Declara las dependencias con `implementation`
 
-| Declaración | Quién ve la dependencia | Úsala cuando |
-|-------------|-------------------------|--------------|
-| `implementation` | Solo el módulo que la declara. | La dependencia es un detalle interno. Es la opción por defecto. |
-| `api` | El módulo **y** todos los que dependen de él. | Sus tipos aparecen en tu código público: estados, acciones, firmas de funciones o superclases. |
+Cada módulo enumera lo que puede ver, así que `implementation` es suficiente, y un cambio en un módulo no recompila los que
+no lo usan. Declara también los artefactos de Emanate con `implementation`, nunca con `api`, en cada módulo que los use:
 
-Imagina el estado de una pantalla de inicio que contiene una lista de usuarios y el rol de cada uno:
+| Módulo | Artefactos de Emanate |
+|--------|-----------------------|
+| `domain` | `emanate-core` |
+| `presentation` | `emanate-core`, `emanate-serialization` si tiene backup, `emanate-test` para los tests |
+| `ui-android` | `emanate-core`, `emanate-compose-android`, `emanate-compose-android-nav2` con un `NavHost`, `emanate-android` si usa sus ayudas |
+| `data-android`, `utils-android` | `emanate-core` solo si usan sus tipos |
+| `app` | `emanate-core`, `emanate-android` |
 
-```kotlin
-data class HomeState(val users: List<User>, val role: Role) : EmaState   // User y Role viven en domain
-```
+### Inicializar las librerías
 
-`presentation` usa `api` para `domain` porque `User` y `Role` son modelos de `domain` y aparecen en el estado, así que quien
-lo pinte necesita conocerlos. `domain` usa `api` para `emanate-core` porque sus casos de uso extienden `EmaUseCase`. `data`,
-en cambio, usa `implementation` para `domain`: nadie por encima necesita verlo a través de `data`.
+`app` arranca el inyector y decide qué implementaciones se usan. Para no depender de una librería concreta:
 
-No marques todo con `api`: los módulos verían demasiado, y un cambio en uno obligaría a recompilar los otros. Y si `ui` usa
-los modelos de `domain` directamente, declara también `implementation project(':domain')` en `ui`, para que no dependa de que
-`presentation` mantenga su `api`.
+1. Si una librería necesita inicializarse, hazlo en la implementación de `data-android`, al crearse la clase que la necesita.
+2. Si conviene inicializarla de forma explícita, añade un `initialize()` a la interfaz del repositorio o manager, y llámalo
+   desde `app`.
 
 ### Por qué `presentation` y `domain` son Kotlin puro
 
@@ -77,22 +75,22 @@ Cuando no sepas dónde va una clase, hazte esta pregunta:
 
 | Si la clase... | Va en |
 |----------------|-------|
-| Pinta algo o necesita Android para funcionar (un composable, un navigator, un `Toast`) | `ui` |
+| Pinta algo o necesita Android para funcionar (un composable, un navigator, un `Toast`) | `ui-android` |
 | Decide **qué muestra la pantalla** (estado, acciones, eventos, ViewModel) | `presentation` |
 | Es un concepto de negocio o un caso de uso (`User`, `GetFriendsUseCase`), o la **interfaz** de un repositorio (`FriendsRepository`) | `domain` |
-| **Implementa** esas interfaces de repositorio, hablando con la API REST o la base de datos (`FriendsRepositoryImpl`) | `data` |
+| **Implementa** esas interfaces de repositorio, hablando con la API REST o la base de datos (`FriendsRepositoryImpl`) | `data-android` |
 
-`domain` dice **qué** datos necesita (la interfaz), y `data` decide **cómo** conseguirlos (la implementación).
+`domain` dice **qué** datos necesita (la interfaz), y `data-android` decide **cómo** conseguirlos (la implementación).
 
 ## Organiza por funcionalidad
 
 Agrupa los archivos **por pantalla**, no por tipo. No crees un paquete `states/` con todos los estados de la app y otro
 `viewmodels/` con todos los ViewModels: al cambiar la pantalla Home tendrías que saltar entre cinco paquetes.
 
-En su lugar, cada pantalla es un paquete en `presentation` y otro en `ui`, con el mismo nombre:
+En su lugar, cada pantalla es un paquete en `presentation` y otro en `ui-android`, con el mismo nombre:
 
 ```
-presentation/…/presentation/home/         ui/…/ui/home/
+presentation/…/presentation/home/         ui-android/…/ui/home/
 ├── HomeState.kt                           ├── HomeScreenContent.kt
 ├── HomeAction.kt                          └── HomeNavigator.kt
 ├── HomeEvent.kt
@@ -116,7 +114,7 @@ pantalla Home como ejemplo:
 | Evento           | `<Pantalla>Event`, con el nombre de **lo que pasó** | `FriendSelected`, `CloseClicked` |
 | ViewModel        | `<Pantalla>ViewModel`                   | `HomeViewModel`                  |
 | Diálogos en el estado | `<Pantalla>Dialog`                 | `HomeDialog.LoadError`           |
-| Resultados de los side effects | `<Pantalla>Action.SideEffects.<Qué>` | `HomeAction.SideEffects.QueryLoaded` |
+| Resultados de los side effects | `<Pantalla>Action.SideEffects.<Qué>` | `HomeAction.SideEffects.FriendsLoaded` |
 | Contenido de Compose | `<Pantalla>ScreenContent`           | `HomeScreenContent`              |
 | Inicializador    | `<Pantalla>Initializer`                 | `HomeInitializer.HomeUser`       |
 | Preview          | `Preview<Qué>`, con el prefijo para que las previews queden juntas | `PreviewAdmin`, `PreviewLoading` |
@@ -250,11 +248,13 @@ El ViewModel es el mismo en los dos casos, pero ahora **quien lo crea elige lo q
 |-------|------------|---------|
 | La app | El caso de uso real, que llama al backend. | Es lo que necesita el usuario. |
 | Un test unitario | Un doble que devuelve una lista fija. | El test es rápido y siempre da el mismo resultado, sin red. |
-| Un `@Preview` | Un doble con datos de ejemplo. | La preview se pinta sin backend. |
+| Un `@PreviewLightDark` | Un doble con datos de ejemplo. | La preview se pinta sin backend. |
 | Una build de QA | Un doble que falla o es lento. | Puedes ver los estados de error y de carga de la pantalla. |
 
 Si el ViewModel creara el caso de uso por sí mismo, nada de esto sería posible sin cambiar su código. Consulta
 [Inyección de dependencias](guides/dependency-injection.md) para ver cómo lo hace el sample con Koin.
+
+**Por defecto un ViewModel recibe solo sus casos de uso y su estado** (y su `EmaStateStore` si tiene backup). Recibe piezas en el constructor solo cuando el comportamiento deba cambiar según la compilación.
 
 No es solo para los casos de uso. Un ViewModel también puede **recibir sus middlewares, reducers y side effects**, y
 entonces la inyección decide cómo se comporta toda la pantalla: por ejemplo, un side effect que devuelve amigos falsos en

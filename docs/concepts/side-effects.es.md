@@ -11,7 +11,7 @@ una de estas tres funciones, según lo que tenga que pasar con él:
 
 | Úsalo para                                             | Llama a              | Ejemplo                                                                             | Resultado                                           |
 |--------------------------------------------------------|----------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------|
-| **Guardar el resultado en el estado**                  | `dispatch(action)`   | Los amigos se han cargado: `dispatch(HomeAction.SideEffects.QueryLoaded(friends))` | Un reducer los pone en el estado y la lista los muestra. |
+| **Guardar el resultado en el estado**                  | `dispatch(action)`   | Los amigos se han cargado: `dispatch(HomeAction.SideEffects.FriendsLoaded(friends))` | Un reducer los pone en el estado y la lista los muestra. |
 | **Lanzar una acción de UI de un solo uso**, como navegar o mostrar un mensaje | `publish(event)` | El usuario ha pulsado un amigo: `publish(HomeEvent.FriendSelected(friend))` | Se abre el perfil del amigo.                        |
 | **Avisar a otros ViewModels**                          | `broadcast(action)`  | Se ha creado un amigo: `broadcast(ProfileBroadcast.FriendCreated(friend))`          | Los ViewModels que lo escuchan lo reciben. Mira [Broadcasts](broadcasts.md). |
 
@@ -26,10 +26,10 @@ pueden llamar a casos de uso directamente:
 ```kotlin
 sideEffects {
     add<HomeAction.RefreshRequested> {
-        dispatch(HomeAction.SideEffects.QueryStarted)
+        dispatch(HomeAction.SideEffects.FriendsLoadStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
-            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
     }
 }
 ```
@@ -38,9 +38,9 @@ Paso a paso:
 
 1. El usuario tira para refrescar, y la vista envía `RefreshRequested`.
 2. Se ejecutan los reducers de `RefreshRequested`. Después empieza este side effect.
-3. Envía `Started`: un reducer muestra el indicador de carga.
+3. Envía `FriendsLoadStarted`: un reducer muestra el indicador de carga.
 4. Espera al caso de uso. Mientras tanto la pantalla sigue funcionando.
-5. Envía `Loaded` o `Failed`: un reducer muestra la lista o el diálogo de error.
+5. Envía `FriendsLoaded` o `FriendsLoadFailed`: un reducer muestra la lista o el diálogo de error.
 
 Dentro de la lambda tienes `state` (siempre el más reciente), la `action` que lo lanzó, y `dispatch`, `publish` y
 `broadcast`.
@@ -84,7 +84,7 @@ Con `timeout`, un side effect que tarda demasiado se cancela, y se ejecuta `onTi
 sideEffects {
     add<HomeAction.RefreshRequested>(
         timeout = 10.seconds,
-        onTimeout = { dispatch(HomeAction.SideEffects.QueryFailed) }
+        onTimeout = { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
     ) {
         // ...
     }
@@ -126,7 +126,7 @@ backend real en producción y a un mock en una build de demo:
 
 ```kotlin
 class HomeViewModel(private val getFriendsUseCase: GetFriendsUseCase) :
-    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     private val openFriend = sideEffectOf(HomeAction.FriendClicked::class) { action ->
         publish(HomeEvent.FriendSelected(action.friend))
@@ -143,7 +143,7 @@ Mira [Las piezas son valores](viewmodel.md#las-piezas-son-valores) e [Inyección
 ## Consejos
 
 - **Mantén la lógica de negocio en los casos de uso.** El side effect los llama y convierte su resultado en acciones.
-- **Envía una acción por cada paso del trabajo**, como `Started`, `Loaded` y `Failed` en
+- **Envía una acción por cada paso del trabajo**, como `FriendsLoadStarted`, `FriendsLoaded` y `FriendsLoadFailed` en
   [tu primer side effect](#tu-primer-side-effect). Así los reducers pueden mostrar cada paso (carga, lista, error), y los
   tests también pueden comprobarlo.
 - **Elige la concurrencia a propósito.** `Every` es el valor por defecto, pero la mayoría de acciones del usuario

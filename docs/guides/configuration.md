@@ -89,10 +89,10 @@ safely, and the work that blocks is delegated to a use case, which switches to `
 sideEffects {
     add<HomeAction.RefreshRequested> {
         // Runs on main
-        dispatch(HomeAction.SideEffects.QueryStarted)
+        dispatch(HomeAction.SideEffects.FriendsLoadStarted)
         // The use case switches to io, and comes back to main with the result
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
     }
 }
 ```
@@ -125,10 +125,15 @@ The logs print each state and action with the `printer` of the configuration. Ta
 
 ```kotlin
 data class HomeState(
-    val query: String = "",
-    val isLoading: Boolean = false,
-    val friends: List<User> = emptyList()
-) : EmaState
+    val query: String,
+    val isLoading: Boolean,
+    val friends: List<User>
+) : EmaState {
+
+    companion object {
+        val DEFAULT = HomeState(query = "", isLoading = false, friends = emptyList())
+    }
+}
 ```
 
 With the default printer, `EmaDataClassPrinter.ToString`, it is its `toString()`, in a single line:
@@ -361,7 +366,7 @@ The `SideEffectOutput` says what the side effect produced, in the order it happe
 
 | Field        | What it has                                                                                     |
 |--------------|-------------------------------------------------------------------------------------------------|
-| `actions`    | The actions it dispatched to its ViewModel with `dispatch`: `Started`, `Loaded(friends)`...     |
+| `actions`    | The actions it dispatched to its ViewModel with `dispatch`: `FriendsLoadStarted`, `FriendsLoaded(friends)`...     |
 | `broadcasts` | The actions it sent to other ViewModels with `broadcast`.                                       |
 | `events`     | The events it published for the view with `publish`.                                             |
 
@@ -377,7 +382,7 @@ class SideEffectTracker(private val analytics: Analytics) : EmaSideEffectListene
             event = "side_effect_success",
             "name" to "${reflection.containerClassName}.${reflection.name}",
             "millis" to duration.inWholeMilliseconds.toString(),
-            // Loaded(friends = [...]), Failed...
+            // FriendsLoaded(friends = [...]), FriendsLoadFailed...
             "actions" to output.actions.joinToString { it::class.simpleName.toString() }
         )
     }
@@ -407,7 +412,7 @@ Emanate.init(
   `onError` of `EmaErrorPolicy.Catch` is the place to report bugs.
 - **A side effect doesn't return a value**: it reports with actions and events, so that is what `output` has. The
   `output` of the `onClose` blocks has what they launched too. Keep in mind that the actions can have the data of the
-  user, like the `friends` of `Loaded(friends)`: send their type, as in the example, if that data must not leave the
+  user, like the `friends` of `FriendsLoaded(friends)`: send their type, as in the example, if that data must not leave the
   app.
 - **The duration** is the time the side effect was running, including the `delay`s and the suspensions. A side effect
   that ends by its `timeout` calls `onSuccess` after the time of the timeout.
@@ -470,7 +475,7 @@ right after the initial state. Pass one to use it instead:
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
     configuration: EmaConfiguration = Emanate.configuration
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState(), configuration) {
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT, configuration) {
     // ...
 }
 ```
@@ -534,7 +539,7 @@ internal class PayUseCase(private val repository: PaymentRepository) : MyLibUseC
 }
 
 internal class PaymentViewModel(private val payUseCase: PayUseCase) :
-    MyLibViewModel<PaymentState, PaymentAction, PaymentEvent>(PaymentState()) {
+    MyLibViewModel<PaymentState, PaymentAction, PaymentEvent>(PaymentState.DEFAULT) {
     // ...
 }
 ```

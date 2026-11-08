@@ -27,7 +27,7 @@ mock y los tests un fake. El ViewModel es el mismo en los tres.
 
 ```kotlin
 class HomeViewModel(private val loadFriends: FriendsEffect) :
-    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+    EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     override fun setup() = source {
         reducers { /* ... */ }
@@ -59,7 +59,7 @@ middlewareDelayOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction
 
 // Todos los refrescos fallan, para comprobar el diálogo de error con el backend real
 middlewareOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction.RefreshRequested::class) {
-    next(HomeAction.SideEffects.QueryFailed)
+    next(HomeAction.SideEffects.FriendsLoadFailed)
 }
 ```
 

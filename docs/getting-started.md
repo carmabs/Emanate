@@ -80,7 +80,12 @@ A screen is made of a **state**, the **actions** the user can perform, the **eve
 that connects them. This is a counter.
 
 ```kotlin
-data class CounterState(val count: Int = 0) : EmaState
+data class CounterState(val count: Int) : EmaState {
+
+    companion object {
+        val DEFAULT = CounterState(count = 0)
+    }
+}
 
 sealed interface CounterAction : EmaAction {
     data object Increment : CounterAction
@@ -91,7 +96,7 @@ sealed interface CounterEvent : EmaEvent {
 }
 
 class CounterViewModel :
-    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState()) {
+    EmaViewModel<CounterState, CounterAction, CounterEvent>(CounterState.DEFAULT) {
 
     override fun setup() = source {
         reducers {
@@ -186,10 +191,12 @@ class CounterScreenContent : EmaScreenContent<CounterState, CounterAction> {
 
     // onState, as above
 
-    @Preview
+    @PreviewLightDark
     @Composable
     private fun PreviewCounter() {
-        onState(state = CounterState(count = 7), actions = EmaActionDispatcher.EMPTY)
+        MaterialTheme {
+            onState(state = CounterState.DEFAULT.copy(count = 7), actions = EmaActionDispatcher.EMPTY)
+        }
     }
 }
 ```

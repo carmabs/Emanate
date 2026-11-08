@@ -4,13 +4,18 @@ El estado es una `data class` inmutable con **todo lo que la pantalla necesita p
 
 ```kotlin
 data class HomeState(
-    val user: User? = null,
-    val query: String = STRING_EMPTY,
-    val friends: List<User> = emptyList(),
-    val isLoading: Boolean = false,
-    val errorQueryTooShort: Boolean = false,
-    val dialog: HomeDialog? = null
-) : EmaState
+    val user: User?,
+    val query: String,
+    val friends: List<User>,
+    val isLoading: Boolean,
+    val errorQueryTooShort: Boolean,
+    val dialog: HomeDialog?
+) : EmaState {
+
+    companion object {
+        val DEFAULT = HomeState(user = null, query = STRING_EMPTY, friends = emptyList(), isLoading = false, errorQueryTooShort = false, dialog = null)
+    }
+}
 ```
 
 ## Reglas
@@ -18,16 +23,21 @@ data class HomeState(
 - **Hazlo una `data class`.** `copy` es como se crea el siguiente estado, y su `equals` permite a la vista omitir los
   estados que no han cambiado. Usa `EmaState.EMPTY` para pantallas sin estado.
 - **Hazlo inmutable.** Usa `val` y colecciones de solo lectura. Cámbialo con `copy`.
-- **Dale valores por defecto** (o una instancia `DEFAULT`). Se convierten en el estado inicial y son útiles para
-  previews y tests.
+- **Dale una instancia `DEFAULT`.** Escribe el constructor sin valores por defecto, y un `companion object` con un `DEFAULT`
+  que rellene todos los campos. Es el estado inicial, y las previews y los tests parten de `DEFAULT.copy(...)`.
 - **Añade propiedades derivadas en lugar de duplicar datos.** Mantienen la vista libre de lógica:
 
 ```kotlin
 data class HomeState(
-    val user: User? = null,
-    val friends: List<User> = emptyList(),
+    val user: User?,
+    val friends: List<User>,
     // ...
 ) : EmaState {
+
+    companion object {
+        val DEFAULT = HomeState(user = null, friends = emptyList())
+    }
+
 
     val showCreateButton get() = user?.role == Role.ADMIN
     val showEmptyList get() = user != null && friends.isEmpty()
@@ -76,15 +86,15 @@ sealed interface HomeDialog {
 }
 
 // Reducers
-is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // mostrar
+is HomeAction.SideEffects.FriendsLoadFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)  // mostrar
 is HomeAction.ErrorAccepted -> state.copy(dialog = null)                                    // ocultar
 ```
 
 **Carga**: un booleano, activado por la acción que inicia el trabajo y desactivado por la que comunica su resultado.
 
 ```kotlin
-is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
-is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
+is HomeAction.SideEffects.FriendsLoadStarted -> state.copy(isLoading = true)
+is HomeAction.SideEffects.FriendsLoaded -> state.copy(isLoading = false, friends = action.friends)
 ```
 
 **Errores de campo**: un booleano (o un mensaje) por campo, con el prefijo `error`. Actívalo cuando la entrada no sea

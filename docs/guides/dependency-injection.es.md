@@ -6,7 +6,7 @@ con una función, así que puedes usar Koin, un contenedor manual o simples cons
 ```kotlin
 emaScreen(
     screenContent = HomeScreenContent(),
-    viewModel = { HomeViewModel(getFriendsUseCase, HomeState()) },
+    viewModel = { HomeViewModel(getFriendsUseCase, HomeState.DEFAULT) },
     onEvent = { /* ... */ }
 )
 ```
@@ -56,7 +56,7 @@ val useCaseModule = module {
 
 val uiModule = module {
     factoryOf(::HomeViewModel)
-    factory { HomeState() }
+    factory { HomeState.DEFAULT }
 }
 ```
 
@@ -89,6 +89,8 @@ En las plataformas sin store, o en un test que no comprueba el estado guardado, 
 
 ## Inyectar piezas
 
+**Por defecto un ViewModel recibe solo sus casos de uso y su estado** (y su `EmaStateStore` si tiene backup). Recibe piezas en el constructor solo cuando el comportamiento deba cambiar según la compilación.
+
 Además de casos de uso, un ViewModel puede recibir sus middlewares, reducers y side effects. Un ViewModel que **recibe**
 una pieza en lugar de declararla no sabe cuál le llega.
 
@@ -106,10 +108,10 @@ class LiveFriends(private val getFriendsUseCase: GetFriendsUseCase) : FriendsEff
     override val concurrency = SideEffectConcurrency.Leading
 
     override suspend fun SideEffectScope<HomeState, HomeAction, HomeEvent>.invoke(action: HomeAction.RefreshRequested) {
-        dispatch(HomeAction.SideEffects.QueryStarted)
+        dispatch(HomeAction.SideEffects.FriendsLoadStarted)
         getFriendsUseCase(GetFriendsUseCase.Input(state.query))
-            .onSuccess { friends -> dispatch(HomeAction.SideEffects.QueryLoaded(friends)) }
-            .onFailure { dispatch(HomeAction.SideEffects.QueryFailed) }
+            .onSuccess { friends -> dispatch(HomeAction.SideEffects.FriendsLoaded(friends)) }
+            .onFailure { dispatch(HomeAction.SideEffects.FriendsLoadFailed) }
     }
 }
 ```
@@ -120,7 +122,7 @@ El ViewModel lo recibe y lo instala con `add`. Los middlewares se pueden recibir
 class HomeViewModel(
     private val loadFriends: FriendsEffect,
     private val tuning: List<EmaMiddleware<HomeState, HomeAction, *>> = emptyList(),
-    initialState: HomeState = HomeState()
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
 
     override fun setup() = source {
@@ -131,9 +133,9 @@ class HomeViewModel(
         reducers {
             add<HomeAction> { action ->
                 when (action) {
-                    is HomeAction.SideEffects.QueryStarted -> state.copy(isLoading = true)
-                    is HomeAction.SideEffects.QueryLoaded -> state.copy(isLoading = false, friends = action.friends)
-                    is HomeAction.SideEffects.QueryFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
+                    is HomeAction.SideEffects.FriendsLoadStarted -> state.copy(isLoading = true)
+                    is HomeAction.SideEffects.FriendsLoaded -> state.copy(isLoading = false, friends = action.friends)
+                    is HomeAction.SideEffects.FriendsLoadFailed -> state.copy(isLoading = false, dialog = HomeDialog.LoadError)
                     // ...
                 }
             }
@@ -159,9 +161,9 @@ class MockFriends(
     override val concurrency = SideEffectConcurrency.Leading
 
     override suspend fun SideEffectScope<HomeState, HomeAction, HomeEvent>.invoke(action: HomeAction.RefreshRequested) {
-        dispatch(HomeAction.SideEffects.QueryStarted)
+        dispatch(HomeAction.SideEffects.FriendsLoadStarted)
         delay(latency)
-        dispatch(if (friends != null) HomeAction.SideEffects.QueryLoaded(friends) else HomeAction.SideEffects.QueryFailed)
+        dispatch(if (friends != null) HomeAction.SideEffects.FriendsLoaded(friends) else HomeAction.SideEffects.FriendsLoadFailed)
     }
 }
 ```
@@ -287,7 +289,7 @@ diálogo de error en una build que habla con el backend real:
 
 ```kotlin
 val failingRefresh = middlewareOf<HomeState, HomeAction, HomeAction.RefreshRequested>(HomeAction.RefreshRequested::class) {
-    next(HomeAction.SideEffects.QueryFailed)
+    next(HomeAction.SideEffects.FriendsLoadFailed)
 }
 ```
 
@@ -313,7 +315,7 @@ class HomeViewModel(
             is HomeInitializer.HomeUser -> state.copy(user = initializer.user)
         }
     }
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     override fun setup() = source {
         reducers { add(userReducer) }
@@ -338,7 +340,7 @@ estado inicial en el constructor, con el habitual como valor por defecto, y pasa
 ```kotlin
 class HomeViewModel(
     private val loadFriends: FriendsEffect,
-    initialState: HomeState = HomeState()
+    initialState: HomeState = HomeState.DEFAULT
 ) : EmaViewModel<HomeState, HomeAction, HomeEvent>(initialState) {
     // ...
 }
@@ -346,7 +348,7 @@ class HomeViewModel(
 // QA: una búsqueda sin resultados
 HomeViewModel(
     loadFriends = MockFriends(friends = emptyList()),
-    initialState = HomeState(query = "Zoe", friends = emptyList())
+    initialState = HomeState.DEFAULT.copy(query = "Zoe", friends = emptyList())
 )
 ```
 
@@ -356,12 +358,12 @@ propio estado y el `homeModule` de `src/main` lo pasa con `initialState = get()`
 ```kotlin
 // src/pro
 val environmentModule = module {
-    factory { HomeState() }
+    factory { HomeState.DEFAULT }
 }
 
 // src/dev
 val environmentModule = module {
-    factory { HomeState(query = "Zoe", friends = emptyList()) }
+    factory { HomeState.DEFAULT.copy(query = "Zoe", friends = emptyList()) }
 }
 ```
 
@@ -384,7 +386,7 @@ configuración, recíbela en el constructor y pásala al ViewModel. Mira
 class HomeViewModel(
     private val getFriendsUseCase: GetFriendsUseCase,
     configuration: EmaConfiguration
-) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState(), configuration)
+) : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT, configuration)
 ```
 
 Con Koin, decláralo como un `single`:

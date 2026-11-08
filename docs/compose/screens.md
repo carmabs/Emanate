@@ -75,11 +75,33 @@ NavHost(
 ) {
     emaScreen(
         screenContent = HomeScreenContent(),
-        viewModel = { get<HomeViewModel>() },
-        onEvent = { navigator.handleHomeEvent(it) { /* show the message */ } }
+        viewModel = { createHomeViewModel() },
+        onEvent = { navigator.handleHome(it) }
     )
 }
 ```
+
+!!! tip "Provide the ViewModels with an injector"
+    `createHomeViewModel()` stands for whatever creates the ViewModel in your project. It is a good idea to use a
+    dependency injector like Koin for it: the ViewModel and its use cases are declared once, in a module, and the screen
+    only asks for the type. Declare the ViewModels with `factory`, so each screen gets its own:
+
+    ```kotlin
+    // The module of the injector
+    val uiModule = module {
+        factoryOf(::HomeViewModel)
+        factory { HomeState.DEFAULT }
+    }
+
+    // The screen only asks for its ViewModel
+    emaScreen(
+        screenContent = HomeScreenContent(),
+        viewModel = { get<HomeViewModel>() },
+        onEvent = { navigator.handleHome(it) }
+    )
+    ```
+
+    See [Dependency injection](../guides/dependency-injection.md#with-koin).
 
 | Parameter              | Purpose                                                                                        |
 |------------------------|------------------------------------------------------------------------------------------------|
@@ -96,12 +118,12 @@ them. For example, a screen that enters sliding from the right:
 ```kotlin
 emaScreen(
     screenContent = ProfileCreationScreenContent(),
-    viewModel = { get<ProfileCreationViewModel>() },
+    viewModel = { createProfileCreationViewModel() },
     transitionAnimation = EmaAnimTransition(
         enterTransition = { slideInHorizontally { width -> width } },
         exitTransition = { slideOutHorizontally { width -> width } }
     ),
-    onEvent = { navigator.handleProfileCreationEvent(it) }
+    onEvent = { navigator.handleProfileCreation(it) }
 )
 ```
 
@@ -115,9 +137,9 @@ initializer of the route. Only the transitions change, as a dialog has none, for
 ```kotlin
 emaDialog(
     screenContent = FilterScreenContent(),
-    viewModel = { get<FilterViewModel>() },
+    viewModel = { createFilterViewModel() },
     dialogProperties = DialogProperties(usePlatformDefaultWidth = false),
-    onEvent = { navigator.handleFilterEvent(it) }
+    onEvent = { navigator.handleFilter(it) }
 )
 ```
 
@@ -143,7 +165,7 @@ val context = LocalContext.current
 NavHost(navController, startDestination = ProfileCreationScreenContent::class.routeId) {
     emaScreen(
         screenContent = ProfileCreationScreenContent(),
-        viewModel = { get<ProfileCreationViewModel>() },
+        viewModel = { createProfileCreationViewModel() },
         onEvent = { event ->
             when (event) {
                 ProfileCreationEvent.DialogConfirmationAccepted -> navController.navigateBack()
@@ -156,19 +178,19 @@ NavHost(navController, startDestination = ProfileCreationScreenContent::class.ro
 ```
 
 As every event arrives at the same `when`, the compiler warns you when a new event is not handled. When the `when`
-grows, move it to a function of your navigator, as the sample does with `navigator.handleHomeEvent(it)`.
+grows, move it to a function of your navigator, as the sample does with `navigator.handleHome(it)`.
 
 `onEvent` must return quickly: the next events wait for it. Navigating or showing a toast is immediate. For something
 that takes time, like a snackbar, launch it in a coroutine scope of yours:
 
 ```kotlin
 val scope = rememberCoroutineScope()
-val snackbarHostState = remember { SnackbarHostState() }
+val snackbarHostState = remember { SnackbarHostState.DEFAULT }
 
 NavHost(navController, startDestination = ProfileCreationScreenContent::class.routeId) {
     emaScreen(
         screenContent = ProfileCreationScreenContent(),
-        viewModel = { get<ProfileCreationViewModel>() },
+        viewModel = { createProfileCreationViewModel() },
         onEvent = { event ->
             when (event) {
                 is ProfileCreationEvent.ProfileSaved -> scope.launch { snackbarHostState.showSnackbar("Saved") }
@@ -204,7 +226,9 @@ The state is collected with `collectAsStateWithLifecycle` and the events while t
 
 ## Previews
 
-The `@Preview` of Android Studio draws a composable without running the app, which makes designing the UI much faster.
+**Every screen content has its preview**, annotated with `@PreviewLightDark` to see it in light and dark mode, inside the theme of the app.
+
+The `@PreviewLightDark` of Android Studio draws a composable without running the app, which makes designing the UI much faster.
 But a preview cannot create a real ViewModel, so you give it a state by hand and see how the screen looks with it.
 Writing one preview per interesting state (empty, loading, error...) is a cheap way to check them all.
 
@@ -213,12 +237,12 @@ Writing one preview per interesting state (empty, loading, error...) is a cheap 
 Inside the IDE preview there is no ViewModel, so call `onState` directly with a state and an empty dispatcher:
 
 ```kotlin
-@Preview
+@PreviewLightDark
 @Composable
 private fun PreviewNormal() {
     EmaSampleTheme {
         ProfileCreationScreenContent().onState(
-            state = ProfileCreationState("Carlos", "Mateo"),
+            state = ProfileCreationState.DEFAULT.copy(name = "Carlos", surname = "Mateo"),
             actions = EmaActionDispatcher.EMPTY
         )
     }
@@ -333,12 +357,12 @@ fun DashboardPage() {
             screenContent = CounterScreenContent(),
             onEvent = { /* ... */ },
             // Only for the preview: the app shows the real count of the ViewModel
-            previewRenderState = CounterState(count = 3)
+            previewRenderState = CounterState.DEFAULT.copy(count = 3)
         )
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 private fun PreviewDashboard() {
     // The title and a counter with the number 3

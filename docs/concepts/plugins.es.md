@@ -160,21 +160,21 @@ fun SourceSetupScope<HomeState, HomeAction, HomeEvent>.suggestCheckingConnection
         // Cuenta los fallos seguidos, y empieza de nuevo cuando una carga funciona
         add<HomeAction.SideEffects> { action ->
             when (action) {
-                is HomeAction.SideEffects.QueryFailed -> state.copy(failures = state.failures + 1)
-                is HomeAction.SideEffects.QueryLoaded -> state.copy(failures = 0)
-                is HomeAction.SideEffects.QueryStarted -> state
+                is HomeAction.SideEffects.FriendsLoadFailed -> state.copy(failures = state.failures + 1)
+                is HomeAction.SideEffects.FriendsLoaded -> state.copy(failures = 0)
+                is HomeAction.SideEffects.FriendsLoadStarted -> state
             }
         }
     }
     sideEffects {
         // El reducer ya ha contado este fallo
-        add<HomeAction.SideEffects.QueryFailed> {
+        add<HomeAction.SideEffects.FriendsLoadFailed> {
             if (state.failures == 3) publish(HomeEvent.CheckConnection)
         }
     }
 }
 
-class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState()) {
+class HomeViewModel : EmaViewModel<HomeState, HomeAction, HomeEvent>(HomeState.DEFAULT) {
 
     override fun setup() = source {
         suggestCheckingConnection()

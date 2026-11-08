@@ -50,7 +50,7 @@ through actions and cannot call arbitrary functions of the ViewModel.
 
 The side effects report what happened with actions too, so the reducers can apply it. Group them in a sealed type
 inside the actions of the screen, called `SideEffects`, so it is clear that only the ViewModel sends them. Name each
-action after what happened (`QueryLoaded`):
+action after what happened (`FriendsLoaded`):
 
 ```kotlin
 sealed interface HomeAction : EmaAction {
@@ -58,9 +58,9 @@ sealed interface HomeAction : EmaAction {
 
     // The results of the search, dispatched by its side effect
     sealed interface SideEffects : HomeAction {
-        data object QueryStarted : SideEffects
-        data class QueryLoaded(val friends: List<User>) : SideEffects
-        data object QueryFailed : SideEffects
+        data object FriendsLoadStarted : SideEffects
+        data class FriendsLoaded(val friends: List<User>) : SideEffects
+        data object FriendsLoadFailed : SideEffects
     }
 }
 ```

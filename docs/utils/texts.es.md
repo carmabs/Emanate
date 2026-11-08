@@ -44,9 +44,14 @@ El mismo estado da un texto distinto para cada idioma, y el ViewModel nunca lo s
 
 ```kotlin
 data class HomeState(
-    val title: EmaText = EmaText.empty(),
-    val error: EmaText? = null
-) : EmaState
+    val title: EmaText,
+    val error: EmaText?
+) : EmaState {
+
+    companion object {
+        val DEFAULT = HomeState(title = EmaText.empty(), error = null)
+    }
+}
 ```
 
 **2. Un reducer decide qué texto se muestra.** `HOME_TITLE` y `HOME_LOAD_ERROR` son identificadores de textos en el
@@ -57,7 +62,7 @@ reducers {
     add<HomeInitializer.HomeUser> { initializer ->
         state.copy(title = EmaText.id(HOME_TITLE, initializer.user.name))
     }
-    add<HomeAction.SideEffects.QueryFailed> {
+    add<HomeAction.SideEffects.FriendsLoadFailed> {
         state.copy(error = EmaText.id(HOME_LOAD_ERROR))
     }
 }

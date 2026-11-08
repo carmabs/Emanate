@@ -40,9 +40,14 @@ sealed interface NoteDialog {
 }
 
 data class NoteState(
-    val title: String = "",
-    val dialog: NoteDialog? = null     // null = no dialog open
-) : EmaState
+    val title: String,
+    val dialog: NoteDialog?     // null = no dialog open
+) : EmaState {
+
+    companion object {
+        val DEFAULT = NoteState(title = "", dialog = null)
+    }
+}
 ```
 
 `dialog` is nullable on purpose: `null` means *"nothing is open"*.
@@ -69,7 +74,7 @@ Opening a dialog is writing it in the state. Closing it is writing `null`:
 
 ```kotlin
 class NoteViewModel(private val deleteNote: DeleteNoteUseCase) :
-    EmaViewModel<NoteState, NoteAction, NoteEvent>(NoteState()) {
+    EmaViewModel<NoteState, NoteAction, NoteEvent>(NoteState.DEFAULT) {
 
     override fun setup() = source {
         reducers {
@@ -247,7 +252,12 @@ A spinner is not necessarily a dialog. In most cases it is better to model it as
 a progress indicator where it belongs, for example inside the button that started the work:
 
 ```kotlin
-data class LoginState(val isLoading: Boolean = false /* ... */) : EmaState
+data class LoginState(val isLoading: Boolean) : EmaState {
+
+    companion object {
+        val DEFAULT = LoginState(isLoading = false /* ... */)
+    }
+}
 
 // Reducer
 is LoginAction.LoginClicked -> state.copy(isLoading = true)

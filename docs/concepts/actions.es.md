@@ -51,7 +51,7 @@ solo puede comunicarse mediante acciones y no puede llamar a funciones arbitrari
 
 Los side effects también comunican lo ocurrido con acciones, para que los reducers puedan aplicarlo. Agrúpalas en un
 tipo sealed dentro de las acciones de la pantalla, llamado `SideEffects`, para que quede claro que solo las envía el
-ViewModel. Nombra cada acción por lo que ocurrió (`QueryLoaded`):
+ViewModel. Nombra cada acción por lo que ocurrió (`FriendsLoaded`):
 
 ```kotlin
 sealed interface HomeAction : EmaAction {
@@ -59,9 +59,9 @@ sealed interface HomeAction : EmaAction {
 
     // Los resultados de la búsqueda, enviados por su side effect
     sealed interface SideEffects : HomeAction {
-        data object QueryStarted : SideEffects
-        data class QueryLoaded(val friends: List<User>) : SideEffects
-        data object QueryFailed : SideEffects
+        data object FriendsLoadStarted : SideEffects
+        data class FriendsLoaded(val friends: List<User>) : SideEffects
+        data object FriendsLoadFailed : SideEffects
     }
 }
 ```

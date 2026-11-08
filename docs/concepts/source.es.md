@@ -34,7 +34,12 @@ Usa un `EmaSource` cuando el estado **no pertenece a una pantalla**, por ejemplo
 Créalo con `EmaSource(...)`: el estado inicial y los mismos bloques que el [setup de un ViewModel](viewmodel.md#el-setup).
 
 ```kotlin
-data class CartState(val products: List<Product> = emptyList()) : EmaState {
+data class CartState(val products: List<Product>) : EmaState {
+
+    companion object {
+        val DEFAULT = CartState(products = emptyList())
+    }
+
     val total get() = products.sumOf { it.price }
 }
 
@@ -43,7 +48,7 @@ sealed interface CartAction : EmaAction {
     data class ProductRemoved(val product: Product) : CartAction
 }
 
-fun cartSource() = EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState()) {
+fun cartSource() = EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState.DEFAULT) {
     reducers {
         add<CartAction> { action ->
             when (action) {
@@ -80,7 +85,7 @@ La pantalla de producto envía acciones al carrito desde un side effect:
 
 ```kotlin
 class ProductViewModel(private val cart: EmaSource<CartState, CartAction, EmaEvent.EMPTY>) :
-    EmaViewModel<ProductState, ProductAction, ProductEvent>(ProductState()) {
+    EmaViewModel<ProductState, ProductAction, ProductEvent>(ProductState.DEFAULT) {
 
     override fun setup() = source {
         sideEffects {
@@ -94,7 +99,7 @@ La pantalla de pago sigue el estado del carrito, y convierte cada cambio en una 
 
 ```kotlin
 class CheckoutViewModel(private val cart: EmaSource<CartState, CartAction, EmaEvent.EMPTY>) :
-    EmaViewModel<CheckoutState, CheckoutAction, CheckoutEvent>(CheckoutState()) {
+    EmaViewModel<CheckoutState, CheckoutAction, CheckoutEvent>(CheckoutState.DEFAULT) {
 
     override fun setup() = source {
         reducers {
@@ -118,7 +123,7 @@ Un ViewModel registra cada acción por sí mismo, pero un `EmaSource` no. Para v
 después de ellas, añade `loggerMiddleware` como su último middleware:
 
 ```kotlin
-fun cartSource() = EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState()) {
+fun cartSource() = EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState.DEFAULT) {
     middlewares(MiddlewarePosition.Last) {
         add(loggerMiddleware(tag = "Cart", logger = EmaLogger.Println))
     }
@@ -132,7 +137,7 @@ Un `EmaSource` usa la [configuración de la aplicación](../guides/configuration
 como un ViewModel. Para dar a un `EmaSource` la suya, pásala como segundo parámetro:
 
 ```kotlin
-EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState(), configuration) { ... }
+EmaSource<CartState, CartAction, EmaEvent.EMPTY>(CartState.DEFAULT, configuration) { ... }
 ```
 
 Esa configuración decide, entre otras cosas, el dispatcher donde se ejecuta el `EmaSource` (`main` por defecto) y qué
