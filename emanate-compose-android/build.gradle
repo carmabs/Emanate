@@ -60,10 +60,11 @@ android {
         singleVariant("release")
     }
 
-    namespace = rootProject.emanateVersioning.namespaceCompose
+    namespace = rootProject.emanateVersioning.namespaceComposeAndroid
 }
 
 dependencies {
+    api project(path: ':emanate-compose')
     implementation project(path: ':emanate-android')
     implementation libs.kotlin.reflect
 
@@ -92,7 +93,7 @@ afterEvaluate {
             release(MavenPublication) {
                 from components.release
                 groupId = rootProject.emanateVersioning.groupId
-                artifactId = rootProject.emanateVersioning.artifactComposeId
+                artifactId = rootProject.emanateVersioning.artifactComposeAndroidId
                 version = rootProject.emanateVersioning.versionName
             }
         }

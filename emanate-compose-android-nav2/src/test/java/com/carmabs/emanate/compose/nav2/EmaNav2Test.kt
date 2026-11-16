@@ -14,7 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
-import com.carmabs.emanate.android.savestate.EmaSaveStateManager
+import com.carmabs.emanate.compose.savestate.EmaSaveStateManager
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
