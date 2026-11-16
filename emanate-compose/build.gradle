@@ -1,0 +1,72 @@
+plugins {
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.jetbrains.compose)
+    id 'maven-publish'
+    alias(libs.plugins.kover)
+}
+
+group = rootProject.emanateVersioning.groupId
+version = rootProject.emanateVersioning.versionName
+
+// The targets are shared with the other multiplatform modules: see build-system/kmp-targets.gradle
+apply from: file('../build-system/kmp-targets.gradle')
+
+kotlin {
+    // Android has its own target, because the Compose and lifecycle artifacts that it uses are not the ones of the JVM
+    androidLibrary {
+        namespace = rootProject.emanateVersioning.namespaceCompose
+        compileSdk = rootProject.emanateVersioning.compileSdk
+        minSdk = rootProject.emanateVersioning.minSdk
+
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.fromTarget(rootProject.emanateVersioning.kotlinJvmTarget)
+        }
+
+        // Robolectric runs the Android code of the tests on the JVM
+        withHostTest {
+            includeAndroidResources = true
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api project(':emanate-core')
+
+                api libs.compose.multiplatform.runtime
+                api libs.compose.multiplatform.ui
+                api libs.compose.multiplatform.foundation
+                api libs.compose.multiplatform.animation
+                api libs.compose.multiplatform.backhandler
+                api libs.compose.multiplatform.tooling.preview
+
+                api libs.androidx.lifecycle.viewmodel.base
+                api libs.androidx.lifecycle.viewmodel.savedstate
+                api libs.androidx.lifecycle.runtime.compose
+                api libs.androidx.lifecycle.viewmodel.compose
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation libs.kotlin.test
+                implementation libs.kotlinx.coroutines.test
+            }
+        }
+        androidHostTest {
+            dependencies {
+                implementation libs.junit
+                implementation libs.kotlin.test.junit
+                implementation libs.robolectric
+                implementation libs.androidx.test.core
+                implementation libs.androidx.activity.ktx
+            }
+        }
+    }
+}
+
+tasks.withType(Test).configureEach {
+    // Robolectric accesses JDK internals
+    jvmArgs '--add-opens=java.base/java.io=ALL-UNNAMED', '--add-opens=java.base/java.lang=ALL-UNNAMED', '--add-exports=java.base/jdk.internal.access=ALL-UNNAMED'
+}
