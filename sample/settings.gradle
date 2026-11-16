@@ -34,6 +34,9 @@ project(':emanate-core').projectDir = new File("../emanate-core")
 include(':emanate-android')
 project(':emanate-android').projectDir = new File("../emanate-android")
 
+include(':emanate-compose')
+project(':emanate-compose').projectDir = new File("../emanate-compose")
+
 include(':emanate-compose-android')
 project(':emanate-compose-android').projectDir = new File("../emanate-compose-android")
 
