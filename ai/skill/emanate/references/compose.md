@@ -1,6 +1,6 @@
 # Compose: screens, events, navigation, dialogs, back, permissions
 
-Artifacts: `emanate-compose-android` (screens, no navigation dependency) + `emanate-compose-android-nav2` (`emaScreen`, `emaDialog`).
+Artifacts: `emanate-compose` (KMP: `EmaScreen`, no navigation dependency) + `emanate-compose-android` (permissions, resource texts and images; brings `emanate-compose`) + `emanate-compose-android-nav2` (`emaScreen`, `emaDialog`).
 
 ## Registering
 

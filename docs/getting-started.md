@@ -33,6 +33,19 @@ dependencies {
 }
 ```
 
+`emanate-compose-android` brings `emanate-compose`, which is the multiplatform part of the screens. In a Kotlin
+Multiplatform module, add `emanate-compose` to its `commonMain` instead:
+
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("com.github.carmabs.emanate:emanate-compose:$emanateVersion")
+        }
+    }
+}
+```
+
 For a pure Kotlin module, like a `presentation` module with the ViewModels, add only the core, and `emanate-test` to
 test them:
 
@@ -50,9 +63,10 @@ dependencies {
 | Artifact                       | Use it for                                                                                                                                        |
 | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `emanate-core`                 | State, actions, events, ViewModels, `EmaSource`, plugins and use cases. Pure Kotlin Multiplatform.                                                |
-| `emanate-compose-android`      | Jetpack Compose screens, back handling, dialogs, permissions and previews. It doesn't depend on any navigation library.                           |
+| `emanate-compose`              | Compose Multiplatform screens: `EmaScreen`, back handling, the ViewModel holder, the saved state and previews. Pure Kotlin Multiplatform.            |
+| `emanate-compose-android`      | The Android part of the Compose screens: permissions and texts and images from resources. It brings `emanate-compose`.                            |
 | `emanate-compose-android-nav2` | Emanate screens in a Navigation Compose graph (`emaScreen`, `emaDialog`). See [Compose navigation](compose/navigation.md).                        |
-| `emanate-android`              | The integration with the Android platform: configuration, initializers, permissions and the store of the saved state.                             |
+| `emanate-android`              | The integration with the Android platform: configuration, initializers and permissions.                             |
 | `emanate-serialization`        | Saves any serializable value of the state across process death. Based on kotlinx.serialization. See the [backup plugin](guides/process-death.md). |
 | `emanate-test`                 | Records and checks `EmaViewModel` and `EmaSource` in your unit tests. See [Testing](guides/testing.md).                                           |
 
