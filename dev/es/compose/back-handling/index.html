@@ -1669,14 +1669,16 @@ pantalla de Android</strong>. Solo lo escribes cuando necesitas algo distinto.</
 </code></pre></div>
 <p>Léelo como: <em>"si no hay ningún diálogo abierto, convierte atrás en la acción <code>OnBack</code>; si no, déjalo al sistema"</em>.</p>
 <h2 id="lo-que-hace-emanate-por-ti">Lo que hace Emanate por ti<a class="headerlink" href="#lo-que-hace-emanate-por-ti" title="Permanent link">&para;</a></h2>
-<p>Entre bastidores, Emanate instala un único <code>BackHandler</code> (la herramienta estándar de Compose para interceptar atrás) y
-llama a tu <code>onBack</code> cada vez que cambia el estado:</p>
+<p>Entre bastidores, Emanate instala un único <code>NavigationBackHandler</code> (la herramienta multiplataforma de Compose para
+interceptar atrás) y llama a tu <code>onBack</code> cada vez que cambia el estado:</p>
 <div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">backAction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">screenContent</span><span class="p">.</span><span class="na">onBack</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-<span class="n">BackHandler</span><span class="p">(</span><span class="n">enabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">backAction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="n">backAction</span><span class="o">?.</span><span class="na">also</span><span class="p">(</span><span class="n">actions</span><span class="o">::</span><span class="n">dispatch</span><span class="p">)</span>
-<span class="p">}</span>
+<span class="n">NavigationBackHandler</span><span class="p">(</span>
+<span class="w">    </span><span class="n">state</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rememberNavigationEventState</span><span class="p">(</span><span class="n">currentInfo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">NavigationEventInfo</span><span class="p">.</span><span class="na">None</span><span class="p">),</span>
+<span class="w">    </span><span class="n">isBackEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">backAction</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="n">onBackCompleted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">backAction</span><span class="o">?.</span><span class="na">also</span><span class="p">(</span><span class="n">actions</span><span class="o">::</span><span class="n">dispatch</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="p">)</span>
 </code></pre></div>
-<p>Así que nunca creas un <code>BackHandler</code> tú mismo. Solo decides, estado a estado, <strong>si interceptar y con qué acción</strong>.
+<p>Así que nunca creas un handler de atrás tú mismo. Solo decides, estado a estado, <strong>si interceptar y con qué acción</strong>.
 Devolver <code>null</code> en algunos estados es la forma de desactivar la intercepción.</p>
 <div class="admonition note">
 <p class="admonition-title">Por qué recibe el estado</p>
