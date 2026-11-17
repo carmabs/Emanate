@@ -1269,15 +1269,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-first-screen-of-an-activity" class="md-nav__link">
+  <a href="#the-first-screen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The first screen of an activity
+        The first screen
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The first screen of an activity">
+    <nav class="md-nav" aria-label="The first screen">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1527,15 +1527,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#the-first-screen-of-an-activity" class="md-nav__link">
+  <a href="#the-first-screen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The first screen of an activity
+        The first screen
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The first screen of an activity">
+    <nav class="md-nav" aria-label="The first screen">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1581,8 +1581,10 @@
 
 <h1 id="compose-navigation">Compose navigation<a class="headerlink" href="#compose-navigation" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>This page is about Navigation Compose, and it needs the <code>emanate-compose-android-nav2</code> artifact. The rest of the Compose
+<p>This page is about Navigation Compose, and it needs the <code>emanate-compose-nav2</code> artifact. The rest of the Compose
 artifacts don't depend on any navigation library, so a different navigation can be used with <code>EmaScreen</code>.</p>
+<p>The module is <strong>multiplatform</strong>: it is written once for Android, JVM and iOS, over the Navigation Compose of
+JetBrains.</p>
 </blockquote>
 <p>In Emanate a <strong>ViewModel never navigates</strong>. Navigating is the job of the navigation graph that contains the screen,
 usually the <code>NavHost</code>: it is the one that knows which screens exist and holds the <code>NavController</code> to move between them.</p>
@@ -1616,24 +1618,21 @@ unique per class:</p>
 of the graph. It is a plain class that receives the <code>NavController</code> and has one function per screen: each function
 receives the events of that screen and decides where to go. Emanate doesn't require a base class or an interface for it:
 any class with this shape works. Create it once, with <code>remember</code>, next to the <code>NavHost</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">MainNavigator</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">navController</span><span class="p">:</span><span class="w"> </span><span class="n">NavController</span><span class="p">,</span><span class="w"> </span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">context</span><span class="p">:</span><span class="w"> </span><span class="n">Context</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span><span class="w"> </span><span class="nc">MainNavigator</span><span class="p">(</span><span class="kd">private</span><span class="w"> </span><span class="kd">val</span><span class="w"> </span><span class="nv">navController</span><span class="p">:</span><span class="w"> </span><span class="n">NavController</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleLogin</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="k">is</span><span class="w"> </span><span class="n">LoginEvent</span><span class="p">.</span><span class="na">LoginSuccess</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
 <span class="w">                </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
-<span class="w">                </span><span class="n">initializerBundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerBundle</span><span class="p">(</span>
-<span class="w">                    </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">user</span><span class="p">),</span>
-<span class="w">                    </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
-<span class="w">                </span><span class="p">)</span>
+<span class="w">                </span><span class="n">initializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">event</span><span class="p">.</span><span class="na">user</span><span class="p">),</span>
+<span class="w">                </span><span class="n">serializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()</span>
 <span class="w">            </span><span class="p">)</span>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="kd">fun</span><span class="w"> </span><span class="nf">handleHome</span><span class="p">(</span><span class="n">event</span><span class="p">:</span><span class="w"> </span><span class="n">HomeEvent</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="k">when</span><span class="w"> </span><span class="p">(</span><span class="n">event</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="c1">// The profile creation is in its own activity</span>
-<span class="w">            </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CreateClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="na">startActivity</span><span class="p">(</span><span class="n">Intent</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileActivity</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">java</span><span class="p">))</span>
+<span class="w">            </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CreateClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span><span class="n">ProfileScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span>
 
 <span class="w">            </span><span class="c1">// The login is the screen below the home</span>
 <span class="w">            </span><span class="n">HomeEvent</span><span class="p">.</span><span class="na">CloseClicked</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="p">()</span>
@@ -1649,9 +1648,10 @@ any class with this shape works. Create it once, with <code>remember</code>, nex
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<div class="highlight"><pre><span></span><code><span class="n">setContent</span><span class="w"> </span><span class="p">{</span>
+<div class="highlight"><pre><span></span><code><span class="nd">@Composable</span>
+<span class="kd">fun</span><span class="w"> </span><span class="nf">MainGraph</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">navController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rememberNavController</span><span class="p">()</span>
-<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">navigator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remember</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">MainNavigator</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">val</span><span class="w"> </span><span class="nv">navigator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">remember</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">MainNavigator</span><span class="p">(</span><span class="n">navController</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 
 <span class="w">    </span><span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LoginScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="n">emaScreen</span><span class="p">(</span>
@@ -1662,22 +1662,23 @@ any class with this shape works. Create it once, with <code>remember</code>, nex
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><code>NavController.navigateBack(closeActivityWhenBackstackIsEmpty = true)</code> pops the back stack and closes the activity when
-there is nothing left, and <code>NavController.navigateToExternalLink(url)</code> opens a link in another app.</p>
+<p><code>NavController.navigateBack(onBackStackEmpty = {})</code> pops the back stack and returns whether there was a screen to go
+back to. When there is none, it calls <code>onBackStackEmpty</code>, so the app decides what an empty back stack means:</p>
+<div class="highlight"><pre><span></span><code><span class="n">navController</span><span class="p">.</span><span class="na">navigateBack</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">onExit</span><span class="p">()</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
 <h2 id="passing-an-initializer">Passing an initializer<a class="headerlink" href="#passing-an-initializer" title="Permanent link">&para;</a></h2>
-<p>Send the <a href="../../guides/initializers/">initializer</a> with the <code>navigate</code> extension that receives an <code>EmaInitializerBundle</code>:</p>
+<p>Send the <a href="../../guides/initializers/">initializer</a> with the <code>navigate</code> extension that receives the initializer and its
+serializer:</p>
 <div class="highlight"><pre><span></span><code><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
 <span class="w">    </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
-<span class="w">    </span><span class="n">initializerBundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerBundle</span><span class="p">(</span>
-<span class="w">        </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
-<span class="w">        </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
-<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="n">initializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
+<span class="w">    </span><span class="n">serializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()</span>
 <span class="p">)</span>
 </code></pre></div>
+<p>To navigate without an initializer, use the normal <code>navigate(route)</code>.</p>
 <p>Another overload receives a <code>NavOptionsBuilder</code> lambda, like <code>navigate(route) { launchSingleTop = true }</code>.</p>
 <p>The destination declares where to read it from with <code>initializerSupport</code>. The initializer travels in the route as
-text, so Compose navigation reads it with kotlinx.serialization: the <code>parcelable</code> and <code>serializable</code> strategies, which
-only work with Bundles, can't be used in a route.</p>
+text (JSON), so Compose navigation reads it with kotlinx.serialization: annotate it with <code>@Serializable</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">    </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="p">(),</span>
 <span class="w">    </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createHomeViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
@@ -1700,17 +1701,7 @@ only work with Bundles, can't be used in a route.</p>
 <tr>
 <td><code>fromRoute(serializer)</code></td>
 <td>The route of the destination.</td>
-<td>Most screens: the ones you reach with <code>navigate(route, initializerBundle)</code>.</td>
-</tr>
-<tr>
-<td><code>fromIntent(serializer)</code></td>
-<td>The route and, if it has none, the intent of the activity.</td>
-<td>The first screen of an activity that is opened with an initializer.</td>
-</tr>
-<tr>
-<td><code>fromBundle(serializer, bundle)</code></td>
-<td>The route and, if it has none, the <code>Bundle</code> that you give it.</td>
-<td>A graph that receives its arguments in a <code>Bundle</code>.</td>
+<td>Most screens: the ones you reach with <code>navigate(route, initializer, serializer)</code>.</td>
 </tr>
 <tr>
 <td><code>fromInitializer(serializer, initializer)</code></td>
@@ -1721,43 +1712,29 @@ only work with Bundles, can't be used in a route.</p>
 </table>
 <p>In all of them <strong>the route wins</strong>: if it carries an initializer, the screen uses it. The origin of the function is
 only the backup for when the route has none.</p>
-<h3 id="the-first-screen-of-an-activity">The first screen of an activity<a class="headerlink" href="#the-first-screen-of-an-activity" title="Permanent link">&para;</a></h3>
+<h3 id="the-first-screen">The first screen<a class="headerlink" href="#the-first-screen" title="Permanent link">&para;</a></h3>
 <p>The initializer of a screen normally travels in its <strong>route</strong>: the navigator puts it there with
-<code>navigate(route, initializerBundle)</code>, and <code>fromRoute</code> reads it back. But the <strong>first screen</strong> of a <code>NavHost</code>, its
+<code>navigate(route, initializer, serializer)</code>, and <code>fromRoute</code> reads it back. But the <strong>first screen</strong> of a <code>NavHost</code>, its
 <code>startDestination</code>, is not reached with <code>navigate</code>: it is shown as soon as the <code>NavHost</code> is created, so its route has no
 initializer.</p>
-<p>If that screen needs one, it can come from the <strong>intent of the activity</strong>. The sample doesn't need it, because the
-profile creation has no data to receive, but imagine that the home screen starts <code>ProfileActivity</code> and puts a
-<code>ProfileCreationInitializer.Default("Carlos")</code> in the intent, so that the creation screen can say who creates the
-user. It takes two steps, one in each activity:</p>
-<p><img alt="The initializer of the first screen comes from the intent of the activity and the one of the other screens from the route" src="../../assets/compose-initializer.svg" /></p>
-<p><strong>1. Put the initializer in the intent of the activity that opens the graph.</strong> Use <code>setInitializer</code> of the <code>Intent</code>,
-with the serializer of the initializer, and start the activity:</p>
-<div class="highlight"><pre><span></span><code><span class="kd">val</span><span class="w"> </span><span class="nv">intent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Intent</span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">ProfileActivity</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">java</span><span class="p">).</span><span class="na">setInitializer</span><span class="p">(</span>
-<span class="w">    </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">Default</span><span class="p">(</span><span class="s">"Carlos"</span><span class="p">),</span>
-<span class="w">    </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
-<span class="p">)</span>
-<span class="n">context</span><span class="p">.</span><span class="na">startActivity</span><span class="p">(</span><span class="n">intent</span><span class="p">)</span>
-</code></pre></div>
-<p>The initializer travels in the extras of the intent, under the key that Emanate reads. If you open the activity with a
-navigation graph of Android, as the sample does with an action that goes to an activity, <code>navController.navigate(id,
-EmaInitializerBundle(...))</code> puts it there for you, and you only have to use the same serializer when you read it.</p>
-<p><strong>2. Declare the first screen with <code>fromIntent</code>.</strong> It reads the initializer from the intent of the activity that
-contains the <code>NavHost</code>, using the same serializer:</p>
+<p>If that screen needs one, give it to the screen with <code>fromInitializer</code>. It is the backup that the screen uses when its
+route has none:</p>
 <div class="highlight"><pre><span></span><code><span class="n">NavHost</span><span class="p">(</span><span class="n">navController</span><span class="p">,</span><span class="w"> </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="n">emaScreen</span><span class="p">(</span>
 <span class="w">        </span><span class="n">screenContent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="p">(),</span>
 <span class="w">        </span><span class="n">viewModel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">createProfileCreationViewModel</span><span class="p">()</span><span class="w"> </span><span class="p">},</span>
-<span class="w">        </span><span class="c1">// The initializer that the home screen put in the intent of the activity</span>
-<span class="w">        </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">fromIntent</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()),</span>
+<span class="w">        </span><span class="n">initializerSupport</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerSupport</span><span class="p">.</span><span class="na">fromInitializer</span><span class="p">(</span>
+<span class="w">            </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">Default</span><span class="p">(</span><span class="s">"Carlos"</span><span class="p">)</span>
+<span class="w">        </span><span class="p">),</span>
 <span class="w">        </span><span class="n">onEvent</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">navigator</span><span class="p">.</span><span class="na">handleProfileCreation</span><span class="p">(</span><span class="nb">it</span><span class="p">)</span><span class="w"> </span><span class="p">}</span>
 <span class="w">    </span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>You don't have to read the intent yourself. The rest of the screens of the graph are declared with <code>fromRoute</code>, so
-they never read the intent.</p>
+<p>The rest of the screens of the graph are declared with <code>fromRoute</code>.</p>
 <h4 id="when-the-first-screen-is-opened-again">When the first screen is opened again<a class="headerlink" href="#when-the-first-screen-is-opened-again" title="Permanent link">&para;</a></h4>
-<p>The intent is a <strong>backup</strong>: the route wins. If the first screen is opened again later with <code>navigate</code>, it receives:</p>
+<p>The backup is used only when the route has no initializer: the route wins. If the first screen is opened again later
+with <code>navigate</code>, it receives:</p>
 <table>
 <thead>
 <tr>
@@ -1767,28 +1744,26 @@ they never read the intent.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>navigate(route, EmaInitializerBundle(Default("Ana"), ...))</code></td>
+<td><code>navigate(route, Default("Ana"), serializer)</code></td>
 <td><code>Default("Ana")</code>, the one of the route.</td>
 </tr>
 <tr>
 <td><code>navigate(route)</code>, without initializer</td>
-<td><code>Default("Carlos")</code>, the one of the intent, as the first time.</td>
+<td><code>Default("Carlos")</code>, the backup, as the first time.</td>
 </tr>
 <tr>
-<td><code>navigate(route, EmaInitializerBundle(Default(""), ...))</code></td>
+<td><code>navigate(route, Default(""), serializer)</code></td>
 <td><code>Default("")</code>, the one of the route.</td>
 </tr>
 </tbody>
 </table>
-<p>The last row is the way to <strong>avoid the backup</strong>. If the new screen must not use the initializer of the intent, navigate
-with an initializer of the screen <strong>without values</strong>, so that the route has one and wins. It is a normal initializer,
-of the type that the screen expects, with empty values:</p>
+<p>The last row is the way to <strong>avoid the backup</strong>. If the new screen must not use the backup, navigate with an initializer
+of the screen <strong>without values</strong>, so that the route has one and wins. It is a normal initializer, of the type that the
+screen expects, with empty values:</p>
 <div class="highlight"><pre><span></span><code><span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
 <span class="w">    </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
-<span class="w">    </span><span class="n">initializerBundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerBundle</span><span class="p">(</span>
-<span class="w">        </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">Default</span><span class="p">(</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">),</span>
-<span class="w">        </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
-<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="n">initializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">Default</span><span class="p">(</span><span class="n">admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">""</span><span class="p">),</span>
+<span class="w">    </span><span class="n">serializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ProfileCreationInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()</span>
 <span class="p">)</span>
 </code></pre></div>
 <p>The screen then receives that initializer, and it is the reducer of <code>ProfileCreationInitializer</code> that decides what it

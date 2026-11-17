@@ -1553,16 +1553,14 @@ receives it again, and a <a href="../process-death/">backup</a> restores what th
 <p>The initializer travels as text inside the route, serialized with kotlinx.serialization: annotate it with
 <code>@Serializable</code> and any character is allowed in its values.</p>
 <ul>
-<li>The screen that navigates sends it with <code>NavController.navigate(route, initializerBundle)</code>.</li>
+<li>The screen that navigates sends it with <code>NavController.navigate(route, initializer, serializer)</code>.</li>
 <li>The destination declares how to read it with <code>initializerSupport</code>.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="c1">// Send</span>
 <span class="n">navController</span><span class="p">.</span><span class="na">navigate</span><span class="p">(</span>
 <span class="w">    </span><span class="n">route</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span><span class="p">,</span>
-<span class="w">    </span><span class="n">initializerBundle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EmaInitializerBundle</span><span class="p">(</span>
-<span class="w">        </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
-<span class="w">        </span><span class="n">BundleSerializerStrategy</span><span class="p">.</span><span class="na">kSerialization</span><span class="p">(</span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">())</span>
-<span class="w">    </span><span class="p">)</span>
+<span class="w">    </span><span class="n">initializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">HomeUser</span><span class="p">(</span><span class="n">user</span><span class="p">),</span>
+<span class="w">    </span><span class="n">serializer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeInitializer</span><span class="p">.</span><span class="na">serializer</span><span class="p">()</span>
 <span class="p">)</span>
 
 <span class="c1">// Receive</span>

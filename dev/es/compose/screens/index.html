@@ -1709,7 +1709,7 @@ le da el ViewModel. Por eso el mismo contenido se puede mostrar en una preview, 
 cambios.</p>
 <p>Esta página sigue la vida de una pantalla, desde que se escribe hasta que se usa. Necesitas el artefacto
 <code>emanate-compose</code>, donde está <code>EmaScreen</code>. Para registrar las pantallas en un grafo de Navigation Compose, como en los
-ejemplos, necesitas también <code>emanate-compose-android-nav2</code>: los demás artefactos no dependen de ninguna librería de
+ejemplos, necesitas también <code>emanate-compose-nav2</code>: los demás artefactos no dependen de ninguna librería de
 navegación.</p>
 <h2 id="contenido-de-la-pantalla">Contenido de la pantalla<a class="headerlink" href="#contenido-de-la-pantalla" title="Permanent link">&para;</a></h2>
 <p>Esta es la parte que más escribirás: el código Compose de la pantalla. Creas una clase que implementa
@@ -1754,7 +1754,7 @@ deba sobrevivir pertenece al <a href="../../concepts/state/">estado</a> del View
 <p>Un contenido de pantalla por sí solo es solo una descripción: nada lo muestra todavía. Registrarlo significa añadirlo
 como destino de tu <code>NavHost</code>, como harías con el <code>composable(...)</code> de Compose Navigation, pero con <code>emaScreen</code>, que
 además crea el ViewModel y lo conecta todo. Aquí también decides qué pasa cuando el ViewModel envía un evento, como
-navegar a otra pantalla. <code>emaScreen</code> está en el artefacto <code>emanate-compose-android-nav2</code>. Si usas otra navegación, coloca
+navegar a otra pantalla. <code>emaScreen</code> está en el artefacto <code>emanate-compose-nav2</code>. Si usas otra navegación, coloca
 la pantalla con <a href="#usar-una-pantalla-sin-grafo-de-navegación"><code>EmaScreen</code></a>, que está en <code>emanate-compose</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">NavHost</span><span class="p">(</span>
 <span class="w">    </span><span class="n">navController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">navController</span><span class="p">,</span>
