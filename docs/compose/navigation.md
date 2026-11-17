@@ -1,7 +1,10 @@
 # Compose navigation
 
-> This page is about Navigation Compose, and it needs the `emanate-compose-android-nav2` artifact. The rest of the Compose
+> This page is about Navigation Compose, and it needs the `emanate-compose-nav2` artifact. The rest of the Compose
 > artifacts don't depend on any navigation library, so a different navigation can be used with `EmaScreen`.
+>
+> The module is **multiplatform**: it is written once for Android, JVM and iOS, over the Navigation Compose of
+> JetBrains.
 
 In Emanate a **ViewModel never navigates**. Navigating is the job of the navigation graph that contains the screen,
 usually the `NavHost`: it is the one that knows which screens exist and holds the `NavController` to move between them.
@@ -47,24 +50,21 @@ receives the events of that screen and decides where to go. Emanate doesn't requ
 any class with this shape works. Create it once, with `remember`, next to the `NavHost`:
 
 ```kotlin
-class MainNavigator(private val navController: NavController, private val context: Context) {
+class MainNavigator(private val navController: NavController) {
 
     fun handleLogin(event: LoginEvent) {
         when (event) {
             is LoginEvent.LoginSuccess -> navController.navigate(
                 route = HomeScreenContent::class.routeId,
-                initializerBundle = EmaInitializerBundle(
-                    HomeInitializer.HomeUser(event.user),
-                    BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
-                )
+                initializer = HomeInitializer.HomeUser(event.user),
+                serializer = HomeInitializer.serializer()
             )
         }
     }
 
     fun handleHome(event: HomeEvent) {
         when (event) {
-            // The profile creation is in its own activity
-            HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))
+            HomeEvent.CreateClicked -> navController.navigate(ProfileScreenContent::class.routeId)
 
             // The login is the screen below the home
             HomeEvent.CloseClicked -> navController.navigateBack()
@@ -85,9 +85,10 @@ fun handleHome(event: HomeEvent, onFriendCreated: (Friend) -> Unit) {
 ```
 
 ```kotlin
-setContent {
+@Composable
+fun MainGraph() {
     val navController = rememberNavController()
-    val navigator = remember { MainNavigator(navController, context) }
+    val navigator = remember { MainNavigator(navController) }
 
     NavHost(navController, startDestination = LoginScreenContent::class.routeId) {
         emaScreen(
@@ -99,28 +100,32 @@ setContent {
 }
 ```
 
-`NavController.navigateBack(closeActivityWhenBackstackIsEmpty = true)` pops the back stack and closes the activity when
-there is nothing left, and `NavController.navigateToExternalLink(url)` opens a link in another app.
+`NavController.navigateBack(onBackStackEmpty = {})` pops the back stack and returns whether there was a screen to go
+back to. When there is none, it calls `onBackStackEmpty`, so the app decides what an empty back stack means:
+
+```kotlin
+navController.navigateBack { onExit() }
+```
 
 ## Passing an initializer
 
-Send the [initializer](../guides/initializers.md) with the `navigate` extension that receives an `EmaInitializerBundle`:
+Send the [initializer](../guides/initializers.md) with the `navigate` extension that receives the initializer and its
+serializer:
 
 ```kotlin
 navController.navigate(
     route = HomeScreenContent::class.routeId,
-    initializerBundle = EmaInitializerBundle(
-        HomeInitializer.HomeUser(user),
-        BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
-    )
+    initializer = HomeInitializer.HomeUser(user),
+    serializer = HomeInitializer.serializer()
 )
 ```
+
+To navigate without an initializer, use the normal `navigate(route)`.
 
 Another overload receives a `NavOptionsBuilder` lambda, like `navigate(route) { launchSingleTop = true }`.
 
 The destination declares where to read it from with `initializerSupport`. The initializer travels in the route as
-text, so Compose navigation reads it with kotlinx.serialization: the `parcelable` and `serializable` strategies, which
-only work with Bundles, can't be used in a route.
+text (JSON), so Compose navigation reads it with kotlinx.serialization: annotate it with `@Serializable`.
 
 ```kotlin
 emaScreen(
@@ -139,82 +144,58 @@ The initializer reaches the ViewModel as an action, the first time the screen is
 
 | Function                                   | Where it reads the initializer                                                          | When to use it                                                                 |
 |--------------------------------------------|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| `fromRoute(serializer)`                    | The route of the destination.                                                           | Most screens: the ones you reach with `navigate(route, initializerBundle)`.    |
-| `fromIntent(serializer)`                   | The route and, if it has none, the intent of the activity.                              | The first screen of an activity that is opened with an initializer.            |
-| `fromBundle(serializer, bundle)`           | The route and, if it has none, the `Bundle` that you give it.                           | A graph that receives its arguments in a `Bundle`.                             |
+| `fromRoute(serializer)`                    | The route of the destination.                                                           | Most screens: the ones you reach with `navigate(route, initializer, serializer)`. |
 | `fromInitializer(serializer, initializer)` | The route and, if it has none, the initializer that you give it.                        | An initializer that you already have, like the one of a deep link, or a test.  |
 
 In all of them **the route wins**: if it carries an initializer, the screen uses it. The origin of the function is
 only the backup for when the route has none.
 
-### The first screen of an activity
+### The first screen
 
 The initializer of a screen normally travels in its **route**: the navigator puts it there with
-`navigate(route, initializerBundle)`, and `fromRoute` reads it back. But the **first screen** of a `NavHost`, its
+`navigate(route, initializer, serializer)`, and `fromRoute` reads it back. But the **first screen** of a `NavHost`, its
 `startDestination`, is not reached with `navigate`: it is shown as soon as the `NavHost` is created, so its route has no
 initializer.
 
-If that screen needs one, it can come from the **intent of the activity**. The sample doesn't need it, because the
-profile creation has no data to receive, but imagine that the home screen starts `ProfileActivity` and puts a
-`ProfileCreationInitializer.Default("Carlos")` in the intent, so that the creation screen can say who creates the
-user. It takes two steps, one in each activity:
-
-![The initializer of the first screen comes from the intent of the activity and the one of the other screens from the route](../assets/compose-initializer.svg)
-
-**1. Put the initializer in the intent of the activity that opens the graph.** Use `setInitializer` of the `Intent`,
-with the serializer of the initializer, and start the activity:
-
-```kotlin
-val intent = Intent(context, ProfileActivity::class.java).setInitializer(
-    ProfileCreationInitializer.Default("Carlos"),
-    BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
-)
-context.startActivity(intent)
-```
-
-The initializer travels in the extras of the intent, under the key that Emanate reads. If you open the activity with a
-navigation graph of Android, as the sample does with an action that goes to an activity, `navController.navigate(id,
-EmaInitializerBundle(...))` puts it there for you, and you only have to use the same serializer when you read it.
-
-**2. Declare the first screen with `fromIntent`.** It reads the initializer from the intent of the activity that
-contains the `NavHost`, using the same serializer:
+If that screen needs one, give it to the screen with `fromInitializer`. It is the backup that the screen uses when its
+route has none:
 
 ```kotlin
 NavHost(navController, startDestination = ProfileCreationScreenContent::class.routeId) {
     emaScreen(
         screenContent = ProfileCreationScreenContent(),
         viewModel = { createProfileCreationViewModel() },
-        // The initializer that the home screen put in the intent of the activity
-        initializerSupport = EmaInitializerSupport.fromIntent(ProfileCreationInitializer.serializer()),
+        initializerSupport = EmaInitializerSupport.fromInitializer(
+            ProfileCreationInitializer.serializer(),
+            ProfileCreationInitializer.Default("Carlos")
+        ),
         onEvent = { navigator.handleProfileCreation(it) }
     )
 }
 ```
 
-You don't have to read the intent yourself. The rest of the screens of the graph are declared with `fromRoute`, so
-they never read the intent.
+The rest of the screens of the graph are declared with `fromRoute`.
 
 #### When the first screen is opened again
 
-The intent is a **backup**: the route wins. If the first screen is opened again later with `navigate`, it receives:
+The backup is used only when the route has no initializer: the route wins. If the first screen is opened again later
+with `navigate`, it receives:
 
-| How it is opened                                                          | The screen receives                                    |
-|---------------------------------------------------------------------------|--------------------------------------------------------|
-| `navigate(route, EmaInitializerBundle(Default("Ana"), ...))`              | `Default("Ana")`, the one of the route.                |
-| `navigate(route)`, without initializer                                    | `Default("Carlos")`, the one of the intent, as the first time. |
-| `navigate(route, EmaInitializerBundle(Default(""), ...))`                 | `Default("")`, the one of the route.                   |
+| How it is opened                                       | The screen receives                                    |
+|--------------------------------------------------------|--------------------------------------------------------|
+| `navigate(route, Default("Ana"), serializer)`          | `Default("Ana")`, the one of the route.                |
+| `navigate(route)`, without initializer                 | `Default("Carlos")`, the backup, as the first time.    |
+| `navigate(route, Default(""), serializer)`             | `Default("")`, the one of the route.                   |
 
-The last row is the way to **avoid the backup**. If the new screen must not use the initializer of the intent, navigate
-with an initializer of the screen **without values**, so that the route has one and wins. It is a normal initializer,
-of the type that the screen expects, with empty values:
+The last row is the way to **avoid the backup**. If the new screen must not use the backup, navigate with an initializer
+of the screen **without values**, so that the route has one and wins. It is a normal initializer, of the type that the
+screen expects, with empty values:
 
 ```kotlin
 navController.navigate(
     route = ProfileCreationScreenContent::class.routeId,
-    initializerBundle = EmaInitializerBundle(
-        ProfileCreationInitializer.Default(admin = ""),
-        BundleSerializerStrategy.kSerialization(ProfileCreationInitializer.serializer())
-    )
+    initializer = ProfileCreationInitializer.Default(admin = ""),
+    serializer = ProfileCreationInitializer.serializer()
 )
 ```
 

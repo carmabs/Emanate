@@ -45,7 +45,7 @@ no lo usan. Declara también los artefactos de Emanate con `implementation`, nun
 |--------|-----------------------|
 | `domain` | `emanate-core` |
 | `presentation` | `emanate-core`, `emanate-serialization` si tiene backup, `emanate-test` para los tests |
-| `ui-android` | `emanate-core`, `emanate-compose-android`, `emanate-compose-android-nav2` con un `NavHost`, `emanate-android` si usa sus ayudas |
+| `ui-android` | `emanate-core`, `emanate-compose-android`, `emanate-compose-nav2` con un `NavHost`, `emanate-android` si usa sus ayudas |
 | `data-android`, `utils-android` | `emanate-core` solo si usan sus tipos |
 | `app` | `emanate-core`, `emanate-android` |
 

@@ -52,17 +52,15 @@ receives it again, and a [backup](process-death.md) restores what the user typed
 The initializer travels as text inside the route, serialized with kotlinx.serialization: annotate it with
 `@Serializable` and any character is allowed in its values.
 
-- The screen that navigates sends it with `NavController.navigate(route, initializerBundle)`.
+- The screen that navigates sends it with `NavController.navigate(route, initializer, serializer)`.
 - The destination declares how to read it with `initializerSupport`.
 
 ```kotlin
 // Send
 navController.navigate(
     route = HomeScreenContent::class.routeId,
-    initializerBundle = EmaInitializerBundle(
-        HomeInitializer.HomeUser(user),
-        BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
-    )
+    initializer = HomeInitializer.HomeUser(user),
+    serializer = HomeInitializer.serializer()
 )
 
 // Receive

@@ -24,7 +24,7 @@ app without changes.
 
 This page follows the life of a screen, from writing it to using it. You need the `emanate-compose`
 artifact, where `EmaScreen` lives. To register the screens in a Navigation Compose graph, as in the examples, you also
-need `emanate-compose-android-nav2`: the other artifacts don't depend on any navigation library.
+need `emanate-compose-nav2`: the other artifacts don't depend on any navigation library.
 
 ## Screen content
 
@@ -65,7 +65,7 @@ A screen content on its own is just a description: nothing shows it yet. Registe
 destination of your `NavHost`, as you would with Compose Navigation's `composable(...)`, but with
 `emaScreen`, which also creates the ViewModel and wires everything together. This is also where you
 decide what happens when the ViewModel sends an event, such as navigating to another screen. `emaScreen` is in the
-`emanate-compose-android-nav2` artifact. If you use another navigation, place the screen with
+`emanate-compose-nav2` artifact. If you use another navigation, place the screen with
 [`EmaScreen`](#using-a-screen-without-a-navigation-graph), which is in `emanate-compose`.
 
 ```kotlin

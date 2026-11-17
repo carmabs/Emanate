@@ -62,7 +62,7 @@ dependencies {
     implementation("com.github.carmabs.emanate:emanate-android:7.0.0")
     implementation("com.github.carmabs.emanate:emanate-compose-android:7.0.0")
     // Solo si tus pantallas están en un grafo de Navigation Compose
-    implementation("com.github.carmabs.emanate:emanate-compose-android-nav2:7.0.0")
+    implementation("com.github.carmabs.emanate:emanate-compose-nav2:7.0.0")
 }
 ```
 

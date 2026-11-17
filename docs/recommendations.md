@@ -44,7 +44,7 @@ that don't use it. Declare the artifacts of Emanate with `implementation` too, n
 |--------|----------------------|
 | `domain` | `emanate-core` |
 | `presentation` | `emanate-core`, `emanate-serialization` if it has a backup, `emanate-test` for the tests |
-| `ui-android` | `emanate-core`, `emanate-compose-android`, `emanate-compose-android-nav2` with a `NavHost`, `emanate-android` if it uses its helpers |
+| `ui-android` | `emanate-core`, `emanate-compose-android`, `emanate-compose-nav2` with a `NavHost`, `emanate-android` if it uses its helpers |
 | `data-android`, `utils-android` | `emanate-core` only if they use its types |
 | `app` | `emanate-core`, `emanate-android` |
 

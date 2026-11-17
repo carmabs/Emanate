@@ -8,7 +8,7 @@
 | `emanate-android`              | Integración con Android: configuración, inicializadores y permisos.                                         |
 | `emanate-compose`              | Kotlin Multiplatform con Compose Multiplatform: pantallas, contenedor del ViewModel y estado guardado.      |
 | `emanate-compose-android`      | La parte Android de Compose: permisos y textos e imágenes desde recursos.                                   |
-| `emanate-compose-android-nav2` | Soporte de Navigation Compose (`emaScreen`, `emaDialog`).                                                   |
+| `emanate-compose-nav2` | Soporte de Navigation Compose (`emaScreen`, `emaDialog`).                                                   |
 | `emanate-serialization`        | Kotlin Multiplatform. Guarda valores serializables del estado con kotlinx.serialization.                    |
 | `emanate-test`                 | Utilidades JVM para testear `EmaViewModel` y `EmaSource`, friend module de `emanate-core`.                  |
 | `sample`                       | Un build de Gradle independiente con la app de ejemplo. Incluye los módulos de la librería del repositorio. |
@@ -42,7 +42,7 @@ El target JVM se compila siempre, porque lo usan los módulos de Android.
 | `emanate-serialization`        | Tests JVM                                  | `./gradlew :emanate-serialization:jvmTest`                  |
 | `emanate-compose`              | `commonTest` en la JVM, y Robolectric      | `./gradlew :emanate-compose:jvmTest :emanate-compose:testAndroidHostTest` |
 | `emanate-compose-android`      | Tests de UI de Compose sobre Robolectric   | `./gradlew :emanate-compose-android:testDebugUnitTest`      |
-| `emanate-compose-android-nav2` | Tests de navegación sobre Robolectric      | `./gradlew :emanate-compose-android-nav2:testDebugUnitTest` |
+| `emanate-compose-nav2` | Tests de navegación en la JVM             | `./gradlew :emanate-compose-nav2:jvmTest` |
 | `emanate-test`                 | JUnit                                      | `./gradlew :emanate-test:test`                              |
 
 Los recursos que solo necesitan los tests están en `src/test/res`, así que no se publican.

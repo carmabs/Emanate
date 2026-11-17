@@ -8,7 +8,7 @@
 | `emanate-android`              | Android integration: configuration, initializers and permissions.                                 |
 | `emanate-compose`              | Kotlin Multiplatform with Compose Multiplatform: screens, ViewModel holder and the saved state.   |
 | `emanate-compose-android`      | The Android part of Compose: permissions and texts and images from resources.                     |
-| `emanate-compose-android-nav2` | Navigation Compose support (`emaScreen`, `emaDialog`).                                            |
+| `emanate-compose-nav2` | Navigation Compose support (`emaScreen`, `emaDialog`).                                            |
 | `emanate-serialization`        | Kotlin Multiplatform. Saves serializable values of the state with kotlinx.serialization.          |
 | `emanate-test`                 | JVM utilities to test `EmaViewModel` and `EmaSource`, a friend module of `emanate-core`.          |
 | `sample`                       | A separate Gradle build with the sample app. It includes the library modules from the repository. |
@@ -42,7 +42,7 @@ The JVM target is always compiled, because the Android modules use it.
 | `emanate-serialization`        | JVM tests                                 | `./gradlew :emanate-serialization:jvmTest`                  |
 | `emanate-compose`              | `commonTest` on the JVM, and Robolectric   | `./gradlew :emanate-compose:jvmTest :emanate-compose:testAndroidHostTest` |
 | `emanate-compose-android`      | Compose UI tests on Robolectric           | `./gradlew :emanate-compose-android:testDebugUnitTest`      |
-| `emanate-compose-android-nav2` | Navigation tests on Robolectric           | `./gradlew :emanate-compose-android-nav2:testDebugUnitTest` |
+| `emanate-compose-nav2` | Navigation tests on the JVM               | `./gradlew :emanate-compose-nav2:jvmTest` |
 | `emanate-test`                 | JUnit                                     | `./gradlew :emanate-test:test`                              |
 
 The resources that only the tests need live in `src/test/res`, so they are not published.

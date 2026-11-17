@@ -29,7 +29,7 @@ dependencies {
     implementation("com.github.carmabs.emanate:emanate-android:$emanateVersion")
     implementation("com.github.carmabs.emanate:emanate-compose-android:$emanateVersion")
     // Solo si tus pantallas están en un grafo de Navigation Compose
-    implementation("com.github.carmabs.emanate:emanate-compose-android-nav2:$emanateVersion")
+    implementation("com.github.carmabs.emanate:emanate-compose-nav2:$emanateVersion")
 }
 ```
 
@@ -66,7 +66,7 @@ multiplataforma.
 | `emanate-core`                 | Estado, acciones, eventos, ViewModels, `EmaSource`, plugins y casos de uso. Kotlin Multiplatform puro.                                             |
 | `emanate-compose`              | Pantallas con Compose Multiplatform: `EmaScreen`, botón atrás, el contenedor del ViewModel, el estado guardado y previews. Kotlin Multiplatform puro. |
 | `emanate-compose-android`      | La parte Android de las pantallas de Compose: permisos y textos e imágenes desde recursos. Trae `emanate-compose`.                                 |
-| `emanate-compose-android-nav2` | Pantallas de Emanate en un grafo de Navigation Compose (`emaScreen`, `emaDialog`). Mira [Navegación en Compose](compose/navigation.md).            |
+| `emanate-compose-nav2` | Pantallas de Emanate en un grafo de Navigation Compose (`emaScreen`, `emaDialog`). Mira [Navegación en Compose](compose/navigation.md).            |
 | `emanate-android`              | La integración con la plataforma Android: configuración, inicializadores y permisos.                               |
 | `emanate-serialization`        | Guarda cualquier valor serializable del estado ante la muerte del proceso. Basado en kotlinx.serialization. Mira el [plugin de backup](guides/process-death.md). |
 | `emanate-test`                 | Registra y comprueba `EmaViewModel` y `EmaSource` en tus tests unitarios. Mira [Testing](guides/testing.md).                                       |

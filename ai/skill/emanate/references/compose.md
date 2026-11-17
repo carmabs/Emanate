@@ -1,6 +1,6 @@
 # Compose: screens, events, navigation, dialogs, back, permissions
 
-Artifacts: `emanate-compose` (KMP: `EmaScreen`, no navigation dependency) + `emanate-compose-android` (permissions, resource texts and images; brings `emanate-compose`) + `emanate-compose-android-nav2` (`emaScreen`, `emaDialog`).
+Artifacts: `emanate-compose` (KMP: `EmaScreen`, no navigation dependency) + `emanate-compose-android` (permissions, resource texts and images; brings `emanate-compose`) + `emanate-compose-nav2` (KMP: `emaScreen`, `emaDialog`).
 
 ## Registering
 
@@ -62,10 +62,8 @@ sealed interface HomeInitializer : EmaInitializer {
 
 navController.navigate(
     route = HomeScreenContent::class.routeId,
-    initializerBundle = EmaInitializerBundle(
-        HomeInitializer.HomeUser(user),
-        BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
-    )
+    initializer = HomeInitializer.HomeUser(user),
+    serializer = HomeInitializer.serializer()
 )
 ```
 Arrives **once** as an action (`EmaInitializer.EMPTY` if none). Handle in a reducer (apply to state) and/or a side effect (load data). Not re-sent on rotation; re-sent after process death, and a backup restores typed values on top.
