@@ -4,14 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.backhandler.BackHandler
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import com.carmabs.emanate.compose.extension.asActionDispatcher
 import com.carmabs.emanate.compose.provider.EmaScreenProvider
 import com.carmabs.emanate.compose.savestate.SavedStateSupport
@@ -76,7 +77,6 @@ fun <A : EmaAction, S : EmaState, E : EmaEvent> EmaScreen(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
     initializer: EmaInitializer?,
@@ -136,9 +136,11 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> RenderScreen(
     }
 
     val backAction = screenContent.onBack(state)
-    BackHandler(enabled = backAction != null) {
-        backAction?.also(actions::dispatch)
-    }
+    NavigationBackHandler(
+        state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
+        isBackEnabled = backAction != null,
+        onBackCompleted = { backAction?.also(actions::dispatch) }
+    )
 
     if (vm.shouldRenderState) {
         screenContent.onState(state, actions)
