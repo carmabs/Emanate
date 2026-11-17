@@ -21,6 +21,6 @@ include ':emanate-core',
         ':emanate-android-view',
         ':emanate-compose',
         ':emanate-compose-android',
-        ':emanate-compose-android-nav2',
+        ':emanate-compose-nav2',
         ':emanate-test',
         ':emanate-serialization'

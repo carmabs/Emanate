@@ -1,11 +1,7 @@
 package com.carmabs.emanate.compose.nav2
 
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.net.toUri
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -15,9 +11,6 @@ import androidx.navigation.Navigator
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.navArgument
-import com.carmabs.emanate.android.extension.findComponentActivity
-import com.carmabs.emanate.android.initializer.EmaInitializerBundle
-import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
 import com.carmabs.emanate.compose.savestate.EmaSaveStateManager
 import com.carmabs.emanate.compose.savestate.SavedStateSupport
 import com.carmabs.emanate.compose.ui.EmaScreen
@@ -29,30 +22,31 @@ import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState
 import com.carmabs.emanate.core.viewmodel.EmaViewModelContract
 import kotlin.reflect.KClass
+import kotlinx.serialization.KSerializer
 
 /**
  * Route of the destination of a screen: unique per screen content class.
  */
 val <T : EmaScreenContent<*, *>> KClass<T>.routeId: String
-    get() = "screen/${this.java.name}"
+    get() = "screen/${this.qualifiedName ?: this.simpleName}"
 
-fun NavController.navigate(
+fun <I : EmaInitializer> NavController.navigate(
     route: String,
-    initializerBundle: EmaInitializerBundle?,
+    initializer: I?,
+    serializer: KSerializer<I>,
     navOptionsBuilder: (NavOptionsBuilder.() -> Unit)
 ) {
-    val routeParsed = routeWithInitializer(route, initializerBundle)
-    navigate(routeParsed, navOptionsBuilder)
+    navigate(routeWithInitializer(route, initializer, serializer), navOptionsBuilder)
 }
 
-fun NavController.navigate(
+fun <I : EmaInitializer> NavController.navigate(
     route: String,
-    initializerBundle: EmaInitializerBundle?,
+    initializer: I?,
+    serializer: KSerializer<I>,
     navOptions: NavOptions? = null,
     navigatorExtras: Navigator.Extras? = null
 ) {
-    val routeParsed = routeWithInitializer(route, initializerBundle)
-    navigate(routeParsed, navOptions, navigatorExtras)
+    navigate(routeWithInitializer(route, initializer, serializer), navOptions, navigatorExtras)
 }
 
 /**
@@ -113,7 +107,7 @@ fun <S : EmaState, A : EmaAction, E : EmaEvent> NavGraphBuilder.emaDialog(
 private fun initializerArguments(initializerSupport: EmaInitializerSupport?) = listOf(
     navArgument(EmaInitializer.KEY) {
         initializerSupport?.also {
-            type = EmaInitializerNavType(it.serializerStrategy)
+            type = EmaInitializerNavType(it.serializer)
         }
         nullable = true
     }
@@ -128,8 +122,7 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaDestination(
     saveStateManager: EmaSaveStateManager<S, E>?,
     onEvent: (E) -> Unit
 ) {
-    val context = LocalContext.current
-    val initializer = initializerSupport?.read(backEntry.arguments, context)
+    val initializer = initializerSupport?.read(backEntry.arguments)
 
     EmaScreen(
         initializer = initializer,
@@ -146,28 +139,39 @@ private fun <S : EmaState, A : EmaAction, E : EmaEvent> EmaDestination(
     )
 }
 
-fun routeWithInitializer(route: String, initializerBundle: EmaInitializerBundle?) = initializerBundle?.let {
-    routeWithInitializer(route, it.initializer, it.serializer)
-} ?: route
-
 private fun parseRouteWithInitializerSupport(routeId: String): String =
     "$routeId?${EmaInitializer.KEY}={${EmaInitializer.KEY}}"
 
-fun routeWithInitializer(routeId: String, initializer: EmaInitializer, serializer: BundleSerializerStrategy): String {
-    // Encoded, because the serialized initializer can contain characters with meaning in a route, like & or #
-    return "$routeId?${EmaInitializer.KEY}=${Uri.encode(serializer.toStringValue(initializer))}"
+/**
+ * Route of [routeId] with [initializer] as argument. Returns [routeId] when there is no initializer.
+ */
+fun <I : EmaInitializer> routeWithInitializer(routeId: String, initializer: I?, serializer: KSerializer<I>): String {
+    if (initializer == null) return routeId
+    return "$routeId?${EmaInitializer.KEY}=${percentEncode(encodeInitializer(serializer, initializer))}"
 }
 
-fun NavController.navigateBack(closeActivityWhenBackstackIsEmpty: Boolean = true): Boolean {
+/**
+ * Pops the current destination. Returns false, after calling [onBackStackEmpty], when there was none to go back to.
+ */
+fun NavController.navigateBack(onBackStackEmpty: () -> Unit = {}): Boolean {
     val hasMoreBackScreens = popBackStack()
-    if (!hasMoreBackScreens && closeActivityWhenBackstackIsEmpty) {
-        this.context.findComponentActivity().finish()
-    }
-
+    if (!hasMoreBackScreens) onBackStackEmpty()
     return hasMoreBackScreens
 }
 
-fun NavController.navigateToExternalLink(url: String): Boolean = kotlin.runCatching {
-    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
-    context.findComponentActivity().startActivity(intent)
-}.map { true }.getOrElse { false }
+// Encoded, because the serialized initializer can contain characters with meaning in a route, like & or #
+private fun percentEncode(value: String): String = buildString {
+    for (byte in value.encodeToByteArray()) {
+        val code = byte.toInt() and 0xFF
+        val char = code.toChar()
+        if (code < 0x80 && (char.isLetterOrDigit() || char in "-._~")) {
+            append(char)
+        } else {
+            append('%')
+            append(HEX[code shr 4])
+            append(HEX[code and 0xF])
+        }
+    }
+}
+
+private const val HEX = "0123456789ABCDEF"

@@ -24,7 +24,7 @@ cambios.
 
 Esta página sigue la vida de una pantalla, desde que se escribe hasta que se usa. Necesitas el artefacto
 `emanate-compose`, donde está `EmaScreen`. Para registrar las pantallas en un grafo de Navigation Compose, como en los
-ejemplos, necesitas también `emanate-compose-android-nav2`: los demás artefactos no dependen de ninguna librería de
+ejemplos, necesitas también `emanate-compose-nav2`: los demás artefactos no dependen de ninguna librería de
 navegación.
 
 ## Contenido de la pantalla
@@ -65,7 +65,7 @@ deba sobrevivir pertenece al [estado](../concepts/state.md) del ViewModel.
 Un contenido de pantalla por sí solo es solo una descripción: nada lo muestra todavía. Registrarlo significa añadirlo
 como destino de tu `NavHost`, como harías con el `composable(...)` de Compose Navigation, pero con `emaScreen`, que
 además crea el ViewModel y lo conecta todo. Aquí también decides qué pasa cuando el ViewModel envía un evento, como
-navegar a otra pantalla. `emaScreen` está en el artefacto `emanate-compose-android-nav2`. Si usas otra navegación, coloca
+navegar a otra pantalla. `emaScreen` está en el artefacto `emanate-compose-nav2`. Si usas otra navegación, coloca
 la pantalla con [`EmaScreen`](#usar-una-pantalla-sin-grafo-de-navegación), que está en `emanate-compose`.
 
 ```kotlin

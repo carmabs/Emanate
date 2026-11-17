@@ -47,7 +47,7 @@ Always `implementation`, never `api`: each module declares the artifacts it uses
 |---|---|
 | `domain` | `emanate-core` |
 | `presentation` | `emanate-core`, `emanate-serialization` if it has a backup, `emanate-test` for tests |
-| `ui-XXX` | `emanate-core`, `emanate-compose-android`, `emanate-compose-android-nav2` with a NavHost, `emanate-android` if it uses its helpers |
+| `ui-XXX` | `emanate-core`, `emanate-compose-android`, `emanate-compose-nav2` with a NavHost, `emanate-android` if it uses its helpers |
 | `data-XXX`, `utils-XXX` | `emanate-core` only if they use its types |
 | `app` | `emanate-core`, `emanate-android` |
 

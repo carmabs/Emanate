@@ -53,17 +53,15 @@ pantalla lo recibe de nuevo, y un [backup](process-death.md) restaura encima lo 
 El inicializador viaja como texto dentro de la ruta, serializado con kotlinx.serialization: anótalo con
 `@Serializable` y se permite cualquier carácter en sus valores.
 
-- La pantalla que navega lo envía con `NavController.navigate(route, initializerBundle)`.
+- La pantalla que navega lo envía con `NavController.navigate(route, initializer, serializer)`.
 - El destino declara cómo leerlo con `initializerSupport`.
 
 ```kotlin
 // Enviar
 navController.navigate(
     route = HomeScreenContent::class.routeId,
-    initializerBundle = EmaInitializerBundle(
-        HomeInitializer.HomeUser(user),
-        BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
-    )
+    initializer = HomeInitializer.HomeUser(user),
+    serializer = HomeInitializer.serializer()
 )
 
 // Recibir
