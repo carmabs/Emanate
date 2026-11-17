@@ -12,7 +12,7 @@ rootProject.ext {
             artifactAndroidId      : 'emanate-android',
             artifactComposeId      : 'emanate-compose',
             artifactComposeAndroidId: 'emanate-compose-android',
-            artifactComposeNav2Id  : 'emanate-compose-android-nav2',
+            artifactComposeNav2Id  : 'emanate-compose-nav2',
             artifactAndroidViewId  : 'emanate-android-view',
             artifactTestId         : 'emanate-test',
             javaVersion            : JavaVersion.VERSION_21,

@@ -3,8 +3,7 @@ package com.carmabs.emanate.ui.main
 import android.content.Context
 import android.content.Intent
 import androidx.navigation.NavController
-import com.carmabs.emanate.android.initializer.EmaInitializerBundle
-import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
+import com.carmabs.emanate.android.extension.findComponentActivity
 import com.carmabs.emanate.compose.nav2.navigate
 import com.carmabs.emanate.compose.nav2.navigateBack
 import com.carmabs.emanate.compose.nav2.routeId
@@ -39,10 +38,8 @@ class MainNavigator(private val navController: NavController, private val contex
         when (event) {
             is LoginEvent.LoginSuccess -> navController.navigate(
                 route = HomeScreenContent::class.routeId,
-                initializerBundle = EmaInitializerBundle(
-                    HomeInitializer.HomeUser(event.user),
-                    BundleSerializerStrategy.kSerialization(HomeInitializer.serializer())
-                )
+                initializer = HomeInitializer.HomeUser(event.user),
+                serializer = HomeInitializer.serializer()
             )
 
             is LoginEvent.Message -> onMessage(context.getString(R.string.login_welcome, event.userName))
@@ -58,7 +55,7 @@ class MainNavigator(private val navController: NavController, private val contex
             HomeEvent.CreateClicked -> context.startActivity(Intent(context, ProfileActivity::class.java))
 
             // The login is the screen below the home
-            HomeEvent.CloseClicked -> navController.navigateBack()
+            HomeEvent.CloseClicked -> navController.navigateBack { context.findComponentActivity().finish() }
 
             is HomeEvent.FriendCreated -> onMessage(context.getString(R.string.home_user_created, event.friend.fullName))
             is HomeEvent.DeleteFailed -> onMessage(context.getString(R.string.home_delete_failed, event.friend.fullName))

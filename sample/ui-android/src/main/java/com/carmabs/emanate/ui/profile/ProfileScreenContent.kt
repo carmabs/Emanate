@@ -7,8 +7,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.carmabs.emanate.android.extension.findComponentActivity
 import com.carmabs.emanate.compose.nav2.emaScreen
 import com.carmabs.emanate.compose.nav2.routeId
 import com.carmabs.emanate.compose.ui.EmaScreenContent
@@ -39,7 +41,8 @@ class ProfileScreenContent(
     @SuppressLint("ComposableNaming")
     override fun onState(state: EmaState.EMPTY, actions: EmaActionDispatcher<EmaAction.EMPTY>) {
         val navController = rememberNavController()
-        val navigator = remember { ProfileNavigator(navController) }
+        val context = LocalContext.current
+        val navigator = remember { ProfileNavigator(navController) { context.findComponentActivity().finish() } }
 
         Surface(
             modifier = Modifier.fillMaxSize(),

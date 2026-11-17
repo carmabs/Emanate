@@ -16,15 +16,15 @@ import androidx.navigation.NavBackStackEntry
  */
 class EmaAnimTransition(
     val enterTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
     )? = null,
     val exitTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
     )? = null,
     val popEnterTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition?
     )? = enterTransition,
     val popExitTransition: (
-        @JvmSuppressWildcards AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
+        AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition?
     )? = exitTransition
 )
