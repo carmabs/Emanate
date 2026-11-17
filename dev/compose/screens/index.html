@@ -1707,9 +1707,9 @@ user:</p>
 <p>The screen <strong>never changes the state itself</strong>: it only sends <a href="../../concepts/actions/">actions</a> and draws whatever
 state the ViewModel gives it. Because of that, the same content can be shown in a preview, in a test or in a real
 app without changes.</p>
-<p>This page follows the life of a screen, from writing it to using it. You need the <code>emanate-android</code> and
-<code>emanate-compose-android</code> artifacts. To register the screens in a Navigation Compose graph, as in the examples, you also need
-<code>emanate-compose-android-nav2</code>: the other artifacts don't depend on any navigation library.</p>
+<p>This page follows the life of a screen, from writing it to using it. You need the <code>emanate-compose</code>
+artifact, where <code>EmaScreen</code> lives. To register the screens in a Navigation Compose graph, as in the examples, you also
+need <code>emanate-compose-android-nav2</code>: the other artifacts don't depend on any navigation library.</p>
 <h2 id="screen-content">Screen content<a class="headerlink" href="#screen-content" title="Permanent link">&para;</a></h2>
 <p>This is the part you will write most often: the Compose code of the screen. You create one class that implements
 <code>EmaScreenContent</code> and fill in <code>onState</code>, which receives the current state and draws it. When the user
@@ -1755,7 +1755,7 @@ destination of your <code>NavHost</code>, as you would with Compose Navigation's
 <code>emaScreen</code>, which also creates the ViewModel and wires everything together. This is also where you
 decide what happens when the ViewModel sends an event, such as navigating to another screen. <code>emaScreen</code> is in the
 <code>emanate-compose-android-nav2</code> artifact. If you use another navigation, place the screen with
-<a href="#using-a-screen-without-a-navigation-graph"><code>EmaScreen</code></a>, which is in <code>emanate-compose-android</code>.</p>
+<a href="#using-a-screen-without-a-navigation-graph"><code>EmaScreen</code></a>, which is in <code>emanate-compose</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">NavHost</span><span class="p">(</span>
 <span class="w">    </span><span class="n">navController</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">navController</span><span class="p">,</span>
 <span class="w">    </span><span class="n">startDestination</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">HomeScreenContent</span><span class="o">::</span><span class="n">class</span><span class="p">.</span><span class="na">routeId</span>

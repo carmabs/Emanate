@@ -1635,11 +1635,15 @@
 </tr>
 <tr>
 <td><code>emanate-android</code></td>
-<td>Android integration: configuration, initializers, permissions and the saved state store.</td>
+<td>Android integration: configuration, initializers and permissions.</td>
+</tr>
+<tr>
+<td><code>emanate-compose</code></td>
+<td>Kotlin Multiplatform with Compose Multiplatform: screens, ViewModel holder and the saved state.</td>
 </tr>
 <tr>
 <td><code>emanate-compose-android</code></td>
-<td>Compose support. It doesn't depend on any navigation library.</td>
+<td>The Android part of Compose: permissions and texts and images from resources.</td>
 </tr>
 <tr>
 <td><code>emanate-compose-android-nav2</code></td>
@@ -1695,6 +1699,11 @@ The JVM target is always compiled, because the Android modules use it.</p>
 <td><code>emanate-serialization</code></td>
 <td>JVM tests</td>
 <td><code>./gradlew :emanate-serialization:jvmTest</code></td>
+</tr>
+<tr>
+<td><code>emanate-compose</code></td>
+<td><code>commonTest</code> on the JVM, and Robolectric</td>
+<td><code>./gradlew :emanate-compose:jvmTest :emanate-compose:testAndroidHostTest</code></td>
 </tr>
 <tr>
 <td><code>emanate-compose-android</code></td>

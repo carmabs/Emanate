@@ -1636,6 +1636,16 @@
 <span class="w">    </span><span class="n">implementation</span><span class="p">(</span><span class="s">"com.github.carmabs.emanate:emanate-compose-android-nav2:</span><span class="si">$</span><span class="n">emanateVersion</span><span class="s">"</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div>
+<p><code>emanate-compose-android</code> brings <code>emanate-compose</code>, which is the multiplatform part of the screens. In a Kotlin
+Multiplatform module, add <code>emanate-compose</code> to its <code>commonMain</code> instead:</p>
+<div class="highlight"><pre><span></span><code><span class="n">kotlin</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">sourceSets</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">commonMain</span><span class="p">.</span><span class="na">dependencies</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">implementation</span><span class="p">(</span><span class="s">"com.github.carmabs.emanate:emanate-compose:</span><span class="si">$</span><span class="n">emanateVersion</span><span class="s">"</span><span class="p">)</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 <p>For a pure Kotlin module, like a <code>presentation</code> module with the ViewModels, add only the core, and <code>emanate-test</code> to
 test them:</p>
 <div class="highlight"><pre><span></span><code><span class="n">dependencies</span><span class="w"> </span><span class="p">{</span>
@@ -1658,8 +1668,12 @@ test them:</p>
 <td>State, actions, events, ViewModels, <code>EmaSource</code>, plugins and use cases. Pure Kotlin Multiplatform.</td>
 </tr>
 <tr>
+<td><code>emanate-compose</code></td>
+<td>Compose Multiplatform screens: <code>EmaScreen</code>, back handling, the ViewModel holder, the saved state and previews. Pure Kotlin Multiplatform.</td>
+</tr>
+<tr>
 <td><code>emanate-compose-android</code></td>
-<td>Jetpack Compose screens, back handling, dialogs, permissions and previews. It doesn't depend on any navigation library.</td>
+<td>The Android part of the Compose screens: permissions and texts and images from resources. It brings <code>emanate-compose</code>.</td>
 </tr>
 <tr>
 <td><code>emanate-compose-android-nav2</code></td>
@@ -1667,7 +1681,7 @@ test them:</p>
 </tr>
 <tr>
 <td><code>emanate-android</code></td>
-<td>The integration with the Android platform: configuration, initializers, permissions and the store of the saved state.</td>
+<td>The integration with the Android platform: configuration, initializers and permissions.</td>
 </tr>
 <tr>
 <td><code>emanate-serialization</code></td>
