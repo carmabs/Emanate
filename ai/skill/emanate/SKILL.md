@@ -115,7 +115,7 @@ emaScreen(
 | Broadcast to other screens with `broadcast(...)` **and** `broadcasts { listen<Type>() }` in the receiver | Forget `listen` (silent failure) |
 | State for what must be there when the user comes back; events for one-shots | An event for something that must survive recreation |
 
-Artifacts: `emanate-core` (KMP), `emanate-android`, `emanate-compose-android`, `emanate-compose-android-nav2`, `emanate-serialization`, `emanate-test`. Always with `implementation`, in each module that uses them.
+Artifacts: `emanate-core` (KMP), `emanate-android`, `emanate-compose` (KMP), `emanate-compose-android`, `emanate-compose-android-nav2`, `emanate-serialization`, `emanate-test`. Always with `implementation`, in each module that uses them.
 Gradle coordinates on JitPack: `com.github.carmabs.emanate:<artifact>:<version>`.
 
 ## Where to read next (only when needed)

@@ -57,12 +57,6 @@ android {
     namespace = rootProject.emanateVersioning.namespaceAndroid
 }
 
-// emanate-android gives EmaViewModel the store of its saved values with the internal API of emanate-core, so it is a
-// friend module of it
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-    friendPaths.from(libraries.filter { it.path.contains('emanate-core') })
-}
-
 dependencies {
 
     // Activity, results and back handling
@@ -76,14 +70,6 @@ dependencies {
     implementation libs.androidx.vectordrawable
 
     api project(path: ':emanate-core')
-    constraints {
-        // The internal API used can change between versions, so it must be the version emanate-android was built with
-        api("${rootProject.emanateVersioning.groupId}:${rootProject.emanateVersioning.artifactCoreId}") {
-            version {
-                strictly(rootProject.emanateVersioning.versionName)
-            }
-        }
-    }
     api libs.kotlinx.coroutines.android
 
     testImplementation libs.junit

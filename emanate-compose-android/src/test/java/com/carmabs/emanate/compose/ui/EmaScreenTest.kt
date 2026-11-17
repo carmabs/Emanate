@@ -11,8 +11,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
-import com.carmabs.emanate.android.savestate.EmaSaveStateManager
-import com.carmabs.emanate.android.savestate.SavedStateSupport
 import com.carmabs.emanate.compose.ActionsScreen
 import com.carmabs.emanate.compose.CounterEvent
 import com.carmabs.emanate.compose.CounterScreen
@@ -20,6 +18,8 @@ import com.carmabs.emanate.compose.CounterState
 import com.carmabs.emanate.compose.CounterViewModel
 import com.carmabs.emanate.compose.RouteInitializer
 import com.carmabs.emanate.compose.SilentScreen
+import com.carmabs.emanate.compose.savestate.EmaSaveStateManager
+import com.carmabs.emanate.compose.savestate.SavedStateSupport
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

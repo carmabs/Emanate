@@ -41,8 +41,8 @@ interface EmaViewModelContract<S : EmaState, E : EmaEvent> : EmaEventConsumer<E>
     fun onStopView()
 
     /**
-     * Closes the view model when its screen is destroyed: its work is cancelled. On Android, EmaAndroidViewModel calls
-     * it when it is cleared.
+     * Closes the view model when its screen is destroyed: its work is cancelled. In the screens of emanate-compose,
+     * EmaViewModelHolder calls it when it is cleared.
      */
     fun close()
 

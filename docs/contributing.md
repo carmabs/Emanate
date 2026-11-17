@@ -5,8 +5,9 @@
 | Module                         | Contents                                                                                          |
 | ------------------------------ | ------------------------------------------------------------------------------------------------- |
 | `emanate-core`                 | Kotlin Multiplatform. All the code lives in `commonMain`.                                         |
-| `emanate-android`              | Android integration: configuration, initializers, permissions and the saved state store.          |
-| `emanate-compose-android`      | Compose support. It doesn't depend on any navigation library.                                     |
+| `emanate-android`              | Android integration: configuration, initializers and permissions.                                 |
+| `emanate-compose`              | Kotlin Multiplatform with Compose Multiplatform: screens, ViewModel holder and the saved state.   |
+| `emanate-compose-android`      | The Android part of Compose: permissions and texts and images from resources.                     |
 | `emanate-compose-android-nav2` | Navigation Compose support (`emaScreen`, `emaDialog`).                                            |
 | `emanate-serialization`        | Kotlin Multiplatform. Saves serializable values of the state with kotlinx.serialization.          |
 | `emanate-test`                 | JVM utilities to test `EmaViewModel` and `EmaSource`, a friend module of `emanate-core`.          |
@@ -39,6 +40,7 @@ The JVM target is always compiled, because the Android modules use it.
 | `emanate-core`                 | `commonTest`, run on every enabled target | `./gradlew :emanate-core:allTests`                          |
 | `emanate-android`              | Robolectric                               | `./gradlew :emanate-android:testDebugUnitTest`              |
 | `emanate-serialization`        | JVM tests                                 | `./gradlew :emanate-serialization:jvmTest`                  |
+| `emanate-compose`              | `commonTest` on the JVM, and Robolectric   | `./gradlew :emanate-compose:jvmTest :emanate-compose:testAndroidHostTest` |
 | `emanate-compose-android`      | Compose UI tests on Robolectric           | `./gradlew :emanate-compose-android:testDebugUnitTest`      |
 | `emanate-compose-android-nav2` | Navigation tests on Robolectric           | `./gradlew :emanate-compose-android-nav2:testDebugUnitTest` |
 | `emanate-test`                 | JUnit                                     | `./gradlew :emanate-test:test`                              |

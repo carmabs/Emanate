@@ -18,8 +18,8 @@ import androidx.navigation.navArgument
 import com.carmabs.emanate.android.extension.findComponentActivity
 import com.carmabs.emanate.android.initializer.EmaInitializerBundle
 import com.carmabs.emanate.android.initializer.bundle.strategy.BundleSerializerStrategy
-import com.carmabs.emanate.android.savestate.EmaSaveStateManager
-import com.carmabs.emanate.android.savestate.SavedStateSupport
+import com.carmabs.emanate.compose.savestate.EmaSaveStateManager
+import com.carmabs.emanate.compose.savestate.SavedStateSupport
 import com.carmabs.emanate.compose.ui.EmaScreen
 import com.carmabs.emanate.compose.ui.EmaScreenContent
 import com.carmabs.emanate.core.action.EmaAction

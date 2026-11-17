@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.carmabs.emanate.android.base.EmaCoreFragment
 import com.carmabs.emanate.android.ui.EmaAndroidView
-import com.carmabs.emanate.android.viewmodel.EmaAndroidViewModel
+import com.carmabs.emanate.android.view.viewmodel.EmaAndroidViewModel
 import com.carmabs.emanate.core.savestate.EmaStateStore
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState

@@ -5,8 +5,8 @@ package com.carmabs.emanate.android.ui
 import androidx.activity.ComponentActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.carmabs.emanate.android.viewmodel.EmaAndroidViewModel
-import com.carmabs.emanate.android.viewmodel.EmaViewModelFactory
+import com.carmabs.emanate.android.view.viewmodel.EmaAndroidViewModel
+import com.carmabs.emanate.android.view.viewmodel.EmaViewModelFactory
 import com.carmabs.emanate.core.savestate.EmaStateStore
 import com.carmabs.emanate.core.state.EmaEvent
 import com.carmabs.emanate.core.state.EmaState

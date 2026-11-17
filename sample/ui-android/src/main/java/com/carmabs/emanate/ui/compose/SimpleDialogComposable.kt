@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
-import com.carmabs.emanate.compose.extension.stringResource
+import com.carmabs.emanate.compose.android.extension.stringResource
 import com.carmabs.emanate.core.model.EmaText
 import com.carmabs.emanate.sample.ui.R
 import com.carmabs.emanate.ui.dialog.simple.SimpleDialogData

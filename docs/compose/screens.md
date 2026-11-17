@@ -22,9 +22,9 @@ The screen **never changes the state itself**: it only sends [actions](../concep
 state the ViewModel gives it. Because of that, the same content can be shown in a preview, in a test or in a real
 app without changes.
 
-This page follows the life of a screen, from writing it to using it. You need the `emanate-android` and
-`emanate-compose-android` artifacts. To register the screens in a Navigation Compose graph, as in the examples, you also need
-`emanate-compose-android-nav2`: the other artifacts don't depend on any navigation library.
+This page follows the life of a screen, from writing it to using it. You need the `emanate-compose`
+artifact, where `EmaScreen` lives. To register the screens in a Navigation Compose graph, as in the examples, you also
+need `emanate-compose-android-nav2`: the other artifacts don't depend on any navigation library.
 
 ## Screen content
 
@@ -66,7 +66,7 @@ destination of your `NavHost`, as you would with Compose Navigation's `composabl
 `emaScreen`, which also creates the ViewModel and wires everything together. This is also where you
 decide what happens when the ViewModel sends an event, such as navigating to another screen. `emaScreen` is in the
 `emanate-compose-android-nav2` artifact. If you use another navigation, place the screen with
-[`EmaScreen`](#using-a-screen-without-a-navigation-graph), which is in `emanate-compose-android`.
+[`EmaScreen`](#using-a-screen-without-a-navigation-graph), which is in `emanate-compose`.
 
 ```kotlin
 NavHost(

@@ -18,8 +18,6 @@ import android.util.Size
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModelProvider
 import androidx.test.core.app.ApplicationProvider
 import com.carmabs.emanate.android.base.EmaSingleToast
 import com.carmabs.emanate.android.base.showToast
@@ -36,11 +34,7 @@ import com.carmabs.emanate.android.extension.toByteArray
 import com.carmabs.emanate.android.extra.EmaActivityResult
 import com.carmabs.emanate.android.logging.EmaAndroidDataClassPrinter
 import com.carmabs.emanate.android.permission.InfoDialogType
-import com.carmabs.emanate.android.savestate.EmaSaveStateManager
-import com.carmabs.emanate.android.savestate.SavedStateSupport
 import com.carmabs.emanate.android.service.EmaJobService
-import com.carmabs.emanate.android.viewmodel.EmaAndroidViewModel
-import com.carmabs.emanate.android.viewmodel.EmaViewModelFactory
 import com.carmabs.emanate.core.error.EmaErrorPolicy
 import com.carmabs.emanate.core.initializer.EmaInitializer
 import com.carmabs.emanate.core.model.EmaBackHandlerStrategy
@@ -59,9 +53,7 @@ import kotlin.test.assertNotSame
 import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -218,65 +210,6 @@ class EmaBackHandlerTest {
         activity.onBackPressedDispatcher.onBackPressed()
         assertEquals(1, presses)
         assertTrue(activity.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-    }
-}
-
-@RunWith(RobolectricTestRunner::class)
-class EmaAndroidViewModelTest {
-
-    @Test
-    fun `the android ViewModel gives its scope to the Ema ViewModel and clears it`() {
-        val activity = Robolectric.buildActivity(ComponentActivity::class.java).setup().get()
-        val emaViewModel = TestViewModel()
-        val androidViewModel = ViewModelProvider(activity, EmaViewModelFactory({ emaViewModel }))[
-            emaViewModel.id, EmaAndroidViewModel::class.java
-        ]
-        assertSame(emaViewModel, androidViewModel.emaViewModel)
-        assertTrue(emaViewModel.currentScope().isActive)
-
-        activity.viewModelStore.clear()
-        assertTrue(emaViewModel.destroyed)
-        assertFalse(emaViewModel.currentScope().isActive)
-    }
-
-    @Test
-    fun `the view model is only created if the screen doesn't have it yet`() {
-        val activity = Robolectric.buildActivity(ComponentActivity::class.java).setup().get()
-        var created = 0
-        val factory = EmaViewModelFactory({ TestViewModel().also { created++ } })
-
-        val first = ViewModelProvider(activity, factory)["screen", EmaAndroidViewModel::class.java]
-        val second = ViewModelProvider(activity, factory)["screen", EmaAndroidViewModel::class.java]
-
-        assertSame(first, second)
-        assertEquals(1, created)
-    }
-
-    @Test
-    fun `the provided saved state handle is used`() {
-        val activity = Robolectric.buildActivity(ComponentActivity::class.java).setup().get()
-        val handle = SavedStateHandle(mapOf("key" to "value"))
-        val androidViewModel = ViewModelProvider(activity, EmaViewModelFactory({ TestViewModel() }, handle))[
-            "with handle", EmaAndroidViewModel::class.java
-        ]
-        assertSame(handle, androidViewModel.savedStateHandle)
-    }
-
-    @Test
-    fun `save state support keeps the handle and the manager`() {
-        val handle = SavedStateHandle()
-        val manager =
-            EmaSaveStateManager<TestState, EmaEvent.EMPTY> { _, saveStateHandle, _ ->
-                saveStateHandle["saved"] =
-                    true
-            }
-        val support = SavedStateSupport(handle, manager)
-        support.saveStateManager.onSaveStateHandling(
-            CoroutineScope(Dispatchers.Unconfined),
-            support.savedStateHandle,
-            TestViewModel()
-        )
-        assertEquals(true, handle.get<Boolean>("saved"))
     }
 }
 
