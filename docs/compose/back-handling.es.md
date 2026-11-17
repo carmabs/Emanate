@@ -30,17 +30,19 @@ Léelo como: *"si no hay ningún diálogo abierto, convierte atrás en la acció
 
 ## Lo que hace Emanate por ti
 
-Entre bastidores, Emanate instala un único `BackHandler` (la herramienta estándar de Compose para interceptar atrás) y
-llama a tu `onBack` cada vez que cambia el estado:
+Entre bastidores, Emanate instala un único `NavigationBackHandler` (la herramienta multiplataforma de Compose para
+interceptar atrás) y llama a tu `onBack` cada vez que cambia el estado:
 
 ```kotlin
 val backAction = screenContent.onBack(state)
-BackHandler(enabled = backAction != null) {
-    backAction?.also(actions::dispatch)
-}
+NavigationBackHandler(
+    state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
+    isBackEnabled = backAction != null,
+    onBackCompleted = { backAction?.also(actions::dispatch) }
+)
 ```
 
-Así que nunca creas un `BackHandler` tú mismo. Solo decides, estado a estado, **si interceptar y con qué acción**.
+Así que nunca creas un handler de atrás tú mismo. Solo decides, estado a estado, **si interceptar y con qué acción**.
 Devolver `null` en algunos estados es la forma de desactivar la intercepción.
 
 !!! note "Por qué recibe el estado"

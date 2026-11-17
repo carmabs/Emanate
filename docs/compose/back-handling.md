@@ -29,17 +29,19 @@ Read it as: *"if there is no dialog open, turn back into the action `OnBack`; ot
 
 ## What Emanate does for you
 
-Behind the scenes, Emanate installs a single `BackHandler` (the standard Compose tool to intercept back) and
-calls your `onBack` each time the state changes:
+Behind the scenes, Emanate installs a single `NavigationBackHandler` (the multiplatform tool of Compose to intercept
+back) and calls your `onBack` each time the state changes:
 
 ```kotlin
 val backAction = screenContent.onBack(state)
-BackHandler(enabled = backAction != null) {
-    backAction?.also(actions::dispatch)
-}
+NavigationBackHandler(
+    state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
+    isBackEnabled = backAction != null,
+    onBackCompleted = { backAction?.also(actions::dispatch) }
+)
 ```
 
-So you never create a `BackHandler` yourself. You only decide, state by state, **whether to intercept and with
+So you never create a back handler yourself. You only decide, state by state, **whether to intercept and with
 which action**. Returning `null` in some states is how you switch the interception off.
 
 !!! note "Why it receives the state"

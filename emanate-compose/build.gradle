@@ -39,8 +39,9 @@ kotlin {
                 api libs.compose.multiplatform.ui
                 api libs.compose.multiplatform.foundation
                 api libs.compose.multiplatform.animation
-                api libs.compose.multiplatform.backhandler
                 api libs.compose.multiplatform.tooling.preview
+
+                implementation libs.jetbrains.navigationevent.compose
 
                 api libs.androidx.lifecycle.viewmodel.base
                 api libs.androidx.lifecycle.viewmodel.savedstate
